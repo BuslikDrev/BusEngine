@@ -16,7 +16,11 @@
 - установить [NET.Framework 4.8 Developer Pack и языки для перевода дебагера](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-developer-pack-offline-installer);
 - в файлах *.cmd, *.csproj заменить все пути на свои;
 - запустить Build.cmd;
-- при успешности компиляции, переместить файлы из папки Build в папку Bin.
+- при успешности компиляции, переместить файлы из папки Build в папку Bin;
+- скачать и положить в папку Bin библиотеки (Bin/*.dll):
+https://www.nuget.org/packages/CefSharp.Common/107.1.90
+https://www.nuget.org/packages/CefSharp.WinForms/107.1.90
+https://www.nuget.org/packages/cef.redist.x64/107.1.9
 
 ## Лицензии
 
