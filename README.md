@@ -18,3 +18,5 @@ BusEngine выпускается под лицензией [MIT](https://github.
 [MicroSoft dotNET](https://github.com/dotnet)
 
 [CefSharp](https://github.com/cefsharp/CefSharp/tree/v107.1.90)
+
+[Chromium](https://github.com/chromium/chromium)
