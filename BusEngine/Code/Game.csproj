@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <RootNamespace>BusEngine</RootNamespace>
+    <AssemblyName>Game</AssemblyName>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <ApplicationIcon>..\Data\Icons\BusEngine.ico</ApplicationIcon>
+    <FileAlignment>512</FileAlignment>
+    <!-- <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport> -->
+    <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
+    <!-- <DebugType>none</DebugType> -->
+    <!-- <Optimize>true</Optimize> -->
+    <!-- <DefineConstants>TRACE</DefineConstants> -->
+    <!-- <ErrorReport>prompt</ErrorReport> -->
+    <!-- <WarningLevel>4</WarningLevel> -->
+    <!-- https://stackoverflow.com/questions/57509951/use-windows-forms-in-a-net-core-class-library-net-core-control-library -->
+    <!-- <UseWindowsForms>true</UseWindowsForms> -->
+    <!-- <UseWPF>true</UseWPF> -->
+    <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
+    <!-- <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects> -->
+    <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
+    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>..\Bin\Win_x64\</OutputPath>
+    <OutputRoot>..\Bin\Win_x86\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <Prefer32Bit>true</Prefer32Bit>
+    <OutputPath>..\Bin\Win_x86\</OutputPath>
+    <OutputRoot>..\Bin\Win_x86\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <Prefer32Bit>true</Prefer32Bit>
+    <OutputPath>..\Bin\Win_x86\</OutputPath>
+    <OutputRoot>..\Bin\Win_x86\</OutputRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="CefSharp">
+      <HintPath>BusPlugins\CefSharp\CefSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.Core">
+      <HintPath>BusPlugins\CefSharp\CefSharp.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.WinForms">
+      <HintPath>BusPlugins\CefSharp\CefSharp.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LibVLCSharp">
+      <HintPath>BusPlugins\LibVLC\LibVLCSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LibVLCSharp.WinForms">
+      <HintPath>BusPlugins\LibVLC\LibVLCSharp.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- <Reference Include="Microsoft.Web.WebView2.Core">
+      <HintPath>BusPlugins\WebView2\Microsoft.Web.WebView2.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.WinForms">
+      <HintPath>BusPlugins\WebView2\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AxInterop.WMPLib">
+      <HintPath>BusPlugins\WMPLib\AxInterop.WMPLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Interop.WMPLib">
+      <HintPath>BusPlugins\WMPLib\Interop.WMPLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <HintPath>BusPlugins\System.Windows.Media\PresentationCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <HintPath>BusPlugins\System.Windows.Media\WindowsBase.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="**\*.cs" />
+    <None Include="*.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
+      <Link>..\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' ">
+      <Link>..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <Link>..\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <Link>..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup> 
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

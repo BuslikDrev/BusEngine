@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+	var element = document.querySelector('button');
+
+	if (element) {
+		element.addEventListener('click', function() {
+			element = document.querySelector('#message');
+
+			if (element) {
+				element.innerText = 'Выход произошёл!';
+				setTimeout(function() {
+					element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
+				}, 2000);
+			}
+		});
+	}
+});
+</script>
+  </head>
+  <body>
+     <span><b>Я программист!</b></span><br>
+     <span id="message"></span><br>
+     <button>ВЫЙТИ ИЗ ИГРЫ</button><br>
+  </body>
+</html>
