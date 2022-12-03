@@ -1,5 +1,5 @@
 # BusEngine
-[![BusEngine Version](https://img.shields.io/badge/Release-v0.1.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine)
+[![BusEngine Version](https://img.shields.io/badge/Release-v0.2.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine)
 ![Platform](https://img.shields.io/badge/Platform-Win--x64-purple.svg?cacheSeconds=31536000)
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v14.0-orange.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/OpenCart.CMS-2.3.0.2.6)
 [![Minimum C# Version](https://img.shields.io/badge/C%23%20%28CSharp%29-%20%3E%3D%20v6.0-blueviolet.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/OpenCart.CMS-2.3.0.2.6)
@@ -14,16 +14,21 @@
 
 - установить [MicroSoft Build Tools 2015 v14.0](https://www.microsoft.com/ru-ru/download/confirmation.aspx?id=48159) (возможно новее версия тоже подойдёт);
 - установить [NET.Framework 4.8 Developer Pack и языки для перевода дебагера](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-developer-pack-offline-installer);
-- в файлах *.cmd, *.csproj заменить все пути на свои;
-- запустить Build.cmd;
-- при успешности компиляции, переместить файлы из папки Build в папку Bin;
-- скачать и положить в папку Bin библиотеки (Bin/*.dll):
+- скачать библиотеки и положить в папку Code/BusContent/Win_*/:
 
   https://www.nuget.org/packages/CefSharp.Common/107.1.90
 
   https://www.nuget.org/packages/CefSharp.WinForms/107.1.90
 
   https://www.nuget.org/packages/cef.redist.x64/107.1.9
+  
+  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.17.4
+  
+  https://www.nuget.org/packages/LibVLCSharp/3.6.7
+  
+  https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7
+- в файлe Code/Build.cmd заменить все пути на свои;
+- запустить Build.cmd;
 
 ## Лицензии
 
@@ -36,3 +41,5 @@ BusEngine выпускается под лицензией [MIT](https://github.
 [CefSharp](https://github.com/cefsharp/CefSharp/tree/v107.1.90)
 
 [Chromium](https://github.com/chromium/chromium)
+
+[VideoLAN | libvlcsharp](https://github.com/videolan)
