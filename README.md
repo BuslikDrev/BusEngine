@@ -16,17 +16,21 @@
 - установить [NET.Framework 4.8 Developer Pack и языки для перевода дебагера](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-developer-pack-offline-installer);
 - скачать библиотеки и положить в папку Code/BusContent/Win_*/:
 
-  https://www.nuget.org/packages/CefSharp.Common/107.1.90
+  https://www.nuget.org/packages/cef.redist.x64/107.1.9 (из "CEF/" в "Code/BusContent/Win_x64/CefSharp/")
 
-  https://www.nuget.org/packages/CefSharp.WinForms/107.1.90
+  https://www.nuget.org/packages/cef.redist.x86/107.1.9 (из "CEF/" в "Code/BusContent/Win_x86/CefSharp/")
 
-  https://www.nuget.org/packages/cef.redist.x64/107.1.9
-  
-  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.17.4
-  
-  https://www.nuget.org/packages/LibVLCSharp/3.6.7
-  
-  https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7
+  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "CefSharp/x*/" в "Code/BusContent/Win_x*/CefSharp/")
+
+  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "lib/net452/" в "Code/BusContent/Win_x*/CefSharp/" и в "Code/BusPlugins/CefSharp/")
+
+  https://www.nuget.org/packages/CefSharp.WinForms/107.1.90 (из "lib/net452/" в "Code/BusContent/Win_x*/CefSharp/" и в "Code/BusPlugins/CefSharp/")
+
+  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.17.4 (из "build/x*/" в "Code/BusContent/Win_x*/LibVLC/", потом папку "plugins" и файлы "libvlccore.dll,libvlccore.lib" из "Code/BusContent/Win_x*/LibVLC/" в "Code/BusContent/Win_x*/")
+
+  https://www.nuget.org/packages/LibVLCSharp/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
+
+  https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
 - в файлe Code/Build.cmd заменить все пути на свои;
 - запустить Build.cmd;
 
