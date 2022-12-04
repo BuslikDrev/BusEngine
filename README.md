@@ -14,7 +14,7 @@
 
 - установить [MicroSoft Build Tools 2015 v14.0](https://www.microsoft.com/ru-ru/download/confirmation.aspx?id=48159) (возможно новее версия тоже подойдёт);
 - установить [NET.Framework 4.8 Developer Pack и языки для перевода дебагера](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-developer-pack-offline-installer);
-- скачать библиотеки и положить в папку Code/BusContent/Win_*/:
+- скачать библиотеки и положить в папку "Code/BusContent/Win_*/":
 
   https://www.nuget.org/packages/cef.redist.x64/107.1.9 (из "CEF/" в "Code/BusContent/Win_x64/CefSharp/")
 
@@ -31,7 +31,7 @@
   https://www.nuget.org/packages/LibVLCSharp/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
 
   https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
-- в файлe Code/Build.cmd заменить все пути на свои;
+- в файлe "Code/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
 - запустить Build.cmd;
 
 ## Лицензии
