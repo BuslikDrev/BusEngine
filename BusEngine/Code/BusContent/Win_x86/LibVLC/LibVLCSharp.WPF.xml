@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LibVLCSharp.WPF</name>
+    </assembly>
+    <members>
+        <member name="T:LibVLCSharp.WPF.User32Wrapper.ExtendedWindow32Styles">
+            <summary>
+            Provide the win32 window stype when call <see cref="M:LibVLCSharp.WPF.User32Wrapper.CreateWindowEx(LibVLCSharp.WPF.User32Wrapper.ExtendedWindow32Styles,System.String,System.String,LibVLCSharp.WPF.User32Wrapper.Window32Styles,System.Int32,System.Int32,System.Int32,System.Int32,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)"/>
+            <para>See following link: <a href="https://docs.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles" /> </para>
+            </summary>
+        </member>
+        <member name="F:LibVLCSharp.WPF.User32Wrapper.ExtendedWindow32Styles.WS_EX_TRANSPARENT">
+            <summary>
+            The window should not be painted until siblings beneath the window (that were created by the same thread) have been painted.
+            The window appears transparent because the bits of underlying sibling windows have already been painted.
+            </summary>
+        </member>
+        <member name="T:LibVLCSharp.WPF.User32Wrapper.Window32Styles">
+            <summary>
+            Provide the win32 window stype when call <see cref="M:LibVLCSharp.WPF.User32Wrapper.CreateWindowEx(LibVLCSharp.WPF.User32Wrapper.ExtendedWindow32Styles,System.String,System.String,LibVLCSharp.WPF.User32Wrapper.Window32Styles,System.Int32,System.Int32,System.Int32,System.Int32,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)"/>
+            <para>See following link: <a href="https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles" /> </para>
+            </summary>
+        </member>
+        <member name="F:LibVLCSharp.WPF.User32Wrapper.Window32Styles.WS_CHILD">
+            <summary>
+            The window is a child window. A window with this style cannot have a menu bar.
+            </summary>
+        </member>
+        <member name="F:LibVLCSharp.WPF.User32Wrapper.Window32Styles.WS_VISIBLE">
+            <summary>
+            The window is initially visible.
+            </summary>
+        </member>
+        <member name="T:LibVLCSharp.WPF.VideoHwndHost">
+            <summary>
+            Provide the UserControl with Handle Pointer in WPF
+            <para>This class will create instance of win32 window and hosted it in WPF Framework element</para>
+            <remark>As WPF only render the whole window, so all controls over the <see cref="T:LibVLCSharp.WPF.VideoHwndHost"/> will not reneder</remark>
+            </summary>
+        </member>
+        <member name="M:LibVLCSharp.WPF.VideoHwndHost.BuildWindowCore(System.Runtime.InteropServices.HandleRef)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LibVLCSharp.WPF.VideoHwndHost.DestroyWindowCore(System.Runtime.InteropServices.HandleRef)">
+            <inheritdoc/>
+        </member>
+        <member name="T:LibVLCSharp.WPF.VideoView">
+            <summary>
+            WPF VideoView with databinding for use with LibVLCSharp
+            </summary>
+        </member>
+        <member name="M:LibVLCSharp.WPF.VideoView.#ctor">
+            <summary>
+            WPF VideoView constructor
+            </summary>
+        </member>
+        <member name="F:LibVLCSharp.WPF.VideoView.MediaPlayerProperty">
+            <summary>
+            MediaPlayer WPF databinding property
+            </summary>
+        </member>
+        <member name="P:LibVLCSharp.WPF.VideoView.MediaPlayer">
+            <summary>
+            MediaPlayer property for this VideoView
+            </summary>
+        </member>
+        <member name="M:LibVLCSharp.WPF.VideoView.OnApplyTemplate">
+            <summary>
+            ForegroundWindow management and MediaPlayer setup.
+            </summary>
+        </member>
+        <member name="M:LibVLCSharp.WPF.VideoView.OnContentChanged(System.Object,System.Object)">
+            <summary>
+            Override to update the foreground window content
+            </summary>
+            <param name="oldContent">old content</param>
+            <param name="newContent">new content</param>
+        </member>
+        <member name="M:LibVLCSharp.WPF.VideoView.Dispose(System.Boolean)">
+            <summary>
+            Unhook mediaplayer and dispose foreground window
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:LibVLCSharp.WPF.VideoView.Dispose">
+            <summary>
+            Unhook mediaplayer and dispose foreground window
+            </summary>
+        </member>
+    </members>
+</doc>
