@@ -13,6 +13,7 @@
 ## Инструкция по сборке
 
 - установить [MicroSoft Build Tools 2015 v14.0](https://www.microsoft.com/ru-ru/download/confirmation.aspx?id=48159) (возможно новее версия тоже подойдёт);
+Возможно у вас он есть по путям: "C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" или "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe".
 - установить [NET.Framework 4.8 Developer Pack и языки для перевода дебагера](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-developer-pack-offline-installer);
 - скачать библиотеки и положить в папку "Code/BusContent/Win_*/":
 
