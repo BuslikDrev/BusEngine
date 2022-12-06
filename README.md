@@ -26,11 +26,15 @@
 
   https://www.nuget.org/packages/CefSharp.WinForms/107.1.90 (из "lib/net452/" в "Code/BusContent/Win_x*/CefSharp/" и в "Code/BusPlugins/CefSharp/")
 
+  https://www.nuget.org/packages/CefSharp.Wpf/107.1.90 (из "lib/net452/" в "Code/BusContent/Win_x*/CefSharp/" и в "Code/BusPlugins/CefSharp/")
+
   https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.17.4 (из "build/x*/" в "Code/BusContent/Win_x*/LibVLC/", потом папку "plugins" и файлы "libvlccore.dll,libvlccore.lib" из "Code/BusContent/Win_x*/LibVLC/" в "Code/BusContent/Win_x*/")
 
   https://www.nuget.org/packages/LibVLCSharp/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
 
   https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
+
+  https://www.nuget.org/packages/LibVLCSharp.WPF/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
 - в файлe "Code/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
 - запустить Build.cmd;
 
