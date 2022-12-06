@@ -34,7 +34,7 @@
 
   https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
 
-  https://www.nuget.org/packages/LibVLCSharp.WPF/3.6.7 (из "lib/net40/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
+  https://www.nuget.org/packages/LibVLCSharp.WPF/3.6.7 (из "lib/net461/" в "Code/BusContent/Win_x*/LibVLC/" и в "Code/BusPlugins/LibVLC/")
 - в файлe "Code/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
 - запустить Build.cmd;
 
