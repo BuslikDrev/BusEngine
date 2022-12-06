@@ -114,10 +114,6 @@
       <Link>..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
-      <Link>..\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
       <Link>..\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

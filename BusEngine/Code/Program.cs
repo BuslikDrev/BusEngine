@@ -3,26 +3,28 @@
 /* C# 6.0+ NET.Framework 4.5.2 */
 
 namespace BusEngine {
-	/** Открытое API Form - нужно как-то закрыть или переделать в BusEngine.UI */
-	public class UI : System.Windows.Forms.Form {
+	/** Открытое API BusEngine */
+	public class Engine {
+		public static BusEngine.UI.Form UI { get; set; }
+
 		/** консоль */
 		// статус консоли
-		private static bool StatusConsole = false;
+		public static bool StatusConsole = false;
 
 		// функция запуска консоли
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-		private static extern bool AllocConsole();
+		public static extern bool AllocConsole();
 
 		// функция остановки консоли
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-		private static extern bool FreeConsole();
+		public static extern bool FreeConsole();
 
 		// функция прикрепления консоли к запущенной программе по id процесса
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-		private static extern bool AttachConsole(int dwProcessId);
+		public static extern bool AttachConsole(int dwProcessId);
 
 		// функция вывода массива в консоль
-		private static void ConsoleMain(string[] args) {
+		public static void ConsoleMain(string[] args) {
 			System.Console.WriteLine("Command line = {0}", System.Environment.CommandLine);
 
 			for (int i = 0; i < args.Length; ++i) {
@@ -32,6 +34,46 @@ namespace BusEngine {
 		}
 		/** консоль */
 
+		// UI движка
+		private static BusEngine.UI.Form _ui;
+
+		/** функция запуска приложения */
+		//[System.STAThread] // если однопоточное приложение
+		private static void Main(string[] args) {
+			_ui = new BusEngine.UI.Form();
+			if (!BusEngine.Engine.AttachConsole(-1)) {
+				BusEngine.Engine.AllocConsole();
+			}
+			BusEngine.Engine.ConsoleMain(args);
+
+        try {
+            // Get the Type object corresponding to MyClass.
+            System.Type myType=typeof(BusEngine.UI.Form);
+            // Get an array of nested type objects in MyClass.
+            System.Type[] nestType=myType.GetNestedTypes();
+            System.Console.WriteLine("The number of nested types is {0}.", nestType.Length);
+            foreach(System.Type t in nestType)
+                System.Console.WriteLine("Nested type is {0}.", t.ToString());
+        } catch(System.Exception e) {
+            System.Console.WriteLine("Error"+e.Message);
+        }
+
+
+			System.Windows.Forms.Application.Run(_ui);
+		}
+		/** функция запуска приложения */
+
+		/** функция остановки приложения */
+		public static void Shutdown() {
+			System.Windows.Forms.Application.Exit();
+		}
+		/** функция остановки приложения */
+	}
+}
+
+namespace BusEngine.UI {
+	/** Открытое API Form - нужно как-то закрыть или переделать в BusEngine.UI */
+	public class Form : System.Windows.Forms.Form {
 		/** видео */
 		private LibVLCSharp.Shared.LibVLC _VLC;
 		private LibVLCSharp.Shared.MediaPlayer _VLC_MP;
@@ -41,35 +83,36 @@ namespace BusEngine {
 		/** событие нажатия любой кнопки */
 		// https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=netframework-4.8
 		private void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
+			System.Console.WriteLine("клавиатура клик");
 			// Выключаем движок по нажатию на Esc
 			if (e.KeyCode == System.Windows.Forms.Keys.Escape) {
 				this.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
 				this.Dispose();
-				BusEngine.Shutdown();
+				BusEngine.Engine.Shutdown();
 			}
 			// Вкл\Выкл консоль движка по нажатию на ~
 			if (e.KeyCode == System.Windows.Forms.Keys.Oem3) {
-				if (StatusConsole == false && !AttachConsole(-1)) {
-					AllocConsole();
-					StatusConsole = true;
+				if (BusEngine.Engine.StatusConsole == false && !BusEngine.Engine.AttachConsole(-1)) {
+					BusEngine.Engine.AllocConsole();
+					BusEngine.Engine.StatusConsole = true;
 				} else {
-					FreeConsole();
-					StatusConsole = false;
+					BusEngine.Engine.FreeConsole();
+					BusEngine.Engine.StatusConsole = false;
 				}
 			}
 		}
 		/** событие нажатия любой кнопки */
 
 		private void OnKeyDown2(object o, System.Windows.Forms.KeyEventArgs e) {
-			this.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown2);
+			//this.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown2);
 			this.Dispose();
-			BusEngine.Shutdown();
+			BusEngine.Engine.Shutdown();
 		}
 
 		/** событие остановки видео */
 		private void onVideoStop(object o, object e) {
+			System.Console.WriteLine("Видео остановить");
 			this.Controls.Remove(_VLC_VideoView);
-			this._VLC_MP.Stop();
             this._VLC_MP.Dispose();
             this._VLC.Dispose();
 			this.KeyPreview = true;
@@ -79,7 +122,7 @@ namespace BusEngine {
 
 		/** событие клика из браузера */
 		private void onBrowserClick(object o, object e) {
-
+			System.Console.WriteLine("браузер клик");
 		}
 		/** событие клика из браузера */
 
@@ -145,11 +188,11 @@ namespace BusEngine {
 			// https://cefsharp.github.io/api/
 			CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
 			//settings.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/0.2.0 Safari/537.36";
-			settings.UserAgent = settings.UserAgent.Replace(@"Chrome", @"BusEngine");
+			settings.UserAgent = settings.UserAgent.Replace("Chrome", "BusEngine");
 			settings.LogSeverity = CefSharp.LogSeverity.Disable;
 			CefSharp.Cef.Initialize(settings);
 			CefSharp.WinForms.ChromiumWebBrowser _browser = new CefSharp.WinForms.ChromiumWebBrowser(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/index.html");
-			_browser.KeyDown += new System.Windows.Forms.KeyEventHandler(OnKeyDown2);
+			_browser.KeyDown += OnKeyDown2;
 			//_browser.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.Controls.Add(_browser);
 
@@ -166,13 +209,13 @@ namespace BusEngine {
 			_browser.Navigate(new System.Uri(@"https://www.cryengine.com/"));
 			this.Controls.Add(_browser); */
 
-			/* Microsoft.Web.WebView2.Core.CoreWebView2 _browser = new Microsoft.Web.WebView2.Core.CoreWebView2();
+			/* Microsoft.Web.WebView2WebView2 _browser = new Microsoft.Web.WebView2WebView2();
 			_browser.Navigate(new System.Uri("https://www.cryengine.com/")); */
 		}
 		/** функция запуска браузера */
 
 		/** функция запуска окна приложения */
-		public UI() {
+		public Form() {
 			// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
 			//System.Windows.Forms.Form _form = new System.Windows.Forms.Form();
 			// название окна
@@ -196,7 +239,7 @@ namespace BusEngine {
 			this.BackColor = System.Drawing.Color.Black;
 			// устанавливаем события нажатий клавиш
 			this.KeyPreview = true;
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(OnKeyDown);
+			this.KeyDown += OnKeyDown;
 
 			// запускаем видео
 			Video();
@@ -207,25 +250,5 @@ namespace BusEngine {
 			//this.ShowDialog();
 		}
 		/** функция запуска окна приложения */
-	}
-
-	/** Открытое API BusEngine */
-	public class BusEngine {
-		private static UI _ui;
-
-		/** функция запуска приложения */
-		//[System.STAThread] // если однопоточное приложение
-		private static void Main(string[] args) {
-			_ui = new UI();
-
-			System.Windows.Forms.Application.Run(_ui);
-		}
-		/** функция запуска приложения */
-
-		/** функция остановки приложения */
-		public static void Shutdown() {
-			System.Windows.Forms.Application.Exit();
-		}
-		/** функция остановки приложения */
 	}
 }
