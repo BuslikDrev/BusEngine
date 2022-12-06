@@ -55,6 +55,7 @@ IF %Type% == 1 (
 REM Убираем кавычки и формируем пути | Remove quotes and form paths
 SET win64="%BusEngineFolder:"=%/Bin/Win_x64/%Name:"=%.exe"
 SET win86="%BusEngineFolder:"=%/Bin/Win_x86/%Name:"=%.exe"
+SET win="%BusEngineFolder:"=%/Bin/Win/%Name:"=%.exe"
 SET xbox="%BusEngineFolder:"=%/Bin/xbox/%Name:"=%.exe"
 SET Dump="%BusEngineFolder:"=%/Code/Dump.csproj"
 SET Plagin="%BusEngineFolder:"=%/Code/%Name:"=%.csproj"
@@ -64,6 +65,8 @@ SET win64=%win64:/=\%
 SET win64=%win64:\\=\%
 SET win86=%win86:/=\%
 SET win86=%win86:\\=\%
+SET win=%win:/=\%
+SET win=%win:\\=\%
 SET xbox=%xbox:/=\%
 SET xbox=%xbox:\\=\%
 SET Dump=%Dump:/=\%
@@ -115,7 +118,7 @@ IF %Platform% == 1 (
 ) ELSE IF %Platform% == 2 (
 	%win86%
 ) ELSE (
-	%win86%
+	%win%
 )
 
 REM Log | Log

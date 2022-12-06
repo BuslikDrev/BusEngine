@@ -26,19 +26,22 @@
     <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
+    <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <OutputPath>..\Bin\Win_x64\</OutputPath>
     <OutputRoot>..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
     <OutputPath>..\Bin\Win_x86\</OutputPath>
     <OutputRoot>..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
-    <OutputPath>..\Bin\Win_x86\</OutputPath>
-    <OutputRoot>..\Bin\Win_x86\</OutputRoot>
+    <OutputPath>..\Bin\Win\</OutputPath>
+    <OutputRoot>..\Bin\Win\</OutputRoot>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -56,12 +59,20 @@
       <HintPath>BusPlugins\CefSharp\CefSharp.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CefSharp.Wpf">
+      <HintPath>BusPlugins\CefSharp\CefSharp.Wpf.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="LibVLCSharp">
       <HintPath>BusPlugins\LibVLC\LibVLCSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LibVLCSharp.WinForms">
       <HintPath>BusPlugins\LibVLC\LibVLCSharp.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LibVLCSharp.WPF">
+      <HintPath>BusPlugins\LibVLC\LibVLCSharp.WPF.dll</HintPath>
       <Private>False</Private>
     </Reference>
 
@@ -108,7 +119,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
-      <Link>..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup> 
