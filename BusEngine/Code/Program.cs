@@ -21,11 +21,11 @@ namespace BusEngine {
 			BusEngine.Log.ConsoleShow();
 			BusEngine.Log.Info(args);
 			
-            var version = System.Environment.Version;
-        
-            BusEngine.Log.Info("Тип: " + version.GetType());
-            BusEngine.Log.Info("Моя версия .NET Framework: " + version.ToString());
-            BusEngine.Log.Info("Значение переменной v: " + (System.Version)version.Clone());
+			var version = System.Environment.Version;
+
+			BusEngine.Log.Info("Тип: " + version.GetType());
+			BusEngine.Log.Info("Моя версия .NET Framework: " + version.ToString());
+			BusEngine.Log.Info("Значение переменной v: " + (System.Version)version.Clone());
 
 			// https://highload.today/tipy-dannyh-c-sharp/
 			// https://metanit.com/sharp/tutorial/2.1.php
@@ -240,8 +240,6 @@ namespace BusEngine {
 					//System.Console.WriteLine(o);
 				//}
 			}
-
-            
 		} */
 
 		// функция запуска консоли
@@ -323,8 +321,8 @@ namespace BusEngine.UI {
 		private void onVideoStop(object o, object e) {
 			BusEngine.Log.Info("Видео остановить");
 			this.Controls.Remove(_VLC_VideoView);
-            this._VLC_MP.Dispose();
-            this._VLC.Dispose();
+			this._VLC_MP.Dispose();
+			this._VLC.Dispose();
 			this.KeyPreview = true;
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(OnKeyDown);
 		}
