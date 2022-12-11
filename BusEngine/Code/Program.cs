@@ -1,65 +1,105 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
-/* C# 6.0+ NET.Framework 4.5.2 */
 
+/* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
+/* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+
+/** Открытое API BusEngine */
 namespace BusEngine {
-	/** Открытое API BusEngine */
+	/** Открытое API BusEngine.Engine */
 	public class Engine {
-		public static BusEngine.UI.Form UI { get; set; }
-
-		/** консоль */
-		// статус консоли
-		public static bool StatusConsole = false;
-
-		// функция запуска консоли
-		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-		public static extern bool AllocConsole();
-
-		// функция остановки консоли
-		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-		public static extern bool FreeConsole();
-
-		// функция прикрепления консоли к запущенной программе по id процесса
-		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-		public static extern bool AttachConsole(int dwProcessId);
-
-		// функция вывода массива в консоль
-		public static void ConsoleMain(string[] args) {
-			System.Console.WriteLine("Command line = {0}", System.Environment.CommandLine);
-
-			for (int i = 0; i < args.Length; ++i) {
-				System.Console.WriteLine("Argument{0} = {1}", i + 1, args[i]);
-				System.Console.ReadLine();
-			}
-		}
-		/** консоль */
+		public static BusEngine.UI.Canvas UI { get; set; }
 
 		// UI движка
-		private static BusEngine.UI.Form _ui;
+		private static BusEngine.UI.Canvas _canvas;
 
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
-			_ui = new BusEngine.UI.Form();
-			if (!BusEngine.Engine.AttachConsole(-1)) {
-				BusEngine.Engine.AllocConsole();
+			_canvas = new BusEngine.UI.Canvas();
+			BusEngine.Log.ConsoleShow();
+			BusEngine.Log.Info(args);
+			
+            var version = System.Environment.Version;
+        
+            BusEngine.Log.Info("Тип: " + version.GetType());
+            BusEngine.Log.Info("Моя версия .NET Framework: " + version.ToString());
+            BusEngine.Log.Info("Значение переменной v: " + (System.Version)version.Clone());
+
+			// https://highload.today/tipy-dannyh-c-sharp/
+			// https://metanit.com/sharp/tutorial/2.1.php
+			/** переменные разных типов в одно значение (не массив)*/
+			// Строка
+			string _string = "Строка"; // или System.String _string = "Строка";
+			BusEngine.Log.Info(_string);
+			// цифра (цело число)
+			int _int = 10;
+			BusEngine.Log.Info(_int);
+			// цифра (цело число)
+			long _long = 10;
+			BusEngine.Log.Info(_long);
+			// цифра с плавающей запятой (6 - 9 цифр после запятой)
+			double _double = 3D;
+			BusEngine.Log.Info(_double);
+			_double = 4d;
+			//_double = 3.934_001; // _ c C# 7.0+ https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/builtin-types/floating-point-numeric-types
+			// цифра с плавающей запятой (15 - 17 цифр после запятой)
+			float _float = 3000.5F;
+			BusEngine.Log.Info(_float);
+			_float = 5.4f;
+			// цифра с плавающей запятой (28 - 29 цифр после запятой)
+			decimal _decimal = 3000.5m;
+			BusEngine.Log.Info(_decimal);
+			_decimal = 400.75M;
+
+
+			/** переменные разных типов (массив)*/
+			// массив строк
+			string[] _array_string = {"Строка", "Строка.Строка", "Строка,Строка.Строка"};
+			BusEngine.Log.Info(_array_string);
+			// массив целых чисел
+			int[] _array_int = {10, 10, 10};
+			BusEngine.Log.Info(_array_int);
+			// массив значений
+			bool[] _array_bool = {false, true, true};
+			BusEngine.Log.Info(_array_bool);
+
+
+
+
+			object[] object1 = {"string", 23};
+			BusEngine.Log.Info(object1);
+
+			object object3 = new {a = "string", b = 23};
+
+			BusEngine.Log.Info(object3);
+			object object2 = new object();
+			BusEngine.Log.Info(object2);
+			object object4 = new object() {};
+			BusEngine.Log.Info(object4);
+			//object object4 = new {"string", "string"}; - error
+			//object object5 = new {1, 2}; - error
+
+			object object6 = new object();
+			//object4.
+			BusEngine.Log.Info(object6);
+
+			try {
+				// Get the Type object corresponding to MyClass.
+				System.Type myType = typeof(BusEngine.UI.Canvas);
+				// Get an array of nested type objects in MyClass.
+				System.Type[] nestType = myType.GetNestedTypes();
+				BusEngine.Log.Info("The number of nested types is {0}.", nestType.Length);
+				foreach (System.Type t in nestType) {
+					BusEngine.Log.Info("Nested type is {0}.", t.ToString());
+				}
+			} catch(System.Exception e) {
+				BusEngine.Log.Info("Error"+e.Message);
 			}
-			BusEngine.Engine.ConsoleMain(args);
-
-        try {
-            // Get the Type object corresponding to MyClass.
-            System.Type myType=typeof(BusEngine.UI.Form);
-            // Get an array of nested type objects in MyClass.
-            System.Type[] nestType=myType.GetNestedTypes();
-            System.Console.WriteLine("The number of nested types is {0}.", nestType.Length);
-            foreach(System.Type t in nestType)
-                System.Console.WriteLine("Nested type is {0}.", t.ToString());
-        } catch(System.Exception e) {
-            System.Console.WriteLine("Error"+e.Message);
-        }
 
 
-			System.Windows.Forms.Application.Run(_ui);
+			System.Windows.Forms.Application.Run(_canvas);
 		}
 		/** функция запуска приложения */
 
@@ -71,9 +111,180 @@ namespace BusEngine {
 	}
 }
 
+namespace BusEngine {
+	/** Открытое API BusEngine.Log */
+	public class Log : System.IDisposable {
+		/** консоль */
+		// статус консоли
+		private static bool StatusConsole = false;
+
+		// функция запуска консоли
+		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+		private static extern bool AllocConsole();
+
+		// функция остановки консоли
+		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+		private static extern bool FreeConsole();
+
+		// функция прикрепления консоли к запущенной программе по id процесса
+		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+		private static extern bool AttachConsole(int dwProcessId);
+
+		// функция вывода массива в консоль
+		/* public static void InfoArray(string[] args) {
+			BusEngine.Log.Info("Command line = {0}", System.Environment.CommandLine);
+
+			for (int i = 0; i < args.Length; ++i) {
+				BusEngine.Log.Info("Argument{0} = {1}", i + 1, args[i]);
+				BusEngine.Log.Info();
+			}
+		} */
+
+		// функция вывода строки в консоль
+		public static void Info() {
+			System.Console.WriteLine();
+			System.Console.WriteLine("ничего");
+		}
+		public static void Info(string args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("string");
+		}
+		public static void Info(string[] args1) {
+			System.Console.WriteLine(args1.ToString());
+			System.Console.WriteLine("string[]");
+		}
+		public static void Info(ulong args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("ulong");
+		}
+		public static void Info(uint args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("uint");
+		}
+		public static void Info(float args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("float");
+		}
+		public static void Info(decimal args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("decimal");
+		}
+		public static void Info(long args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("long");
+		}
+		public static void Info(int args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("int");
+		}
+		public static void Info(double args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("double");
+		}
+		public static void Info(char args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("char");
+		}
+		public static void Info(char[] args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("char[]");
+		}
+		public static void Info(bool args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("bool");
+		}
+		public static void Info(object args1) {
+			System.Console.WriteLine(args1.ToString());
+			System.Console.WriteLine("object");
+		}
+		public static void Info(object[] args1) {
+			System.Console.WriteLine(args1.ToString());
+			System.Console.WriteLine("object[]");
+		}
+		public static void Info(string args1, string args2) {
+			System.Console.WriteLine(args1, args2);
+			System.Console.WriteLine("string string");
+		}
+		public static void Info(string args1, object args2) {
+			System.Console.WriteLine(args1, args2);
+			System.Console.WriteLine("string object");
+		}
+		public static void Info(string args1, int args2) {
+			System.Console.WriteLine(args1, args2);
+			System.Console.WriteLine("string int");
+		}
+		public static void Info(string args1, long args2) {
+			System.Console.WriteLine(args1, args2);
+			System.Console.WriteLine("string long");
+		}
+
+/* 		public static void Info(params object[] args) {
+			string args1 = "";
+			dynamic args2 = null;
+
+			if (args[0] != null && args[0].GetType() == typeof(string)) {
+				args1 = System.Convert.ToString(args[0]);
+			}
+
+			if (args[1] != null && args[1].GetType() == typeof(int)) {
+				args2 = System.Convert.ToInt32(args[1]);
+			}
+
+			if (args2 != null) {
+				System.Console.WriteLine(args1, args2);
+			} else {
+				System.Console.WriteLine(args1);
+			}
+			foreach (object o in args) {
+				//if (o.GetType() == typeof(int)) {
+					//System.Console.WriteLine(o);
+				//}
+			}
+
+            
+		} */
+
+		// функция запуска консоли
+		public static void ConsoleShow() {
+				if (BusEngine.Log.StatusConsole == false && !BusEngine.Log.AttachConsole(-1)) {
+					BusEngine.Log.AllocConsole();
+					BusEngine.Log.StatusConsole = true;
+				}
+		}
+
+		// функция остановки консоли
+		public static void ConsoleHide() {
+				if (BusEngine.Log.StatusConsole == true) {
+					BusEngine.Log.FreeConsole();
+					BusEngine.Log.StatusConsole = false;
+				}
+		}
+
+		// функция запуска\остановки консоли
+		public static void ConsoleToggle() {
+				if (BusEngine.Log.StatusConsole == false && !BusEngine.Log.AttachConsole(-1)) {
+					BusEngine.Log.AllocConsole();
+					BusEngine.Log.StatusConsole = true;
+				} else {
+					BusEngine.Log.FreeConsole();
+					BusEngine.Log.StatusConsole = false;
+				}
+		}
+		/** консоль */
+
+		public static void Shutdown() {
+
+		}
+
+		public void Dispose() {
+
+		}
+	}
+}
+
 namespace BusEngine.UI {
-	/** Открытое API Form - нужно как-то закрыть или переделать в BusEngine.UI */
-	public class Form : System.Windows.Forms.Form {
+	/** Открытое API BusEngine.UI.Canvas */
+	public class Canvas : System.Windows.Forms.Form {
 		/** видео */
 		private LibVLCSharp.Shared.LibVLC _VLC;
 		private LibVLCSharp.Shared.MediaPlayer _VLC_MP;
@@ -83,7 +294,8 @@ namespace BusEngine.UI {
 		/** событие нажатия любой кнопки */
 		// https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=netframework-4.8
 		private void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
-			System.Console.WriteLine("клавиатура клик");
+			BusEngine.Log.Info("клавиатура клик");
+			BusEngine.Log.Info();
 			// Выключаем движок по нажатию на Esc
 			if (e.KeyCode == System.Windows.Forms.Keys.Escape) {
 				this.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
@@ -92,16 +304,14 @@ namespace BusEngine.UI {
 			}
 			// Вкл\Выкл консоль движка по нажатию на ~
 			if (e.KeyCode == System.Windows.Forms.Keys.Oem3) {
-				if (BusEngine.Engine.StatusConsole == false && !BusEngine.Engine.AttachConsole(-1)) {
-					BusEngine.Engine.AllocConsole();
-					BusEngine.Engine.StatusConsole = true;
-				} else {
-					BusEngine.Engine.FreeConsole();
-					BusEngine.Engine.StatusConsole = false;
-				}
+				BusEngine.Log.ConsoleToggle();
 			}
 		}
 		/** событие нажатия любой кнопки */
+		
+		public void Bgds() {
+
+		}
 
 		private void OnKeyDown2(object o, System.Windows.Forms.KeyEventArgs e) {
 			//this.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown2);
@@ -111,7 +321,7 @@ namespace BusEngine.UI {
 
 		/** событие остановки видео */
 		private void onVideoStop(object o, object e) {
-			System.Console.WriteLine("Видео остановить");
+			BusEngine.Log.Info("Видео остановить");
 			this.Controls.Remove(_VLC_VideoView);
             this._VLC_MP.Dispose();
             this._VLC.Dispose();
@@ -122,7 +332,7 @@ namespace BusEngine.UI {
 
 		/** событие клика из браузера */
 		private void onBrowserClick(object o, object e) {
-			System.Console.WriteLine("браузер клик");
+			BusEngine.Log.Info("браузер клик");
 		}
 		/** событие клика из браузера */
 
@@ -215,7 +425,7 @@ namespace BusEngine.UI {
 		/** функция запуска браузера */
 
 		/** функция запуска окна приложения */
-		public Form() {
+		public Canvas() {
 			// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
 			//System.Windows.Forms.Form _form = new System.Windows.Forms.Form();
 			// название окна
