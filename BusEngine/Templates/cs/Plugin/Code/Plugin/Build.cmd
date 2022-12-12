@@ -1,5 +1,5 @@
 REM Указать путь до BusEngine | Specify the path to the BusEngine
-SET BusEngineFolder="..\..\..\"
+SET BusEngineFolder="..\..\"
 
 REM Указать путь до MSBuild | Specify the path to the MSBuild https://en.wikipedia.org/wiki/MSBuild#Versions
 REM SET MSBuild="C:\Program Files (x86)\MSBuild\14.0\Bin\amd64\MSBuild.exe"
@@ -66,8 +66,8 @@ SET win64="%BusEngineFolder:"=%/Bin/Win_x64/%Name:"=%.exe"
 SET win86="%BusEngineFolder:"=%/Bin/Win_x86/%Name:"=%.exe"
 SET win="%BusEngineFolder:"=%/Bin/Win/%Name:"=%.exe"
 SET xbox="%BusEngineFolder:"=%/Bin/xbox/%Name:"=%.exe"
-SET Dump="%BusEngineFolder:"=%/Code/Dump.csproj"
-SET Plagin="%BusEngineFolder:"=%/Code/%Name:"=%.csproj"
+SET Dump="%BusEngineFolder:"=%/Code/%Name:"=%/Dump.csproj"
+SET Plagin="%BusEngineFolder:"=%/Code/%Name:"=%/%Name:"=%.csproj"
 
 REM Убираем повторы слэшей | Removing repeated slashes
 SET win64=%win64:/=\%

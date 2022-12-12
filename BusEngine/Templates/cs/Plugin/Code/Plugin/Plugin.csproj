@@ -14,20 +14,20 @@
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
-    <OutputPath>..\Bin\Win_x64\</OutputPath>
-    <OutputRoot>..\Bin\Win_x86\</OutputRoot>
+    <OutputPath>..\..\Bin\Win_x64\</OutputPath>
+    <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
-    <OutputPath>..\Bin\Win_x86\</OutputPath>
-    <OutputRoot>..\Bin\Win_x86\</OutputRoot>
+    <OutputPath>..\..\Bin\Win_x86\</OutputPath>
+    <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
-    <OutputPath>..\Bin\Win\</OutputPath>
-    <OutputRoot>..\Bin\Win\</OutputRoot>
+    <OutputPath>..\..\Bin\Win\</OutputPath>
+    <OutputRoot>..\..\Bin\Win\</OutputRoot>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -59,15 +59,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
-      <Link>..\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' ">
-      <Link>..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
-      <Link>..\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup> 
