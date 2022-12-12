@@ -1,9 +1,9 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
-/* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
+/* C# 6.0+			  https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* MSBuild 12.0+		https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 /** API BusEngine */
 namespace BusEngine {
@@ -37,8 +37,8 @@ BusEngine.Engine.UI
 
 			BusEngine.UI.WinForm _form = new BusEngine.UI.WinForm();
 
-            /* System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
+			/* System.Windows.Forms.Application.EnableVisualStyles();
+			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
 			BusEngine.UI.Canvas.Run(winform: _form);
 			// запускаем видео
 			BusEngine.Video.Play("Videos/BusEngine.mp4");
@@ -706,56 +706,56 @@ BusEngine.Browser
 		//#endregion
 
 		/* private static System.Drawing.Size ClientSize;
-        public static System.Drawing.Size ClientSize() {
+		public static System.Drawing.Size ClientSize() {
 			return ClientSize;
-        } */
+		} */
 
-        public static BusEngine.UI.WinForm GetForm() {
+		public static BusEngine.UI.WinForm GetForm() {
 			return _GetForm;
-        }
+		}
 
-        public void ControlsAdd(System.Windows.Forms.Form e) {
+		public void ControlsAdd(System.Windows.Forms.Form e) {
 			this.Controls.Add(e);
-        }
+		}
 
-        public void ControlsRemove(System.Windows.Forms.Form e) {
-            this.Controls.Remove(e);
-        }
+		public void ControlsRemove(System.Windows.Forms.Form e) {
+			this.Controls.Remove(e);
+		}
 
-        private const int WM_ACTIVATEAPP = 0x001C;
-        private bool appActive = true;
+		private const int WM_ACTIVATEAPP = 0x001C;
+		private bool appActive = true;
 
-        protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
-            if (appActive) {
-                e.Graphics.FillRectangle(System.Drawing.SystemBrushes.ActiveCaption,20,20,260,50);
-                e.Graphics.DrawString("Application is active", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20,20);
-            } else {
-                e.Graphics.FillRectangle(System.Drawing.SystemBrushes.InactiveCaption,20,20,260,50);
-                e.Graphics.DrawString("Application is Inactive", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20,20);
-            }
-        }
+		protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
+			if (appActive) {
+				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.ActiveCaption,20,20,260,50);
+				e.Graphics.DrawString("Application is active", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20,20);
+			} else {
+				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.InactiveCaption,20,20,260,50);
+				e.Graphics.DrawString("Application is Inactive", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20,20);
+			}
+		}
 
-        protected override void WndProc(ref System.Windows.Forms.Message m) {
-            switch (m.Msg) {
-                case WM_ACTIVATEAPP:
-                    appActive = (((int)m.WParam != 0));
-                    Invalidate();
+		protected override void WndProc(ref System.Windows.Forms.Message m) {
+			switch (m.Msg) {
+				case WM_ACTIVATEAPP:
+					appActive = (((int)m.WParam != 0));
+					Invalidate();
 
-                    break;                
-            }
-            base.WndProc(ref m);
-        }
+					break;
+			}
+			base.WndProc(ref m);
+		}
 
-        /* protected override void Callback(System.IntPtr hWnd, System.Int32 msg, System.IntPtr wparam, System.IntPtr lparam) {
-            switch (m.Msg) {
-                case WM_ACTIVATEAPP:
-                    appActive = (((int)m.WParam != 0));
-                    Invalidate();
+		/* protected override void Callback(System.IntPtr hWnd, System.Int32 msg, System.IntPtr wparam, System.IntPtr lparam) {
+			switch (m.Msg) {
+				case WM_ACTIVATEAPP:
+					appActive = (((int)m.WParam != 0));
+					Invalidate();
 
-                    break;                
-            }
-            base.WndProc(ref m);
-        } */
+					break;
+			}
+			base.WndProc(ref m);
+		} */
 		/** функция запуска окна приложения */
 	}
 	/** API BusEngine.UI.Canvas */
@@ -765,37 +765,37 @@ BusEngine.Browser
 /** API BusEngine */
 namespace CryEngine {
 	/** API BusEngine.Plugin */
-    public abstract class Plugin {
+	public abstract class Plugin {
 		// после загрузки определённого плагина
-        public virtual void Initialize(string plagin) { }
+		public virtual void Initialize(string plagin) { }
 
 		// при заапуске BusEngine до создания формы
-        public virtual void Initialize() { }
+		public virtual void Initialize() { }
 
 		// перед закрытием BusEngine
-        public virtual void Shutdown() { }
+		public virtual void Shutdown() { }
 
 		// перед загрузкой игрового уровня
-        public virtual void OnLevelLoading(string level) { }
+		public virtual void OnLevelLoading(string level) { }
 
 		// после загрузки игрового уровня
-        public virtual void OnLevelLoaded(string level) { }
+		public virtual void OnLevelLoaded(string level) { }
 
 		// когда икрок может управлять главным героем - время игры идёт
-        public virtual void OnGameStart() { }
+		public virtual void OnGameStart() { }
 
 		// когда время остановлено - пауза
-        public virtual void OnGameStop() { }
+		public virtual void OnGameStop() { }
 
 		// когда игрок начинает подключаться к серверу
-        public virtual void OnClientConnectionReceived(int channelId) { }
+		public virtual void OnClientConnectionReceived(int channelId) { }
 
 		// кога игрок подключился к серверу
-        public virtual void OnClientReadyForGameplay(int channelId) { }
+		public virtual void OnClientReadyForGameplay(int channelId) { }
 
 		// когда игрока выкинуло из сервера - обрыв связи с сервером
-        public virtual void OnClientDisconnected(int channelId) { }
-    }
+		public virtual void OnClientDisconnected(int channelId) { }
+	}
 	/** API BusEngine.Plugin */
 }
 /** API BusEngine */
