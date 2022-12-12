@@ -4,7 +4,7 @@
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
-/* using System.Linq; */
+
 /** API BusEngine */
 namespace BusEngine {
 /* 
@@ -36,29 +36,23 @@ BusEngine.Engine.UI
 			
 			
 			//BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
-            //"TestReflection" искомое пространство
+			//"TestReflection" искомое пространство
 			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
-            System.Type[] typelist = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
-            foreach (System.Type type in typelist) {
+			System.Type[] typelist = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
+			foreach (System.Type type in typelist) {
 				BusEngine.Log.Info(type.FullName);
-                //создание объекта
-                //object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
+				//создание объекта
+				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
  
-                //что бы получить public методы без базовых(наследованных от object)
-                /* var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-                foreach (var methodInfo in methods) {
+				//что бы получить public методы без базовых(наследованных от object)
+				/* var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+				foreach (var methodInfo in methods) {
 					BusEngine.Log.Info(methodInfo);
-                    //вызов
-                    //methodInfo.Invoke(targetObject, new object[] { });
-                } */
-            }
-            
-			
-			
-			
-			
-			
-			
+					//вызов
+					//methodInfo.Invoke(targetObject, new object[] { });
+				} */
+			}
+
 
 			/* BusEngine.Plugin _plugin = new BusEngine.Game.Default();
 			_plugin.Initialize(); */
@@ -849,6 +843,41 @@ namespace BusEngine.Game {
 		// перед закрытием BusEngine
 		public override void Shutdown() {
 			BusEngine.Log.Info("Shutdown");
+		}
+
+		// перед загрузкой игрового уровня
+		public override void OnLevelLoading(string level) {
+			BusEngine.Log.Info("OnLevelLoading");
+		}
+
+		// после загрузки игрового уровня
+		public override void OnLevelLoaded(string level) {
+			BusEngine.Log.Info("OnLevelLoaded");
+		}
+
+		// когда икрок может управлять главным героем - время игры идёт
+		public override void OnGameStart() {
+			BusEngine.Log.Info("OnGameStart");
+		}
+
+		// когда время остановлено - пауза
+		public override void OnGameStop() {
+			BusEngine.Log.Info("OnGameStop");
+		}
+
+		// когда игрок начинает подключаться к серверу
+		public override void OnClientConnectionReceived(int channelId) {
+			BusEngine.Log.Info("OnClientConnectionReceived");
+		}
+
+		// кога игрок подключился к серверу
+		public override void OnClientReadyForGameplay(int channelId) {
+			BusEngine.Log.Info("OnClientReadyForGameplay");
+		}
+
+		// когда игрока выкинуло из сервера - обрыв связи с сервером
+		public override void OnClientDisconnected(int channelId) {
+			BusEngine.Log.Info("OnClientDisconnected");
 		}
 	}
 	/** API BusEngine.Plugin */

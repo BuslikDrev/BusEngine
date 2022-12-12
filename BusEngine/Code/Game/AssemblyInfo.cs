@@ -5,7 +5,7 @@
 /* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
-[assembly: System.Reflection.AssemblyTitle("BusEngine C# Core")]
+[assembly: System.Reflection.AssemblyTitle("BusEngine Core")]
 [assembly: System.Reflection.AssemblyDescription("The main C# interface for the BusEngine.")]
 [assembly: System.Reflection.AssemblyConfiguration("")]
 [assembly: System.Reflection.AssemblyCompany("BuslikDrev")]
