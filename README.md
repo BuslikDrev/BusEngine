@@ -3,7 +3,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Win--x64%20|%20Win--x86-purple.svg?cacheSeconds=31536000)
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v12.0-orange.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/OpenCart.CMS-2.3.0.2.6)
 [![Minimum C# Version](https://img.shields.io/badge/C%23%20%28CSharp%29-%20%3E%3D%20v6.0-blueviolet.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/OpenCart.CMS-2.3.0.2.6)
-[![Minimum NET.Framework Version](https://img.shields.io/badge/NET.Framework-%20%3E%3D%20v4.8.0-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
+[![Minimum NET.Framework Version](https://img.shields.io/badge/NET.Framework-%20%3E%3D%20v4.5.2-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
 [![YouTube](https://img.shields.io/youtube/views/R1MwBJZzpsk?style=social)](https://www.youtube.com/watch?v=R1MwBJZzpsk)
 
 ## Описание
