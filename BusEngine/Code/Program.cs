@@ -23,16 +23,15 @@ BusEngine.Engine.UI
 			DataDirectory = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/");
 		}
 		/** UI движка */
-		
-		// функция прикрепления консоли к запущенной программе по id процесса
-		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-		private static extern bool AttachConsole(int dwProcessId);
 
 		/** функция запуска приложения */
 		[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			BusEngine.Engine.generateStatLink();
 			BusEngine.Log.ConsoleShow();
+			BusEngine.Plugin plugin = new BusEngine.Game.Default();
+			plugin.Initialize();
+
 			//BusEngine.Log.Debug();
 
 			BusEngine.UI.WinForm _form = new BusEngine.UI.WinForm();
@@ -50,6 +49,8 @@ BusEngine.Engine.UI
 
 		/** функция остановки приложения */
 		public static void Shutdown() {
+			BusEngine.Plugin plugin = new BusEngine.Game.Default();
+			plugin.Shutdown();
 			System.Windows.Forms.Application.Exit();
 		}
 		/** функция остановки приложения */
@@ -763,14 +764,14 @@ BusEngine.Browser
 /** API BusEngine.UI */
 
 /** API BusEngine */
-namespace CryEngine {
+namespace BusEngine {
 	/** API BusEngine.Plugin */
 	public abstract class Plugin {
-		// после загрузки определённого плагина
-		public virtual void Initialize(string plagin) { }
-
 		// при заапуске BusEngine до создания формы
 		public virtual void Initialize() { }
+
+		// после загрузки определённого плагина
+		public virtual void Initialize(string plugin) { }
 
 		// перед закрытием BusEngine
 		public virtual void Shutdown() { }
@@ -795,6 +796,29 @@ namespace CryEngine {
 
 		// когда игрока выкинуло из сервера - обрыв связи с сервером
 		public virtual void OnClientDisconnected(int channelId) { }
+	}
+	/** API BusEngine.Plugin */
+}
+/** API BusEngine */
+
+/** API BusEngine.Game */
+namespace BusEngine.Game {
+	/** API BusEngine.Plugin */
+	public class Default : Plugin {
+		// при заапуске BusEngine до создания формы
+		public override void Initialize() {
+			BusEngine.Log.Info("Initialize");
+		}
+
+		// после загрузки определённого плагина
+		public override void Initialize(string plugin = "") {
+			BusEngine.Log.Info("Initialize " + plugin);
+		}
+
+		// перед закрытием BusEngine
+		public override void Shutdown() {
+			BusEngine.Log.Info("Shutdown");
+		}
 	}
 	/** API BusEngine.Plugin */
 }
