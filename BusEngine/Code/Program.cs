@@ -29,8 +29,8 @@ BusEngine.Engine.UI
 		private static void Main(string[] args) {
 			BusEngine.Engine.generateStatLink();
 			BusEngine.Log.ConsoleShow();
-			BusEngine.Plugin plugin = new BusEngine.Game.Default();
-			plugin.Initialize();
+			BusEngine.Plugin _plugin = new BusEngine.Game.Default();
+			_plugin.Initialize();
 
 			//BusEngine.Log.Debug();
 
@@ -49,8 +49,8 @@ BusEngine.Engine.UI
 
 		/** функция остановки приложения */
 		public static void Shutdown() {
-			BusEngine.Plugin plugin = new BusEngine.Game.Default();
-			plugin.Shutdown();
+			BusEngine.Plugin _plugin = new BusEngine.Game.Default();
+			_plugin.Shutdown();
 			System.Windows.Forms.Application.Exit();
 		}
 		/** функция остановки приложения */
@@ -801,7 +801,7 @@ namespace BusEngine {
 }
 /** API BusEngine */
 
-/** API BusEngine.Game */
+/** API BusEngine.Game - пользовательский код для теста */
 namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
 	public class Default : Plugin {
@@ -822,4 +822,4 @@ namespace BusEngine.Game {
 	}
 	/** API BusEngine.Plugin */
 }
-/** API BusEngine */
+/** API BusEngine.Game - пользовательский код для теста */
