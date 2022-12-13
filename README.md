@@ -1,4 +1,4 @@
-# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.2.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) ![Platform](https://img.shields.io/badge/Platform-Win--x64%20|%20Win--x86-purple.svg?cacheSeconds=31536000) [![YouTube](https://img.shields.io/youtube/views/R1MwBJZzpsk?style=social)](https://www.youtube.com/watch?v=R1MwBJZzpsk)
+# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.2.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) ![Platform](https://img.shields.io/badge/Platform-Win7+--x64%20|%20Win7+--x86-purple.svg?cacheSeconds=31536000) [![YouTube](https://img.shields.io/youtube/views/R1MwBJZzpsk?style=social)](https://www.youtube.com/watch?v=R1MwBJZzpsk)
 
 ### Минимальные требования для успешной сборки
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v12.0-orange.svg?cacheSeconds=31536000)](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760)
@@ -13,6 +13,8 @@
 ## Описание
 
 Проект разрабатывается в целях развлечения и обучения. Возможно кто-то что-то для себя подчеркнёт.
+
+Для кроссплатформенности возможно будет использоваться NET.Core <= 6.0 или Mono.
 
 ## Инструкция по сборке
 
@@ -54,3 +56,41 @@ BusEngine выпускается под лицензией [MIT](https://github.
 [Chromium](https://github.com/chromium/chromium)
 
 [VideoLAN | libvlcsharp](https://github.com/videolan)
+
+## Полезные ссылки
+
+Microsoft Build Tools 2005 v2.0
+
+C:\Windows\Microsoft.NET\Framework\v2.0.50727
+
+Microsoft Build Tools 2008 v3.5
+
+C:\Windows\Microsoft.NET\Framework\v3.5
+
+Microsoft Build Tools 2012 v4.8
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319
+
+Microsoft Build Tools 2013 v12.0
+
+https://www.microsoft.com/ru-ru/download/details.aspx?id=40760
+
+Microsoft Build Tools 2015 v14.0
+
+https://www.microsoft.com/ru-ru/download/details.aspx?id=48159
+
+Microsoft Build Tools 2017 v15.0
+
+https://learn.microsoft.com/ru-ru/visualstudio/releasenotes/vs2017-relnotes-history#installing-the-earlier-release
+
+Microsoft Build Tools 2019 v16.0 (Входит в NET.Core 3.1+)
+
+https://learn.microsoft.com/ru-ru/visualstudio/releases/2019/history#release-dates-and-build-numbers
+
+Microsoft Build Tools 2022 v17.0 (Входит в NET.Core 6.0+)
+
+https://learn.microsoft.com/ru-ru/visualstudio/releases/2022/release-history#evergreen-bootstrappers
+
+*.NET Framework 4.8 Developer Pack и языки для перевода дебагера*
+
+https://dotnet.microsoft.com/en-us/download/dotnet-framework/
