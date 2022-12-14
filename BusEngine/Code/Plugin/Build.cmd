@@ -1,5 +1,5 @@
 REM Указать путь до BusEngine | Specify the path to the BusEngine
-SET BusEngineFolder="..\..\"
+SET BusEngineFolder="H:\CRYENGINE Projects\BusEngine\"
 
 REM Указать путь до MSBuild | Specify the path to the MSBuild https://en.wikipedia.org/wiki/MSBuild#Versions
 REM SET MSBuild="C:\Program Files (x86)\MSBuild\14.0\Bin\amd64\MSBuild.exe"
@@ -13,7 +13,7 @@ SET dotNET="C:\Program Files\dotnet\dotnet.exe"
 REM 0=AnyCPU 1=x64 2=x86
 SET Platform=0
 
-REM 0=Game 1=Game 2=Editor 3=Server 4=Launcher 5=Plagin
+REM 0=Game 1=Game 2=Editor 3=Server 4=Launcher 5=Plugin
 SET Type=5
 
 REM 0=MSBuild 1=MSBuild 2=dotNET
@@ -23,7 +23,7 @@ SET NameGame="Game"
 SET NameEditor="Editor"
 SET NameServer="Server"
 SET NameLauncher="Launcher"
-SET NamePlagin="Plagin"
+SET NamePlugin="Plugin"
 SET Params=""
 
 
@@ -54,7 +54,7 @@ IF %Type% == 1 (
 ) ELSE IF %Type% == 4 (
 	SET Name=%NameLauncher%
 ) ELSE IF %Type% == 5 (
-	SET Name=%NamePlagin%
+	SET Name=%NamePlugin%
 	SET Params=%Params% -p:OutputType=Library
 ) ELSE (
 	SET Name=%NameGame%
@@ -67,7 +67,7 @@ SET win86="%BusEngineFolder:"=%/Bin/Win_x86/%Name:"=%.exe"
 SET win="%BusEngineFolder:"=%/Bin/Win/%Name:"=%.exe"
 SET xbox="%BusEngineFolder:"=%/Bin/xbox/%Name:"=%.exe"
 SET Dump="%BusEngineFolder:"=%/Code/%Name:"=%/Dump.csproj"
-SET Plagin="%BusEngineFolder:"=%/Code/%Name:"=%/%Name:"=%.csproj"
+SET CSProj="%BusEngineFolder:"=%/Code/%Name:"=%/%Name:"=%.csproj"
 
 REM Убираем повторы слэшей | Removing repeated slashes
 SET win64=%win64:/=\%
@@ -80,8 +80,8 @@ SET xbox=%xbox:/=\%
 SET xbox=%xbox:\\=\%
 SET Dump=%Dump:/=\%
 SET Dump=%Dump:\\=\%
-SET Plagin=%Plagin:/=\%
-SET Plagin=%Plagin:\\=\%
+SET CSProj=%CSProj:/=\%
+SET CSProj=%CSProj:\\=\%
 SET MSBuild=%MSBuild:/=\%
 SET MSBuild=%MSBuild:\\=\%
 SET dotNET=%dotNET:/=\%
@@ -111,14 +111,14 @@ IF %Platform% == 1 (
 )
 
 REM Пересоздаём csproj для удаления из кэша MSBuild | Rebuilding csproj to remove from MSBuild cache
-COPY /b nul+%Plagin% %Dump%
-MOVE /Y %Dump% %Plagin%
+COPY /b nul+%CSProj% %Dump%
+MOVE /Y %Dump% %CSProj%
 
 REM Сборка для BusEngine | Building for BusEngine
 IF %TypeBuild% == 2 (
-	%dotNET% build %Plagin% %Params%
+	%dotNET% build %CSProj% %Params%
 ) ELSE (
-	%MSBuild% %Plagin% %Params%
+	%MSBuild% %CSProj% %Params%
 )
 
 REM Запуск BusEngine | Start BusEngine
