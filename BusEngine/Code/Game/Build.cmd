@@ -1,6 +1,6 @@
 REM Указать путь до BusEngine | Specify the path to the BusEngine | http://dl.gsu.by/doc/use/ntcmds.htm
 REM SET BusEngineFolder="H:\BusEngine"
-SET BusEngineFolder=%~dp0
+SET BusEngineFolder=%~dp0..\..\
 
 REM Указать путь до MSBuild | Specify the path to the MSBuild | https://en.wikipedia.org/wiki/MSBuild#Versions
 REM SET MSBuild="C:\Program Files (x86)\MSBuild\14.0\Bin\amd64\MSBuild.exe"
