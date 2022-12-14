@@ -22,8 +22,8 @@
     <!-- <UseWindowsForms>true</UseWindowsForms> -->
     <!-- <UseWPF>true</UseWPF> -->
     <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <!-- <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects> -->
+    <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -110,15 +110,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
-      <Link>..\..\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Bin\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' ">
-      <Link>..\..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Bin\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
-      <Link>..\..\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup> 
