@@ -8,7 +8,7 @@
 /** API BusEngine.Game - пользовательский код */
 namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
-	public class MyPlugin : Plugin {
+	public class MyPlugin : BusEngine.Plugin {
 		// при заапуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("Initialize");

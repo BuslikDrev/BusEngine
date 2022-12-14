@@ -15,7 +15,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <OutputPath>..\..\Bin\Win_x64\</OutputPath>
-    <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
+    <OutputRoot>..\..\Bin\Win_x64\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -31,25 +31,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO" />
-    <Reference Include="System.Windows.Forms" />
-	<Reference Include="Microsoft.CSharp" />
-    <Reference Include="CefSharp">
-      <HintPath>BusPlugins\CefSharp\CefSharp.dll</HintPath>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
+      <HintPath>..\..\Bin\Win_x64\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Core">
-      <HintPath>BusPlugins\CefSharp\CefSharp.Core.dll</HintPath>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x86' ">
+      <HintPath>..\..\Bin\Win_x86\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.WinForms">
-      <HintPath>BusPlugins\CefSharp\CefSharp.WinForms.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="CefSharp.Wpf">
-      <HintPath>BusPlugins\CefSharp\CefSharp.Wpf.dll</HintPath>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -59,15 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
-      <Link>..\..\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Bin\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' ">
-      <Link>..\..\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Bin\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
-      <Link>..\..\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup> 
