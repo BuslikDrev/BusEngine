@@ -61,15 +61,15 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 Microsoft Build Tools 2005 v2.0
 
-C:\Windows\Microsoft.NET\Framework\v2.0.50727
+[C:\Windows\Microsoft.NET\Framework\v2.0.50727\MSBuild.exe](file:///C:/Windows/Microsoft.NET/Framework/v2.0.50727)
 
 Microsoft Build Tools 2008 v3.5
 
-C:\Windows\Microsoft.NET\Framework\v3.5
+[C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe](file:///C:/Windows/Microsoft.NET/Framework/v3.5)
 
 Microsoft Build Tools 2012 v4.8
 
-C:\Windows\Microsoft.NET\Framework\v4.0.30319
+[C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe](file:///C:/Windows/Microsoft.NET/Framework/v4.0.30319)
 
 Microsoft Build Tools 2013 v12.0
 
