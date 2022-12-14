@@ -1,11 +1,14 @@
-REM Указать путь до BusEngine | Specify the path to the BusEngine
-SET BusEngineFolder="H:\CRYENGINE Projects\BusEngine\"
+REM Указать путь до BusEngine | Specify the path to the BusEngine | http://dl.gsu.by/doc/use/ntcmds.htm
+REM SET BusEngineFolder="H:\BusEngine"
+SET BusEngineFolder=%~dp0
 
-REM Указать путь до MSBuild | Specify the path to the MSBuild https://en.wikipedia.org/wiki/MSBuild#Versions
+REM Указать путь до MSBuild | Specify the path to the MSBuild | https://en.wikipedia.org/wiki/MSBuild#Versions
 REM SET MSBuild="C:\Program Files (x86)\MSBuild\14.0\Bin\amd64\MSBuild.exe"
 SET MSBuild="C:\Program Files (x86)\MSBuild\12.0\Bin\amd64\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe"
+REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe"
+REM SET MSBuild="C:\Windows\Microsoft.NET\Framework64\v3.5\MSBuild.exe"
 
 REM Указать путь до dotNET (если он нужен) | Specify the path to dotNET (if needed) | MSBuild v17.0+ in dotnet v6
 SET dotNET="C:\Program Files\dotnet\dotnet.exe"
