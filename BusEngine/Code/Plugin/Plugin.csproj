@@ -15,7 +15,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <OutputPath>..\..\Bin\Win_x64\</OutputPath>
-    <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
+    <OutputRoot>..\..\Bin\Win_x64\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -31,6 +31,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <!-- <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
+      <HintPath>..\..\Bin\Win_x64\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x86' ">
+      <HintPath>..\..\Bin\Win_x86\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
