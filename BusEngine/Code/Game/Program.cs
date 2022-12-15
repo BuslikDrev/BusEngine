@@ -778,8 +778,8 @@ BusEngine.Browser
 			//System.Windows.Forms.Form _canvas = System.Windows.Forms.Form();
 			this.Text = "BusEngine v0.2.0";
 			// устанавливаем нашу иконку, есди она есть по пути exe, в противном случае устанавливаем системную
-			if (System.IO.File.Exists(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/Icons/BusEngine.ico")) {
-				this.Icon = new System.Drawing.Icon(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/Icons/BusEngine.ico", 128, 128);
+			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
+				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
 			} else {
 				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 			}
@@ -895,7 +895,7 @@ namespace BusEngine {
 		// когда игрок начинает подключаться к серверу
 		public virtual void OnClientConnectionReceived(int channelId) { }
 
-		// кога игрок подключился к серверу
+		// когда игрок подключился к серверу
 		public virtual void OnClientReadyForGameplay(int channelId) { }
 
 		// когда игрока выкинуло из сервера - обрыв связи с сервером
@@ -949,7 +949,7 @@ namespace BusEngine.Game {
 			BusEngine.Log.Info("OnClientConnectionReceived");
 		}
 
-		// кога игрок подключился к серверу
+		// когда игрок подключился к серверу
 		public override void OnClientReadyForGameplay(int channelId) {
 			BusEngine.Log.Info("OnClientReadyForGameplay");
 		}
