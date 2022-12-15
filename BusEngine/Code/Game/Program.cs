@@ -7,9 +7,26 @@
 
 /** API BusEngine */
 namespace BusEngine {
-/* 
+/*
 Зависит от плагинов:
-BusEngine.Engine.Log
+BusEngine.Log
+*/
+	/** API BusEngine.Core */
+	//https://habr.com/ru/post/196578/
+	public class Core {
+
+	}
+	/** API BusEngine.Core */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Core
+BusEngine.Log
+BusEngine.Plugin
 BusEngine.Engine.UI
 */
 	/** API BusEngine.Engine */
@@ -20,26 +37,40 @@ BusEngine.Engine.UI
 		//private static BusEngine.UI.Canvas _canvas;
 		// MSBuild v12.0
 		private static void generateStatLink() {
+			BusEngine.Log.ConsoleShow();
 			DataDirectory = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/");
+
+			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
+			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
+
+			System.Reflection.Module[] mods = curAssembly.GetModules();
+			foreach (System.Reflection.Module md in mods) {
+				BusEngine.Log.Info("This assembly contains the {0} module", md.Name);
+			}
+
+			//BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Module);
+			BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Assembly.GetCallingAssembly().FullName);
 		}
 		/** UI движка */
+		
+		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
 
 		/** функция запуска приложения */
-		[System.STAThread] // если однопоточное приложение
+		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			BusEngine.Engine.generateStatLink();
-			BusEngine.Log.ConsoleShow();
+
 			//System.Type myType = System.Type.GetType("BusEngine.Game");
 			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
 			//System.Type myType = System.Type.GetType("LibVLCSharp.Shared.Media");
 			//BusEngine.Log.Info(myType);
-			
-			
+
 			//BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
 			//"TestReflection" искомое пространство
 			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
 			System.Type[] typelist = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
 			foreach (System.Type type in typelist) {
+				
 				BusEngine.Log.Info(type.FullName);
 				//создание объекта
 				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
@@ -53,7 +84,6 @@ BusEngine.Engine.UI
 				} */
 			}
 
-
 			/* BusEngine.Plugin _plugin = new BusEngine.Game.Default();
 			_plugin.Initialize(); */
 
@@ -65,9 +95,13 @@ BusEngine.Engine.UI
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
 			BusEngine.UI.Canvas.Run(winform: _form);
 			// запускаем видео
+			BusEngine.Video.Play("Videos/BusEngine.mp4");
 			//BusEngine.Video.Play("Videos/BusEngine.mp4");
+			//BusEngine.Video.Play("Videos/BusEngine.mp4");
+
 			// запускаем браузер
-			//BusEngine.Browser.Start();
+			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
+			BusEngine.Browser.Start("index.html");
 			System.Windows.Forms.Application.Run(_form);
 		}
 		/** функция запуска приложения */
@@ -76,6 +110,7 @@ BusEngine.Engine.UI
 		public static void Shutdown() {
 			BusEngine.Plugin _plugin = new BusEngine.Game.Default();
 			_plugin.Shutdown();
+			BusEngine.Log.ConsoleHide();
 			System.Windows.Forms.Application.Exit();
 		}
 		/** функция остановки приложения */
@@ -86,7 +121,7 @@ BusEngine.Engine.UI
 
 /** API BusEngine */
 namespace BusEngine {
-/* 
+/*
 Зависит от плагинов:
 Зависимости нет
 */
@@ -108,9 +143,11 @@ namespace BusEngine {
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool AttachConsole(int dwProcessId);
 
+		// функция получения заголовков из консоли, чтобы можно было записать в файл
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "GetStdHandle", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]  
 		private static extern System.IntPtr GetStdHandle(int nStdHandle);
 
+		// функция отправки заголовков в консоль, чтобы можно было записать из файла
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
 		private static extern void SetStdHandle(uint nStdHandle, System.IntPtr handle);
 
@@ -316,7 +353,7 @@ namespace BusEngine {
 			// https://highload.today/tipy-dannyh-c-sharp/
 			// https://metanit.com/sharp/tutorial/2.1.php
 			/** переменные разных типов в одно значение (не массив) */
-			// Строка
+			// строка
 			string _string = "Строка"; // или System.String _string = "Строка";
 			BusEngine.Log.Info(_string);
 
@@ -408,7 +445,7 @@ namespace BusEngine {
 
 /** API BusEngine */
 namespace BusEngine {
-/* 
+/*
 Зависит от плагинов:
 BusEngine.UI.Canvas
 BusEngine.Video
@@ -450,12 +487,9 @@ BusEngine.UI.WinForm.GetForm
 		/** видео */
 
 		/** событие остановки видео */
-		private static void onVideoStop(object o, object e) {
-			BusEngine.Log.Info("Видео остановилось");
-			BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
-			_winform.Controls.Remove(_VLC_VideoView);
-			_VLC_MP.Dispose();
-			_VLC.Dispose();
+		public static void onVideoStop(object o, object e) {
+			BusEngine.Log.Info("Видео остановилось onVideoStop");
+			BusEngine.Video.Shutdown();
 		}
 		/** событие остановки видео */
 
@@ -493,8 +527,13 @@ BusEngine.UI.WinForm.GetForm
 			// https://code.videolan.org/videolan/LibVLCSharp/-/blob/master/samples/LibVLCSharp.WinForms.Sample/Form1.cs
 			// https://github.com/videolan/libvlcsharp#quick-api-overview
 			_VLC = new LibVLCSharp.Shared.LibVLC();
-			_VLC_MP = new LibVLCSharp.Shared.MediaPlayer(new LibVLCSharp.Shared.Media(_VLC, System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/Videos/BusEngine.mp4"));
+			LibVLCSharp.Shared.Media media = new LibVLCSharp.Shared.Media(_VLC, Url);
+			_VLC_MP = new LibVLCSharp.Shared.MediaPlayer(media);
+			media.Dispose();
 			_VLC_VideoView = new LibVLCSharp.WinForms.VideoView();
+			_VLC_VideoView.MediaPlayer = _VLC_MP;
+			((System.ComponentModel.ISupportInitialize)(_VLC_VideoView)).BeginInit();
+			//SuspendLayout();
 			_VLC_VideoView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
 			_VLC_VideoView.BackColor = System.Drawing.Color.Black;
 			//_VLC_VideoView.TabIndex = 1;
@@ -503,7 +542,6 @@ BusEngine.UI.WinForm.GetForm
 			//_VLC_VideoView.Text = "VideoView";
 			//_VLC_VideoView.Location = new System.Drawing.Point(0, 27);
 			//_VLC_VideoView.Size = new System.Drawing.Size(800, 444);
-			_VLC_VideoView.MediaPlayer = _VLC_MP;
 			_VLC_VideoView.MediaPlayer.EnableKeyInput = true;
 			// установить массив функций в дополнительных библиотеках
 			_VLC_VideoView.MediaPlayer.Stopped += BusEngine.Video.onVideoStop;
@@ -534,11 +572,28 @@ BusEngine.UI.WinForm.GetForm
 		/** функция запуска видео */
 
 		public static void Shutdown() {
-
+			if (_video != null) {
+				BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
+				_winform.Controls.Remove(_VLC_VideoView);
+				_video.Dispose();
+				_video = null;
+				BusEngine.Log.Info("Видео остановилось Shutdown");
+			}
 		}
 
 		public void Dispose() {
-			BusEngine.Log.ConsoleHide();
+			//BusEngine.Log.ConsoleHide();
+			if (_VLC_VideoView != null) {
+				_VLC_VideoView.MediaPlayer.Dispose();
+				_VLC_VideoView = null;
+			}
+			if (_VLC_MP != null) {
+				_VLC_MP.Dispose();
+			}
+			if (_VLC != null) {
+				_VLC.Dispose();
+			}
+			BusEngine.Log.Info("Видео остановилось Dispose");
 		}
 	}
 	/** API BusEngine.Video */
@@ -547,7 +602,7 @@ BusEngine.UI.WinForm.GetForm
 
 /** API BusEngine */
 namespace BusEngine {
-/* 
+/*
 Зависит от плагинов:
 BusEngine.UI.WinForm.GetForm
 */
@@ -556,31 +611,57 @@ BusEngine.UI.WinForm.GetForm
 		//private Browser() {}
 		//private static Browser _browser;
 
-		private static void OnKeyDown2(object o, System.Windows.Forms.KeyEventArgs e) {
-			//KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown2);
-			//BusEngine.Browser.Dispose();
-			BusEngine.Engine.Shutdown();
-		}
-
 		/** событие клика из браузера */
 		private static void onBrowserClick(object o, object e) {
-			BusEngine.Log.Info("браузер клик");
+			BusEngine.Log.Info("браузер клик тест 1");
+		}
+
+		private static void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
+			//KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
+			//BusEngine.Browser.Dispose();
+			BusEngine.Log.Info("браузер клик тест 2");
+			BusEngine.Engine.Shutdown();
 		}
 		/** событие клика из браузера */
 
+		/** все события из js браузера */
+		private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
+			BusEngine.Log.Info("браузер клик");
+			string windowSelection = (string)e.Message;
+			if (windowSelection == "Exit") {
+				BusEngine.Engine.Shutdown();
+			}
+		}
+		/** все события из js браузера */
+
 		/** функция запуска браузера */
-		public static void Start() {
+		public static void Start(string Url = "") {
+			if (Url.IndexOf(':') == -1) {
+				Url = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url);
+			}
+
+			if (!System.IO.File.Exists(Url)) {
+				Url = "https://buslikdrev.by/";
+			}
+
 			// выводим браузер на экран
 			// https://cefsharp.github.io/api/
+			//CefSharp.CefSettingsBase.UserAgent;
+			
 			CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
-			//settings.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/0.2.0 Safari/537.36";
-			settings.UserAgent = settings.UserAgent.Replace("Chrome", "BusEngine");
+			settings.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/0.2.0 Safari/537.36";
+			//settings.UserAgent = settings.UserAgent.Replace("Chrome", "BusEngine");
 			settings.LogSeverity = CefSharp.LogSeverity.Disable;
+			CefSharp.Cef.EnableHighDPISupport();
 			CefSharp.Cef.Initialize(settings);
-			CefSharp.WinForms.ChromiumWebBrowser _browser = new CefSharp.WinForms.ChromiumWebBrowser(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/index.html");
-			_browser.KeyDown += BusEngine.Browser.OnKeyDown2;
-			//_browser.Dock = System.Windows.Forms.DockStyle.Fill;
+			CefSharp.WinForms.ChromiumWebBrowser _browser = new CefSharp.WinForms.ChromiumWebBrowser(Url);
+			_browser.KeyDown += BusEngine.Browser.OnKeyDown;
+			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
+			_browser.JavascriptMessageReceived += OnPostMessage;
+
 			BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
+			//_browser.Size = _winform.ClientSize;
+			//_browser.Dock = _winform.Dock;
 			_winform.Controls.Add(_browser);
 
 			//var _event = CefSharp.DevTools.DOM.DOMClient();
@@ -588,16 +669,8 @@ BusEngine.UI.WinForm.GetForm
 			/* CefSharp.DevTools.DOM.DOMClient _event = new CefSharp.DevTools.DOM.DOMClient();
 			_event.DocumentUpdated += onBrowserClick; */
 
-
-
-			/* System.Windows.Forms.WebBrowser _browser = new System.Windows.Forms.WebBrowser();
-			_browser.Size = ClientSize;
-			_browser.Dock = System.Windows.Forms.DockStyle.Fill;
-			_browser.Navigate(new System.Uri(@"https://www.cryengine.com/"));
-			BusEngine.UI.Canvas.ControlsAdd(_browser); */
-
 			/* Microsoft.Web.WebView2WebView2 _browser = new Microsoft.Web.WebView2WebView2();
-			_browser.Navigate(new System.Uri("https://www.cryengine.com/")); */
+			_browser.Navigate(new System.Uri("https://buslikdrev.by/")); */
 		}
 		/** функция запуска браузера */
 
@@ -615,7 +688,7 @@ BusEngine.UI.WinForm.GetForm
 
 /** API BusEngine.UI */
 namespace BusEngine.UI {
-/* 
+/*
 Зависит от плагинов:
 BusEngine.UI
 */
@@ -667,7 +740,7 @@ BusEngine.Browser
 			// Выключаем движок по нажатию на Esc
 			if (e.KeyCode == System.Windows.Forms.Keys.Escape) {
 				KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
-				Dispose();
+				//Dispose();
 				BusEngine.Engine.Shutdown();
 			}
 			// Вкл\Выкл консоль движка по нажатию на ~
@@ -675,18 +748,24 @@ BusEngine.Browser
 				BusEngine.Log.ConsoleToggle();
 				System.Console.WriteLine("Консоль BusEngine");
 			}
+			// Выкл Видео
+			if (e.KeyCode == System.Windows.Forms.Keys.Space) {
+				BusEngine.Video.Shutdown();
+			}
 		}
 		/** событие нажатия любой кнопки */
 
 		/** событие закрытия окна */
 		private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
 			this.FormClosed -= OnClosed;
+			BusEngine.Video.Shutdown();
+			BusEngine.Engine.Shutdown();
 		}
 		/** событие закрытия окна */
 
 		/** событие уничтожения окна */
 		private void OnDisposed(object o, System.EventArgs e) {
-			//CryEngine.Engine.Shutdown();
+
 		}
 		/** событие уничтожения окна */
 
@@ -697,7 +776,7 @@ BusEngine.Browser
 			//System.Windows.Forms.Form _form = new System.Windows.Forms.Form();
 			// название окна
 			//System.Windows.Forms.Form _canvas = System.Windows.Forms.Form();
-			this.Text = "Моя гульня!";
+			this.Text = "BusEngine v0.2.0";
 			// устанавливаем нашу иконку, есди она есть по пути exe, в противном случае устанавливаем системную
 			if (System.IO.File.Exists(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/Icons/BusEngine.ico")) {
 				this.Icon = new System.Drawing.Icon(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/Icons/BusEngine.ico", 128, 128);
@@ -710,9 +789,9 @@ BusEngine.Browser
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			// открываем окно на весь экран
-			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			// убираем линии, чтобы окно было полностью на весь экран
-			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			// устанавливаем чёрный цвет фона окна
 			this.BackColor = System.Drawing.Color.Black;
 			// устанавливаем события нажатий клавиш
@@ -829,7 +908,7 @@ namespace BusEngine {
 /** API BusEngine.Game - пользовательский код для теста */
 namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
-	public class Default : Plugin {
+	public class Default : BusEngine.Plugin {
 		// при заапуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("Initialize");
