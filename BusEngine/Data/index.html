@@ -13,6 +13,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				element.innerText = 'Выход произошёл!';
 				setTimeout(function() {
 					element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
+					CefSharp.PostMessage('Exit');
 				}, 2000);
 			}
 		});
