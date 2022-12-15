@@ -5,6 +5,12 @@
 /* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
+/** задание
+проставить нормально модификаторы доступа https://metanit.com/sharp/tutorial/3.2.php
+максимально весь функционал сделать независимыми плагинами и установить проверки на наличие плагинов перед их использованием
+апи перенести в проект библиотеки, а текущий, только для запуска и остановки программы, с возможностью отказа от использования API BusEngine.
+*/
+
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -58,6 +64,9 @@ BusEngine.Engine.UI
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
+			//Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory);
+			//Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)
+
 			BusEngine.Engine.generateStatLink();
 
 			//System.Type myType = System.Type.GetType("BusEngine.Game");
@@ -546,9 +555,9 @@ BusEngine.UI.WinForm.GetForm
 			// установить массив функций в дополнительных библиотеках
 			_VLC_VideoView.MediaPlayer.Stopped += BusEngine.Video.onVideoStop;
 			//_VLC_VideoView.MediaPlayer.Stop += videoStop;
-			BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
-			_VLC_VideoView.Size = _winform.ClientSize;
-			_winform.Controls.Add(_VLC_VideoView);
+			//BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
+			_VLC_VideoView.Size = BusEngine.UI.WinForm.GetForm.ClientSize;
+			BusEngine.UI.WinForm.GetForm.Controls.Add(_VLC_VideoView);
 			_VLC_VideoView.MediaPlayer.Play();
 		}
 
@@ -573,8 +582,8 @@ BusEngine.UI.WinForm.GetForm
 
 		public static void Shutdown() {
 			if (_video != null) {
-				BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
-				_winform.Controls.Remove(_VLC_VideoView);
+				//BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
+				BusEngine.UI.WinForm.GetForm.Controls.Remove(_VLC_VideoView);
 				_video.Dispose();
 				_video = null;
 				BusEngine.Log.Info("Видео остановилось Shutdown");
@@ -659,10 +668,10 @@ BusEngine.UI.WinForm.GetForm
 			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 			_browser.JavascriptMessageReceived += OnPostMessage;
 
-			BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
+			//BusEngine.UI.WinForm _winform = BusEngine.UI.WinForm.GetForm();
 			//_browser.Size = _winform.ClientSize;
 			//_browser.Dock = _winform.Dock;
-			_winform.Controls.Add(_browser);
+			BusEngine.UI.WinForm.GetForm.Controls.Add(_browser);
 
 			//var _event = CefSharp.DevTools.DOM.DOMClient();
 
@@ -725,12 +734,13 @@ namespace BusEngine.UI {
 /* 
 Зависит от плагинов:
 BusEngine.Video
-BusEngine.Browser
+Зависимости нет
 */
 	/** API BusEngine.UI.WinForm */
 	public class WinForm : System.Windows.Forms.Form {
-		private static BusEngine.UI.WinForm _GetForm;
-		public delegate void Form(BusEngine.UI.WinForm form);
+		public static BusEngine.UI.WinForm GetForm;
+		//public static WinForm;
+		//public delegate void Form(BusEngine.UI.WinForm form);
 
 		/** событие нажатия любой кнопки */
 		// https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=netframework-4.8
@@ -802,7 +812,7 @@ BusEngine.Browser
 			this.Disposed += new System.EventHandler(OnDisposed);
 			//ClientSize = this.ClientSize;
 			System.Console.WriteLine(this.ClientSize);
-			_GetForm = this;
+			GetForm = this;
 
 			// показываем форму\включаем\запускаем\стартуем показ окна
 			//this.ShowDialog();
@@ -815,9 +825,9 @@ BusEngine.Browser
 			return ClientSize;
 		} */
 
-		public static BusEngine.UI.WinForm GetForm() {
+		/* public static BusEngine.UI.WinForm GetForm() {
 			return _GetForm;
-		}
+		} */
 
 		public void ControlsAdd(System.Windows.Forms.Form e) {
 			this.Controls.Add(e);
@@ -832,11 +842,11 @@ BusEngine.Browser
 
 		protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
 			if (appActive) {
-				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.ActiveCaption,20,20,260,50);
-				e.Graphics.DrawString("Application is active", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20,20);
+				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.ActiveCaption, 20, 20, 260, 50);
+				e.Graphics.DrawString("Application is active", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20, 20);
 			} else {
-				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.InactiveCaption,20,20,260,50);
-				e.Graphics.DrawString("Application is Inactive", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20,20);
+				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.InactiveCaption, 20, 20, 260, 50);
+				e.Graphics.DrawString("Application is Inactive", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20, 20);
 			}
 		}
 
