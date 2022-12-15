@@ -19,7 +19,7 @@
 ## Инструкция по сборке
 
 - установить [MicroSoft Build Tools 2013 v12.0](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760) (возможно новее версия тоже подойдёт);
-- скачать библиотеки и положить в папку "Code/BusContent/Win_*/":
+- скачать библиотеки и положить в папку "Code/Game/BusContent/Win_*/":
 
   https://www.nuget.org/packages/cef.redist.x64/107.1.9 (из "CEF/" в "Code/Game/BusContent/Win_x64/CefSharp/")
 
