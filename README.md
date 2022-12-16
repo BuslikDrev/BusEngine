@@ -1,4 +1,10 @@
-# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.3.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) ![Platform](https://img.shields.io/badge/Platform-Win7+--x64%20|%20Win7+--x86-purple.svg?cacheSeconds=31536000) [![YouTube](https://img.shields.io/youtube/views/2FowrV3cpZo?style=social)](https://www.youtube.com/watch?v=2FowrV3cpZo)
+# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.3.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) [![YouTube](https://img.shields.io/youtube/views/2FowrV3cpZo?style=social)](https://www.youtube.com/watch?v=2FowrV3cpZo)
+
+### BusEngine Editor
+![Platform](https://img.shields.io/badge/Platform-Win7+--x64%20|%20Win7+--x86-purple.svg?cacheSeconds=31536000)
+
+### BusEngine Game
+![Platform](https://img.shields.io/badge/Platform-Windows%207+%20|%20Android%205+-purple.svg?cacheSeconds=31536000)
 
 ### Минимальные требования для успешной сборки
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v12.0-orange.svg?cacheSeconds=31536000)](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760)
