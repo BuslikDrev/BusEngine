@@ -2,8 +2,13 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* MSBuild 15.0+        https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels?tabs=windows#android-versions */
+/* Mono                 https://learn.microsoft.com/ru-ru/xamarin/android/deploy-test/building-apps/abi-specific-apks */
+/* ссылки по Android 
+https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?tabs=windows
+*/
 
 /** дорожная карта
 - проставить нормально модификаторы доступа https://metanit.com/sharp/tutorial/3.2.php
@@ -21,58 +26,10 @@
  плагинов index.php?route=api/busengine/product&order=DESC&limit=4&type_exception=["plugin"],
  последние плагины index.php?route=api/busengine/product&order=DESC&limit=4&type=["plugin"])
 - написать редактор игры и добавить управление тем, чем располагает текущий АПИ
+- написать сборку игры для windows 7+ и Android 5+
 */
 
-/** API BusEngine */
-namespace BusEngine {
-/*
-Зависит от плагинов:
-BusEngine.Log
-*/
-	/** API BusEngine.Core */
-	//https://habr.com/ru/post/196578/
-	public class Core {
-
-	}
-	/** API BusEngine.Core */
-}
-/** API BusEngine */
-
-/** API BusEngine */
-namespace BusEngine {
-/*
-Зависит от плагинов:
-BusEngine.Core
-BusEngine.Log
-BusEngine.Plugin
-BusEngine.Engine.UI
-*/
-	/** API BusEngine.Engine */
-	public class Engine {
-		/** UI движка */
-		//public static BusEngine.UI.Canvas UI { get; set; }
-		public static string DataDirectory;
-		//private static BusEngine.UI.Canvas _canvas;
-		// MSBuild v12.0
-		private static void generateStatLink() {
-			BusEngine.Log.ConsoleShow();
-			DataDirectory = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/");
-
-			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
-			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
-
-			System.Reflection.Module[] mods = curAssembly.GetModules();
-			foreach (System.Reflection.Module md in mods) {
-				BusEngine.Log.Info("This assembly contains the {0} module", md.Name);
-			}
-
-			//BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Module);
-			BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Assembly.GetCallingAssembly().FullName);
-		}
-		/** UI движка */
-		
-		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
-
+internal class Game {
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
@@ -122,10 +79,67 @@ BusEngine.Engine.UI
 
 			// запускаем браузер
 			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
-			BusEngine.Browser.Start("index.html");
-			System.Windows.Forms.Application.Run(_form);
+			//BusEngine.Browser.Start("index.html");
+			//System.Windows.Forms.Application.Run(_form);
 		}
 		/** функция запуска приложения */
+}
+
+
+
+
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Core */
+	//https://habr.com/ru/post/196578/
+	public class Core {
+
+	}
+	/** API BusEngine.Core */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Core
+BusEngine.Log
+BusEngine.Plugin
+BusEngine.Engine.UI
+*/
+	/** API BusEngine.Engine */
+	public class Engine {
+		/** UI движка */
+		//public static BusEngine.UI.Canvas UI { get; set; }
+		public static string DataDirectory;
+		//private static BusEngine.UI.Canvas _canvas;
+		// MSBuild v12.0
+		internal static void generateStatLink() {
+			BusEngine.Log.ConsoleShow();
+			DataDirectory = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/");
+
+			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
+			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
+
+			System.Reflection.Module[] mods = curAssembly.GetModules();
+			foreach (System.Reflection.Module md in mods) {
+				BusEngine.Log.Info("This assembly contains the {0} module", md.Name);
+			}
+
+			//BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Module);
+			BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Assembly.GetCallingAssembly().FullName);
+		}
+		/** UI движка */
+		
+		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
+
+
 
 		/** функция остановки приложения */
 		public static void Shutdown() {
