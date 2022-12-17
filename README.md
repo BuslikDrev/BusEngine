@@ -1,6 +1,6 @@
 # BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.3.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) [![YouTube](https://img.shields.io/youtube/views/2FowrV3cpZo?style=social)](https://www.youtube.com/watch?v=2FowrV3cpZo)
 
-### BusEngine Editor
+### BusEngine Editor и Launcher
 ![Platform](https://img.shields.io/badge/Platform-Win7+--x64%20|%20Win7+--x86-purple.svg?cacheSeconds=31536000)
 
 ### BusEngine Game
