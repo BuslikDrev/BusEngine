@@ -25,29 +25,29 @@
 ## Инструкция по сборке
 
 - установить [MicroSoft Build Tools 2013 v12.0](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760) (возможно новее версия тоже подойдёт);
-- скачать библиотеки и положить в папку "Code/Game/BusContent/Win_*/":
+- скачать библиотеки и положить в папку "Code/BusEngine/BusContent/Win_*/":
 
-  https://www.nuget.org/packages/cef.redist.x64/107.1.9 (из "CEF/" в "Code/Game/BusContent/Win_x64/CefSharp/")
+  https://www.nuget.org/packages/cef.redist.x64/107.1.9 (из "CEF/" в "Code/BusEngine/BusContent/Win_x64/CefSharp/")
 
-  https://www.nuget.org/packages/cef.redist.x86/107.1.9 (из "CEF/" в "Code/Game/BusContent/Win_x86/CefSharp/")
+  https://www.nuget.org/packages/cef.redist.x86/107.1.9 (из "CEF/" в "Code/BusEngine/BusContent/Win_x86/CefSharp/")
 
-  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "CefSharp/x*/" в "Code/Game/BusContent/Win_x*/CefSharp/")
+  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "CefSharp/x*/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/")
 
-  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "lib/net452/" в "Code/Game/BusContent/Win_x*/CefSharp/" и в "Code/Game/BusPlugins/CefSharp/")
+  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "lib/net452/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/" и в "Code/BusEngine/BusPlugins/CefSharp/")
 
-  https://www.nuget.org/packages/CefSharp.WinForms/107.1.90 (из "lib/net452/" в "Code/Game/BusContent/Win_x*/CefSharp/" и в "Code/Game/BusPlugins/CefSharp/")
+  https://www.nuget.org/packages/CefSharp.WinForms/107.1.90 (из "lib/net452/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/" и в "Code/BusEngine/BusPlugins/CefSharp/")
 
-  https://www.nuget.org/packages/CefSharp.Wpf/107.1.90 (из "lib/net452/" в "Code/Game/BusContent/Win_x*/CefSharp/" и в "Code/Game/BusPlugins/CefSharp/")
+  https://www.nuget.org/packages/CefSharp.Wpf/107.1.90 (из "lib/net452/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/" и в "Code/BusEngine/BusPlugins/CefSharp/")
 
-  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.17.4 (из "build/x*/" в "Code/Game/BusContent/Win_x*/LibVLC/", потом папку "plugins" и файлы "libvlccore.dll,libvlccore.lib" из "Code/Game/BusContent/Win_x*/LibVLC/" в "Code/Game/BusContent/Win_x*/")
+  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.17.4 (из "build/x*/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/", потом папку "plugins" и файлы "libvlccore.dll,libvlccore.lib" из "Code/BusEngine/BusContent/Win_x*/LibVLC/" в "Code/BusEngine/BusContent/Win_x*/")
 
-  https://www.nuget.org/packages/LibVLCSharp/3.6.7 (из "lib/net40/" в "Code/Game/BusContent/Win_x*/LibVLC/" и в "Code/Game/BusPlugins/LibVLC/")
+  https://www.nuget.org/packages/LibVLCSharp/3.6.7 (из "lib/net40/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
 
-  https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7 (из "lib/net40/" в "Code/Game/BusContent/Win_x*/LibVLC/" и в "Code/Game/BusPlugins/LibVLC/")
+  https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7 (из "lib/net40/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
 
-  https://www.nuget.org/packages/LibVLCSharp.WPF/3.6.7 (из "lib/net461/" в "Code/Game/BusContent/Win_x*/LibVLC/" и в "Code/Game/BusPlugins/LibVLC/")
-- в файлe "Code/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
-- запустить Build.cmd;
+  https://www.nuget.org/packages/LibVLCSharp.WPF/3.6.7 (из "lib/net461/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
+- в файлe "Code/BusEngine/Build.cmd" и "Code/Game/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
+- запустить "Code/BusEngine/Build.cmd" потом "Code/Game/Build.cmd";
 
 ## Лицензии
 
