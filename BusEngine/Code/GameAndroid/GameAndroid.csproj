@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <RootNamespace>BusEngine</RootNamespace>
-    <AssemblyName>Game</AssemblyName>
+    <AssemblyName>GameAndroid</AssemblyName>
     <OutputType>WinExe</OutputType>
     <TargetFrameworks>netstandard2.0;net400</TargetFrameworks>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>

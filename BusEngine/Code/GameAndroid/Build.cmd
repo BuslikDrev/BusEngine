@@ -3,11 +3,11 @@ REM SET BusEngineFolder="H:\BusEngine"
 SET BusEngineFolder=%~dp0..\..\
 
 REM Указать путь до MSBuild | Specify the path to the MSBuild | https://en.wikipedia.org/wiki/MSBuild#Versions
-REM SET MSBuild="C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
-REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
-REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
+REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\MSBuild\14.0\Bin\amd64\MSBuild.exe"
-SET MSBuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
+REM SET MSBuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe"
@@ -17,10 +17,10 @@ REM Указать путь до dotNET (если он нужен) | Specify the
 SET dotNET="C:\Program Files\dotnet\dotnet.exe"
 
 REM 0=AnyCPU 1=x64 2=x86 3=Android
-SET Platform=0
+SET Platform=3
 
 REM 0=BusEngine 1=Launcher 2=Editor 3=Plugin 4=Server 5=Game 6=GameAndroid
-SET Type=3
+SET Type=6
 
 REM 0=MSBuild 1=MSBuild 2=dotNET
 SET TypeBuild=1

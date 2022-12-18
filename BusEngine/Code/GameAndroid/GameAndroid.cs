@@ -76,13 +76,16 @@ namespace BusEngine {
 			//BusEngine.Log.Debug();
 
 			Form _form = new Form();
-			//#if BUSENGINE
+			#if BUSENGINE
 			BusEngine.UI.Canvas.WinForm = _form;
 			BusEngine.UI.Canvas.Initialize();
 			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
 				//_canvas.WinForm = _form;
 			//}
-			
+			#else
+				
+			#endif
+
 			/* System.Windows.Forms.Application.EnableVisualStyles();
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
 
@@ -95,9 +98,6 @@ namespace BusEngine {
 			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
 			BusEngine.Browser.Start("index.html");
 			System.Windows.Forms.Application.Run(_form);
-			//#else
-				
-			//#endif
 		}
 		/** функция запуска приложения */
 	}

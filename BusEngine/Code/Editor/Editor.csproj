@@ -37,6 +37,12 @@
     <OutputPath>..\..\Bin\Win_x86\</OutputPath>
     <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
+    <!-- <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit> -->
+    <OutputPath>..\..\Bin\Android\</OutputPath>
+    <OutputRoot>..\..\Bin\Android\</OutputRoot>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
@@ -64,7 +70,11 @@
       <Link>..\..\Bin\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
+    <Content Include="BusContent\Android\**\*.*" Condition=" '$(Platform)' == 'Android' ">
+      <Link>..\..\Bin\Android\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
       <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -2,10 +2,10 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
-[assembly: System.Reflection.AssemblyTitle("BusEngine Game")]
+[assembly: System.Reflection.AssemblyTitle("BusEngine Game Android")]
 [assembly: System.Reflection.AssemblyDescription("The main C# interface for the BusEngine.")]
 [assembly: System.Reflection.AssemblyConfiguration("")]
 [assembly: System.Reflection.AssemblyCompany("BuslikDrev")]
@@ -16,5 +16,5 @@
 [assembly: System.Reflection.AssemblyVersion("0.2.0.0")]
 [assembly: System.Reflection.AssemblyFileVersion("0.2.0.0")]
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
-[assembly: System.Runtime.InteropServices.Guid("0968cb8e-b0e3-46c7-96a9-2efb99223941")]
+[assembly: System.Runtime.InteropServices.Guid("1276fbb0-93ea-43a6-ae70-8cceccf23e58")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BusEngine")]
