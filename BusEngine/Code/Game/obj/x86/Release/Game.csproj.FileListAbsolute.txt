@@ -1,4 +1,0 @@
-H:\BusEngine\Bin\Win_x86\Game.exe.config
-H:\BusEngine\Bin\Win_x86\Game.exe
-H:\BusEngine\Code\Game\obj\x86\Release\Game.csprojResolveAssemblyReference.cache
-H:\BusEngine\Code\Game\obj\x86\Release\Game.exe
