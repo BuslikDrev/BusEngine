@@ -48,6 +48,7 @@
   https://www.nuget.org/packages/LibVLCSharp.WPF/3.6.7 (из "lib/net461/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
 - в файлe "Code/BusEngine/Build.cmd" и "Code/Game/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
 - запустить "Code/BusEngine/Build.cmd" потом "Code/Game/Build.cmd";
+- потом можно копировать папки Bin и Data в любую папку разработки игры и изменять всё, что в папке Data.
 
 ## Лицензии
 
