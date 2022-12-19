@@ -552,7 +552,6 @@ BusEngine.UI.Canvas
 
 		public static void Shutdown() {
 			if (_video != null) {
-				//BusEngine.UI.WinForm _winform = BusEngine.UI.Canvas();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(_VLC_VideoView);
 				_video.Dispose();
 				_video = null;
@@ -637,10 +636,8 @@ BusEngine.UI.Canvas
 			_browser.KeyDown += BusEngine.Browser.OnKeyDown;
 			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 			_browser.JavascriptMessageReceived += OnPostMessage;
-
-			//BusEngine.UI.WinForm _winform = BusEngine.UI.Canvas();
-			//_browser.Size = _winform.ClientSize;
-			//_browser.Dock = _winform.Dock;
+			//_browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
+			//_browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
 			BusEngine.UI.Canvas.WinForm.Controls.Add(_browser);
 
 			//var _event = CefSharp.DevTools.DOM.DOMClient();
@@ -687,7 +684,9 @@ BusEngine.UI
 			BusEngine.Log.Info();
 			// Выключаем движок по нажатию на Esc
 			if (e.KeyCode == System.Windows.Forms.Keys.Escape) {
+				#if (BUSENGINE_WINFORM == true)
 				BusEngine.UI.Canvas.WinForm.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
+				#endif
 				//Dispose();
 				BusEngine.Engine.Shutdown();
 			}
@@ -719,7 +718,7 @@ BusEngine.UI
 
 		public static Canvas _canvas;
 
-		private Canvas() {
+		public Canvas() {
 			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
 				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
 				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
@@ -731,9 +730,37 @@ BusEngine.UI
 			}
 		}
 
+		public Canvas(System.Windows.Forms.Form _form) {
+			//#if (BUSENGINE_WINFORM == true)
+			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
+				if (_form != null) {
+					BusEngine.UI.Canvas.WinForm = _form;
+				}
+				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
+				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
+				// устанавливаем событи закрытия окна
+				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
+				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
+				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
+				System.Console.WriteLine("Консоль BusEngine4444444444444444444444");
+			//}
+			//#endif
+		}
+
 		public static void Initialize() {
 			if (_canvas == null) {
 				_canvas = new Canvas();
+			}
+		}
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0117:", Target="~T:BusEngine.UI.Canvas")]
+		public static void Initialize(System.Windows.Forms.Form _form) {
+			if (_canvas == null) {
+				//#pragma error disable//, CS0117
+				if (1 == 2) {
+				//BusEngine.UI.Canvas.WinForm = _form;
+				}
+				_canvas = new Canvas(_form);
 			}
 		}
 
