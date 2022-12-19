@@ -64,6 +64,8 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [VideoLAN | libvlcsharp](https://github.com/videolan)
 
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+
 ## Полезные ссылки
 
 Microsoft Build Tools 2005 v2.0
