@@ -1,1 +1,83 @@
-
+{
+  "console_commands": {
+    "sys_spec": "1",
+    "e_WaterOcean": "0",
+    "r_WaterOcean": "0",
+    "r_VolumetricClouds": "1",
+    "r_Displayinfo": "0",
+    "r_Fullscreen": "0",
+    "r_Width": "1280",
+    "r_Height": "720"
+  },
+  "console_variables": {
+    "sys_spec": "1",
+    "e_WaterOcean": "0",
+    "r_WaterOcean": "0",
+    "r_VolumetricClouds": "1",
+    "r_Displayinfo": "0",
+    "r_Fullscreen": "0",
+    "r_Width": "1280",
+    "r_Height": "720"
+  },
+  "version": "0.3.0.0",
+  "type": "",
+  "info": {
+    "name": "Game",
+    "guid": "ddc2049b-3a86-425b-9713-ee1babec5365"
+  },
+  "content": {
+    "assets": [
+      "GameData"
+    ],
+    "code": [
+      "Code"
+    ],
+    "libs": {
+      "name": "BusEngine",
+      "shared": {
+        "any": "",
+        "Android": "",
+        "win": "",
+        "win_x64": "",
+        "win_x86": ""
+      }
+    }
+  },
+  "require": {
+    "engine": "0.3.0.0",
+    "plugins": [
+      {
+        "guid": "",
+        "type": "EType::Managed",
+        "path": "bin/Android/Game.dll",
+        "platforms": [
+          "Android"
+        ]
+      },
+      {
+        "guid": "",
+        "type": "EType::Managed",
+        "path": "bin/win/Game.dll",
+        "platforms": [
+          "win_x86"
+        ]
+      },
+      {
+        "guid": "",
+        "type": "EType::Managed",
+        "path": "bin/win_x86/Game.dll",
+        "platforms": [
+          "win_x86"
+        ]
+      },
+      {
+        "guid": "",
+        "type": "EType::Managed",
+        "path": "bin/win_x64/Game.dll",
+        "platforms": [
+          "Win_x64"
+        ]
+      }
+    ]
+  }
+}
