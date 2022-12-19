@@ -31,92 +31,17 @@ https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?t
 
 #define BUSENGINE_WINFORM
 namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.ProjectSettingDefault
+BusEngine.Engine
+BusEngine.Log
+BusEngine.UI
+*/
 	//https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/preprocessor-directives
 	//https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/classes-and-structs/constants
 	public class Global {
 		//public const bool BUSENGINE_WINFORM = true;
-	}
-
-	internal class ProjectSettingDefault {
-		public object console_commands {get; set;}
-		public object console_variables {get; set;}
-		public string version {get; set;}
-		public string type {get; set;}
-		public object info {get; set;}
-		public object content {get; set;}
-		public object require {get; set;}
-
-		public ProjectSettingDefault() {
-			console_commands = new {
-				sys_spec = "1",
-				e_WaterOcean = "0",
-				r_WaterOcean = "0",
-				r_VolumetricClouds = "1",
-				r_Displayinfo = "0",
-				r_Fullscreen = "0",
-				r_Width = "1280",
-				r_Height = "720",
-			};
-			console_variables = new {
-				sys_spec = "1",
-				e_WaterOcean = "0",
-				r_WaterOcean = "0",
-				r_VolumetricClouds = "1",
-				r_Displayinfo = "0",
-				r_Fullscreen = "0",
-				r_Width = "1280",
-				r_Height = "720",
-			};
-			version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-			type = "";
-			info = new {
-				name = "Game",
-				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
-			};
-			content = new {
-				assets = new string[] {"GameData"},
-				code = new string[] {"Code"},
-				libs = new {
-					name = "BusEngine",
-					shared = new {
-						any = "",
-						Android = "",
-						win = "",
-						win_x64 = "",
-						win_x86 = "",
-					},
-				},
-			};
-			require = new {
-				engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-				plugins = new object[] {
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "bin/Android/Game.dll",
-						platforms = new string[] {"Android"},
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "bin/win/Game.dll",
-						platforms = new string[] {"win_x86"},
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "bin/win_x86/Game.dll",
-						platforms = new string[] {"win_x86"},
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "bin/win_x64/Game.dll",
-						platforms = new string[] {"Win_x64"},
-					}
-				},
-			};
-		}
 	}
 
 	internal class Start {
@@ -142,88 +67,6 @@ namespace BusEngine {
 
 			BusEngine.Engine.generateStatLink();
 
-			//https://metanit.com/sharp/tutorial/5.4.php
-			//https://metanit.com/sharp/tutorial/6.4.php
-			//https://dir.by/developer/csharp/serialization_json/?lang=eng
-			string _path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
-
-			if (!System.IO.Directory.Exists(_path)) {
-				_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../Bin/";
-
-				if (!System.IO.Directory.Exists(_path)) {
-					_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Bin/";
-				}
-			}
-
-			_path = System.IO.Path.GetFullPath(_path + "../");
-
-			string[] _files;
-
-			_files = System.IO.Directory.GetFiles(_path, "*.busproject");
-
-			if (_files.Length == 0) {
-				BusEngine.Log.Info(_files.Length);
-
-				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "Game.busproject")) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-					fstream.Write(buffer, 0, buffer.Length);
-				}
-			} else {
-				BusEngine.Log.Info(_files[0]);
-
-				// запись
-				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(_files[0], false, System.Text.Encoding.UTF8)) {
-					fstream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-				} */
-
-				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_files[0])) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-					fstream.Write(buffer, 0, buffer.Length);
-				}
-
-				// запись
-				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-					fstream.WriteAsync(buffer, 0, buffer.Length);
-				} */
-
-				// запись
-				//System.IO.File.WriteAllText(_files[0], Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-
-				// чтение
-				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
-					byte[] buffer = new byte[fstream.Length];
-					fstream.ReadAsync(buffer, 0, buffer.Length);
-					// декодируем байты в строку
-					Newtonsoft.Json.JsonConvert.DeserializeObject(System.Text.Encoding.UTF8.GetString(buffer));
-				} */
-
-				// чтение
-				//Newtonsoft.Json.JsonConvert.DeserializeObject(System.IO.File.ReadAllText(_files[0]));
-			}
-
-			// тестирование плагина - прогонка кода
-			Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-
-			_files = System.IO.Directory.GetFiles(_path, "busengine.busengine");
-
-			if (_files.Length == 0) {
-				BusEngine.Log.Info(_files.Length);
-
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "busengine.busengine")) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-					fstream.Write(buffer, 0, buffer.Length);
-				}
-			} else {
-				BusEngine.Log.Info(_files[0]);
-
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_files[0])) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-					fstream.Write(buffer, 0, buffer.Length);
-				}
-			}
 
 
 

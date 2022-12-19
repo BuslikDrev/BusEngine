@@ -56,14 +56,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
-      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <HintPath>..\..\Bin\Win_x64\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x86' ">
-      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <HintPath>..\..\Bin\Win_x86\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'Android' ">
@@ -72,10 +71,6 @@
     </Reference>
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">
       <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>BusPlugins\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
