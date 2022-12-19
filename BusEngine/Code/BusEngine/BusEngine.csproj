@@ -59,11 +59,6 @@
     <Reference Include="System.IO" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Forms" />
-	<!-- <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Text.Json">
-      <HintPath>BusPlugins\System.Text.Json\System.Text.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference> -->
     <Reference Include="CefSharp">
       <HintPath>BusPlugins\CefSharp\CefSharp.dll</HintPath>
       <Private>False</Private>
@@ -92,28 +87,23 @@
       <HintPath>BusPlugins\LibVLC\LibVLCSharp.WPF.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>BusPlugins\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <!-- <Reference Include="FbxSharp">
       <HintPath>BusPlugins\izrik\FbxSharp.dll</HintPath>
       <Private>False</Private>
     </Reference> -->
-
-    <!-- <Reference Include="Microsoft.Web.WebView2.Core">
-      <HintPath>BusPlugins\WebView2\Microsoft.Web.WebView2.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms">
-      <HintPath>BusPlugins\WebView2\Microsoft.Web.WebView2.WinForms.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AxInterop.WMPLib">
+    <!-- <Reference Include="AxInterop.WMPLib">
       <HintPath>BusPlugins\WMPLib\AxInterop.WMPLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Interop.WMPLib">
       <HintPath>BusPlugins\WMPLib\Interop.WMPLib.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore">
+    </Reference> -->
+    <!-- <Reference Include="PresentationCore">
       <HintPath>BusPlugins\System.Windows.Media\PresentationCore.dll</HintPath>
       <Private>False</Private>
     </Reference>

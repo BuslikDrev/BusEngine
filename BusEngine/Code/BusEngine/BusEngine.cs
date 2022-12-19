@@ -30,6 +30,128 @@ https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?t
 */
 
 #define BUSENGINE
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+/*
+Зависит от плагинов:
+Newtonsoft.Json
+*/
+	/** API BusEngine.Tools.Json */
+	public class Json : System.IDisposable {
+		public static string SerializeObject(object t) {
+			return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
+		}
+
+		public static object DeserializeObject(string t) {
+			return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
+		}
+
+		public static void Shutdown() {
+			
+		}
+
+		public void Dispose() {
+			
+		}
+	}
+	/** API BusEngine.Tools.Json */
+}
+/** API BusEngine.Tools */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависимости нет
+*/
+	/** API BusEngine.ProjectSettingDefault */
+	internal class ProjectSettingDefault {
+		public static object console_commands;
+		public static object console_variables;
+		public static string version;
+		public static string type;
+		public static object info;
+		public static object content;
+		public static object require;
+		public static BusEngine.ProjectSettingDefault Setting;
+
+		public ProjectSettingDefault() {
+			console_commands = new {
+				sys_spec = "1",
+				e_WaterOcean = "0",
+				r_WaterOcean = "0",
+				r_VolumetricClouds = "1",
+				r_Displayinfo = "0",
+				r_Fullscreen = "0",
+				r_Width = "1280",
+				r_Height = "720",
+			};
+			console_variables = new {
+				sys_spec = "1",
+				e_WaterOcean = "0",
+				r_WaterOcean = "0",
+				r_VolumetricClouds = "1",
+				r_Displayinfo = "0",
+				r_Fullscreen = "0",
+				r_Width = "1280",
+				r_Height = "720",
+			};
+			version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			type = "";
+			info = new {
+				name = "Game",
+				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
+			};
+			content = new {
+				assets = new string[] {"GameData"},
+				code = new string[] {"Code"},
+				libs = new {
+					name = "BusEngine",
+					shared = new {
+						any = "",
+						Android = "",
+						win = "",
+						win_x64 = "",
+						win_x86 = "",
+					},
+				},
+			};
+			require = new {
+				engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+				plugins = new object[] {
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/Android/Game.dll",
+						platforms = new string[] {"Android"},
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/win/Game.dll",
+						platforms = new string[] {"win_x86"},
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/win_x86/Game.dll",
+						platforms = new string[] {"win_x86"},
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/win_x64/Game.dll",
+						platforms = new string[] {"Win_x64"},
+					}
+				},
+			};
+
+			BusEngine.ProjectSettingDefault.Setting = this;
+		}
+	}
+	/** API BusEngine.ProjectSettingDefault */
+}
+/** API BusEngine */
+
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -62,8 +184,112 @@ BusEngine.Engine.UI
 		//private static BusEngine.UI.Canvas _canvas;
 		// MSBuild v12.0
 		public static void generateStatLink() {
+			// включаем консоль
 			BusEngine.Log.ConsoleShow();
-			DataDirectory = System.IO.Path.GetFullPath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/");
+
+			// устанавливаем данные проекта по умолчанию
+			BusEngine.ProjectSettingDefault _setting_project = new BusEngine.ProjectSettingDefault();
+
+			//https://metanit.com/sharp/tutorial/5.4.php
+			//https://metanit.com/sharp/tutorial/6.4.php
+			//https://dir.by/developer/csharp/serialization_json/?lang=eng
+			string _path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
+
+			if (!System.IO.Directory.Exists(_path)) {
+				_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../Bin/";
+
+				if (!System.IO.Directory.Exists(_path)) {
+					_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Bin/";
+				}
+			}
+
+			_path = System.IO.Path.GetFullPath(_path + "../");
+
+			string[] _files;
+
+			_files = System.IO.Directory.GetFiles(_path, "*.busproject");
+
+			if (_files.Length == 0) {
+				BusEngine.Log.Info(_files.Length);
+
+				// запись
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "Game.busproject")) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
+					fstream.Write(buffer, 0, buffer.Length);
+				}
+			} else {
+				BusEngine.Log.Info(_files[0]);
+
+				// запись
+				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(_files[0], false, System.Text.Encoding.UTF8)) {
+					fstream.Write(BusEngine.Tools.Json.SerializeObject(_setting_project));
+				} */
+
+				// запись
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_files[0])) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(BusEngine.Tools.Json.DeserializeObject(BusEngine.Tools.Json.SerializeObject(_setting_project))));
+
+					fstream.Write(buffer, 0, buffer.Length);
+				}
+
+				// запись
+				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
+					fstream.WriteAsync(buffer, 0, buffer.Length);
+				} */
+
+				// запись
+				//System.IO.File.WriteAllText(_files[0], BusEngine.Tools.Json.SerializeObject(_setting_project));
+
+				// чтение
+				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+					byte[] buffer = new byte[fstream.Length];
+					fstream.ReadAsync(buffer, 0, buffer.Length);
+					// декодируем байты в строку
+					BusEngine.Tools.Json.DeserializeObject(System.Text.Encoding.UTF8.GetString(buffer));
+				} */
+
+				// чтение
+				//BusEngine.Tools.Json.DeserializeObject(System.IO.File.ReadAllText(_files[0]));
+			}
+
+			// тестирование плагина - прогонка кода
+			//Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+			BusEngine.Tools.Json.DeserializeObject(BusEngine.Tools.Json.SerializeObject(_setting_project));
+
+			_files = System.IO.Directory.GetFiles(_path, "busengine.busengine");
+
+			if (_files.Length == 0) {
+				BusEngine.Log.Info(_files.Length);
+
+				// запись
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "busengine.busengine")) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
+					fstream.Write(buffer, 0, buffer.Length);
+				}
+			} else {
+				BusEngine.Log.Info(_files[0]);
+
+				using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+					byte[] buffer = new byte[fstream.Length];
+					fstream.ReadAsync(buffer, 0, buffer.Length);
+					// декодируем байты в строку
+					object _ProjectSettingDefault = BusEngine.Tools.Json.DeserializeObject(System.Text.Encoding.UTF8.GetString(buffer));
+					//BusEngine.Log.Info(_setting_project.content.assets);
+					//BusEngine.ProjectSettingDefault.content = _ProjectSettingDefault.content;
+				}
+			}
+
+			BusEngine.Engine.DataDirectory = _path + "Data/";
+
+
+
+
+
+
+
+
+
 
 			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
