@@ -37,37 +37,267 @@ namespace BusEngine {
 		//public const bool BUSENGINE_WINFORM = true;
 	}
 
+	internal class ProjectSettingDefault {
+		public object console_commands {get; set;}
+		public object console_variables {get; set;}
+		public string version {get; set;}
+		public string type {get; set;}
+		public object info {get; set;}
+		public object content {get; set;}
+		public object require {get; set;}
+
+		public ProjectSettingDefault() {
+			console_commands = new {
+				sys_spec = "1",
+				e_WaterOcean = "0",
+				r_WaterOcean = "0",
+				r_VolumetricClouds = "1",
+				r_Displayinfo = "0",
+				r_Fullscreen = "0",
+				r_Width = "1280",
+				r_Height = "720",
+			};
+			console_variables = new {
+				sys_spec = "1",
+				e_WaterOcean = "0",
+				r_WaterOcean = "0",
+				r_VolumetricClouds = "1",
+				r_Displayinfo = "0",
+				r_Fullscreen = "0",
+				r_Width = "1280",
+				r_Height = "720",
+			};
+			version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			type = "";
+			info = new {
+				name = "Game",
+				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
+			};
+			content = new {
+				assets = new string[] {"GameData"},
+				code = new string[] {"Code"},
+				libs = new {
+					name = "BusEngine",
+					shared = new {
+						any = "",
+						Android = "",
+						win = "",
+						win_x64 = "",
+						win_x86 = "",
+					},
+				},
+			};
+			require = new {
+				engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+				plugins = new object[] {
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/Android/Game.dll",
+						platforms = new string[] {"Android"},
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/win/Game.dll",
+						platforms = new string[] {"win_x86"},
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/win_x86/Game.dll",
+						platforms = new string[] {"win_x86"},
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "bin/win_x64/Game.dll",
+						platforms = new string[] {"Win_x64"},
+					}
+				},
+			};
+		}
+	}
+
 	internal class Start {
 		//public const bool BUSENGINE_WINFORM = true;
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
-			//Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory);
-			//Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)
+			/** моя мечта
+			if (WINXP) {
+				System.Windows.Forms.Form _form = new System.Windows.Forms.Form();
+				BusEngine.UI.Canvas(_form);
+				Android.App.LoadApplication(_form);
+			} else if (ANDROID) {
+				Xamarin.Forms.Application _form = new Xamarin.Forms.Application();
+				BusEngine.UI.Canvas(_form);
+				Xamarin.Forms.LoadApplication(_form);
+			} else {
+				System.Windows.Application _form = new System.Windows.Application();
+				BusEngine.UI.Canvas(_form);
+				System.Windows.Application.Run(_form);
+			}
+			*/
 
 			BusEngine.Engine.generateStatLink();
 
+			//https://metanit.com/sharp/tutorial/5.4.php
+			//https://metanit.com/sharp/tutorial/6.4.php
+			//https://dir.by/developer/csharp/serialization_json/?lang=eng
+			string _path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
+
+			if (!System.IO.Directory.Exists(_path)) {
+				_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../Bin/";
+
+				if (!System.IO.Directory.Exists(_path)) {
+					_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Bin/";
+				}
+			}
+
+			_path = System.IO.Path.GetFullPath(_path + "../");
+
+			string[] _files;
+
+			_files = System.IO.Directory.GetFiles(_path, "*.busproject");
+
+			if (_files.Length == 0) {
+				BusEngine.Log.Info(_files.Length);
+
+				// запись
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "Game.busproject")) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+					fstream.Write(buffer, 0, buffer.Length);
+				}
+			} else {
+				BusEngine.Log.Info(_files[0]);
+
+				// запись
+				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(_files[0], false, System.Text.Encoding.UTF8)) {
+					fstream.Write(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+				} */
+
+				// запись
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_files[0])) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+					fstream.Write(buffer, 0, buffer.Length);
+				}
+
+				// запись
+				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+					fstream.WriteAsync(buffer, 0, buffer.Length);
+				} */
+
+				// запись
+				//System.IO.File.WriteAllText(_files[0], Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+
+				// чтение
+				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+					byte[] buffer = new byte[fstream.Length];
+					fstream.ReadAsync(buffer, 0, buffer.Length);
+					// декодируем байты в строку
+					Newtonsoft.Json.JsonConvert.DeserializeObject(System.Text.Encoding.UTF8.GetString(buffer));
+				} */
+
+				// чтение
+				//Newtonsoft.Json.JsonConvert.DeserializeObject(System.IO.File.ReadAllText(_files[0]));
+			}
+
+			// тестирование плагина - прогонка кода
+			Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+
+			_files = System.IO.Directory.GetFiles(_path, "busengine.busengine");
+
+			if (_files.Length == 0) {
+				BusEngine.Log.Info(_files.Length);
+
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "busengine.busengine")) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+					fstream.Write(buffer, 0, buffer.Length);
+				}
+			} else {
+				BusEngine.Log.Info(_files[0]);
+
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_files[0])) {
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
+					fstream.Write(buffer, 0, buffer.Length);
+				}
+			}
+
+
+
+
+			
+			
+			//Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory);
+			//Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)
+
+			
+
+			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
+			//BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
+
+			System.Reflection.Module[] mods = curAssembly.GetModules();
+			foreach (System.Reflection.Module md in mods) {
+				//BusEngine.Log.Info("This assembly contains the Game.exe {0} module", md.Name);
+			}
+
+
 			//System.Type myType = System.Type.GetType("BusEngine.Game");
 			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
-			//System.Type myType = System.Type.GetType("LibVLCSharp.Shared.Media");
-			//BusEngine.Log.Info(myType);
-
-			//BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
+			BusEngine.Log.Info("dddddddddd");
+			BusEngine.Log.Info(System.Reflection.BindingFlags.Public);
+			BusEngine.Log.Info(System.Type.GetType("BusEngine.UI.Canvas.WinForm"));
+			BusEngine.Log.Info("dddddddddd");
+			BusEngine.Log.Info("xxxxxxxxxxx");
+			BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
+			BusEngine.Log.Info("xxxxxxxxxxx");
+			
+			
+			
+			
+			//проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
+			
+			
+			BusEngine.Log.Info("gggggggggggggg");
+			System.Reflection.Assembly mainAssemblyd = typeof(BusEngine.Log).Assembly;
+			System.IO.FileStream[] x = mainAssemblyd.GetFiles();
+			foreach (System.IO.FileStream m in x) {
+			BusEngine.Log.Info(m.Name);
+			}
+			
+			
+			System.Reflection.Assembly mainAssembly = typeof(BusEngine.Start).Assembly;
+			BusEngine.Log.Info("The executing assembly is {0}.", mainAssembly);
+			System.Reflection.Module[] modss = mainAssembly.GetModules();
+			BusEngine.Log.Info("\tModules in the assembly:");
+			foreach (System.Reflection.Module m in modss) {
+				BusEngine.Log.Info("\t{0}", m);
+			}
+			BusEngine.Log.Info("gggggggggggggg");
+			
 			//"TestReflection" искомое пространство
 			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
-			System.Type[] typelist = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
+			System.Type[] typelist = System.Reflection.Assembly.GetEntryAssembly().GetTypes();
+			
+			BusEngine.Log.Info(typelist);
 			foreach (System.Type type in typelist) {
+				BusEngine.Log.Info("ssssssssssss");
 				BusEngine.Log.Info(type.FullName);
+				BusEngine.Log.Info("ssssssssssss");
 				//создание объекта
 				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
  
 				//что бы получить public методы без базовых(наследованных от object)
-				/* var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 				foreach (var methodInfo in methods) {
+					BusEngine.Log.Info("ssssssssssss");
 					BusEngine.Log.Info(methodInfo);
+					BusEngine.Log.Info("ssssssssssss");
 					//вызов
 					//methodInfo.Invoke(targetObject, new object[] { });
-				} */
+				}
 			}
 
 			/* BusEngine.Plugin _plugin = new BusEngine.Game.Default();
@@ -123,9 +353,9 @@ namespace BusEngine {
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			// открываем окно на весь экран
-			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			// убираем линии, чтобы окно было полностью на весь экран
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			// устанавливаем чёрный цвет фона окна
 			this.BackColor = System.Drawing.Color.Black;
 			// устанавливаем события нажатий клавиш
