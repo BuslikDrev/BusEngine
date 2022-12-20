@@ -183,7 +183,7 @@ BusEngine.UI
 			//System.Windows.Forms.Form _form = new System.Windows.Forms.Form();
 			// название окна
 			//System.Windows.Forms.Form _canvas = System.Windows.Forms.Form();
-			this.Text = "BusEngine v0.2.0";
+			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 			// устанавливаем нашу иконку, есди она есть по пути exe, в противном случае устанавливаем системную
 			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
 				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
