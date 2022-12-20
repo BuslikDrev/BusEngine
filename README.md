@@ -60,15 +60,17 @@ BusEngine выпускается под лицензией [MIT](https://github.
 #### Список ссылок на файлы других авторов на которые, не распространяется данная лицензия, так как у них имеется своя лицензия
 [MicroSoft dotNET](https://github.com/dotnet)
 
-[CefSharp](https://github.com/cefsharp/CefSharp/tree/v107.1.90)
+[CefSharp](https://github.com/cefsharp/CefSharp) 107.1.90
 
-[Chromium](https://github.com/chromium/chromium)
+[Chromium](https://github.com/chromium/chromium) 107.1.9
 
-[VideoLAN | libvlcsharp](https://github.com/videolan)
+[VideoLAN | libvlcsharp](https://github.com/videolan) 3.0.17.4 | 3.6.7
 
-[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 13.0.2
 
-[Drawflow](https://github.com/jerosoler/Drawflow)
+[Drawflow](https://github.com/jerosoler/Drawflow) 0.0.59
+
+[three.js](https://github.com/mrdoob/three.js) r147
 
 ## Полезные ссылки
 
