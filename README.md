@@ -106,6 +106,12 @@ Microsoft Build Tools 2022 v17.0 (Входит в NET.Core 6.0+)
 
 https://learn.microsoft.com/ru-ru/visualstudio/releases/2022/release-history#evergreen-bootstrappers
 
-*.NET Framework 4.8 Developer Pack и языки для перевода дебагера*
+.NET Framework 4.8 Developer Pack и языки для перевода дебагера
 
 https://dotnet.microsoft.com/en-us/download/dotnet-framework/
+
+Учебные материалы
+
+https://professorweb.ru/my/csharp/charp_theory/level2/2_2.php
+
+https://metanit.com/sharp/
