@@ -68,6 +68,8 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 
+[Drawflow](https://github.com/jerosoler/Drawflow)
+
 ## Полезные ссылки
 
 Microsoft Build Tools 2005 v2.0
