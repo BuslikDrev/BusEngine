@@ -8,8 +8,12 @@
     <AssemblyName>Plugin</AssemblyName>
     <OutputType>Library</OutputType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <FileAlignment>512</FileAlignment>
+    <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
+    <!-- <Optimize>true</Optimize> -->
+    <!-- <DefineConstants>TRACE</DefineConstants> -->
+    <!-- <ErrorReport>prompt</ErrorReport> -->
+    <!-- <WarningLevel>4</WarningLevel> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -23,20 +27,30 @@
     <OutputPath>..\..\Bin\Win_x86\</OutputPath>
     <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
+    <!-- <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit> -->
+    <OutputPath>..\..\Bin\Android\</OutputPath>
+    <OutputRoot>..\..\Bin\Android\</OutputRoot>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit>
+    <!-- <Prefer32Bit>true</Prefer32Bit> -->
     <OutputPath>..\..\Bin\Win\</OutputPath>
     <OutputRoot>..\..\Bin\Win\</OutputRoot>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
-      <HintPath>..\..\Bin\Win_x64\BusEngine.dll</HintPath>
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x86' ">
-      <HintPath>..\..\Bin\Win_x86\BusEngine.dll</HintPath>
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'Android' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">
@@ -57,7 +71,11 @@
       <Link>..\..\Bin\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
+    <Content Include="BusContent\Android\**\*.*" Condition=" '$(Platform)' == 'Android' ">
+      <Link>..\..\Bin\Android\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
       <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
