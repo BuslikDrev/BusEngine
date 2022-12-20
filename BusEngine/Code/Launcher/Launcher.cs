@@ -2,63 +2,88 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.5.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
-/** API BusEngine.Game - пользовательский код */
-namespace BusEngine.Game {
-	/** API BusEngine.Plugin */
-	public class MyPlugin : Plugin {
-		// при заапуске BusEngine до создания формы
-		public override void Initialize() {
-			BusEngine.Log.Info("Initialize");
-		}
+/** дорожная карта
+- написать лаунчер BusEngine
+*/
 
-		// после загрузки определённого плагина
-		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("Initialize " + plugin);
-		}
+#define BUSENGINE_WINFORM
+namespace BusEngine {
+/*
+Зависит от плагинов:
+System.Windows.Forms
+BusEngine.Engine
+BusEngine.UI
+BusEngine.Browser
+*/
+	internal class Start {
+		/** функция запуска приложения */
+		//[System.STAThread] // если однопоточное приложение
+		private static void Main(string[] args) {
+			// генерируем BusEngine API
+			BusEngine.Engine.generateStatLink();
 
-		// перед закрытием BusEngine
-		public override void Shutdown() {
-			BusEngine.Log.Info("Shutdown");
-		}
+			// создаём форму System.Windows.Forms
+			BusEngine.Form _form = new Form();
 
-		// перед загрузкой игрового уровня
-		public override void OnLevelLoading(string level) {
-			BusEngine.Log.Info("OnLevelLoading");
-		}
+			// покдлючаем  BusEngine.UI API
+			BusEngine.UI.Canvas.WinForm = _form;
+			BusEngine.UI.Canvas.Initialize();
 
-		// после загрузки игрового уровня
-		public override void OnLevelLoaded(string level) {
-			BusEngine.Log.Info("OnLevelLoaded");
-		}
+			// запускаем браузер
+			BusEngine.Browser.Start("index.html");
 
-		// когда икрок может управлять главным героем - время игры идёт
-		public override void OnGameStart() {
-			BusEngine.Log.Info("OnGameStart");
+			// запускаем приложение System.Windows.Forms
+			System.Windows.Forms.Application.Run(_form);
 		}
-
-		// когда время остановлено - пауза
-		public override void OnGameStop() {
-			BusEngine.Log.Info("OnGameStop");
-		}
-
-		// когда игрок начинает подключаться к серверу
-		public override void OnClientConnectionReceived(int channelId) {
-			BusEngine.Log.Info("OnClientConnectionReceived");
-		}
-
-		// кога игрок подключился к серверу
-		public override void OnClientReadyForGameplay(int channelId) {
-			BusEngine.Log.Info("OnClientReadyForGameplay");
-		}
-
-		// когда игрока выкинуло из сервера - обрыв связи с сервером
-		public override void OnClientDisconnected(int channelId) {
-			BusEngine.Log.Info("OnClientDisconnected");
-		}
+		/** функция запуска приложения */
 	}
-	/** API BusEngine.Plugin */
+
+	// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
+	internal class Form : System.Windows.Forms.Form {
+		/** функция запуска окна приложения */
+		public Form() {
+			// название окна
+			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+			// устанавливаем нашу иконку, есди она есть по пути exe, в противном случае устанавливаем системную
+			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
+				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
+			} else {
+				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
+			}
+
+			// устанавливаем размеры окна
+			this.Width = 1024;
+			this.Height = 768;
+
+			// центрируем окно
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+
+			// открываем окно на весь экран
+			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+
+			// убираем линии, чтобы окно было полностью на весь экран
+			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+
+			// устанавливаем чёрный цвет фона окна
+			this.BackColor = System.Drawing.Color.Black;
+
+			// устанавливаем событие нажатий клавиш
+			this.KeyPreview = true;
+			//this.KeyDown += OnKeyDown;
+
+			// устанавливаем событие закрытия окна
+			//this.FormClosed += OnClosed;
+			//this.Disposed += new System.EventHandler(OnDisposed);
+			//ClientSize = this.ClientSize;
+
+			// показываем форму\включаем\запускаем\стартуем показ окна
+			//this.ShowDialog();
+		}
+		/** функция запуска окна приложения */
+	}
 }
-/** API BusEngine.Game - пользовательский код */
+/** API BusEngine */

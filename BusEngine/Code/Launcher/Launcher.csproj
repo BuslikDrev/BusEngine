@@ -7,6 +7,7 @@
     <RootNamespace>BusEngine</RootNamespace>
     <AssemblyName>Launcher</AssemblyName>
     <OutputType>WinExe</OutputType>
+    <TargetFrameworks>netstandard2.0;net400</TargetFrameworks>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationIcon>..\..\Data\Icons\BusEngine.ico</ApplicationIcon>
@@ -16,14 +17,14 @@
     <!-- <DebugType>none</DebugType> -->
     <!-- <Optimize>true</Optimize> -->
     <!-- <DefineConstants>TRACE</DefineConstants> -->
-    <!-- <ErrorReport>prompt</ErrorReport> -->
-    <!-- <WarningLevel>4</WarningLevel> -->
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
     <!-- https://stackoverflow.com/questions/57509951/use-windows-forms-in-a-net-core-class-library-net-core-control-library -->
     <!-- <UseWindowsForms>true</UseWindowsForms> -->
     <!-- <UseWPF>true</UseWPF> -->
     <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <!-- <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects> -->
+    <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -54,22 +55,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Forms" />
-	<Reference Include="Microsoft.CSharp" />
-    <Reference Include="CefSharp">
-      <HintPath>BusPlugins\CefSharp\CefSharp.dll</HintPath>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
+      <HintPath>..\..\Bin\Win_x64\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Core">
-      <HintPath>BusPlugins\CefSharp\CefSharp.Core.dll</HintPath>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x86' ">
+      <HintPath>..\..\Bin\Win_x86\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.WinForms">
-      <HintPath>BusPlugins\CefSharp\CefSharp.WinForms.dll</HintPath>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'Android' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Wpf">
-      <HintPath>BusPlugins\CefSharp\CefSharp.Wpf.dll</HintPath>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
