@@ -8,8 +8,12 @@
     <AssemblyName>Plugin</AssemblyName>
     <OutputType>Library</OutputType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <FileAlignment>512</FileAlignment>
+    <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
+    <!-- <Optimize>true</Optimize> -->
+    <!-- <DefineConstants>TRACE</DefineConstants> -->
+    <!-- <ErrorReport>prompt</ErrorReport> -->
+    <!-- <WarningLevel>4</WarningLevel> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -31,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit>
+    <!-- <Prefer32Bit>true</Prefer32Bit> -->
     <OutputPath>..\..\Bin\Win\</OutputPath>
     <OutputRoot>..\..\Bin\Win\</OutputRoot>
   </PropertyGroup>
