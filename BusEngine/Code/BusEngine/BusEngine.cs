@@ -850,6 +850,8 @@ BusEngine.UI.Canvas
 				}
 			}
 
+			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
+
 			// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 			CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
 
@@ -957,7 +959,7 @@ BusEngine.UI
 		/** событие закрытия окна */
 		private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
 			BusEngine.UI.Canvas.WinForm.FormClosed -= OnClosed;
-			BusEngine.Video.Shutdown();
+			//BusEngine.Video.Shutdown();
 			BusEngine.Engine.Shutdown();
 		}
 		/** событие закрытия окна */
