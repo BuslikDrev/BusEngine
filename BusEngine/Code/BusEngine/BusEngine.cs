@@ -839,40 +839,60 @@ BusEngine.UI.Canvas
 		/** все события из js браузера */
 
 		/** функция запуска браузера */
+		// https://cefsharp.github.io/api/
 		public static void Start(string Url = "") {
+			// если ссылка не обсалютный адрес, то делаем его обсалютным
 			if (Url.IndexOf(':') == -1) {
-				Url = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url);
+				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url))) {
+					Url = "https://BusEngine/" + Url;
+				} else {
+					Url = "https://buslikdrev.by/";
+				}
 			}
 
-			if (!System.IO.File.Exists(Url)) {
-				Url = "https://buslikdrev.by/";
-			}
-
-			// выводим браузер на экран
-			// https://cefsharp.github.io/api/
-			//CefSharp.CefSettingsBase.UserAgent;
-			
+			// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 			CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
+
+			// включаем поддержку экранов с высоким разрешением
+			CefSharp.Cef.EnableHighDPISupport();
+
+			// устанавливаем свой юзер агент
 			settings.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/0.2.0 Safari/537.36";
 			//settings.UserAgent = settings.UserAgent.Replace("Chrome", "BusEngine");
+
+			// отключаем создание файла лога
 			settings.LogSeverity = CefSharp.LogSeverity.Disable;
-			CefSharp.Cef.EnableHighDPISupport();
+
+			//https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
+			// регистрируем свою схему
+			settings.RegisterScheme(new CefSharp.CefCustomScheme {
+				SchemeName = "https",
+				DomainName = "BusEngine",
+				SchemeHandlerFactory = new CefSharp.SchemeHandler.FolderSchemeHandlerFactory (
+					rootFolder: BusEngine.Engine.DataDirectory,
+					hostName: "BusEngine",
+					defaultPage: "index.html"
+				)
+			});
+
+			// применяем наши настройки до запуска браузера
 			CefSharp.Cef.Initialize(settings);
+
+			// запускаем браузер
 			CefSharp.WinForms.ChromiumWebBrowser _browser = new CefSharp.WinForms.ChromiumWebBrowser(Url);
+
+			// просто подключаем левое событие - можно удалить
 			_browser.KeyDown += BusEngine.Browser.OnKeyDown;
+
 			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
+			// подключаем событие сообщения из javascript
 			_browser.JavascriptMessageReceived += OnPostMessage;
+
+			// устанавливаем размер окана браузера, как в нашей программе
 			//_browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
 			//_browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
+			// подключаем браузер к нашей программе
 			BusEngine.UI.Canvas.WinForm.Controls.Add(_browser);
-
-			//var _event = CefSharp.DevTools.DOM.DOMClient();
-
-			/* CefSharp.DevTools.DOM.DOMClient _event = new CefSharp.DevTools.DOM.DOMClient();
-			_event.DocumentUpdated += onBrowserClick; */
-
-			/* Microsoft.Web.WebView2WebView2 _browser = new Microsoft.Web.WebView2WebView2();
-			_browser.Navigate(new System.Uri("https://buslikdrev.by/")); */
 		}
 		/** функция запуска браузера */
 
