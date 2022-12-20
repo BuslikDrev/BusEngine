@@ -13,8 +13,8 @@
 namespace BusEngine {
 /*
 Зависит от плагинов:
+System.Windows.Forms
 BusEngine.Engine
-BusEngine.Log
 BusEngine.UI
 BusEngine.Browser
 */
@@ -28,12 +28,11 @@ BusEngine.Browser
 			// создаём форму System.Windows.Forms
 			BusEngine.Form _form = new Form();
 
-			// покдлючаем  BusEngine API
+			// покдлючаем  BusEngine.UI API
 			BusEngine.UI.Canvas.WinForm = _form;
 			BusEngine.UI.Canvas.Initialize();
 
-			// запускаем браузер
-			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
+			// запускаем браузер;
 			BusEngine.Browser.Start("https://threejs.org/editor/");
 
 			// запускаем приложение System.Windows.Forms
