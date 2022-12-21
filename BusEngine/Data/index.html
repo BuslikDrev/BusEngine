@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <base href="https://BusEngine/">
     <meta charset="UTF-8">
-    <link href="Styles/styles.css" rel="stylesheet">
-    <script src="Scripts/three.min.js"></script>
-    <script src="Scripts/OrbitControls.js"></script>
+    <base href="https://BusEngine/">
+    <link href="Styles/styles.css" type="text/css" rel="stylesheet">
+    <script src="Scripts/three/three.js"></script>
+    <script src="Scripts/three/OrbitControls.js"></script>
     <script>
 	//https://habr.com/ru/post/347750/
 	let scene, camera, renderer;
@@ -51,16 +51,22 @@
 		materialArray.push(new THREE.MeshBasicMaterial({ map: texture_rt }));
 		materialArray.push(new THREE.MeshBasicMaterial({ map: texture_lf }));
 
-		for (let i = 0; i < 6; i++)
+		for (let i = 0; i < 6; i++) {
 			materialArray[i].side = THREE.BackSide;
+		}
 		let skyboxGeo = new THREE.BoxGeometry( 10000, 10000, 10000);
 		let skybox = new THREE.Mesh( skyboxGeo, materialArray );
-		scene.add( skybox );	
+		scene.add( skybox );
 		animate();
 	}
     </script>
     <script>
 	window.addEventListener('DOMContentLoaded', function() {
+		init();
+	});
+
+	window.addEventListener('resize', function() {
+		renderer.setSize(window.innerWidth,window.innerHeight);
 		init();
 	});
     </script>
@@ -85,8 +91,10 @@
     </script>
   </head>
   <body>
-    <span><b>Я программист!</b></span><br>
-    <span id="message"></span><br>
-    <button>ВЫЙТИ ИЗ ИГРЫ</button><br>
+    <div style="position: absolute;">
+      <span><b>Я программист!</b></span><br>
+      <span id="message"></span><br>
+      <button>ВЫЙТИ ИЗ ИГРЫ</button><br>
+    <div>
   </body>
 </html>
