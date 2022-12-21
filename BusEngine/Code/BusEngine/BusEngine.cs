@@ -25,7 +25,7 @@ https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?t
  (новости index.php?route=api/busengine/information&order=DESC&limit=4, последние товары кроме
  плагинов index.php?route=api/busengine/product&order=DESC&limit=4&type_exception=["plugin"],
  последние плагины index.php?route=api/busengine/product&order=DESC&limit=4&type=["plugin"])
-- написать редактор игры и добавить управление тем, чем располагает текущий АПИ
+- добавить поддержку форматов .dae https://docs.fileformat.com/ru/3d/dae/, .png, .mtl, .obj
 - написать сборку игры для windows 7+ и Android 5+
 */
 
@@ -181,6 +181,8 @@ BusEngine.Engine.UI
 		/** UI движка */
 		//public static BusEngine.UI.Canvas UI { get; set; }
 		public static string DataDirectory;
+		public static string platform;
+
 		//private static BusEngine.UI.Canvas _canvas;
 		// MSBuild v12.0
 		public static void generateStatLink() {
@@ -1023,6 +1025,558 @@ BusEngine.UI
 	/** API BusEngine.UI.Canvas */
 }
 /** API BusEngine.UI */
+
+/** API BusEngine */
+namespace BusEngine {
+	public class Localization : System.IDisposable {
+		//[Tooltip("Loading a language if the desired one is not available.")]
+		public string languageDefault = "Belarusian";
+		//[Tooltip("Forced language loading")]
+		public string language = "";
+
+		//[Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.")]
+		public string file = "";
+		//[Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt")]
+		public string format = "cfg";
+		//[Tooltip("Translate components located in inactive objects?")]
+		public bool includeInactive = false;
+		//[Tooltip("Replace Resources.load with Bundle.load?")]
+		private bool bundleStatus = false;
+		public delegate void call();
+		private call callbackstart = null;
+		private static System.Collections.Generic.Dictionary<string, string> getLanguages = new System.Collections.Generic.Dictionary<string, string>();
+
+		public static string getLanguage(string key) {
+			if (getLanguages.ContainsKey(key)) {
+				return getLanguages[key];
+			} else {
+				return key;
+			}
+		}
+
+		/* public Localization() {
+			language = language;
+		} */
+
+		public static void setLanguage(string key, string value) {
+			// C# 6.0+
+			getLanguages[key] = value;
+			// C# 4.0+
+			/* if (getLanguages.ContainsKey(key)) {
+				getLanguages.Remove(key);
+			}
+			getLanguages.Add(key, value); */
+		}
+
+		public static bool CallBack(call callback = null) {
+			if (callback != null) {
+				call callbackstart = callback;
+			}
+			
+			return false;
+		}
+
+		public void Start() {
+			StartLocalization(language);
+		}
+
+		public void Load(string Language = null) {
+			StartLocalization(Language);
+		}
+
+		public void reLoad() {
+			/* if (getLanguages.Count > 0) {
+				Component[] results = GetComponentsInChildren(typeof(Text), includeInactive);
+
+				if (results != null) {
+					foreach (Text reslut in results) {
+						if (getLanguages.ContainsKey(reslut.text)) {
+							reslut.text = getLanguages[reslut.text].ToString();
+						}
+					}
+				}
+
+				Component[] results_mesh_pro = GetComponentsInChildren(typeof(TMPro.TextMeshProUGUI), includeInactive);
+
+				if (results_mesh_pro != null) {
+					foreach (TMPro.TextMeshProUGUI reslut in results_mesh_pro) {
+						if (getLanguages.ContainsKey(reslut.text)) {
+							reslut.text = getLanguages[reslut.text].ToString();
+						}
+					}
+				}
+			} */
+		}
+
+		private void StartLocalization(string Language = null) {
+			int n = file.Length;
+			if (n > 0) {
+				file = "/" + file;
+			}
+			string Path, Platform, Files;
+
+			Files = "";
+			if (Language == null || Language == "") {
+				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
+			}
+			//https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
+			Platform = BusEngine.Engine.platform.ToString();
+			//Platform = "WebGLPlayer";
+
+			if (Platform == "WindowsEditor" || Platform == "WindowsPlayer") {
+				Path = BusEngine.Engine.DataDirectory + "../Localization/";
+				if (!System.IO.Directory.Exists(Path)) {
+					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+				}
+				if (!System.IO.Directory.Exists(Path)) {
+					Path = BusEngine.Engine.DataDirectory + "/Resources/Localization/";
+				}
+				if (!System.IO.Directory.Exists(Path)) {
+					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+				}
+			} else {
+				if (Platform == "WebGLPlayer" && !bundleStatus) {
+					Path = "Localization/";
+				} else {
+					//https://docs.unity3d.com/Manual/StreamingAssets.html
+					//https://docs.unity3d.com/ScriptReference/Application-streamingAssetsPath.html
+					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+				}
+			}
+
+			if (Platform == "WebGLPlayer") {
+				//https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
+				//https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
+				/* if (bundleStatus) {
+					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(Path + Language + file + "." + format);
+					//TextAsset resources = bundle.Load<TextAsset>(file + "." + format);
+				} else {
+					//https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
+					TextAsset resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
+					if (resources != null) {
+						Files = resources.text;
+						//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
+						//Resources.UnloadAsset(resources);
+					} else {
+						Language = languageDefault;
+						resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
+						if (resources != null) {
+							Files = resources.text;
+							//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
+							//Resources.UnloadAsset(resources);
+						}
+					}
+				} */
+
+				/* IEnumerator GetText(string url) {
+					UnityWebRequest www = UnityWebRequest.Get(url);
+					yield return www.Send();
+
+					if(www.isError) {
+						Debug.Log(www.error);
+					} else {
+						// Show results as text
+						Debug.Log(www.downloadHandler.text);
+
+						// Or retrieve results as binary data
+						byte[] results = www.downloadHandler.data;
+					}
+				}
+				Files = StartCoroutine(GetText("https://buslikdrev.by/game/StreamingAssets/Localization/Belarusian.txt")).ToString();
+				UnityEngine.Debug.Log(Files); */
+			} else {
+				if (System.IO.File.Exists(Path + Language + file + "." + format)) {
+					Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
+					//byte[] Bytes = File.ReadAllBytes(Path + Language + file + "." + format);
+					//Files = System.Text.Encoding.UTF8.GetString(Bytes);
+				} else {
+					Language = languageDefault;
+					if (System.IO.File.Exists(Path + Language + file + "." + format)) {
+						Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
+						//byte[] Bytes = System.IO.File.ReadAllBytes(Path + Language + file + "." + format);
+						//Files = System.Text.Encoding.UTF8.GetString(Bytes);
+					}
+				}
+			}
+
+			getLanguages["text_debug"] = "" + Path + Language + file + "." + format + "";
+
+			if (Files != "") {
+				getLanguages["text_debug"] = Files;
+				string[] lines, pairs;
+				int i;
+
+				lines = Files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+				Files = null;
+				System.GC.Collect();
+
+				for (i = 0; i < lines.Length; ++i) {
+					pairs = lines[i].Split(new char[] {'='}, 2);
+					if (pairs.Length == 2) {
+						getLanguages[pairs[0].Trim()] = pairs[1].Trim();
+					}
+				}
+			}
+
+			reLoad();
+			if (callbackstart != null) {
+				callbackstart();
+			}
+		}
+
+		public static void Shutdown() {
+
+		}
+
+		public void Dispose() {
+
+		}
+	}
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+	public class Ajax : System.IDisposable {
+		public delegate void BeforeSend();
+		public delegate void Success(dynamic data = null, dynamic xhr = null);
+		public delegate void Error(dynamic xhr = null, string textStatus = null, dynamic thrownError = null);
+		public delegate void Complete(dynamic xhr = null, string textStatus = null, dynamic thrownError = null);
+		//private static dynamic E { get; set; }
+		//private HttpRequestException Ex { get; set; }
+		private System.Net.Http.HttpResponseMessage Result { get; set; }
+		public delegate void call();
+		private call httpClientAsync = null;
+
+		//https://metanit.com/sharp/tutorial/2.9.php
+		public Ajax(string engine = null, string url = null, string[] urlAlternative = null, string metod = "POST", dynamic data = null, string responseType = "text", string dataType = "text", string headers = null, bool async = true, bool cache = false, string user = null, string password = null, BeforeSend beforeSend = null, Success success = null, Error error = null, Complete complete = null) {
+			if (urlAlternative == null) {
+				urlAlternative = new string[] {"https://buslikdrev.by/", "111111"};
+			}
+			beforeSend();
+			//BusEngine.Localization.getLanguage("error_server_not")
+			dynamic E = new g();
+
+			if (url != "" && url != null) {
+				try {
+					if (System.Uri.IsWellFormedUriString(url, System.UriKind.Absolute)) {
+						var result = System.Net.HttpWebRequest.Create(url).GetResponse();
+					}
+				} catch (System.Net.WebException e) {
+					if (e.GetType().GetProperty("Status") != null) {
+						E.Status = e.Status.ToString();
+						E.StatusCode = e.ToString();
+					}/*  else {
+						E.Status = "Status crash";
+						E.StatusCode = "StatusCode crash";
+					} */
+					url = "";
+				}
+			}
+
+			if (urlAlternative != null && (url == "" || url == null)) {
+				int i;
+
+				for (i = 0; i < urlAlternative.Length; ++i) {
+					try {
+						if (System.Uri.IsWellFormedUriString(urlAlternative[i], System.UriKind.Absolute)) {
+							var result = System.Net.HttpWebRequest.Create(urlAlternative[i]).GetResponse();
+							if (result != null) {
+								url = urlAlternative[i];
+							}
+						}
+					} catch (System.Net.WebException e) {
+						//https://docs.microsoft.com/en-us/dotnet/api/system.net.webexception?view=net-6.0
+						if (e.GetType().GetProperty("Status") != null) {
+							E.Status = e.Status.ToString();
+							E.StatusCode = e.ToString();
+						}/*  else {
+							E.Status = "Status crash ";
+							E.StatusCode = "StatusCode crash ";
+						} */
+						url = "";
+					}
+				}
+			}
+
+			if (url != "" && url != null) {
+				//https://stackoverflow.com/questions/20530152/deciding-between-httpclient-and-webclient
+				if (engine == null || engine.ToLower() != "webclient") {
+					if (async) {
+						httpClientAsync = async () => {
+							var baseAddress = new System.Uri(url);
+							var cookieContainer = new System.Net.CookieContainer();
+							using (var handler = new System.Net.Http.HttpClientHandler() {
+								CookieContainer = cookieContainer
+							})
+							using (var client = new System.Net.Http.HttpClient(handler) {
+								BaseAddress = baseAddress
+							}) {
+								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
+
+								try {
+									metod = metod.ToLower();
+									dataType = dataType.ToLower();
+									if (data != null && metod == "post") {
+										if (dataType == "object") {
+											/* object keys = new [] {};
+
+											var i = 0;
+											UnityEngine.Debug.Log(data);
+											foreach (var property in data) {
+												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
+												i += 1;
+											}
+											UnityEngine.Debug.Log(keys);
+
+											Result = await client.PostAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(keys)); */
+										} else if (dataType == "pair" || dataType == "list") {
+											Result = await client.PostAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data));
+										} else {
+											Result = await client.PostAsync(baseAddress, data);
+										}
+									} else if (data != null && metod == "put") {
+										if (dataType == "object") {
+											/* object keys = new [] {};
+
+											var i = 0;
+											UnityEngine.Debug.Log(data);
+											foreach (var property in data) {
+												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
+												i += 1;
+											}
+											UnityEngine.Debug.Log(keys);
+
+											Result = await client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(keys)); */
+										} else if (dataType == "pair" || dataType == "list") {
+											Result = await client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data));
+										} else {
+											Result = await client.PutAsync(baseAddress, data);
+										}
+									} else {
+										Result = client.GetAsync(baseAddress).Result;
+									}
+									Result.EnsureSuccessStatusCode();
+									if (Result.IsSuccessStatusCode) {
+										//UnityEngine.Debug.Log(Result);
+									}
+									
+									
+									if (success != null && Result != null) {
+										responseType = responseType.ToLower();
+										if (responseType == "dictionary") {
+											success(BusEngine.Tools.Json.DeserializeObject(await Result.Content.ReadAsStringAsync()), Result);
+										} else if (responseType == "list") {
+											
+										} else if (responseType == "json") {
+											success(Result.Content.ReadAsStringAsync(), Result);
+										}
+									}
+								} catch (System.Net.Http.HttpRequestException e) {
+									if (error != null && e != null) {
+										if (e.GetType().GetProperty("StatusCode") != null) {
+											E = e;
+										}
+										string textStatus = "";
+
+										if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+											textStatus = E.StatusCode.ToString();
+										}
+
+										error(Result, textStatus, E);
+										success = null;
+									}
+								} finally {
+
+
+									string textStatus = "";
+
+									if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
+										textStatus = Result.StatusCode.ToString();
+									}
+									if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+										textStatus = E.StatusCode.ToString();
+									}
+
+									if (Result != null && complete != null) {
+										complete(Result, textStatus, E);
+									}
+								}
+							}
+						};
+						httpClientAsync();
+					} else {
+						httpClientAsync = () => {
+							var baseAddress = new System.Uri(url);
+							var cookieContainer = new System.Net.CookieContainer();
+							using (var handler = new System.Net.Http.HttpClientHandler() {
+								CookieContainer = cookieContainer
+							})
+							using (var client = new System.Net.Http.HttpClient(handler) {
+								BaseAddress = baseAddress
+							}) {
+								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
+
+								try {
+									metod = metod.ToLower();
+									dataType = dataType.ToLower();
+									if (metod == "get") {
+										Result = client.GetAsync(baseAddress).Result;
+									} else if (metod == "put" || metod == "post") {
+										if (dataType == "object") {
+
+											Result = client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data)).Result;
+										} else if (dataType == "pair" || dataType == "list") {
+											Result = client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data)).Result;
+										} else {
+											Result = client.PutAsync(baseAddress, data).Result;
+										}
+									} else {
+										Result = client.GetAsync(baseAddress).Result;
+									}
+									Result.EnsureSuccessStatusCode();
+									if (Result.IsSuccessStatusCode) {
+										//UnityEngine.Debug.Log(Result);
+									}
+								} catch (System.Net.Http.HttpRequestException e) {
+									if (error != null && e != null) {
+										if (e.GetType().GetProperty("StatusCode") != null) {
+											E = e;
+										}
+										string textStatus = "";
+
+										if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+											textStatus = E.StatusCode.ToString();
+										}
+
+										error(Result, textStatus, E);
+										success = null;
+									}
+								} finally {
+									if (success != null && Result != null) {
+										responseType = responseType.ToLower();
+										if (responseType == "dictionary") {
+											success(BusEngine.Tools.Json.DeserializeObject(Result.Content.ReadAsStringAsync().Result), Result);
+										} else if (responseType == "list") {
+											
+										} else if (responseType == "json") {
+											
+										}
+									}
+
+									string textStatus = "";
+
+									if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
+										textStatus = Result.StatusCode.ToString();
+									}
+									if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+										textStatus = E.StatusCode.ToString();
+									}
+
+									if (complete != null) {
+										complete(Result, textStatus, E);
+									}
+								}
+							}
+						};
+						httpClientAsync();
+					}
+				} else {
+					if (async) {
+
+					} else {
+
+					}
+				}
+			} else {
+				if (error != null) {
+					string textStatus = "";
+
+					if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
+						textStatus = Result.StatusCode.ToString();
+					}
+					if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+						textStatus = E.StatusCode.ToString();
+					}
+
+					error(Result, textStatus, E);
+					if (complete != null) {
+						complete(Result, textStatus, E);
+					}
+				}
+			}
+		}
+
+		public static bool Test(string url = "https://buslikdrev.by/") {
+			bool status = false;
+
+			new BusEngine.Ajax(
+				url: url,
+				async: false,
+				dataType: "pair",
+				responseType: "dictionary",
+				beforeSend: () => {
+					System.Console.WriteLine("beforeSend");
+				},
+				/* data: new[] {
+					new KeyValuePair<string, string>("user", "user1"),
+					new KeyValuePair<string, string>("pass", "pass1"),
+				}, */
+				data: new System.Collections.Generic.Dictionary<string, string>() {
+					{"user", "user1"},
+					{"pass", "pass1"},
+				},
+				success: (dynamic data, dynamic xhr) => {
+					//data https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage.Content
+					//xhr https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage
+
+					status = true;
+					System.Console.WriteLine("success");
+				},
+				error: (dynamic xhr, string textStatus, dynamic thrownError) => {
+					//xhr https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage
+					//textStatus request server;
+					//thrownError https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage.ensuresuccessstatuscode
+					//UnityEngine.Debug.Log(thrownError.GetType());
+
+					System.Console.WriteLine("Login.message.error", thrownError.StatusCode);
+				}
+			);
+
+			return status;
+		}
+
+		public static void Shutdown() {
+
+		}
+
+		public void Dispose() {
+
+		}
+	}
+
+	// заглушка
+	internal class g {
+		//public virtual System.Collections.IDictionary Data { get; }
+		//public virtual string? HelpLink { get; set; }
+		//public int HResult { get; set; }
+		//public Exception? InnerException { get; }
+		//public virtual string Message { get; }
+		//public virtual string? Source { get; set; }
+		//public virtual string? StackTrace { get; }
+		////public System.Net.WebExceptionStatus Status { get; }
+		////public System.Net.HttpStatusCode? StatusCode { get; }
+		public string Status { get; set; }
+		public string StatusCode { get; set; }
+		//public System.Reflection.MethodBase? TargetSite { get; }
+
+		public g(string text = "") {
+			StatusCode = text;
+			Status = text;
+		}
+	}
+}
+/** API BusEngine */
 
 /** API BusEngine */
 namespace BusEngine {
