@@ -93,6 +93,18 @@ var busApp = {
 				}
 				setting2[i] = setting[i];
 			}
+			
+			var func = function(setting) {
+				var setting2 = {'name': 'name2'};
+				var i;
+				for (i in setting) {
+					if (i == 'name') {
+						setting2['name'] = setting['name'];
+					}
+					setting2[i] = setting[i];
+				}
+			}
+			func(setting);
 		}
 
 		/* if (typeof window.Event !== 'function') {
