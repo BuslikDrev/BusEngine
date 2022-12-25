@@ -880,7 +880,8 @@ html, body{
     padding: 7px 0 7px 45px;
     line-height: 16px;
     background: #128bd5;
-
+    text-transform: uppercase;
+    font-size: 14px;
     position: relative; 
     display: inline-block;
     
@@ -1729,7 +1730,6 @@ li .ptype{
     }
     .breadcrumb a{
         display: block;
-        text-transform: uppercase;
     }
     .hot-left{
         display: none;
