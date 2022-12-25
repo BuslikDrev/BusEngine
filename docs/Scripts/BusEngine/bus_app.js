@@ -16,7 +16,7 @@ var busApp = {
 		description:'',
 		description_notification:'',
 		offline:'OffLine - not internet!',
-		offline_link:'/',
+		offline_link:'offline.html',
 		online:'OnLine - Yes internet!',
 		appinstalled:'App installed!',
 		delay:5000,
