@@ -1,31 +1,152 @@
 <!DOCTYPE html>
 <html>
   <head>
-<script>
-window.addEventListener('DOMContentLoaded', function() {
-	var element = document.querySelector('button');
+    <meta charset="UTF-8">
+    <!-- <base href="https://BusEngine/"> -->
+    <link href="Styles/BusEngine/BusEngine.css" type="text/css" rel="stylesheet">
+    <script src="Scripts/BusEngine/BusEngine.js"></script>
+<style type="text/css">
 
-	if (element) {
-		element.addEventListener('click', function() {
-			element = document.querySelector('#message');
-
-			if (element) {
-				element.innerText = 'Выход произошёл!';
-				setTimeout(function() {
-					element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
-					//element.innerText = JSON.stringify(Object.assign({}, CefSharp));
-					CefSharp.PostMessage('Exit');
-				}, 2000);
-			}
-		});
-	}
-});
-</script>
+</style>
   </head>
   <body>
-     <span><b>Я программист!</b></span><br>
-     <span id="message"></span><br>
-     <button>ВЫЙТИ ИЗ ИГРЫ</button><br>
-скопировать дизайн https://docs.webix.com/api___alert.html
+    <header class="headerBox">
+      <div class="header">
+        <div class="content">
+          <a href="index.html" class="top_logo"><img src="Icons/BusEngine.png"></a>
+          <div class="top_menu">
+            <!-- <a href="#">Примеры</a> -->
+            <a href="https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz">YouTube</a>
+          </div>
+          <span><a href="index.html" style="color:white">BusEngine Документация</a></span>
+        </div>
+      </div>
+    </header>
+    <main class="body">
+      <div class="content">
+        <div class="navigation">
+          <div id="search">
+            <form method="get" action="index.html">
+              <input type="search" accesskey="f"  placeholder="Поиск не работает..." value="" autocomplete="off">
+              <button type="submit" formaction="index.html#"><img loading="lazy" src="Icons/API/search_icon2.png"></button>
+            </form>
+          </div>
+          <!-- <div id="version">
+            <select class="form-control" onchange="window.location.href = this.value;">
+              <option value="index.html" selected="selected">0.3.0</option>
+              <option value="0.2.0/index.html">0.2.0</option>
+              <option value="0.1.0/index.html">0.1.0</option>
+            </select>
+          </div> -->
+          <div id="menu_vertical">
+            <ul>
+              <li class="lioff"><input type="checkbox" id="menu-1"><label for="menu-1" position="2"><a href="#start">НАЧАЛО РАБОТЫ</a></label>
+                <div class="menu-1" position="2">
+                  <a href="#" class="lastfix">Возможности движка</a>
+                  <a href="#" class="lastfix">Настройка окружения</a>
+                  <!-- <a href="#" class="lastfix">Готовые примеры</a> -->
+                </div>
+              </li>
+              <li class="lioff"><input type="checkbox" id="menu-5"><label for="menu-5" position="2"><a href="#api">API BusEngine</a></label>
+                <div class="menu-5" position="2">
+                  <input type="checkbox" id="menu-5-1"><label for="menu-5-1" position="2"><span>BusEngine (Namespace)</span></label>
+                  <div class="menu-5-1" position="2">
+                    <a href="#" class="lastfix">BusEngine.Audio (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Browser (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Core (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Engine (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Localization (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Log (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Plugin (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Video (Class)</a>
+                  </div>
+                  <input type="checkbox" id="menu-5-2"><label for="menu-5-2" position="2"><span>BusEngine.Game (Namespace)</span></label>
+                  <div class="menu-5-2" position="2">
+                    <a href="#" class="lastfix">BusEngine.Game.MyPlagin (Class)</a>
+                  </div>
+                  <input type="checkbox" id="menu-5-3"><label for="menu-5-3" position="2"><span>BusEngine.Tools (Namespace)</span></label>
+                  <div class="menu-5-3" position="2">
+                    <a href="#" class="lastfix">BusEngine.Tools.Ajax (Class)</a>
+                    <a href="#" class="lastfix">BusEngine.Tools.Json (Class)</a>
+                  </div>
+                  <input type="checkbox" id="menu-5-10"><label for="menu-5-10" position="2"><span>BusEngine.UI (Namespace)</span></label>
+                  <div class="menu-5-10" position="2">
+                    <a href="#" class="lastfix">BusEngine.UI.Canvas (Class)</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <!-- <ul>
+              <li class=" current"><a href="#">API BusEngine</a></li>
+              <ul>
+                <li><a href="#">BusEngine (Namespace)</a></li>
+                <li><a href="#">BusEngine.UI (Namespace)</a></li>
+              </ul>
+              <li class=""><a href="#">API BusEngine</a></li>
+            </ul> -->
+          </div>
+        </div>
+        <div class="doc" id="doc_content">
+          <div class="breadcrumb">
+            <a class="n1" href="index.html">Главная</a>
+            <!-- <a class="n2" href="index.html">Главная</a> -->
+          </div>
+          <h1>API Reference</h1>
+          <h2 id="start" class="h2">Начало работы</h2>
+          <table>
+            <tbody>
+              <tr>
+                <td><img loading="lazy" src="Icons/API/filemanager.svg"></td>
+                <td><a class="link-" href="#">Возможности движка</a></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><img loading="lazy" src="Icons/API/docmanager.svg"></td>
+                <td><a class="link-" href="#">Настройка окружения</a></td>
+                <td>Настройка необходимых программ</td>
+              </tr>
+              <tr>
+                <td><img loading="lazy" src="Icons/API/usermanager.svg"></td>
+                <td><a class="link-" href="#">Готовые примеры</a></td>
+                <td>Подборка готовых примеров</td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="#top" class="top_link">Наверх</a>
+          <h2 id="api" class="h2">API BusEngine</h2>
+          <table>
+            <tbody>
+              <tr>
+                <td><img loading="lazy" src="Icons/API/filemanager.svg"></td>
+                <td><a class="link-" href="#">BusEngine.Engine.DataDirectory</a></td>
+                <td>Переменная уровня класса выводит string строку полного пути до папки файлов проекта</td>
+              </tr>
+              <tr>
+                <td><img loading="lazy" src="Icons/API/filemanager.svg"></td>
+                <td><a class="link-" href="#">BusEngine.Engine.Platform</a></td>
+                <td>Переменная уровня класса выводит string строку текущей платформы</td>
+              </tr>
+              <tr>
+                <td><img loading="lazy" src="Icons/API/filemanager.svg"></td>
+                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
+                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="#top" class="top_link">Наверх</a>
+          <!-- <h2 id="other" class="h2">Остальное</h2>
+          <table>
+            <tbody>
+              <tr>
+                <td><a class="link-" href="#"></a></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="#top" class="top_link">Наверх</a> -->
+        </div>
+      </div>
+    </main>
+    <footer></footer>
   </body>
 </html>
