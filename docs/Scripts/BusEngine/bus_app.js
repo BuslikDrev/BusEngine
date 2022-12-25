@@ -23,6 +23,7 @@ var busApp = {
 		closeTime:30000000,
 		cache_status:false,
 		cache_resources:[],
+		cache_resources_exception:"",
 		cache_max_ages:604800,
 		cache_token:1,
 		notification_status:false,
