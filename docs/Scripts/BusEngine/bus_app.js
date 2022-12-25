@@ -84,13 +84,15 @@ var busApp = {
 		}
 
 		if (typeof busAppSetting !== 'undefined' && typeof busAppSetting === 'object') {
-			for (var i in busAppSetting) {
-				i = i.toString();
+			var i, ii;
+			for (i in busAppSetting) {
+				ii = i.toString();
 				if (i == 'name') {
 					busApp.setting['name'] = busAppSetting['name'];
 				}
-				if (i == i) {
-					busApp.setting[i] = busAppSetting[i];
+
+				if (i == ii) {
+					busApp.setting[i] = busAppSetting[ii];
 				}
 			}
 		}
