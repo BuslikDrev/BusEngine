@@ -95,6 +95,7 @@ var busApp = {
 			}
 			
 			var func = function(setting) {
+				console.log(setting);
 				var setting2 = {'name': 'name2'};
 				var i;
 				for (i in setting) {
@@ -105,6 +106,8 @@ var busApp = {
 				}
 			}
 			func(setting);
+
+			window.addEventListener('load', func, {once:true, passive:true});
 		}
 
 		/* if (typeof window.Event !== 'function') {
