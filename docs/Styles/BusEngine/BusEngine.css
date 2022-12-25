@@ -1963,3 +1963,6 @@ table td img {
     width: 30px;
     height: 30px;
 }
+table td i {
+    font-size: 30px;
+}
