@@ -9,8 +9,8 @@
     "background_color": "#ffffff",
     "theme_color": "#000000",
     "lang": "ru-by",
-    "scope": "/",
-    "id": "/",
+    "scope": "/BusEngine/",
+    "id": "/BusEngine/",
     "categories": [
         "business"
     ],
