@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
-    <meta name="robots" content="nocache,noarchive">
-    <meta name="description" content="API документация по игровому движку BusEngine.">
-    <meta name="keywords" content= "BusEngine,API,документация,cryengine,uengine,unigine,unity">
     <meta property="og:locale" content="ru_BY">
     <meta property="og:rich_attachment" content="true">
     <meta property="og:title" content="API BusEngine">
@@ -19,6 +16,9 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="600" />
     <meta property="og:site_name" content="API BusEngine">
+    <meta name="robots" content="nocache,noarchive">
+    <meta name="description" content="API документация по игровому движку BusEngine.">
+    <meta name="keywords" content= "BusEngine,API,документация,cryengine,uengine,unigine,unity">
     <meta name="apple-mobile-web-app-title" content="API BusEngine">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -69,7 +69,7 @@
           <div id="search">
             <form method="get" action="index.html">
               <input type="search" accesskey="f"  placeholder="Поиск не работает..." value="" autocomplete="off">
-              <button type="submit" formaction="index.html#" title="Начать поиск" aria-label="Начать поиск"><i class="fas fa-search"></i></button>
+              <button type="submit" formaction="index.html#" title="Начать поиск" aria-label="Начать поиск"><i class="fa fa-search"></i></button>
             </form>
           </div>
           <!-- <div id="version">
@@ -92,27 +92,27 @@
                 <div class="menu-5" position="2">
                   <input type="checkbox" id="menu-5-1"><label for="menu-5-1" position="2"><span>BusEngine (Namespace)</span></label>
                   <div class="menu-5-1" position="2">
-                    <a href="#" class="lastfix">BusEngine.Audio (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Browser (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Core (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Engine (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Localization (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Log (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Plugin (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Video (Class)</a>
+                    <a href="#BusEngine.Audio" class="lastfix">BusEngine.Audio (Class)</a>
+                    <a href="#BusEngine.Browser" class="lastfix">BusEngine.Browser (Class)</a>
+                    <!-- <a href="#BusEngine.Core" class="lastfix">BusEngine.Core (Class)</a> -->
+                    <a href="#BusEngine.Engine" class="lastfix">BusEngine.Engine (Class)</a>
+                    <a href="#BusEngine.Localization" class="lastfix">BusEngine.Localization (Class)</a>
+                    <a href="#BusEngine.Log" class="lastfix">BusEngine.Log (Class)</a>
+                    <a href="#BusEngine.Plugin" class="lastfix">BusEngine.Plugin (Class)</a>
+                    <a href="#BusEngine.Video" class="lastfix">BusEngine.Video (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-5-2"><label for="menu-5-2" position="2"><span>BusEngine.Game (Namespace)</span></label>
                   <div class="menu-5-2" position="2">
-                    <a href="#" class="lastfix">BusEngine.Game.MyPlagin (Class)</a>
+                    <a href="#BusEngine.Game" class="lastfix">BusEngine.Game.MyPlagin (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-5-3"><label for="menu-5-3" position="2"><span>BusEngine.Tools (Namespace)</span></label>
                   <div class="menu-5-3" position="2">
-                    <a href="#" class="lastfix">BusEngine.Tools.Ajax (Class)</a>
-                    <a href="#" class="lastfix">BusEngine.Tools.Json (Class)</a>
+                    <a href="#BusEngine.Tools.Ajax" class="lastfix">BusEngine.Tools.Ajax (Class)</a>
+                    <a href="#BusEngine.Tools.Json" class="lastfix">BusEngine.Tools.Json (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-5-10"><label for="menu-5-10" position="2"><span>BusEngine.UI (Namespace)</span></label>
                   <div class="menu-5-10" position="2">
-                    <a href="#" class="lastfix">BusEngine.UI.Canvas (Class)</a>
+                    <a href="#BusEngine.UI.Canvas" class="lastfix">BusEngine.UI.Canvas (Class)</a>
                   </div>
                 </div>
               </li>
@@ -137,17 +137,17 @@
           <table>
             <tbody>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-solid fa-sliders"></i></td>
                 <td><a class="link-" href="#">Возможности движка</a></td>
                 <td></td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-solid fa-street-view"></i></td>
                 <td><a class="link-" href="#">Настройка окружения</a></td>
                 <td>Настройка необходимых программ</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-solid fa-book"></i></td>
                 <td><a class="link-" href="#">Готовые примеры</a></td>
                 <td>Подборка готовых примеров</td>
               </tr>
@@ -157,96 +157,64 @@
           <h2 id="api" class="h2">API BusEngine</h2>
           <table>
             <tbody>
-              </tr>
+              <div id="BusEngine.Audio"></div>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-solid fa-file-audio"></i></td>
                 <td><a class="link-" href="#">BusEngine.Audio.Play(string)</a></td>
-                <td>Метод для запуска Аудио файла.</td>
+                <td>Метод уровня класса для запуска Аудио файла.</td>
               </tr>
+              <div id="BusEngine.Browser"></div>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-brands fa-chrome"></i></td>
                 <td><a class="link-" href="#">BusEngine.Browser.Start(string)</a></td>
-                <td>Метод для запуска браузера.</td>
+                <td>Метод уровня класса принимает string строку для запуска браузера и загрузки указанной страницы.</td>
               </tr>
+              <div id="BusEngine.Engine"></div>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+                <td>Метод уровня класса для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.DataDirectory</a></td>
                 <td>Переменная уровня класса выводит string строку полного пути до папки файлов проекта</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
+                <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.Platform</a></td>
                 <td>Переменная уровня класса выводит string строку текущей платформы</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+                <td><i class="fa-solid fa-user-gear"></i></td>
+                <td><a class="link-" href="#">BusEngine.Engine.Shutdown()</a></td>
+                <td>Метод уровня класса для закрытия BusEngine.</td>
+              </tr>
+              <div id="BusEngine.Localization"></div>
+              <tr>
+                <td><i class="fa-solid fa-language"></i></td>
+                <td><a class="link-" href="#">BusEngine.Localization.LanguageDefault</a></td>
+                <td>Переменная уровня класса принимает string строку для установки по умолчанию названия файла языковых перемен который будет загружаться, если не найден файл указаный в BusEngine.Localization.language. По умолчанию "Belarusian".</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+                <td><i class="fa-solid fa-language"></i></td>
+                <td><a class="link-" href="#">BusEngine.Localization.Language</a></td>
+                <td>Переменная уровня класса принимает string строку для установки названия файла языковых перемен. По умолчанию не установлено, загружается BusEngine.Localization.languageDefault.</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+                <td><i class="fa-solid fa-language"></i></td>
+                <td><a class="link-" href="#">BusEngine.Localization.File</a></td>
+                <td>Переменная уровня класса принимает string строку для установки иного названия файла языковых перемен. По умолчанию не установлено, загружается BusEngine.Localization.language. Если указать своё название, то этот файл должен находиться в папке с названием языка указанным в BusEngine.Localization.language.</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+                <td><i class="fa-solid fa-language"></i></td>
+                <td><a class="link-" href="#">BusEngine.Localization.Format</a></td>
+                <td>Переменная уровня класса принимает string строку для установки расширения файла языковых перемен. По умолчанию "cfg".</td>
               </tr>
               <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-search"></i></td>
-                <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+                <td><i class="fa-solid fa-language"></i></td>
+                <td><a class="link-" href="#">BusEngine.Localization.getLanguage(string)</a></td>
+                <td>Переменная уровня класса принимает string строку для получения из языкоаого файла значение указанной переменной.</td>
               </tr>
             </tbody>
           </table>
