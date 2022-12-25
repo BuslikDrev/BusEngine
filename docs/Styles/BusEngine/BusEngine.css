@@ -1729,7 +1729,7 @@ li .ptype{
     }
     .breadcrumb a{
         display: block;
-        text-transform: lowercase;
+        text-transform: uppercase;
     }
     .hot-left{
         display: none;
