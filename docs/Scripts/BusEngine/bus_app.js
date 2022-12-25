@@ -83,31 +83,10 @@ var busApp = {
 			return true;
 		}
 
-		if (typeof busAppSetting !== 'undefined' && typeof busAppSetting === 'object') {
-			var setting = {'name': 'name'};
-			var setting2 = {'name': 'name2'};
-			var i;
-			for (i in setting) {
-				if (i == 'name') {
-					setting2['name'] = setting['name'];
-				}
-				setting2[i] = setting[i];
+		if (typeof busAppSetting !== 'undefined' && typeof busAppSetting === 'object' && !('composedPath' in setting) && !('bubbles' in setting)) {
+			for (var i in busAppSetting) {
+				busApp.setting[i] = busAppSetting[i];
 			}
-			
-			var func = function(setting) {
-				console.log(setting);
-				var setting2 = {'name': 'name2'};
-				var i;
-				for (i in setting) {
-					if (i == 'name') {
-						setting2['name'] = setting['name'];
-					}
-					setting2[i] = setting[i];
-				}
-			}
-			func(setting);
-
-			window.addEventListener('load', func, {once:true, passive:true});
 		}
 
 		/* if (typeof window.Event !== 'function') {
