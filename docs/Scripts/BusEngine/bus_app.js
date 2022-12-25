@@ -388,7 +388,7 @@ var busApp = {
 				}
 
 				window.navigator.serviceWorker.register('bus_app_install.js?v=' + busApp.setting['cache_token']/* , {
-					scope: './',
+					scope: './BusEngine/',
 					//updateViaCache: 'none', // imports, all, none
 				} */).then(function (registration) {
 					/* if (typeof registration.update === 'function') {
