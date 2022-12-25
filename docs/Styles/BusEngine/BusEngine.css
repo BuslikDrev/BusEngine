@@ -1726,10 +1726,10 @@ li .ptype{
 @media only screen and (max-width : 680px) {
     .top_logo, .navigation, .top_menu{
         display: none;
-        text-transform: lowercase;
     }
     .breadcrumb a{
         display: block;
+        text-transform: lowercase;
     }
     .hot-left{
         display: none;
