@@ -1,13 +1,16 @@
 {
     "dir": "ltr",
-    "name": "Демо2",
+    "name": "API BusEngine",
+    "short_name": "API BusEngine",
+    "description": "API документация по игровому движку BusEngine.",
     "start_url": "/",
-    "display": "fullscreen",
-    "orientation": "portrait-primary",
+    "display": "standalone",
+    "orientation": "any",
     "background_color": "#ffffff",
-    "theme_color": "#ff0000",
-    "lang": "ru",
+    "theme_color": "#000000",
+    "lang": "ru-by",
     "scope": "/",
+    "id": "/",
     "categories": [
         "business"
     ],
