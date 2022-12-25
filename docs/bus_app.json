@@ -3,7 +3,7 @@
     "name": "API BusEngine",
     "short_name": "API BusEngine",
     "description": "API документация по игровому движку BusEngine.",
-    "start_url": "/",
+    "start_url": "/BusEngine/",
     "display": "standalone",
     "orientation": "any",
     "background_color": "#ffffff",
