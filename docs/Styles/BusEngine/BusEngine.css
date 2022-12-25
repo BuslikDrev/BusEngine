@@ -707,7 +707,6 @@ body{
     -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
     margin:0px; padding:0px;
     font-size: 14px;
-    font-weight: bold;
     color: #222;
     /*background: #F2F4F5;*/
     overflow-y: scroll;
