@@ -652,7 +652,7 @@ h1{
 }
 
 h2, .h2{
-    border-bottom: 2px solid  #3EA9D9;
+    border-bottom: 2px solid  #149bed;
     font-size: 1.3em;
     font-weight: normal;
     line-height: 1em;
@@ -854,12 +854,12 @@ html, body{
 
 .navigation ul li.current{
     background: url('Icons/API/list2.png') no-repeat 3px center;
-    background-color:#3ea9d9;
+    background-color:#149bed;
     border-radius:2px;
 }
 .navigation ul li.current{
     background: url('Icons/API/list2.png') no-repeat 3px center;
-    background-color:#3ea9d9;
+    background-color:#149bed;
     border-radius:2px;
 }
 .navigation ul li.current a{
@@ -879,7 +879,7 @@ html, body{
     text-decoration: none; 
     padding: 7px 0 7px 45px;
     line-height: 16px;
-    background: #3ea9d9;
+    background: #149bed;
 
     position: relative; 
     display: inline-block;
@@ -892,7 +892,7 @@ html, body{
     width: 0; height: 0;
     border-top: 35px solid transparent;       
     border-bottom: 35px solid transparent;
-    border-left: 30px solid #3ea9d9;
+    border-left: 30px solid #149bed;
     position: absolute;
 
     top: 50%; left: 100%;
