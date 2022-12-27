@@ -211,8 +211,9 @@ BusEngine.language = {
 		if (BusEngine.cookie.has('googtrans')) {
 			BusEngine.language.setting.lang = BusEngine.cookie.get('googtrans').match(/(?!^\/)[^\/]*$/gm)[0];
 		} else {
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '.' + BusEngine.language.setting.domain, null, 365);
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain, null, 365);
 			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '', null, 365);
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, null, null, 365);
 		}
 
 		var codest = document.querySelector('#language select');
@@ -234,8 +235,9 @@ BusEngine.language = {
 				BusEngine.language.setting.lang = setting.lang;
 			}
 
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '.' + BusEngine.language.setting.domain, null, 365);
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain, null, 365);
 			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '', null, 365);
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, null, null, 365);
 
 			window.location.reload();
 		}
