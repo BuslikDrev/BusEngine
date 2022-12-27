@@ -1,11 +1,10 @@
-body {
+html {scrollbar-color:#606060 transparent;scroll-behavior:smooth;}
+html body {
   width: 100%;
   height: auto;
   margin: 0;
   overflow: hidden;
 }
-
-html {scrollbar-color:#606060 transparent;scroll-behavior:smooth;}
 body::-webkit-scrollbar {
     width: 16px;
     background-color: #272a2d;
@@ -20,7 +19,9 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover {
     background-color: #1179BB80;
 }
-/*start screen*/
+body.languagefix {
+    top: 0 !important;
+}
 
 
 .page_start .body{
@@ -1967,12 +1968,8 @@ table td img {
 table td i {
     font-size: 30px;
 }
-/* .skiptranslate {
+.skiptranslate {
     display: none;
-} */
-#language .skiptranslate.goog-te-gadget {
-    display: block;
-    margin-bottom: 20px;
 }
 #language .skiptranslate.goog-te-gadget {
     display: block;
