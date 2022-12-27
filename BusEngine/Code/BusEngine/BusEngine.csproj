@@ -27,6 +27,9 @@
     <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
     <ErrorReport>none</ErrorReport>
     <WarningLevel>0</WarningLevel>
+    <!-- <BaseOutputPath>..\..\Bin\Debug\</BaseOutputPath> -->
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <!-- <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -137,6 +140,6 @@
       <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup> 
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

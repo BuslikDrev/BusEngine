@@ -30,34 +30,6 @@ https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?t
 */
 
 #define BUSENGINE
-/** API BusEngine.Tools */
-namespace BusEngine.Tools {
-/*
-Зависит от плагинов:
-Newtonsoft.Json
-*/
-	/** API BusEngine.Tools.Json */
-	public class Json : System.IDisposable {
-		public static string SerializeObject(object t) {
-			return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
-		}
-
-		public static object DeserializeObject(string t) {
-			return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
-		}
-
-		public static void Shutdown() {
-			
-		}
-
-		public void Dispose() {
-			
-		}
-	}
-	/** API BusEngine.Tools.Json */
-}
-/** API BusEngine.Tools */
-
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -149,6 +121,132 @@ namespace BusEngine {
 		}
 	}
 	/** API BusEngine.ProjectSettingDefault */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.UI.Canvas
+BusEngine.Video
+*/
+	using Audio = BusEngine.Video;
+	/** API BusEngine.Audio */
+	/* public class Audio : System.IDisposable {
+		
+	} */
+	/** API BusEngine.Audio */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.UI.Canvas
+*/
+	/** API BusEngine.Browser */
+	public class Browser : System.IDisposable {
+		//private Browser() {}
+		//private static Browser _browser;
+		public delegate void PostMessageHandler(object sender, CefSharp.JavascriptMessageReceivedEventArgs e);
+		//public static event PostMessageHandler PostMessage;
+		public static event System.EventHandler<CefSharp.JavascriptMessageReceivedEventArgs> PostMessage;
+
+		/** событие клика из браузера */
+		private static void onBrowserClick(object o, object e) {
+			BusEngine.Log.Info("браузер клик тест 1");
+		}
+
+		private static void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
+			//KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
+			//BusEngine.Browser.Dispose();
+			BusEngine.Log.Info("браузер клик тест 2");
+			BusEngine.Engine.Shutdown();
+		}
+		/** событие клика из браузера */
+
+		/** все события из js браузера */
+		private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
+			BusEngine.Log.Info("браузер клик");
+			string windowSelection = (string)e.Message;
+			if (windowSelection == "Exit") {
+				BusEngine.Engine.Shutdown();
+			}
+		}
+		/** все события из js браузера */
+
+		/** функция запуска браузера */
+		// https://cefsharp.github.io/api/
+		public static void Start(string Url = "") {
+			// если ссылка не обсалютный адрес, то делаем его обсалютным
+			if (Url.IndexOf(':') == -1) {
+				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url))) {
+					Url = "https://BusEngine/" + Url;
+				} else {
+					Url = "https://buslikdrev.by/";
+				}
+			}
+
+			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
+
+			// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
+			CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
+
+			// включаем поддержку экранов с высоким разрешением
+			CefSharp.Cef.EnableHighDPISupport();
+
+			// устанавливаем свой юзер агент
+			settings.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/0.2.0 Safari/537.36";
+			//settings.UserAgent = settings.UserAgent.Replace("Chrome", "BusEngine");
+
+			// отключаем создание файла лога
+			settings.LogSeverity = CefSharp.LogSeverity.Disable;
+
+			//https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
+			// регистрируем свою схему
+			settings.RegisterScheme(new CefSharp.CefCustomScheme {
+				SchemeName = "https",
+				DomainName = "BusEngine",
+				SchemeHandlerFactory = new CefSharp.SchemeHandler.FolderSchemeHandlerFactory (
+					rootFolder: BusEngine.Engine.DataDirectory,
+					hostName: "BusEngine",
+					defaultPage: "index.html"
+				)
+			});
+
+			// применяем наши настройки до запуска браузера
+			CefSharp.Cef.Initialize(settings);
+
+			// запускаем браузер
+			CefSharp.WinForms.ChromiumWebBrowser _browser = new CefSharp.WinForms.ChromiumWebBrowser(Url);
+
+			// просто подключаем левое событие - можно удалить
+			_browser.KeyDown += BusEngine.Browser.OnKeyDown;
+
+			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
+			// подключаем событие сообщения из javascript
+			_browser.JavascriptMessageReceived += OnPostMessage;
+			_browser.JavascriptMessageReceived += PostMessage;
+
+			// устанавливаем размер окана браузера, как в нашей программе
+			//_browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
+			//_browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
+			// подключаем браузер к нашей программе
+			BusEngine.UI.Canvas.WinForm.Controls.Add(_browser);
+		}
+		/** функция запуска браузера */
+
+		public static void Shutdown() {
+
+		}
+
+		public void Dispose() {
+			BusEngine.Log.ConsoleHide();
+		}
+	}
+	/** API BusEngine.Browser */
 }
 /** API BusEngine */
 
@@ -320,6 +418,215 @@ BusEngine.Engine.UI
 		/** функция остановки приложения */
 	}
 	/** API BusEngine.Engine */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+	public class Localization : System.IDisposable {
+		//[Tooltip("Loading a language if the desired one is not available.")]
+		public string languageDefault = "Belarusian";
+		//[Tooltip("Forced language loading")]
+		public string language = "";
+
+		//[Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.")]
+		public string file = "";
+		//[Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt")]
+		public string format = "cfg";
+		//[Tooltip("Translate components located in inactive objects?")]
+		public bool includeInactive = false;
+		//[Tooltip("Replace Resources.load with Bundle.load?")]
+		private bool bundleStatus = false;
+		public delegate void call();
+		private call callbackstart = null;
+		private static System.Collections.Generic.Dictionary<string, string> getLanguages = new System.Collections.Generic.Dictionary<string, string>();
+
+		public static string getLanguage(string key) {
+			if (getLanguages.ContainsKey(key)) {
+				return getLanguages[key];
+			} else {
+				return key;
+			}
+		}
+
+		/* public Localization() {
+			language = language;
+		} */
+
+		public static void setLanguage(string key, string value) {
+			// C# 6.0+
+			getLanguages[key] = value;
+			// C# 4.0+
+			/* if (getLanguages.ContainsKey(key)) {
+				getLanguages.Remove(key);
+			}
+			getLanguages.Add(key, value); */
+		}
+
+		public static bool CallBack(call callback = null) {
+			if (callback != null) {
+				call callbackstart = callback;
+			}
+			
+			return false;
+		}
+
+		public void Start() {
+			StartLocalization(language);
+		}
+
+		public void Load(string Language = null) {
+			StartLocalization(Language);
+		}
+
+		public void reLoad() {
+			/* if (getLanguages.Count > 0) {
+				Component[] results = GetComponentsInChildren(typeof(Text), includeInactive);
+
+				if (results != null) {
+					foreach (Text reslut in results) {
+						if (getLanguages.ContainsKey(reslut.text)) {
+							reslut.text = getLanguages[reslut.text].ToString();
+						}
+					}
+				}
+
+				Component[] results_mesh_pro = GetComponentsInChildren(typeof(TMPro.TextMeshProUGUI), includeInactive);
+
+				if (results_mesh_pro != null) {
+					foreach (TMPro.TextMeshProUGUI reslut in results_mesh_pro) {
+						if (getLanguages.ContainsKey(reslut.text)) {
+							reslut.text = getLanguages[reslut.text].ToString();
+						}
+					}
+				}
+			} */
+		}
+
+		private void StartLocalization(string Language = null) {
+			int n = file.Length;
+			if (n > 0) {
+				file = "/" + file;
+			}
+			string Path, Platform, Files;
+
+			Files = "";
+			if (Language == null || Language == "") {
+				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
+			}
+			//https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
+			Platform = BusEngine.Engine.platform.ToString();
+			//Platform = "WebGLPlayer";
+
+			if (Platform == "WindowsEditor" || Platform == "WindowsPlayer") {
+				Path = BusEngine.Engine.DataDirectory + "../Localization/";
+				if (!System.IO.Directory.Exists(Path)) {
+					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+				}
+				if (!System.IO.Directory.Exists(Path)) {
+					Path = BusEngine.Engine.DataDirectory + "/Resources/Localization/";
+				}
+				if (!System.IO.Directory.Exists(Path)) {
+					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+				}
+			} else {
+				if (Platform == "WebGLPlayer" && !bundleStatus) {
+					Path = "Localization/";
+				} else {
+					//https://docs.unity3d.com/Manual/StreamingAssets.html
+					//https://docs.unity3d.com/ScriptReference/Application-streamingAssetsPath.html
+					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+				}
+			}
+
+			if (Platform == "WebGLPlayer") {
+				//https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
+				//https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
+				/* if (bundleStatus) {
+					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(Path + Language + file + "." + format);
+					//TextAsset resources = bundle.Load<TextAsset>(file + "." + format);
+				} else {
+					//https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
+					TextAsset resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
+					if (resources != null) {
+						Files = resources.text;
+						//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
+						//Resources.UnloadAsset(resources);
+					} else {
+						Language = languageDefault;
+						resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
+						if (resources != null) {
+							Files = resources.text;
+							//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
+							//Resources.UnloadAsset(resources);
+						}
+					}
+				} */
+
+				/* IEnumerator GetText(string url) {
+					UnityWebRequest www = UnityWebRequest.Get(url);
+					yield return www.Send();
+
+					if(www.isError) {
+						Debug.Log(www.error);
+					} else {
+						// Show results as text
+						Debug.Log(www.downloadHandler.text);
+
+						// Or retrieve results as binary data
+						byte[] results = www.downloadHandler.data;
+					}
+				}
+				Files = StartCoroutine(GetText("https://buslikdrev.by/game/StreamingAssets/Localization/Belarusian.txt")).ToString();
+				UnityEngine.Debug.Log(Files); */
+			} else {
+				if (System.IO.File.Exists(Path + Language + file + "." + format)) {
+					Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
+					//byte[] Bytes = File.ReadAllBytes(Path + Language + file + "." + format);
+					//Files = System.Text.Encoding.UTF8.GetString(Bytes);
+				} else {
+					Language = languageDefault;
+					if (System.IO.File.Exists(Path + Language + file + "." + format)) {
+						Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
+						//byte[] Bytes = System.IO.File.ReadAllBytes(Path + Language + file + "." + format);
+						//Files = System.Text.Encoding.UTF8.GetString(Bytes);
+					}
+				}
+			}
+
+			getLanguages["text_debug"] = "" + Path + Language + file + "." + format + "";
+
+			if (Files != "") {
+				getLanguages["text_debug"] = Files;
+				string[] lines, pairs;
+				int i;
+
+				lines = Files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+				Files = null;
+				System.GC.Collect();
+
+				for (i = 0; i < lines.Length; ++i) {
+					pairs = lines[i].Split(new char[] {'='}, 2);
+					if (pairs.Length == 2) {
+						getLanguages[pairs[0].Trim()] = pairs[1].Trim();
+					}
+				}
+			}
+
+			reLoad();
+			if (callbackstart != null) {
+				callbackstart();
+			}
+		}
+
+		public static void Shutdown() {
+
+		}
+
+		public void Dispose() {
+
+		}
+	}
 }
 /** API BusEngine */
 
@@ -649,17 +956,39 @@ namespace BusEngine {
 
 /** API BusEngine */
 namespace BusEngine {
-/*
-Зависит от плагинов:
-BusEngine.UI.Canvas
-BusEngine.Video
-*/
-	using Audio = BusEngine.Video;
-	/** API BusEngine.Audio */
-	/* public class Audio : System.IDisposable {
-		
-	} */
-	/** API BusEngine.Audio */
+	/** API BusEngine.Plugin */
+	public abstract class Plugin {
+		// при заапуске BusEngine до создания формы
+		public virtual void Initialize() { }
+
+		// после загрузки определённого плагина
+		public virtual void Initialize(string plugin) { }
+
+		// перед закрытием BusEngine
+		public virtual void Shutdown() { }
+
+		// перед загрузкой игрового уровня
+		public virtual void OnLevelLoading(string level) { }
+
+		// после загрузки игрового уровня
+		public virtual void OnLevelLoaded(string level) { }
+
+		// когда икрок может управлять главным героем - время игры идёт
+		public virtual void OnGameStart() { }
+
+		// когда время остановлено - пауза
+		public virtual void OnGameStop() { }
+
+		// когда игрок начинает подключаться к серверу
+		public virtual void OnClientConnectionReceived(int channelId) { }
+
+		// когда игрок подключился к серверу
+		public virtual void OnClientReadyForGameplay(int channelId) { }
+
+		// когда игрока выкинуло из сервера - обрыв связи с сервером
+		public virtual void OnClientDisconnected(int channelId) { }
+	}
+	/** API BusEngine.Plugin */
 }
 /** API BusEngine */
 
@@ -806,437 +1135,71 @@ BusEngine.UI.Canvas
 }
 /** API BusEngine */
 
-/** API BusEngine */
-namespace BusEngine {
+/** API BusEngine.Game - пользовательский код для теста */
+namespace BusEngine.Game {
+	/** API BusEngine.Plugin */
+	public class Default : BusEngine.Plugin {
+		// при заапуске BusEngine до создания формы
+		public override void Initialize() {
+			BusEngine.Log.Info("Initialize");
+		}
+
+		// после загрузки определённого плагина
+		public override void Initialize(string plugin) {
+			BusEngine.Log.Info("Initialize " + plugin);
+		}
+
+		// перед закрытием BusEngine
+		public override void Shutdown() {
+			BusEngine.Log.Info("Shutdown");
+		}
+
+		// перед загрузкой игрового уровня
+		public override void OnLevelLoading(string level) {
+			BusEngine.Log.Info("OnLevelLoading");
+		}
+
+		// после загрузки игрового уровня
+		public override void OnLevelLoaded(string level) {
+			BusEngine.Log.Info("OnLevelLoaded");
+		}
+
+		// когда икрок может управлять главным героем - время игры идёт
+		public override void OnGameStart() {
+			BusEngine.Log.Info("OnGameStart");
+		}
+
+		// когда время остановлено - пауза
+		public override void OnGameStop() {
+			BusEngine.Log.Info("OnGameStop");
+		}
+
+		// когда игрок начинает подключаться к серверу
+		public override void OnClientConnectionReceived(int channelId) {
+			BusEngine.Log.Info("OnClientConnectionReceived");
+		}
+
+		// когда игрок подключился к серверу
+		public override void OnClientReadyForGameplay(int channelId) {
+			BusEngine.Log.Info("OnClientReadyForGameplay");
+		}
+
+		// когда игрока выкинуло из сервера - обрыв связи с сервером
+		public override void OnClientDisconnected(int channelId) {
+			BusEngine.Log.Info("OnClientDisconnected");
+		}
+	}
+	/** API BusEngine.Plugin */
+}
+/** API BusEngine.Game - пользовательский код для теста */
+
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
 /*
 Зависит от плагинов:
-BusEngine.UI.Canvas
+Newtonsoft.Json
 */
-	/** API BusEngine.Browser */
-	public class Browser : System.IDisposable {
-		//private Browser() {}
-		//private static Browser _browser;
-
-		/** событие клика из браузера */
-		private static void onBrowserClick(object o, object e) {
-			BusEngine.Log.Info("браузер клик тест 1");
-		}
-
-		private static void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
-			//KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
-			//BusEngine.Browser.Dispose();
-			BusEngine.Log.Info("браузер клик тест 2");
-			BusEngine.Engine.Shutdown();
-		}
-		/** событие клика из браузера */
-
-		/** все события из js браузера */
-		private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
-			BusEngine.Log.Info("браузер клик");
-			string windowSelection = (string)e.Message;
-			if (windowSelection == "Exit") {
-				BusEngine.Engine.Shutdown();
-			}
-		}
-		/** все события из js браузера */
-
-		/** функция запуска браузера */
-		// https://cefsharp.github.io/api/
-		public static void Start(string Url = "") {
-			// если ссылка не обсалютный адрес, то делаем его обсалютным
-			if (Url.IndexOf(':') == -1) {
-				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url))) {
-					Url = "https://BusEngine/" + Url;
-				} else {
-					Url = "https://buslikdrev.by/";
-				}
-			}
-
-			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
-
-			// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
-			CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
-
-			// включаем поддержку экранов с высоким разрешением
-			CefSharp.Cef.EnableHighDPISupport();
-
-			// устанавливаем свой юзер агент
-			settings.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/0.2.0 Safari/537.36";
-			//settings.UserAgent = settings.UserAgent.Replace("Chrome", "BusEngine");
-
-			// отключаем создание файла лога
-			settings.LogSeverity = CefSharp.LogSeverity.Disable;
-
-			//https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
-			// регистрируем свою схему
-			settings.RegisterScheme(new CefSharp.CefCustomScheme {
-				SchemeName = "https",
-				DomainName = "BusEngine",
-				SchemeHandlerFactory = new CefSharp.SchemeHandler.FolderSchemeHandlerFactory (
-					rootFolder: BusEngine.Engine.DataDirectory,
-					hostName: "BusEngine",
-					defaultPage: "index.html"
-				)
-			});
-
-			// применяем наши настройки до запуска браузера
-			CefSharp.Cef.Initialize(settings);
-
-			// запускаем браузер
-			CefSharp.WinForms.ChromiumWebBrowser _browser = new CefSharp.WinForms.ChromiumWebBrowser(Url);
-
-			// просто подключаем левое событие - можно удалить
-			_browser.KeyDown += BusEngine.Browser.OnKeyDown;
-
-			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
-			// подключаем событие сообщения из javascript
-			_browser.JavascriptMessageReceived += OnPostMessage;
-
-			// устанавливаем размер окана браузера, как в нашей программе
-			//_browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
-			//_browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
-			// подключаем браузер к нашей программе
-			BusEngine.UI.Canvas.WinForm.Controls.Add(_browser);
-		}
-		/** функция запуска браузера */
-
-		public static void Shutdown() {
-
-		}
-
-		public void Dispose() {
-			BusEngine.Log.ConsoleHide();
-		}
-	}
-	/** API BusEngine.Browser */
-}
-/** API BusEngine */
-
-/** API BusEngine.UI */
-namespace BusEngine.UI {
-/*
-Зависит от плагинов:
-BusEngine.UI
-*/
-	/** API BusEngine.UI.Canvas */
-	public class Canvas : System.IDisposable {
-		#if (BUSENGINE_WINFORM == true)
-		public static System.Windows.Forms.Form WinForm;
-		#else
-		public static System.Windows.Forms.Form WinForm;
-		//public static BusEngine.UI.Canvas Canvas;
-		#endif
-
-		/** событие нажатия любой кнопки */
-		// https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=netframework-4.8
-		private void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
-			BusEngine.Log.Info("клавиатура клик");
-			BusEngine.Log.Info();
-			// Выключаем движок по нажатию на Esc
-			if (e.KeyCode == System.Windows.Forms.Keys.Escape) {
-				#if (BUSENGINE_WINFORM == true)
-				BusEngine.UI.Canvas.WinForm.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
-				#endif
-				//Dispose();
-				BusEngine.Engine.Shutdown();
-			}
-			// Вкл\Выкл консоль движка по нажатию на ~
-			if (e.KeyCode == System.Windows.Forms.Keys.Oem3) {
-				BusEngine.Log.ConsoleToggle();
-				System.Console.WriteLine("Консоль BusEngine");
-			}
-			// Выкл Видео
-			if (e.KeyCode == System.Windows.Forms.Keys.Space) {
-				BusEngine.Video.Shutdown();
-			}
-		}
-		/** событие нажатия любой кнопки */
-
-		/** событие уничтожения окна */
-		private void OnDisposed(object o, System.EventArgs e) {
-
-		}
-		/** событие уничтожения окна */
-
-		/** событие закрытия окна */
-		private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
-			BusEngine.UI.Canvas.WinForm.FormClosed -= OnClosed;
-			//BusEngine.Video.Shutdown();
-			BusEngine.Engine.Shutdown();
-		}
-		/** событие закрытия окна */
-
-		public static Canvas _canvas;
-
-		public Canvas() {
-			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
-				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
-				// устанавливаем событи закрытия окна
-				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
-				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
-				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
-				System.Console.WriteLine("Консоль BusEngine4444444444444444444444");
-			}
-		}
-
-		public Canvas(System.Windows.Forms.Form _form) {
-			//#if (BUSENGINE_WINFORM == true)
-			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				if (_form != null) {
-					BusEngine.UI.Canvas.WinForm = _form;
-				}
-				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
-				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
-				// устанавливаем событи закрытия окна
-				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
-				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
-				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
-				System.Console.WriteLine("Консоль BusEngine4444444444444444444444");
-			//}
-			//#endif
-		}
-
-		public static void Initialize() {
-			if (_canvas == null) {
-				_canvas = new Canvas();
-			}
-		}
-
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0117:", Target="~T:BusEngine.UI.Canvas")]
-		public static void Initialize(System.Windows.Forms.Form _form) {
-			if (_canvas == null) {
-				//#pragma error disable//, CS0117
-				if (1 == 2) {
-				//BusEngine.UI.Canvas.WinForm = _form;
-				}
-				_canvas = new Canvas(_form);
-			}
-		}
-
-		public static void Shutdown() {
-
-		}
-
-		public void Dispose() {
-			//BusEngine.Log.ConsoleHide();
-		}
-	}
-	/** API BusEngine.UI.Canvas */
-}
-/** API BusEngine.UI */
-
-/** API BusEngine */
-namespace BusEngine {
-	public class Localization : System.IDisposable {
-		//[Tooltip("Loading a language if the desired one is not available.")]
-		public string languageDefault = "Belarusian";
-		//[Tooltip("Forced language loading")]
-		public string language = "";
-
-		//[Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.")]
-		public string file = "";
-		//[Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt")]
-		public string format = "cfg";
-		//[Tooltip("Translate components located in inactive objects?")]
-		public bool includeInactive = false;
-		//[Tooltip("Replace Resources.load with Bundle.load?")]
-		private bool bundleStatus = false;
-		public delegate void call();
-		private call callbackstart = null;
-		private static System.Collections.Generic.Dictionary<string, string> getLanguages = new System.Collections.Generic.Dictionary<string, string>();
-
-		public static string getLanguage(string key) {
-			if (getLanguages.ContainsKey(key)) {
-				return getLanguages[key];
-			} else {
-				return key;
-			}
-		}
-
-		/* public Localization() {
-			language = language;
-		} */
-
-		public static void setLanguage(string key, string value) {
-			// C# 6.0+
-			getLanguages[key] = value;
-			// C# 4.0+
-			/* if (getLanguages.ContainsKey(key)) {
-				getLanguages.Remove(key);
-			}
-			getLanguages.Add(key, value); */
-		}
-
-		public static bool CallBack(call callback = null) {
-			if (callback != null) {
-				call callbackstart = callback;
-			}
-			
-			return false;
-		}
-
-		public void Start() {
-			StartLocalization(language);
-		}
-
-		public void Load(string Language = null) {
-			StartLocalization(Language);
-		}
-
-		public void reLoad() {
-			/* if (getLanguages.Count > 0) {
-				Component[] results = GetComponentsInChildren(typeof(Text), includeInactive);
-
-				if (results != null) {
-					foreach (Text reslut in results) {
-						if (getLanguages.ContainsKey(reslut.text)) {
-							reslut.text = getLanguages[reslut.text].ToString();
-						}
-					}
-				}
-
-				Component[] results_mesh_pro = GetComponentsInChildren(typeof(TMPro.TextMeshProUGUI), includeInactive);
-
-				if (results_mesh_pro != null) {
-					foreach (TMPro.TextMeshProUGUI reslut in results_mesh_pro) {
-						if (getLanguages.ContainsKey(reslut.text)) {
-							reslut.text = getLanguages[reslut.text].ToString();
-						}
-					}
-				}
-			} */
-		}
-
-		private void StartLocalization(string Language = null) {
-			int n = file.Length;
-			if (n > 0) {
-				file = "/" + file;
-			}
-			string Path, Platform, Files;
-
-			Files = "";
-			if (Language == null || Language == "") {
-				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
-			}
-			//https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
-			Platform = BusEngine.Engine.platform.ToString();
-			//Platform = "WebGLPlayer";
-
-			if (Platform == "WindowsEditor" || Platform == "WindowsPlayer") {
-				Path = BusEngine.Engine.DataDirectory + "../Localization/";
-				if (!System.IO.Directory.Exists(Path)) {
-					Path = BusEngine.Engine.DataDirectory + "/Localization/";
-				}
-				if (!System.IO.Directory.Exists(Path)) {
-					Path = BusEngine.Engine.DataDirectory + "/Resources/Localization/";
-				}
-				if (!System.IO.Directory.Exists(Path)) {
-					Path = BusEngine.Engine.DataDirectory + "/Localization/";
-				}
-			} else {
-				if (Platform == "WebGLPlayer" && !bundleStatus) {
-					Path = "Localization/";
-				} else {
-					//https://docs.unity3d.com/Manual/StreamingAssets.html
-					//https://docs.unity3d.com/ScriptReference/Application-streamingAssetsPath.html
-					Path = BusEngine.Engine.DataDirectory + "/Localization/";
-				}
-			}
-
-			if (Platform == "WebGLPlayer") {
-				//https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
-				//https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
-				/* if (bundleStatus) {
-					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(Path + Language + file + "." + format);
-					//TextAsset resources = bundle.Load<TextAsset>(file + "." + format);
-				} else {
-					//https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
-					TextAsset resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
-					if (resources != null) {
-						Files = resources.text;
-						//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
-						//Resources.UnloadAsset(resources);
-					} else {
-						Language = languageDefault;
-						resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
-						if (resources != null) {
-							Files = resources.text;
-							//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
-							//Resources.UnloadAsset(resources);
-						}
-					}
-				} */
-
-				/* IEnumerator GetText(string url) {
-					UnityWebRequest www = UnityWebRequest.Get(url);
-					yield return www.Send();
-
-					if(www.isError) {
-						Debug.Log(www.error);
-					} else {
-						// Show results as text
-						Debug.Log(www.downloadHandler.text);
-
-						// Or retrieve results as binary data
-						byte[] results = www.downloadHandler.data;
-					}
-				}
-				Files = StartCoroutine(GetText("https://buslikdrev.by/game/StreamingAssets/Localization/Belarusian.txt")).ToString();
-				UnityEngine.Debug.Log(Files); */
-			} else {
-				if (System.IO.File.Exists(Path + Language + file + "." + format)) {
-					Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
-					//byte[] Bytes = File.ReadAllBytes(Path + Language + file + "." + format);
-					//Files = System.Text.Encoding.UTF8.GetString(Bytes);
-				} else {
-					Language = languageDefault;
-					if (System.IO.File.Exists(Path + Language + file + "." + format)) {
-						Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
-						//byte[] Bytes = System.IO.File.ReadAllBytes(Path + Language + file + "." + format);
-						//Files = System.Text.Encoding.UTF8.GetString(Bytes);
-					}
-				}
-			}
-
-			getLanguages["text_debug"] = "" + Path + Language + file + "." + format + "";
-
-			if (Files != "") {
-				getLanguages["text_debug"] = Files;
-				string[] lines, pairs;
-				int i;
-
-				lines = Files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
-				Files = null;
-				System.GC.Collect();
-
-				for (i = 0; i < lines.Length; ++i) {
-					pairs = lines[i].Split(new char[] {'='}, 2);
-					if (pairs.Length == 2) {
-						getLanguages[pairs[0].Trim()] = pairs[1].Trim();
-					}
-				}
-			}
-
-			reLoad();
-			if (callbackstart != null) {
-				callbackstart();
-			}
-		}
-
-		public static void Shutdown() {
-
-		}
-
-		public void Dispose() {
-
-		}
-	}
-}
-/** API BusEngine */
-
-/** API BusEngine */
-namespace BusEngine {
+	/** API BusEngine.Tools.Ajax */
 	public class Ajax : System.IDisposable {
 		public delegate void BeforeSend();
 		public delegate void Success(dynamic data = null, dynamic xhr = null);
@@ -1510,7 +1473,7 @@ namespace BusEngine {
 		public static bool Test(string url = "https://buslikdrev.by/") {
 			bool status = false;
 
-			new BusEngine.Ajax(
+			new BusEngine.Tools.Ajax(
 				url: url,
 				async: false,
 				dataType: "pair",
@@ -1576,100 +1539,146 @@ namespace BusEngine {
 		}
 	}
 }
-/** API BusEngine */
+/** API BusEngine.Tools */
 
-/** API BusEngine */
-namespace BusEngine {
-	/** API BusEngine.Plugin */
-	public abstract class Plugin {
-		// при заапуске BusEngine до создания формы
-		public virtual void Initialize() { }
-
-		// после загрузки определённого плагина
-		public virtual void Initialize(string plugin) { }
-
-		// перед закрытием BusEngine
-		public virtual void Shutdown() { }
-
-		// перед загрузкой игрового уровня
-		public virtual void OnLevelLoading(string level) { }
-
-		// после загрузки игрового уровня
-		public virtual void OnLevelLoaded(string level) { }
-
-		// когда икрок может управлять главным героем - время игры идёт
-		public virtual void OnGameStart() { }
-
-		// когда время остановлено - пауза
-		public virtual void OnGameStop() { }
-
-		// когда игрок начинает подключаться к серверу
-		public virtual void OnClientConnectionReceived(int channelId) { }
-
-		// когда игрок подключился к серверу
-		public virtual void OnClientReadyForGameplay(int channelId) { }
-
-		// когда игрока выкинуло из сервера - обрыв связи с сервером
-		public virtual void OnClientDisconnected(int channelId) { }
-	}
-	/** API BusEngine.Plugin */
-}
-/** API BusEngine */
-
-/** API BusEngine.Game - пользовательский код для теста */
-namespace BusEngine.Game {
-	/** API BusEngine.Plugin */
-	public class Default : BusEngine.Plugin {
-		// при заапуске BusEngine до создания формы
-		public override void Initialize() {
-			BusEngine.Log.Info("Initialize");
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+/*
+Зависит от плагинов:
+Newtonsoft.Json
+*/
+	/** API BusEngine.Tools.Json */
+	public class Json : System.IDisposable {
+		public static string SerializeObject(object t) {
+			return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
 		}
 
-		// после загрузки определённого плагина
-		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("Initialize " + plugin);
+		public static object DeserializeObject(string t) {
+			return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
 		}
 
-		// перед закрытием BusEngine
-		public override void Shutdown() {
-			BusEngine.Log.Info("Shutdown");
+		public static void Shutdown() {
+			
 		}
 
-		// перед загрузкой игрового уровня
-		public override void OnLevelLoading(string level) {
-			BusEngine.Log.Info("OnLevelLoading");
-		}
-
-		// после загрузки игрового уровня
-		public override void OnLevelLoaded(string level) {
-			BusEngine.Log.Info("OnLevelLoaded");
-		}
-
-		// когда икрок может управлять главным героем - время игры идёт
-		public override void OnGameStart() {
-			BusEngine.Log.Info("OnGameStart");
-		}
-
-		// когда время остановлено - пауза
-		public override void OnGameStop() {
-			BusEngine.Log.Info("OnGameStop");
-		}
-
-		// когда игрок начинает подключаться к серверу
-		public override void OnClientConnectionReceived(int channelId) {
-			BusEngine.Log.Info("OnClientConnectionReceived");
-		}
-
-		// когда игрок подключился к серверу
-		public override void OnClientReadyForGameplay(int channelId) {
-			BusEngine.Log.Info("OnClientReadyForGameplay");
-		}
-
-		// когда игрока выкинуло из сервера - обрыв связи с сервером
-		public override void OnClientDisconnected(int channelId) {
-			BusEngine.Log.Info("OnClientDisconnected");
+		public void Dispose() {
+			
 		}
 	}
-	/** API BusEngine.Plugin */
+	/** API BusEngine.Tools.Json */
 }
-/** API BusEngine.Game - пользовательский код для теста */
+/** API BusEngine.Tools */
+
+/** API BusEngine.UI */
+namespace BusEngine.UI {
+/*
+Зависит от плагинов:
+BusEngine.UI
+*/
+	/** API BusEngine.UI.Canvas */
+	public class Canvas : System.IDisposable {
+		#if (BUSENGINE_WINFORM == true)
+		public static System.Windows.Forms.Form WinForm;
+		#else
+		public static System.Windows.Forms.Form WinForm;
+		//public static BusEngine.UI.Canvas Canvas;
+		#endif
+
+		/** событие нажатия любой кнопки */
+		// https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=netframework-4.8
+		private void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
+			BusEngine.Log.Info("клавиатура клик");
+			BusEngine.Log.Info();
+			// Выключаем движок по нажатию на Esc
+			if (e.KeyCode == System.Windows.Forms.Keys.Escape) {
+				#if (BUSENGINE_WINFORM == true)
+				BusEngine.UI.Canvas.WinForm.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
+				#endif
+				//Dispose();
+				BusEngine.Engine.Shutdown();
+			}
+			// Вкл\Выкл консоль движка по нажатию на ~
+			if (e.KeyCode == System.Windows.Forms.Keys.Oem3) {
+				BusEngine.Log.ConsoleToggle();
+				System.Console.WriteLine("Консоль BusEngine");
+			}
+			// Выкл Видео
+			if (e.KeyCode == System.Windows.Forms.Keys.Space) {
+				BusEngine.Video.Shutdown();
+			}
+		}
+		/** событие нажатия любой кнопки */
+
+		/** событие уничтожения окна */
+		private void OnDisposed(object o, System.EventArgs e) {
+
+		}
+		/** событие уничтожения окна */
+
+		/** событие закрытия окна */
+		private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
+			BusEngine.UI.Canvas.WinForm.FormClosed -= OnClosed;
+			//BusEngine.Video.Shutdown();
+			BusEngine.Engine.Shutdown();
+		}
+		/** событие закрытия окна */
+
+		public static Canvas _canvas;
+
+		public Canvas() {
+			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
+				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
+				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
+				// устанавливаем событи закрытия окна
+				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
+				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
+				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
+				System.Console.WriteLine("Консоль BusEngine4444444444444444444444");
+			}
+		}
+
+		public Canvas(System.Windows.Forms.Form _form) {
+			//#if (BUSENGINE_WINFORM == true)
+			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
+				if (_form != null) {
+					BusEngine.UI.Canvas.WinForm = _form;
+				}
+				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
+				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
+				// устанавливаем событи закрытия окна
+				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
+				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
+				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
+				System.Console.WriteLine("Консоль BusEngine4444444444444444444444");
+			//}
+			//#endif
+		}
+
+		public static void Initialize() {
+			if (_canvas == null) {
+				_canvas = new Canvas();
+			}
+		}
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0117:", Target="~T:BusEngine.UI.Canvas")]
+		public static void Initialize(System.Windows.Forms.Form _form) {
+			if (_canvas == null) {
+				//#pragma error disable//, CS0117
+				if (1 == 2) {
+				//BusEngine.UI.Canvas.WinForm = _form;
+				}
+				_canvas = new Canvas(_form);
+			}
+		}
+
+		public static void Shutdown() {
+
+		}
+
+		public void Dispose() {
+			//BusEngine.Log.ConsoleHide();
+		}
+	}
+	/** API BusEngine.UI.Canvas */
+}
+/** API BusEngine.UI */
