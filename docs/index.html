@@ -153,12 +153,12 @@
               <tr>
                 <td><i class="fa-solid fa-street-view"></i></td>
                 <td><a class="link-" href="#">Настройка окружения</a></td>
-                <td>Настройка необходимых программ</td>
+                <td>Настройка необходимых программ.</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-book"></i></td>
                 <td><a class="link-" href="#">Готовые примеры</a></td>
-                <td>Подборка готовых примеров</td>
+                <td>Подборка готовых примеров.</td>
               </tr>
             </tbody>
           </table>
@@ -178,42 +178,47 @@
                 <td><a class="link-" href="#">BusEngine.Browser.Start(string)</a></td>
                 <td>Метод уровня класса принимает string строку для запуска браузера и загрузки указанной страницы.</td>
               </tr>
+              <tr>
+                <td><i class="fa-brands fa-chrome"></i></td>
+                <td><a class="link-" href="#">BusEngine.Browser.Shutdown()</a></td>
+                <td>Метод уровня класса для закрытия "BusEngine.Browser".</td>
+              </tr>
               <div id="BusEngine.Engine"></div>
               <tr>
                 <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.generateStatLink()</a></td>
-                <td>Метод уровня класса для генерации перемен уровня класса таких, как BusEngine.Engine.DataDirectory, BusEngine.Engine.Platform и других необходимых действий для работы API BusEngine.</td>
+                <td>Метод уровня класса для генерации перемен уровня класса таких, как "BusEngine.Engine.DataDirectory", "BusEngine.Engine.Platform" и других необходимых действий для работы API BusEngine.</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.DataDirectory</a></td>
-                <td>Переменная уровня класса выводит string строку полного пути до папки файлов проекта</td>
+                <td>Переменная уровня класса выводит string строку полного пути до папки файлов проекта.</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.Platform</a></td>
-                <td>Переменная уровня класса выводит string строку текущей платформы</td>
+                <td>Переменная уровня класса выводит string строку текущей платформы.</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.Shutdown()</a></td>
-                <td>Метод уровня класса для закрытия BusEngine.</td>
+                <td>Метод уровня класса для закрытия "BusEngine".</td>
               </tr>
               <div id="BusEngine.Localization"></div>
               <tr>
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.LanguageDefault</a></td>
-                <td>Переменная уровня класса принимает string строку для установки по умолчанию названия файла языковых перемен который будет загружаться, если не найден файл указаный в BusEngine.Localization.language. По умолчанию "Belarusian".</td>
+                <td>Переменная уровня класса принимает string строку для установки по умолчанию названия файла языковых перемен который будет загружаться, если не найден файл указаный в "BusEngine.Localization.language". По умолчанию "Belarusian".</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.Language</a></td>
-                <td>Переменная уровня класса принимает string строку для установки названия файла языковых перемен. По умолчанию не установлено, загружается BusEngine.Localization.languageDefault.</td>
+                <td>Переменная уровня класса принимает string строку для установки названия файла языковых перемен. По умолчанию не установлено, загружается "BusEngine.Localization.languageDefault".</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.File</a></td>
-                <td>Переменная уровня класса принимает string строку для установки иного названия файла языковых перемен. По умолчанию не установлено, загружается BusEngine.Localization.language. Если указать своё название, то этот файл должен находиться в папке с названием языка указанным в BusEngine.Localization.language.</td>
+                <td>Переменная уровня класса принимает string строку для установки иного названия файла языковых перемен. По умолчанию не установлено, загружается "BusEngine.Localization.language". Если указать своё название, то этот файл должен находиться в папке с названием языка указанным в "BusEngine.Localization.language".</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-language"></i></td>
@@ -223,12 +228,12 @@
               <tr>
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.getLanguage(string)</a></td>
-                <td>Метод уровня класса принимает string строку для получения из языкового файла значение указанной переменной. string text_start_game = BusEngine.Localization.setLanguage("text_start_game"); Если переменной нет в файле, то вернёт название переменной.</td>
+                <td>Метод уровня класса принимает string строку для получения из языкового файла значение указанной переменной. "string text_start_game = BusEngine.Localization.getLanguage("text_start_game");" Если переменной нет в файле, то вернёт название переменной.</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.setLanguage(string, string)</a></td>
-                <td>Метод уровня класса принимает string строку для установки в языковой файл значение указанной переменной. BusEngine.Localization.setLanguage("text_start_game", "Начать игру");</td>
+                <td>Метод уровня класса принимает string строку для установки в языковой файл значение указанной переменной. "BusEngine.Localization.setLanguage("text_start_game", "Начать игру");".</td>
               </tr>
             </tbody>
           </table>
