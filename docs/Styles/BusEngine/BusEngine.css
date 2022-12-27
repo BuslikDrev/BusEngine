@@ -1832,6 +1832,7 @@ select {
     height: 15px;
 }
 
+#language select,
 #version select {
     width:100%;
     height:29px;
@@ -1965,4 +1966,18 @@ table td img {
 }
 table td i {
     font-size: 30px;
+}
+/* .skiptranslate {
+    display: none;
+} */
+#language .skiptranslate.goog-te-gadget {
+    display: block;
+    margin-bottom: 20px;
+}
+#language .skiptranslate.goog-te-gadget {
+    display: block;
+    margin-bottom: 20px;
+}
+#language .skiptranslate.goog-te-gadget select {;
+    margin-bottom: 0;
 }
