@@ -320,10 +320,6 @@ document.addEventListener('busAppBefore', function() {
 	busApp.setting['beforeinstallprompt'] = busAppbeforeinstallprompt;
 });
 
-function googleTranslate() {
-	BusEngine.language.start();
-}
-
 window.addEventListener('DOMContentLoaded', function() {
-	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=googleTranslate&cl=en');
+	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
 });
