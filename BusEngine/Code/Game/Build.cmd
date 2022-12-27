@@ -150,6 +150,8 @@ IF %TypeBuild% == 2 (
 ) ELSE (
 	%MSBuild% %CSProj% %Params%
 )
+REM удалить "obj\*" | delete "obj\*"
+rd "%~dp0obj" /s /q
 
 REM Запуск BusEngine | Start BusEngine
 IF %Type% == 0 (

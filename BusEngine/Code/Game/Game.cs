@@ -132,7 +132,7 @@ BusEngine.UI
 
 
 			BusEngine.Log.Info("============== ajax запустили");
-			BusEngine.Ajax.Test("https://buslikdrev.by/");
+			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
 			BusEngine.Log.Info("============== ajax запустили");
 
 			// создаём форму System.Windows.Forms
@@ -155,11 +155,20 @@ BusEngine.UI
 
 			// запускаем браузер
 			BusEngine.Browser.Start("index.html");
+			
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(_form);
 		}
 		/** функция запуска приложения */
+
+		/* private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
+			BusEngine.Log.Info("браузер клик");
+			string windowSelection = (string)e.Message;
+			if (windowSelection == "Log") {
+				BusEngine.Log.Info("============== Log");
+			}
+		} */
 	}
 
 	// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8

@@ -25,6 +25,9 @@
     <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
     <!-- <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects> -->
     <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
+    <!-- <BaseOutputPath>..\..\Bin\Debug\</BaseOutputPath> -->
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <!-- <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PlatformTarget>x64</PlatformTarget>
