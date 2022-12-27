@@ -211,6 +211,7 @@ BusEngine.language = {
 		if (BusEngine.cookie.has('googtrans')) {
 			BusEngine.language.setting.lang = BusEngine.cookie.get('googtrans').match(/(?!^\/)[^\/]*$/gm)[0];
 		} else {
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '', null, 365);
 			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, null, null, 365);
 		}
 
@@ -228,7 +229,7 @@ BusEngine.language = {
 		}, 'language');
 	},
 	'set': function (setting) {
-		if (typeof setting != 'undefined') {
+		if (typeof setting == 'object' && setting != null) {
 			if ('lang' in setting && typeof setting.lang == 'string') {
 				BusEngine.language.setting.lang = setting.lang;
 			}
