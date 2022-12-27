@@ -223,7 +223,12 @@
               <tr>
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.getLanguage(string)</a></td>
-                <td>Переменная уровня класса принимает string строку для получения из языкоаого файла значение указанной переменной.</td>
+                <td>Метод уровня класса принимает string строку для получения из языкового файла значение указанной переменной. string text_start_game = BusEngine.Localization.setLanguage("text_start_game"); Если переменной нет в файле, то вернёт название переменной.</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-language"></i></td>
+                <td><a class="link-" href="#">BusEngine.Localization.setLanguage(string, string)</a></td>
+                <td>Метод уровня класса принимает string строку для установки в языковой файл значение указанной переменной. BusEngine.Localization.setLanguage("text_start_game", "Начать игру");</td>
               </tr>
             </tbody>
           </table>
