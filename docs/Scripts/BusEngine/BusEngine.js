@@ -198,7 +198,7 @@ BusEngine.loadScript = function(url, callback) {
 BusEngine.language = {
 	'setting': {
 		langDefault: 'ru',
-		lang: 'ru',
+		lang: (window.navigator.language || window.navigator.userLanguage),
 		domain: document.domain
 	},
 	'start': function(setting) {
@@ -208,26 +208,33 @@ BusEngine.language = {
 			}
 		}
 
-		if (BusEngine.cookie.has('googtrans')) {
-			BusEngine.language.setting.lang = BusEngine.cookie.get('googtrans').match(/(?!^\/)[^\/]*$/gm)[0];
-		} else {
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '.' + BusEngine.language.setting.domain, null, 365);
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain, null, 365);
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '', null, 365);
+		if (BusEngine.cookie.has('BusEngineLang')) {
+			BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
 		}
+
+		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
+
+		var x = new google.translate.TranslateElement({
+			pageLanguage: BusEngine.language.setting.langDefault,
+			//includedLanguages: 'be,en,ru,uk',
+			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+		}, 'language');
 
 		var codest = document.querySelector('#language select');
 
 		if (codest) {
 			codest.value = BusEngine.language.setting.lang;
-		}
 
-		var x = new google.translate.TranslateElement({
-			//language: 'ru',
-			pageLanguage: 'ru',
-			//includedLanguages: 'be,en,ru,uk',
-			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-		}, 'language');
+			codest.addEventListener('change', function(e) {
+				if (typeof e == 'object' && e != null && 'target' in e && 'value' in e.target) {
+					//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
+					BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
+					//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
+				}
+			}, false);
+		}
 	},
 	'set': function (setting) {
 		if (typeof setting == 'object' && setting != null) {
@@ -235,9 +242,9 @@ BusEngine.language = {
 				BusEngine.language.setting.lang = setting.lang;
 			}
 
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '.' + BusEngine.language.setting.domain, null, 365);
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain, null, 365);
-			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '', null, 365);
+			//BusEngine.cookie.set('BusEngineLang', BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain, null, 365);
+			BusEngine.cookie.set('BusEngineLang', BusEngine.language.setting.lang, BusEngine.language.setting.domain, null, 365);
+			BusEngine.cookie.set('BusEngineLang', BusEngine.language.setting.lang, '', null, 365);
 
 			window.location.reload();
 		}
