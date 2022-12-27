@@ -1,6 +1,7 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
-
+'use strict';
+'use asm';
 var busApp = {
 	'setting':{
 		browser:{name:'', version:0},

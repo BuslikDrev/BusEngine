@@ -1,3 +1,7 @@
+/* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
+/* © 2016-2023; BuslikDrev - Усе правы захаваны. */
+'use strict';
+'use asm';
 /* Chrome error off/block cookie "'Window': Access is denied for this document." */
 try {
 	window.localStorage.length;
@@ -29,11 +33,213 @@ try {
 	}
 }); */
 
+// Internet Explorer fix
 if (!window.console) {
 	window.console = {};
 	window.console.log = window.console.assert = function(){};
 	window.console.warn = window.console.assert = function(){};
 }
+
+var BusEngine = {};
+
+BusEngine.cookie = {
+	'set': function(name, value, domain, path, day) {
+		if (typeof name == 'undefined' || typeof name != 'string') {
+			return false;
+		}
+
+		if (typeof value == 'undefined' || typeof value != 'string') {
+			value = '';
+		}
+
+		if (typeof domain == 'object' && domain != null) {
+			console.log(domain);
+			if ('path' in domain) {
+				path = domain.path;
+			}
+			if ('day' in domain) {
+				day = domain.day;
+			}
+			if ('domain' in domain) {
+				domain = domain.domain;
+			}
+		}
+
+		if (typeof domain == 'undefined' || typeof domain != 'string') {
+			domain = '.' + document.domain;
+		}
+
+		if (typeof path == 'undefined' || typeof path != 'string') {
+			path = '/';
+		}
+
+		if (typeof day != 'undefined' && 'Date' in window) {
+			var x = new window.Date();
+			x.setUTCSeconds(3600 * 24 * Number(day));
+			day = ' expires=' + x + ';';
+		} else {
+			day = '';
+		}
+
+		document.cookie = name + '=' + value + '; path=' + path + ';' + day + ' domain=' + domain;
+
+		return true;
+	},
+	'get': function(name) {
+		var c = document.cookie;
+
+		if (!c || typeof name == 'undefined' || typeof name != 'string') {
+			return c;
+		}
+
+		//console.log(new RegExp('(' + name + ')\\=(\\S[^\\;]+)'));
+		//console.log(/(name)\=(\S[^\;]+)/);
+
+		c = c.match(new RegExp('(' + name + ')\\=(\\S[^\\;]+)'));
+
+		if (c && c[2]) {
+			return c[2];
+		} else {
+			return '';
+		}
+	},
+	'remove': function(name, value, domain, path) {
+		if (typeof name == 'undefined' || typeof name != 'string') {
+			return false;
+		}
+
+		var v;
+
+		if (typeof value == 'undefined' || typeof value != 'string') {
+			v = '';
+		} else {
+			v = value;
+		}
+
+		if (typeof domain == 'object' && domain != null) {
+			if ('path' in domain) {
+				path = domain.path;
+			}
+			if ('domain' in domain) {
+				domain = domain.domain;
+			}
+		}
+
+		if (typeof domain == 'undefined' || typeof domain != 'string') {
+			domain = '.' + document.domain;
+		}
+
+		if (typeof path == 'undefined' || typeof path != 'string') {
+			path = '/';
+		}
+
+		document.cookie = name + '=' + v + '; expires=01 Jan 0000 00:00:00 GMT; path=' + path + '; domain=';
+		document.cookie = name + '=' + v + '; expires=01 Jan 0000 00:00:00 GMT; path=' + path + '; domain=' + domain;
+
+		return true;
+	},
+	'has': function(name, value) {
+		var c = document.cookie;
+
+		if (!c || typeof name == 'undefined' || typeof name != 'string') {
+			return false;
+		}
+
+		c = c.match(new RegExp('(' + name + ')\\=(\\S[^\\;]+)'));
+
+		if (typeof value == 'undefined' || typeof value != 'string') {
+			if (c && c[1] && c[1] == name) {
+				return true;
+			}
+		} else {
+			if (c && c[2] && c[2] == value) {
+				return true;
+			}
+		}
+
+		return false;
+	},
+	'test': function() {
+		// добавить
+		BusEngine.cookie.set('BusEngine', 'Like');
+		console.log(document.cookie);
+
+		// получить
+		console.log(BusEngine.cookie.get('BusEngine'));
+
+		// проверить
+		console.log(BusEngine.cookie.has('BusEngine'));
+
+		// удалить
+		BusEngine.cookie.remove('BusEngine');
+		console.log(document.cookie);
+
+		// проверить
+		console.log(BusEngine.cookie.has('BusEngine'));
+	}
+};
+
+BusEngine.loadScript = function(url, callback) {
+	var s, ss;
+	s = document.createElement('script');
+	s.type = 'text/javascript';
+	s.src = url;
+	if (typeof callback !== 'undefined') {
+		s.onreadystatechange = callback;
+		s.onload = callback;
+	}
+	ss = document.head;
+	if (ss) {
+		ss.appendChild(s);
+	}
+};
+
+// language
+BusEngine.language = {
+	'setting': {
+		langDefault: 'ru',
+		lang: 'ru',
+		domain: document.domain
+	},
+	'start': function(setting) {
+		if (typeof setting !== 'undefined' && typeof setting === 'object' && !('composedPath' in setting) && !('bubbles' in setting)) {
+			for (var i in setting) {
+				BusEngine.language.setting[i] = setting[i];
+			}
+		}
+
+		if (BusEngine.cookie.has('googtrans')) {
+			BusEngine.language.setting.lang = BusEngine.cookie.get('googtrans').match(/(?!^\/)[^\/]*$/gm)[0];
+		} else {
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, null, null, 365);
+		}
+
+		var codest = document.querySelector('#language select');
+
+		if (codest) {
+			codest.value = BusEngine.language.setting.lang;
+		}
+
+		var x = new google.translate.TranslateElement({
+			//language: 'ru',
+			pageLanguage: 'ru',
+			//includedLanguages: 'be,en,ru,uk',
+			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+		}, 'language');
+	},
+	'set': function (setting) {
+		if (typeof setting != 'undefined') {
+			if ('lang' in setting && typeof setting.lang == 'string') {
+				BusEngine.language.setting.lang = setting.lang;
+			}
+
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, '', null, 365);
+			BusEngine.cookie.set('googtrans', '/auto/' + BusEngine.language.setting.lang, null, null, 365);
+
+			window.location.reload();
+		}
+	}
+};
 
 // bus_app
 var busAppPostXHR = {};
@@ -112,4 +318,12 @@ document.addEventListener('busAppBefore', function() {
 	};
 	busApp.setting['postXHR'] = busAppPostXHR;
 	busApp.setting['beforeinstallprompt'] = busAppbeforeinstallprompt;
+});
+
+function googleTranslate() {
+	BusEngine.language.start();
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=googleTranslate&cl=en');
 });
