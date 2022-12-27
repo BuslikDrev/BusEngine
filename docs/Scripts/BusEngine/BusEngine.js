@@ -222,12 +222,36 @@ BusEngine.language = {
 			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
 		}, 'language');
 
-		var codest = document.querySelector('#language select');
+		var element;
 
-		if (codest) {
-			codest.value = BusEngine.language.setting.lang;
+		/* window.addEventListener('DOMNodeInserted', function(e) {
+			console.log(e);
+		}, false); */
 
-			codest.addEventListener('change', function(e) {
+		setTimeout(function() {
+			element = document.querySelector('.goog-te-banner-frame.skiptranslate');
+
+			if (element && !BusEngine.cookie.has('BusEngineLangHorizontal')) {
+				document.body.classList.remove('languagefix');
+				element.style['display'] = 'block';
+				element.parentNode.style['display'] = 'block';
+
+				var e = element.contentWindow.document.querySelector('.goog-close-link');
+
+				if (e) {
+					e.addEventListener('click', function(e) {
+						BusEngine.cookie.set('BusEngineLangHorizontal', 'none', BusEngine.language.setting.domain);
+					});
+				}
+			}
+		}, 500);
+
+		element = document.querySelector('#language select');
+
+		if (element) {
+			element.value = BusEngine.language.setting.lang;
+
+			element.addEventListener('change', function(e) {
 				if (typeof e == 'object' && e != null && 'target' in e && 'value' in e.target) {
 					//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
 					BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
@@ -242,9 +266,7 @@ BusEngine.language = {
 				BusEngine.language.setting.lang = setting.lang;
 			}
 
-			//BusEngine.cookie.set('BusEngineLang', BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain, null, 365);
 			BusEngine.cookie.set('BusEngineLang', BusEngine.language.setting.lang, BusEngine.language.setting.domain, null, 365);
-			BusEngine.cookie.set('BusEngineLang', BusEngine.language.setting.lang, '', null, 365);
 
 			window.location.reload();
 		}
