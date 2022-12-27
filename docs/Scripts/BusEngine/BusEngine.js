@@ -299,7 +299,7 @@ document.addEventListener('busAppBefore', function() {
 		"closeTime":300000000000,
 		"cache_status":true,
 		"cache_resources":[],
-		"cache_resources_exception":"",
+		"cache_resources_exception":"https://translate.google.com/,https://www.gstatic.com/",
 		"cache_max_ages":604800,
 		"cache_token":1,
 		"notification":"Для возможности подписаться на уведомления, разблокируйте эту функцию в настройках браузера.",
