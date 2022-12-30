@@ -26,7 +26,7 @@ var busApp = {
 		cache_resources:[],
 		cache_resources_exception:"",
 		cache_max_ages:604800,
-		cache_token:1,
+		cache_token:2,
 		notification_status:false,
 		notification_interval:3600,
 		notification_error:true,
