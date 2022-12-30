@@ -3,7 +3,7 @@
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 12.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 /* MSBuild 15.0+        https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels?tabs=windows#android-versions */
 /* Mono                 https://learn.microsoft.com/ru-ru/xamarin/android/deploy-test/building-apps/abi-specific-apks */
 /* ссылки по Android 
@@ -155,7 +155,7 @@ BusEngine.UI.Canvas
 		public static event System.EventHandler<CefSharp.JavascriptMessageReceivedEventArgs> PostMessage;
 
 		/** событие клика из браузера */
-		private static void onBrowserClick(object o, object e) {
+		private static void OnBrowserClick(object o, object e) {
 			BusEngine.Log.Info("браузер клик тест 1");
 		}
 
@@ -279,11 +279,11 @@ BusEngine.Engine.UI
 		/** UI движка */
 		//public static BusEngine.UI.Canvas UI { get; set; }
 		public static string DataDirectory;
-		public static string platform;
+		public static string Platform;
 
 		//private static BusEngine.UI.Canvas _canvas;
 		// MSBuild v12.0
-		public static void generateStatLink() {
+		public static void GenerateStatLink() {
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
 
@@ -425,25 +425,25 @@ BusEngine.Engine.UI
 namespace BusEngine {
 	public class Localization : System.IDisposable {
 		//[Tooltip("Loading a language if the desired one is not available.")]
-		public string languageDefault = "Belarusian";
+		public string LanguageDefault = "Belarusian";
 		//[Tooltip("Forced language loading")]
-		public string language = "";
+		public string Language = "";
 
 		//[Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.")]
-		public string file = "";
+		public string File = "";
 		//[Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt")]
-		public string format = "cfg";
+		public string Format = "cfg";
 		//[Tooltip("Translate components located in inactive objects?")]
-		public bool includeInactive = false;
+		public bool IncludeInactive = false;
 		//[Tooltip("Replace Resources.load with Bundle.load?")]
-		private bool bundleStatus = false;
-		public delegate void call();
-		private call callbackstart = null;
-		private static System.Collections.Generic.Dictionary<string, string> getLanguages = new System.Collections.Generic.Dictionary<string, string>();
+		private bool BundleStatus = false;
+		public delegate void Call();
+		private Call CallbackStart = null;
+		private static System.Collections.Generic.Dictionary<string, string> GetLanguages = new System.Collections.Generic.Dictionary<string, string>();
 
-		public static string getLanguage(string key) {
-			if (getLanguages.ContainsKey(key)) {
-				return getLanguages[key];
+		public static string GetLanguage(string key) {
+			if (BusEngine.Localization.GetLanguages.ContainsKey(key)) {
+				return BusEngine.Localization.GetLanguages[key];
 			} else {
 				return key;
 			}
@@ -455,38 +455,38 @@ namespace BusEngine {
 
 		public static void setLanguage(string key, string value) {
 			// C# 6.0+
-			getLanguages[key] = value;
+			BusEngine.Localization.GetLanguages[key] = value;
 			// C# 4.0+
-			/* if (getLanguages.ContainsKey(key)) {
-				getLanguages.Remove(key);
+			/* if (BusEngine.Localization.GetLanguages.ContainsKey(key)) {
+				BusEngine.Localization.GetLanguages.Remove(key);
 			}
-			getLanguages.Add(key, value); */
+			BusEngine.Localization.GetLanguages.Add(key, value); */
 		}
 
-		public static bool CallBack(call callback = null) {
+		public static bool CallBack(Call callback = null) {
 			if (callback != null) {
-				call callbackstart = callback;
+				Call CallbackStart = callback;
 			}
 			
 			return false;
 		}
 
 		public void Start() {
-			StartLocalization(language);
+			StartLocalization(Language);
 		}
 
 		public void Load(string Language = null) {
 			StartLocalization(Language);
 		}
 
-		public void reLoad() {
-			/* if (getLanguages.Count > 0) {
+		public void ReLoad() {
+			/* if (BusEngine.Localization.GetLanguages.Count > 0) {
 				Component[] results = GetComponentsInChildren(typeof(Text), includeInactive);
 
 				if (results != null) {
 					foreach (Text reslut in results) {
-						if (getLanguages.ContainsKey(reslut.text)) {
-							reslut.text = getLanguages[reslut.text].ToString();
+						if (BusEngine.Localization.GetLanguages.ContainsKey(reslut.text)) {
+							reslut.text = BusEngine.Localization.GetLanguages[reslut.text].ToString();
 						}
 					}
 				}
@@ -495,8 +495,8 @@ namespace BusEngine {
 
 				if (results_mesh_pro != null) {
 					foreach (TMPro.TextMeshProUGUI reslut in results_mesh_pro) {
-						if (getLanguages.ContainsKey(reslut.text)) {
-							reslut.text = getLanguages[reslut.text].ToString();
+						if (BusEngine.Localization.GetLanguages.ContainsKey(reslut.text)) {
+							reslut.text = BusEngine.Localization.GetLanguages[reslut.text].ToString();
 						}
 					}
 				}
@@ -504,9 +504,9 @@ namespace BusEngine {
 		}
 
 		private void StartLocalization(string Language = null) {
-			int n = file.Length;
+			int n = this.File.Length;
 			if (n > 0) {
-				file = "/" + file;
+				this.File = "/" + this.File;
 			}
 			string Path, Platform, Files;
 
@@ -515,7 +515,7 @@ namespace BusEngine {
 				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
 			}
 			//https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
-			Platform = BusEngine.Engine.platform.ToString();
+			Platform = BusEngine.Engine.Platform.ToString();
 			//Platform = "WebGLPlayer";
 
 			if (Platform == "WindowsEditor" || Platform == "WindowsPlayer") {
@@ -530,7 +530,7 @@ namespace BusEngine {
 					Path = BusEngine.Engine.DataDirectory + "/Localization/";
 				}
 			} else {
-				if (Platform == "WebGLPlayer" && !bundleStatus) {
+				if (Platform == "WebGLPlayer" && !BundleStatus) {
 					Path = "Localization/";
 				} else {
 					//https://docs.unity3d.com/Manual/StreamingAssets.html
@@ -542,19 +542,19 @@ namespace BusEngine {
 			if (Platform == "WebGLPlayer") {
 				//https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
 				//https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
-				/* if (bundleStatus) {
-					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(Path + Language + file + "." + format);
-					//TextAsset resources = bundle.Load<TextAsset>(file + "." + format);
+				/* if (BundleStatus) {
+					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(Path + Language + File + "." + format);
+					//TextAsset resources = bundle.Load<TextAsset>(File + "." + format);
 				} else {
 					//https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
-					TextAsset resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
+					TextAsset resources = Resources.Load(Path + Language + File, typeof(TextAsset)) as TextAsset;
 					if (resources != null) {
 						Files = resources.text;
 						//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
 						//Resources.UnloadAsset(resources);
 					} else {
-						Language = languageDefault;
-						resources = Resources.Load(Path + Language + file, typeof(TextAsset)) as TextAsset;
+						Language = LanguageDefault;
+						resources = Resources.Load(Path + Language + File, typeof(TextAsset)) as TextAsset;
 						if (resources != null) {
 							Files = resources.text;
 							//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
@@ -580,24 +580,24 @@ namespace BusEngine {
 				Files = StartCoroutine(GetText("https://buslikdrev.by/game/StreamingAssets/Localization/Belarusian.txt")).ToString();
 				UnityEngine.Debug.Log(Files); */
 			} else {
-				if (System.IO.File.Exists(Path + Language + file + "." + format)) {
-					Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
-					//byte[] Bytes = File.ReadAllBytes(Path + Language + file + "." + format);
+				if (System.IO.File.Exists(Path + Language + File + "." + Format)) {
+					Files = System.IO.File.ReadAllText(Path + Language + File + "." + Format);
+					//byte[] Bytes = File.ReadAllBytes(Path + Language + file + "." + Format);
 					//Files = System.Text.Encoding.UTF8.GetString(Bytes);
 				} else {
-					Language = languageDefault;
-					if (System.IO.File.Exists(Path + Language + file + "." + format)) {
-						Files = System.IO.File.ReadAllText(Path + Language + file + "." + format);
-						//byte[] Bytes = System.IO.File.ReadAllBytes(Path + Language + file + "." + format);
+					Language = LanguageDefault;
+					if (System.IO.File.Exists(Path + Language + File + "." + Format)) {
+						Files = System.IO.File.ReadAllText(Path + Language + File + "." + Format);
+						//byte[] Bytes = System.IO.File.ReadAllBytes(Path + Language + File + "." + Format);
 						//Files = System.Text.Encoding.UTF8.GetString(Bytes);
 					}
 				}
 			}
 
-			getLanguages["text_debug"] = "" + Path + Language + file + "." + format + "";
+			BusEngine.Localization.GetLanguages["text_debug"] = "" + Path + Language + File + "." + Format + "";
 
 			if (Files != "") {
-				getLanguages["text_debug"] = Files;
+				BusEngine.Localization.GetLanguages["text_debug"] = Files;
 				string[] lines, pairs;
 				int i;
 
@@ -608,14 +608,14 @@ namespace BusEngine {
 				for (i = 0; i < lines.Length; ++i) {
 					pairs = lines[i].Split(new char[] {'='}, 2);
 					if (pairs.Length == 2) {
-						getLanguages[pairs[0].Trim()] = pairs[1].Trim();
+						BusEngine.Localization.GetLanguages[pairs[0].Trim()] = pairs[1].Trim();
 					}
 				}
 			}
 
-			reLoad();
-			if (callbackstart != null) {
-				callbackstart();
+			ReLoad();
+			if (CallbackStart != null) {
+				CallbackStart();
 			}
 		}
 
@@ -671,7 +671,7 @@ namespace BusEngine {
 				BusEngine.Log.AllocConsole();
 				BusEngine.Log.StatusConsole = true;
 
-				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.myHandler);
+				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
 				//System.Console.Clear();
 				BusEngine.Log.Info("Консоль BusEngine");
@@ -717,7 +717,7 @@ namespace BusEngine {
 			}
 		}
 
-		protected static void myHandler(object sender, System.ConsoleCancelEventArgs args) {
+		protected static void MyHandler(object sender, System.ConsoleCancelEventArgs args) {
 			/* System.Console.WriteLine("\nThe read operation has been interrupted.");
 
 			System.Console.WriteLine($"  Key pressed: {args.SpecialKey}");
@@ -1208,8 +1208,8 @@ Newtonsoft.Json
 		//private static dynamic E { get; set; }
 		//private HttpRequestException Ex { get; set; }
 		private System.Net.Http.HttpResponseMessage Result { get; set; }
-		public delegate void call();
-		private call httpClientAsync = null;
+		public delegate void Call();
+		private Call HttpClientAsync = null;
 
 		//https://metanit.com/sharp/tutorial/2.9.php
 		public Ajax(string engine = null, string url = null, string[] urlAlternative = null, string metod = "POST", dynamic data = null, string responseType = "text", string dataType = "text", string headers = null, bool async = true, bool cache = false, string user = null, string password = null, BeforeSend beforeSend = null, Success success = null, Error error = null, Complete complete = null) {
@@ -1218,7 +1218,7 @@ Newtonsoft.Json
 			}
 			beforeSend();
 			//BusEngine.Localization.getLanguage("error_server_not")
-			dynamic E = new g();
+			dynamic E = new G();
 
 			if (url != "" && url != null) {
 				try {
@@ -1266,7 +1266,7 @@ Newtonsoft.Json
 				//https://stackoverflow.com/questions/20530152/deciding-between-httpclient-and-webclient
 				if (engine == null || engine.ToLower() != "webclient") {
 					if (async) {
-						httpClientAsync = async () => {
+						HttpClientAsync = async () => {
 							var baseAddress = new System.Uri(url);
 							var cookieContainer = new System.Net.CookieContainer();
 							using (var handler = new System.Net.Http.HttpClientHandler() {
@@ -1367,9 +1367,9 @@ Newtonsoft.Json
 								}
 							}
 						};
-						httpClientAsync();
+						HttpClientAsync();
 					} else {
-						httpClientAsync = () => {
+						HttpClientAsync = () => {
 							var baseAddress = new System.Uri(url);
 							var cookieContainer = new System.Net.CookieContainer();
 							using (var handler = new System.Net.Http.HttpClientHandler() {
@@ -1442,7 +1442,7 @@ Newtonsoft.Json
 								}
 							}
 						};
-						httpClientAsync();
+						HttpClientAsync();
 					}
 				} else {
 					if (async) {
@@ -1519,7 +1519,7 @@ Newtonsoft.Json
 	}
 
 	// заглушка
-	internal class g {
+	internal class G {
 		//public virtual System.Collections.IDictionary Data { get; }
 		//public virtual string? HelpLink { get; set; }
 		//public int HResult { get; set; }
@@ -1533,7 +1533,7 @@ Newtonsoft.Json
 		public string StatusCode { get; set; }
 		//public System.Reflection.MethodBase? TargetSite { get; }
 
-		public g(string text = "") {
+		public G(string text = "") {
 			StatusCode = text;
 			Status = text;
 		}
