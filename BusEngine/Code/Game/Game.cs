@@ -18,8 +18,8 @@ BusEngine.Engine
 BusEngine.Log
 BusEngine.UI
 */
-	//https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/preprocessor-directives
-	//https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/classes-and-structs/constants
+	// https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/preprocessor-directives
+	// https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/classes-and-structs/constants
 	public class Global {
 		//public const bool BUSENGINE_WINFORM = true;
 	}
