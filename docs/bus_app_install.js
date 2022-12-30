@@ -29,7 +29,7 @@ var busApp = {
 		cache_status:false,
 		cache_resources:[],
 		cache_max_ages:604800,
-		cache_token:1,
+		cache_token:2,
 		push_status:false,
 		sync_status:false,
 		debug:false
