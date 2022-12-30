@@ -442,8 +442,8 @@ namespace BusEngine {
 		private static System.Collections.Generic.Dictionary<string, string> GetLanguages = new System.Collections.Generic.Dictionary<string, string>();
 
 		public static string GetLanguage(string key) {
-			if (BusEngine.Localization.GetLanguages.ContainsKey(key)) {
-				return BusEngine.Localization.GetLanguages[key];
+			if (GetLanguages.ContainsKey(key)) {
+				return GetLanguages[key];
 			} else {
 				return key;
 			}
@@ -453,14 +453,14 @@ namespace BusEngine {
 			language = language;
 		} */
 
-		public static void setLanguage(string key, string value) {
+		public static void SetLanguage(string key, string value) {
 			// C# 6.0+
-			BusEngine.Localization.GetLanguages[key] = value;
+			GetLanguages[key] = value;
 			// C# 4.0+
-			/* if (BusEngine.Localization.GetLanguages.ContainsKey(key)) {
-				BusEngine.Localization.GetLanguages.Remove(key);
+			/* if (GetLanguages.ContainsKey(key)) {
+				GetLanguages.Remove(key);
 			}
-			BusEngine.Localization.GetLanguages.Add(key, value); */
+			GetLanguages.Add(key, value); */
 		}
 
 		public static bool CallBack(Call callback = null) {
@@ -480,13 +480,13 @@ namespace BusEngine {
 		}
 
 		public void ReLoad() {
-			/* if (BusEngine.Localization.GetLanguages.Count > 0) {
+			/* if (GetLanguages.Count > 0) {
 				Component[] results = GetComponentsInChildren(typeof(Text), includeInactive);
 
 				if (results != null) {
 					foreach (Text reslut in results) {
-						if (BusEngine.Localization.GetLanguages.ContainsKey(reslut.text)) {
-							reslut.text = BusEngine.Localization.GetLanguages[reslut.text].ToString();
+						if (GetLanguages.ContainsKey(reslut.text)) {
+							reslut.text = GetLanguages[reslut.text].ToString();
 						}
 					}
 				}
@@ -495,8 +495,8 @@ namespace BusEngine {
 
 				if (results_mesh_pro != null) {
 					foreach (TMPro.TextMeshProUGUI reslut in results_mesh_pro) {
-						if (BusEngine.Localization.GetLanguages.ContainsKey(reslut.text)) {
-							reslut.text = BusEngine.Localization.GetLanguages[reslut.text].ToString();
+						if (GetLanguages.ContainsKey(reslut.text)) {
+							reslut.text = GetLanguages[reslut.text].ToString();
 						}
 					}
 				}
@@ -504,9 +504,9 @@ namespace BusEngine {
 		}
 
 		private void StartLocalization(string Language = null) {
-			int n = this.File.Length;
+			int n = File.Length;
 			if (n > 0) {
-				this.File = "/" + this.File;
+				File = "/" + File;
 			}
 			string Path, Platform, Files;
 
@@ -594,10 +594,10 @@ namespace BusEngine {
 				}
 			}
 
-			BusEngine.Localization.GetLanguages["text_debug"] = "" + Path + Language + File + "." + Format + "";
+			GetLanguages["text_debug"] = "" + Path + Language + File + "." + Format + "";
 
 			if (Files != "") {
-				BusEngine.Localization.GetLanguages["text_debug"] = Files;
+				GetLanguages["text_debug"] = Files;
 				string[] lines, pairs;
 				int i;
 
@@ -608,7 +608,7 @@ namespace BusEngine {
 				for (i = 0; i < lines.Length; ++i) {
 					pairs = lines[i].Split(new char[] {'='}, 2);
 					if (pairs.Length == 2) {
-						BusEngine.Localization.GetLanguages[pairs[0].Trim()] = pairs[1].Trim();
+						GetLanguages[pairs[0].Trim()] = pairs[1].Trim();
 					}
 				}
 			}
