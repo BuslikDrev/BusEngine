@@ -45,9 +45,9 @@ BusEngine.UI
 			*/
 
 			// генерируем BusEngine API
-			BusEngine.Engine.generateStatLink();
+			BusEngine.Engine.GenerateStatLink();
 
-			BusEngine.Engine.platform = "BUSENGINE_WINFORM";
+			BusEngine.Engine.Platform = "BUSENGINE_WINFORM";
 
 
 

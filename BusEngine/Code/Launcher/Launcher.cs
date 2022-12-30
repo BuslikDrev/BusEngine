@@ -23,7 +23,7 @@ BusEngine.Browser
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			// генерируем BusEngine API
-			BusEngine.Engine.generateStatLink();
+			BusEngine.Engine.GenerateStatLink();
 
 			// создаём форму System.Windows.Forms
 			BusEngine.Form _form = new Form();
