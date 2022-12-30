@@ -1846,11 +1846,11 @@ select {
 
 #menu_vertical {
     margin-bottom: 20px;
-    top: 0;
+    top: 20px;
     position: -webkit-sticky;
     position: sticky;
     overflow-y: auto;
-    height: 100vh;
+    height: 90vh;
 }
 #menu_vertical [id*="menu-"] {
     opacity: 0;
