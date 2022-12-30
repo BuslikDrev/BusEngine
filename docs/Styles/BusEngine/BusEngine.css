@@ -817,10 +817,8 @@ html, body{
     -ms-flex:1;
     -webkit-flex: 1;
     flex: 1;
-
     vertical-align:top;
     padding: 16px 20px 0px 0px;
-    overflow: hidden;
     position: relative;
     float: left;
 }
@@ -1848,6 +1846,11 @@ select {
 
 #menu_vertical {
     margin-bottom: 20px;
+    top: 0;
+    position: -webkit-sticky;
+    position: sticky;
+    overflow-y: auto;
+    height: 100vh;
 }
 #menu_vertical [id*="menu-"] {
     opacity: 0;
