@@ -204,7 +204,7 @@ BusEngine.UI.Canvas
 			// отключаем создание файла лога
 			settings.LogSeverity = CefSharp.LogSeverity.Disable;
 
-			//https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
+			// https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
 			// регистрируем свою схему
 			settings.RegisterScheme(new CefSharp.CefCustomScheme {
 				SchemeName = "https",
@@ -257,7 +257,7 @@ namespace BusEngine {
 BusEngine.Log
 */
 	/** API BusEngine.Core */
-	//https://habr.com/ru/post/196578/
+	// https://habr.com/ru/post/196578/
 	public class Core {
 
 	}
@@ -290,9 +290,9 @@ BusEngine.Engine.UI
 			// устанавливаем данные проекта по умолчанию
 			BusEngine.ProjectSettingDefault _setting_project = new BusEngine.ProjectSettingDefault();
 
-			//https://metanit.com/sharp/tutorial/5.4.php
-			//https://metanit.com/sharp/tutorial/6.4.php
-			//https://dir.by/developer/csharp/serialization_json/?lang=eng
+			// https://metanit.com/sharp/tutorial/5.4.php
+			// https://metanit.com/sharp/tutorial/6.4.php
+			// https://dir.by/developer/csharp/serialization_json/?lang=eng
 			string _path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
 
 			if (!System.IO.Directory.Exists(_path)) {
@@ -514,7 +514,7 @@ namespace BusEngine {
 			if (Language == null || Language == "") {
 				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
 			}
-			//https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
+			// https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
 			Platform = BusEngine.Engine.Platform.ToString();
 			//Platform = "WebGLPlayer";
 
@@ -533,20 +533,20 @@ namespace BusEngine {
 				if (Platform == "WebGLPlayer" && !BundleStatus) {
 					Path = "Localization/";
 				} else {
-					//https://docs.unity3d.com/Manual/StreamingAssets.html
-					//https://docs.unity3d.com/ScriptReference/Application-streamingAssetsPath.html
+					// https://docs.unity3d.com/Manual/StreamingAssets.html
+					// https://docs.unity3d.com/ScriptReference/Application-streamingAssetsPath.html
 					Path = BusEngine.Engine.DataDirectory + "/Localization/";
 				}
 			}
 
 			if (Platform == "WebGLPlayer") {
-				//https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
-				//https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
+				// https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
+				// https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
 				/* if (BundleStatus) {
 					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(Path + Language + File + "." + format);
 					//TextAsset resources = bundle.Load<TextAsset>(File + "." + format);
 				} else {
-					//https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
+					// https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
 					TextAsset resources = Resources.Load(Path + Language + File, typeof(TextAsset)) as TextAsset;
 					if (resources != null) {
 						Files = resources.text;
@@ -1080,7 +1080,7 @@ BusEngine.UI.Canvas
 			_VLC_VideoView.MediaPlayer.Stopped += BusEngine.Video.onVideoStop;
 			//_VLC_VideoView.MediaPlayer.Stop += videoStop;
 			// проверяем существование поля
-			//https://learn.microsoft.com/ru-ru/dotnet/api/system.type.getfield?view=netframework-4.8
+			// https://learn.microsoft.com/ru-ru/dotnet/api/system.type.getfield?view=netframework-4.8
 			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
 				_VLC_VideoView.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
 				BusEngine.UI.Canvas.WinForm.Controls.Add(_VLC_VideoView);
@@ -1211,7 +1211,7 @@ Newtonsoft.Json
 		public delegate void Call();
 		private Call HttpClientAsync = null;
 
-		//https://metanit.com/sharp/tutorial/2.9.php
+		// https://metanit.com/sharp/tutorial/2.9.php
 		public Ajax(string engine = null, string url = null, string[] urlAlternative = null, string metod = "POST", dynamic data = null, string responseType = "text", string dataType = "text", string headers = null, bool async = true, bool cache = false, string user = null, string password = null, BeforeSend beforeSend = null, Success success = null, Error error = null, Complete complete = null) {
 			if (urlAlternative == null) {
 				urlAlternative = new string[] {"https://buslikdrev.by/", "111111"};
@@ -1249,7 +1249,7 @@ Newtonsoft.Json
 							}
 						}
 					} catch (System.Net.WebException e) {
-						//https://docs.microsoft.com/en-us/dotnet/api/system.net.webexception?view=net-6.0
+						// https://docs.microsoft.com/en-us/dotnet/api/system.net.webexception?view=net-6.0
 						if (e.GetType().GetProperty("Status") != null) {
 							E.Status = e.Status.ToString();
 							E.StatusCode = e.ToString();
@@ -1263,7 +1263,7 @@ Newtonsoft.Json
 			}
 
 			if (url != "" && url != null) {
-				//https://stackoverflow.com/questions/20530152/deciding-between-httpclient-and-webclient
+				// https://stackoverflow.com/questions/20530152/deciding-between-httpclient-and-webclient
 				if (engine == null || engine.ToLower() != "webclient") {
 					if (async) {
 						HttpClientAsync = async () => {
