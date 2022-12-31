@@ -14,7 +14,7 @@ var busApp = {
 			"cache_resources":[],
 			"cache_resources_exception":"https://translate.google.com/,https://www.gstatic.com/",
 			"cache_max_ages":604800,
-			"cache_token":2,
+			"cache_token":3,
 			"push_status":false,
 			"push_service":false,
 			"sync_status":false,

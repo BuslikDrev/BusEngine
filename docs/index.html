@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <meta property="og:locale" content="ru_BY">
@@ -45,9 +47,9 @@
     <link href="Icons/apple-180x180.png" type="image/png" rel="apple-touch-icon" sizes="180x180">
     <link href="Icons/mask-700x700.svg" rel="mask-icon" color="#ffffff">
     <link href="Styles/FontAwesome/css/all.css" type="text/css" rel="stylesheet preload" as="style" media="screen">
-    <link href="Styles/BusEngine/BusEngine.css?v=0.2" type="text/css" rel="stylesheet preload" as="style" media="screen">
-    <link href="Scripts/BusEngine/BusEngine.js?v=0.2" rel="preload" as="script">
-    <script src="Scripts/BusEngine/BusEngine.js?v=0.2"></script>
+    <link href="Styles/BusEngine/BusEngine.css?v=0.3" type="text/css" rel="stylesheet preload" as="style" media="screen">
+    <link href="Scripts/BusEngine/BusEngine.js?v=0.3" rel="preload" as="script">
+    <script src="Scripts/BusEngine/BusEngine.js?v=0.3"></script>
     <script src="Scripts/BusEngine/bus_app.js" async></script>
   </head>
   <body class="languagefix">
@@ -66,7 +68,7 @@
     </header>
     <main class="body">
       <div class="content">
-        <div class="navigation">
+        <div class="navigation col-lg-3 col-md-3">
           <div id="search">
             <form method="get" action="index.html">
               <input type="search" accesskey="f"  placeholder="Поиск не работает..." value="" autocomplete="off">
@@ -152,7 +154,7 @@
             </ul> -->
           </div>
         </div>
-        <div class="doc" id="doc_content">
+        <div id="doc_content" class="doc col-lg-9 col-md-9">
           <div class="breadcrumb">
             <a class="n1" href="index.html">Главная</a>
             <!-- <a class="n2" href="index.html">Главная</a> -->
