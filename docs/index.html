@@ -182,14 +182,32 @@
           <h2 id="api" class="h2">API BusEngine</h2>
           <table>
             <tbody>
-              <div id="BusEngine.Audio"></div>
-              <tr>
+              <tr id="BusEngine.Audio">
                 <td><i class="fa-solid fa-file-audio"></i></td>
                 <td><a class="link-" href="#">BusEngine.Audio.Play(string)</a></td>
-                <td>Метод уровня класса для запуска Аудио файла.</td>
+                <td>Метод уровня класса принимает string строку полного или относительного пути, до Аудио файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp3, wav, ogg.</td>
               </tr>
-              <div id="BusEngine.Browser"></div>
               <tr>
+                <td><i class="fa-solid fa-file-audio"></i></td>
+                <td><a class="link-" href="#">BusEngine.Audio.Stop(string)</a></td>
+                <td>Метод уровня класса принимает string строку полного или относительного пути, до Аудио файла для Остановки Аудио файла, как и "BusEngine.Audio.Shutdown()".</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-audio"></i></td>
+                <td><a class="link-" href="#">BusEngine.Audio.Pause(string)</a></td>
+                <td>Метод уровня класса принимает string строку полного или относительного пути, до Аудио файла для Временной остановки Аудио файла в определённом месте.</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-audio"></i></td>
+                <td><a class="link-" href="#">BusEngine.Audio.Shutdown()</a></td>
+                <td>Метод уровня класса для Остановки Аудио файла.</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-audio"></i></td>
+                <td><a class="link-" href="#">BusEngine.Audio.Dispose()</a></td>
+                <td>Метод уровня класса для Остановки Аудио файла и уничтожения объекта Аудио для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии остановки Аудио "BusEngine.Audio.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Browser">
                 <td><i class="fa-brands fa-chrome"></i></td>
                 <td><a class="link-" href="#">BusEngine.Browser.Start(string)</a></td>
                 <td>Метод уровня класса принимает string строку для запуска браузера и загрузки указанной страницы.</td>
@@ -199,8 +217,7 @@
                 <td><a class="link-" href="#">BusEngine.Browser.Shutdown()</a></td>
                 <td>Метод уровня класса для закрытия "BusEngine.Browser".</td>
               </tr>
-              <div id="BusEngine.Engine"></div>
-              <tr>
+              <tr id="BusEngine.Engine">
                 <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a class="link-" href="#">BusEngine.Engine.GenerateStatLink()</a></td>
                 <td>Метод уровня класса для генерации перемен уровня класса таких, как "BusEngine.Engine.DataDirectory", "BusEngine.Engine.Platform" и других необходимых действий для работы API BusEngine.</td>
@@ -220,8 +237,7 @@
                 <td><a class="link-" href="#">BusEngine.Engine.Shutdown()</a></td>
                 <td>Метод уровня класса для закрытия "BusEngine".</td>
               </tr>
-              <div id="BusEngine.Localization"></div>
-              <tr>
+              <tr id="BusEngine.Localization">
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.LanguageDefault</a></td>
                 <td>Переменная уровня класса принимает string строку для установки по умолчанию названия файла языковых перемен который будет загружаться, если не найден файл указаный в "BusEngine.Localization.Language". По умолчанию "Belarusian".</td>
@@ -250,6 +266,31 @@
                 <td><i class="fa-solid fa-language"></i></td>
                 <td><a class="link-" href="#">BusEngine.Localization.SetLanguage(string, string)</a></td>
                 <td>Метод уровня класса принимает string строку для установки в языковой файл значение указанной переменной. "BusEngine.Localization.SetLanguage("text_start_game", "Начать игру");".</td>
+              </tr>
+              <tr id="BusEngine.Video">
+                <td><i class="fa-solid fa-file-video"></i></td>
+                <td><a class="link-" href="#">BusEngine.Video.Play(string)</a></td>
+                <td>Метод уровня класса принимает string строку полного или относительного пути, до Видео файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp4, wmv, ogv.</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-video"></i></td>
+                <td><a class="link-" href="#">BusEngine.Video.Stop(string)</a></td>
+                <td>Метод уровня класса принимает string строку полного или относительного пути, до Видео файла для Остановки Видео файла, как и "BusEngine.Video.Shutdown()".</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-video"></i></td>
+                <td><a class="link-" href="#">BusEngine.Video.Pause(string)</a></td>
+                <td>Метод уровня класса принимает string строку полного или относительного пути, до Видео файла для Временной остановки Видео файла в определённом месте.</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-video"></i></td>
+                <td><a class="link-" href="#">BusEngine.Video.Shutdown()</a></td>
+                <td>Метод уровня класса для Остановки Видео файла.</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-file-video"></i></td>
+                <td><a class="link-" href="#">BusEngine.Video.Dispose()</a></td>
+                <td>Метод уровня класса для Остановки Видео файла и уничтожения объекта Видео для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии остановки Видео "BusEngine.Video.Shutdown()".</td>
               </tr>
             </tbody>
           </table>
