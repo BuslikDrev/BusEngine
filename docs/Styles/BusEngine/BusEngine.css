@@ -701,13 +701,12 @@ a{
     color:#0067d1;
     text-decoration:none;
 }
-
 /*layout*/
 body{
     height: auto;
     -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
     margin:0px; padding:0px;
-    font-size: 13px;
+    font-size: 14px;
     color: #222;
     /*background: #F2F4F5;*/
     overflow-y: scroll;
@@ -821,10 +820,6 @@ html, body{
     padding: 16px 20px 0px 0px;
     position: relative;
 }
-.navigation li a{
-    color:#666;
-     text-decoration:none;
-}
 
 .navigation li {
     line-height:20px;
@@ -900,180 +895,17 @@ html, body{
     padding-left: 25px;
 }
 
-.breadcrumb a.n2       { background:#6ebfe3; }
+/* .breadcrumb a.n2       { background:#6ebfe3; }
 .breadcrumb a.n2:after { border-left-color:#6ebfe3; }
 .breadcrumb a.n3       { background:#93cfea; }
 .breadcrumb a.n3:after { border-left-color:#93cfea; }
 .breadcrumb a.n4       { background:#B1D9EB;}
 .breadcrumb a.n4:after { border-left-color:#B1D9EB;}
 .breadcrumb a.n5       { background:#B6E0F3; }
-.breadcrumb a.n5:after { border-left-color:#B6E0F3;}
+.breadcrumb a.n5:after { border-left-color:#B6E0F3;} */
 
 .breadcrumb a:hover { background:#4D7DBF; }
 .breadcrumb a:hover:after { border-left-color:#4D7DBF !important; }
-
-
-
-
-
-
-/**
- * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
- * (http://qbnz.com/highlighter/ and http://geshi.org/)
- */
-
-pre{
-    font-family: Consolas, monospace; font-size:14px;
-    background: #F2F4F5;
-    margin: 0;
-    padding: 5px 5px;
-    line-height:1.4em;
-    margin-left: 20px;
-    border-left: 1px dotted #3399cc;
-}
-pre pre{
-    border:none;
-    margin-left: 10px;
-}
-
-.css .de1, .css .de2 {margin:0; padding:0; background:none; vertical-align:top;}
-.css .imp {font-weight: bold; color: red;}
-.css li, .css .li1 {font-weight: normal; vertical-align:top;}
-.css .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
-.css .li2 {font-weight: bold; vertical-align:top;}
-.css .kw1 {color: #000000; font-weight: bold;}
-.css .kw2 {color: #993333;}
-.css .co1 {color: #a1a100;}
-.css .co2 {color: #ff0000; font-style: italic;}
-.css .coMULTI {color: #808080; font-style: italic;}
-.css .es0 {color: #000099; font-weight: bold;}
-.css .es2 {color: #000099; font-weight: bold;}
-.css .br0 {color: #00AA00;}
-.css .sy0 {color: #00AA00;}
-.css .st0 {color: #ff0000;}
-.css .nu0 {color: #cc66cc;}
-.css .re0 {color: #cc00cc;}
-.css .re1 {color: #6666ff;}
-.css .re2 {color: #3333ff;}
-.css .re3 {color: #933;}
-.css .ln-xtra, .css li.ln-xtra, .css div.ln-xtra {background-color: #FDFDE3;}
-.css span.xtra { display:block; }
-
-.html .de1, .html .de2 { margin:0; padding:0; background:none; vertical-align:top;}
-.html .imp {font-weight: bold; color: red;}
-.html li, .html .li1 {font-weight: normal; vertical-align:top;}
-.html .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
-.html .li2 {font-weight: bold; vertical-align:top;}
-.html .kw2 {color: #000000; font-weight: bold;}
-.html .kw3 {color: #000066;}
-.html .es0 {color: #000099; font-weight: bold;}
-.html .br0 {color: #66cc66;}
-.html .sy0 {color: #66cc66;}
-.html .st0 {color: #ff0000;}
-.html .nu0 {color: #cc66cc;}
-.html .sc-2 {color: #404040;}
-.html .sc-1 {color: #808080; font-style: italic;}
-.html .sc0 {color: #00bbdd;}
-.html .sc1 {color: #ddbb00;}
-.html .sc2 {color: #009900;}
-.html .ln-xtra, .html li.ln-xtra, .html div.ln-xtra {background-color: #FDFDE3;}
-.html span.xtra { display:block; }
-
-.js .de1, .js .de2 {margin:0; padding:0; background:none; vertical-align:top;}
-.js .imp {font-weight: bold; color: red;}
-.js li, .js .li1 {font-weight: normal; vertical-align:top;}
-.js .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
-.js .li2 {font-weight: bold; vertical-align:top;}
-.js .kw1 {color: #000066; font-weight: bold;}
-.js .kw2 {color: #003366; font-weight: bold;}
-.js .kw3 {color: #000066;}
-.js .co1 {color: #006600; font-style: italic;}
-.js .co2 {color: #009966; font-style: italic;}
-.js .coMULTI {color: #006600; font-style: italic;}
-.js .es0 {color: #000099; font-weight: bold;}
-.js .br0 {color: #009900;}
-.js .sy0 {color: #339933;}
-.js .st0 {color: #3366CC;}
-.js .nu0 {color: #CC0000;}
-.js .me1 {color: #660066;}
-.js .ln-xtra, .js li.ln-xtra, .js div.ln-xtra {background-color: #FDFDE3;}
-.js span.xtra { display:block; }
-
-.php .de1, .php .de2 {margin:0; padding:0; background:none; vertical-align:top;}
-.php .imp {font-weight: bold; color: red;}
-.php li, .php .li1 {font-weight: normal; vertical-align:top;}
-.php .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
-.php .li2 {font-weight: bold; vertical-align:top;}
-.php .kw1 {color: #b1b100;}
-.php .kw2 {color: #000000; font-weight: bold;}
-.php .kw3 {color: #990000;}
-.php .kw4 {color: #009900; font-weight: bold;}
-.php .co1 {color: #666666; font-style: italic;}
-.php .co2 {color: #666666; font-style: italic;}
-.php .co3 {color: #0000cc; font-style: italic;}
-.php .co4 {color: #009933; font-style: italic;}
-.php .coMULTI {color: #666666; font-style: italic;}
-.php .es0 {color: #000099; font-weight: bold;}
-.php .es1 {color: #000099; font-weight: bold;}
-.php .es2 {color: #660099; font-weight: bold;}
-.php .es3 {color: #660099; font-weight: bold;}
-.php .es4 {color: #006699; font-weight: bold;}
-.php .es5 {color: #006699; font-weight: bold; font-style: italic;}
-.php .es6 {color: #009933; font-weight: bold;}
-.php .es_h {color: #000099; font-weight: bold;}
-.php .br0 {color: #009900;}
-.php .sy0 {color: #339933;}
-.php .sy1 {color: #000000; font-weight: bold;}
-.php .st0 {color: #0000ff;}
-.php .st_h {color: #0000ff;}
-.php .nu0 {color: #cc66cc;}
-.php .nu8 {color: #208080;}
-.php .nu12 {color: #208080;}
-.php .nu19 {color:#800080;}
-.php .me1 {color: #004000;}
-.php .me2 {color: #004000;}
-.php .re0 {color: #000088;}
-.php .ln-xtra, .php li.ln-xtra, .php div.ln-xtra {background-color: #FDFDE3;}
-.php span.xtra { display:block; }
-
-.sql .de1, .sql .de2 {margin:0; padding:0; background:none; vertical-align:top;}
-.sql .imp {font-weight: bold; color: red;}
-.sql li, .sql .li1 {font-weight: normal; vertical-align:top;}
-.sql .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
-.sql .li2 {font-weight: bold; vertical-align:top;}
-.sql .kw1 {color: #993333; font-weight: bold;}
-.sql .co1 {color: #808080; font-style: italic;}
-.sql .coMULTI {color: #808080; font-style: italic;}
-.sql .es0 {color: #000099; font-weight: bold;}
-.sql .br0 {color: #66cc66;}
-.sql .sy0 {color: #66cc66;}
-.sql .st0 {color: #ff0000;}
-.sql .nu0 {color: #cc66cc;}
-.sql .ln-xtra, .sql li.ln-xtra, .sql div.ln-xtra {background-color: #FDFDE3;}
-.sql span.xtra { display:block; }
-
-.xml .de1, .xml .de2 {margin:0; padding:0; background:none; vertical-align:top;}
-.xml .imp {font-weight: bold; color: red;}
-.xml li, .xml .li1 {font-weight: normal; vertical-align:top;}
-.xml .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
-.xml .li2 {font-weight: bold; vertical-align:top;}
-.xml .es0 {color: #000099; font-weight: bold;}
-.xml .br0 {color: #66cc66;}
-.xml .sy0 {color: #66cc66;}
-.xml .st0 {color: #ff0000;}
-.xml .nu0 {color: #cc66cc;}
-.xml .sc-1 {color: #808080; font-style: italic;}
-.xml .sc0 {color: #00bbdd;}
-.xml .sc1 {color: #ddbb00;}
-.xml .sc2 {color: #339933;}
-.xml .sc3 {color: #009900;}
-.xml .re0 {color: #000066;}
-.xml .re1 {color: #000000; font-weight: bold;}
-.xml .re2 {color: #000000; font-weight: bold;}
-.xml .ln-xtra, .xml li.ln-xtra, .xml div.ln-xtra {background-color: #FDFDE3;}
-.xml span.xtra { display:block; }
-
-
 
 /*non-production styles*/
 .error{
@@ -1950,6 +1782,10 @@ select {
     color: #222;
     font-size: 14px;
 }
+#menu_vertical a.active,
+#menu_vertical span.active{
+    color: blue;
+}
 #menu_vertical div a,
 #menu_vertical div span {
     display: block;
@@ -1975,10 +1811,6 @@ select {
     -o-transform: translate(0, 0);
     -ms-transform: translate(0, 0);
 }
-#menu_vertical a:local-link {
-  color: green !important;
-}
-
 table td {
     min-width: 1px;
 }
@@ -2004,8 +1836,8 @@ table td i {
     display: block;
     margin-bottom: 20px;
 }
-#language .skiptranslate.goog-te-gadget select {;
-    margin-bottom: 0;
+#language .skiptranslate.goog-te-gadget select {
+    margin: 0;
 }
 
 /* column */
@@ -2074,3 +1906,188 @@ table td i {
 .col-xs-1{width:8.33333333%;max-width:8.33333333%}
 .hidden-xs,.hidden-xs{display:none!important}
 }
+
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2017 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+
+/* pre{
+    font-family: Consolas, monospace; font-size:14px;
+    background: #F2F4F5;
+    margin: 0;
+    padding: 5px 5px;
+    line-height:1.4em;
+    margin-left: 20px;
+    border-left: 1px dotted #3399cc;
+}
+pre pre{
+    border:none;
+    margin-left: 10px;
+} */
+
+/* .css .de1, .css .de2 {margin:0; padding:0; background:none; vertical-align:top;}
+.css .imp {font-weight: bold; color: red;}
+.css li, .css .li1 {font-weight: normal; vertical-align:top;}
+.css .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.css .li2 {font-weight: bold; vertical-align:top;}
+.css .kw1 {color: #000000; font-weight: bold;}
+.css .kw2 {color: #993333;}
+.css .co1 {color: #a1a100;}
+.css .co2 {color: #ff0000; font-style: italic;}
+.css .coMULTI {color: #808080; font-style: italic;}
+.css .es0 {color: #000099; font-weight: bold;}
+.css .es2 {color: #000099; font-weight: bold;}
+.css .br0 {color: #00AA00;}
+.css .sy0 {color: #00AA00;}
+.css .st0 {color: #ff0000;}
+.css .nu0 {color: #cc66cc;}
+.css .re0 {color: #cc00cc;}
+.css .re1 {color: #6666ff;}
+.css .re2 {color: #3333ff;}
+.css .re3 {color: #933;}
+.css .ln-xtra, .css li.ln-xtra, .css div.ln-xtra {background-color: #FDFDE3;}
+.css span.xtra { display:block; }
+
+.html .de1, .html .de2 { margin:0; padding:0; background:none; vertical-align:top;}
+.html .imp {font-weight: bold; color: red;}
+.html li, .html .li1 {font-weight: normal; vertical-align:top;}
+.html .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.html .li2 {font-weight: bold; vertical-align:top;}
+.html .kw2 {color: #000000; font-weight: bold;}
+.html .kw3 {color: #000066;}
+.html .es0 {color: #000099; font-weight: bold;}
+.html .br0 {color: #66cc66;}
+.html .sy0 {color: #66cc66;}
+.html .st0 {color: #ff0000;}
+.html .nu0 {color: #cc66cc;}
+.html .sc-2 {color: #404040;}
+.html .sc-1 {color: #808080; font-style: italic;}
+.html .sc0 {color: #00bbdd;}
+.html .sc1 {color: #ddbb00;}
+.html .sc2 {color: #009900;}
+.html .ln-xtra, .html li.ln-xtra, .html div.ln-xtra {background-color: #FDFDE3;}
+.html span.xtra { display:block; }
+
+.js .de1, .js .de2 {margin:0; padding:0; background:none; vertical-align:top;}
+.js .imp {font-weight: bold; color: red;}
+.js li, .js .li1 {font-weight: normal; vertical-align:top;}
+.js .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.js .li2 {font-weight: bold; vertical-align:top;}
+.js .kw1 {color: #000066; font-weight: bold;}
+.js .kw2 {color: #003366; font-weight: bold;}
+.js .kw3 {color: #000066;}
+.js .co1 {color: #006600; font-style: italic;}
+.js .co2 {color: #009966; font-style: italic;}
+.js .coMULTI {color: #006600; font-style: italic;}
+.js .es0 {color: #000099; font-weight: bold;}
+.js .br0 {color: #009900;}
+.js .sy0 {color: #339933;}
+.js .st0 {color: #3366CC;}
+.js .nu0 {color: #CC0000;}
+.js .me1 {color: #660066;}
+.js .ln-xtra, .js li.ln-xtra, .js div.ln-xtra {background-color: #FDFDE3;}
+.js span.xtra { display:block; }
+
+.php .de1, .php .de2 {margin:0; padding:0; background:none; vertical-align:top;}
+.php .imp {font-weight: bold; color: red;}
+.php li, .php .li1 {font-weight: normal; vertical-align:top;}
+.php .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.php .li2 {font-weight: bold; vertical-align:top;}
+.php .kw1 {color: #b1b100;}
+.php .kw2 {color: #000000; font-weight: bold;}
+.php .kw3 {color: #990000;}
+.php .kw4 {color: #009900; font-weight: bold;}
+.php .co1 {color: #666666; font-style: italic;}
+.php .co2 {color: #666666; font-style: italic;}
+.php .co3 {color: #0000cc; font-style: italic;}
+.php .co4 {color: #009933; font-style: italic;}
+.php .coMULTI {color: #666666; font-style: italic;}
+.php .es0 {color: #000099; font-weight: bold;}
+.php .es1 {color: #000099; font-weight: bold;}
+.php .es2 {color: #660099; font-weight: bold;}
+.php .es3 {color: #660099; font-weight: bold;}
+.php .es4 {color: #006699; font-weight: bold;}
+.php .es5 {color: #006699; font-weight: bold; font-style: italic;}
+.php .es6 {color: #009933; font-weight: bold;}
+.php .es_h {color: #000099; font-weight: bold;}
+.php .br0 {color: #009900;}
+.php .sy0 {color: #339933;}
+.php .sy1 {color: #000000; font-weight: bold;}
+.php .st0 {color: #0000ff;}
+.php .st_h {color: #0000ff;}
+.php .nu0 {color: #cc66cc;}
+.php .nu8 {color: #208080;}
+.php .nu12 {color: #208080;}
+.php .nu19 {color:#800080;}
+.php .me1 {color: #004000;}
+.php .me2 {color: #004000;}
+.php .re0 {color: #000088;}
+.php .ln-xtra, .php li.ln-xtra, .php div.ln-xtra {background-color: #FDFDE3;}
+.php span.xtra { display:block; }
+
+.sql .de1, .sql .de2 {margin:0; padding:0; background:none; vertical-align:top;}
+.sql .imp {font-weight: bold; color: red;}
+.sql li, .sql .li1 {font-weight: normal; vertical-align:top;}
+.sql .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.sql .li2 {font-weight: bold; vertical-align:top;}
+.sql .kw1 {color: #993333; font-weight: bold;}
+.sql .co1 {color: #808080; font-style: italic;}
+.sql .coMULTI {color: #808080; font-style: italic;}
+.sql .es0 {color: #000099; font-weight: bold;}
+.sql .br0 {color: #66cc66;}
+.sql .sy0 {color: #66cc66;}
+.sql .st0 {color: #ff0000;}
+.sql .nu0 {color: #cc66cc;}
+.sql .ln-xtra, .sql li.ln-xtra, .sql div.ln-xtra {background-color: #FDFDE3;}
+.sql span.xtra { display:block; }
+
+.xml .de1, .xml .de2 {margin:0; padding:0; background:none; vertical-align:top;}
+.xml .imp {font-weight: bold; color: red;}
+.xml li, .xml .li1 {font-weight: normal; vertical-align:top;}
+.xml .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.xml .li2 {font-weight: bold; vertical-align:top;}
+.xml .es0 {color: #000099; font-weight: bold;}
+.xml .br0 {color: #66cc66;}
+.xml .sy0 {color: #66cc66;}
+.xml .st0 {color: #ff0000;}
+.xml .nu0 {color: #cc66cc;}
+.xml .sc-1 {color: #808080; font-style: italic;}
+.xml .sc0 {color: #00bbdd;}
+.xml .sc1 {color: #ddbb00;}
+.xml .sc2 {color: #339933;}
+.xml .sc3 {color: #009900;}
+.xml .re0 {color: #000066;}
+.xml .re1 {color: #000000; font-weight: bold;}
+.xml .re2 {color: #000000; font-weight: bold;}
+.xml .ln-xtra, .xml li.ln-xtra, .xml div.ln-xtra {background-color: #FDFDE3;}
+.xml span.xtra { display:block; } */
+
+.csharp {white-space: nowrap;border: 1px dotted #a0a0a0; font-family: monospace; font-size: 110%; background-color: #f0f0f0; margin: 0; line-height: 110%; padding: 0; color: #000; overflow: auto;}
+.csharp ol{display: table; width: 100%; width: -webkit-fill-available; margin: 0;}
+.csharp .de1,
+.csharp .de2 {color: #000060;}
+.csharp a:link {color: #006;}
+.csharp a:hover {background-color: #d6d6e6;}
+.csharp .imp {font-weight: bold; color: red;}
+.csharp li, .csharp .li1 {color: #000060; background-color: #ffffff; padding-bottom: 2px; font-weight: normal; line-height: 1.2;}
+.csharp .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.csharp .kw1 {color: #0600FF; font-weight: bold;}
+.csharp .kw2 {color: #FF8000; font-weight: bold;}
+.csharp .kw3 {color: #008000;}
+.csharp .kw4 {color: #b31bff; font-weight: bold;}
+.csharp .kw5 {color: #000000;}
+.csharp .co1 {color: #008080;}
+.csharp .co2 {color: #008080;}
+.csharp .co3 {color: #008080;}
+.csharp .coMULTI {color: #008080;}
+.csharp .es0 {color: #008080; font-weight: bold;font-weight: normal;}
+.csharp .es_h {color: #008080; font-weight: bold;}
+.csharp .br0 {color: #008000;}
+.csharp .sy0 {color: #008000;}
+.csharp .st0 {color: #666666;}
+.csharp .st_h {color: #666666;}
+.csharp .nu0 {color: #FF0000;}
+.csharp .me1 {color: #0000FF;}
+.csharp .me2 {color: #0000FF;}
+.csharp span.xtra { display:block; }
