@@ -1830,10 +1830,10 @@ table td i {
     font-size: 30px;
 }
 .skiptranslate {
-    display: none;
+    display: none !important;
 }
 #language .skiptranslate.goog-te-gadget {
-    display: block;
+    display: block !important;
     margin-bottom: 20px;
 }
 #language .skiptranslate.goog-te-gadget select {
