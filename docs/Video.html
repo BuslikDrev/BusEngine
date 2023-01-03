@@ -186,8 +186,8 @@
 <li class="li1"><div class="de1"><span class="kw1">namespace</span> BusEngine<span class="sy0">.</span><span class="me1">Game</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI">/** API BusEngine.Plugin */</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw4">class</span> MyPlugin <span class="sy0">:</span> BusEngine<span class="sy0">.</span><span class="me1">Plugin</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// после загрузки определённого плагина</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Initialize<span class="br0">(</span><span class="kw4">string</span> plugin<span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// при заапуске BusEngine до создания формы</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Initialize<span class="br0">()</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Video</span><span class="sy0">.</span><span class="me1">Play</span><span class="br0">(</span><span class="st0">"Videos/BusEngine.mp4"</span>)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
