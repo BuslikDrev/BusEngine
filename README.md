@@ -22,6 +22,8 @@
 
 Для кроссплатформенности (для сборки игры под Android) планируется использовать MSBuild 2017 и Xamarin с Android SDK API 25. Лаунчер движка будет объяснять, что необходимо скачать.
 
+![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/image_1.jpg)
+
 ## Инструкция по сборке
 
 - установить [MicroSoft Build Tools 2013 v12.0](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760) (возможно новее версия тоже подойдёт);
