@@ -146,17 +146,17 @@
             <tbody>
               <tr>
                 <td><i class="fa-solid fa-sliders"></i></td>
-                <td><a nohref="Possibilities.html">Возможности движка</a></td>
+                <td><a href="Possibilities.html">Возможности движка</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-street-view"></i></td>
-                <td><a nohref="Environment.html">Настройка окружения</a></td>
+                <td><a href="Environment.html">Настройка окружения</a></td>
                 <td>Настройка необходимых программ.</td>
               </tr>
               <tr>
                 <td><i class="fa-solid fa-book"></i></td>
-                <td><a nohref="Examples.html">Готовые примеры</a></td>
+                <td><a href="Examples.html">Готовые примеры</a></td>
                 <td>Подборка готовых примеров.</td>
               </tr>
             </tbody>
@@ -175,10 +175,35 @@
                 <td><a href="Browser.html">BusEngine.Browser</a></td>
                 <td>Класс отвечающий за работу с Web файлами (htm, html, css, js, xml и т.д.). Это Web браузер движка.</td>
               </tr>
+              <tr id="BusEngine.Camera">
+                <td><i class="fa-solid fa-video"></i></td>
+                <td><a href="Camera.html">BusEngine.Camera</a></td>
+                <td>Класс отвечающий за работу виртуальной камеры игрока. Это глаза в 2D,3D мир движка.</td>
+              </tr>
+              <tr id="BusEngine.Core">
+                <td><i class="fa-brands fa-codepen"></i></td>
+                <td><a nohref="Core.html">BusEngine.Core</a></td>
+                <td>Пока не знаю зачем это создавать.</td>
+              </tr>
               <tr id="BusEngine.Engine">
                 <td><i class="fa-solid fa-user-gear"></i></td>
                 <td><a href="Engine.html">BusEngine.Engine</a></td>
                 <td>Класс отвечающий за главные параметры движка.</td>
+              </tr>
+              <tr id="BusEngine.FlowGraph">
+                <td><i class="fa-solid fa-diagram-project"></i></td>
+                <td><a nohref="FlowGraph.html">BusEngine.FlowGraph</a></td>
+                <td>Класс отвечающий за визуальное программирование. Это визуальное управление готовыми функциями на основе текущего API движка.</td>
+              </tr>
+              <tr id="BusEngine.Layer">
+                <td><i class="fa-solid fa-layer-group"></i></td>
+                <td><a nohref="Layer.html">BusEngine.Layer</a></td>
+                <td>Класс отвечающий за разделение объектов уровня на слои. Это разделитель объектов размещённых в уровне движка.</td>
+              </tr>
+              <tr id="BusEngine.Level">
+                <td><i class="fa-solid fa-database"></i></td>
+                <td><a nohref="Level.html">BusEngine.Level</a></td>
+                <td>Класс отвечающий за хранение данных виртуального мира и размещённых в нём объектов (модели, специальные эффекты, шейдеры, текстуры, аудио, видео, скрипты, сценарии и т.д.).</td>
               </tr>
               <tr id="BusEngine.Localization">
                 <td><i class="fa-solid fa-language"></i></td>
@@ -190,10 +215,30 @@
                 <td><a href="Log.html">BusEngine.Log</a></td>
                 <td>Класс отвечающий за отладку кода. Это консоль движка.</td>
               </tr>
+              <tr id="BusEngine.Material">
+                <td><i class="fa-solid fa-swatchbook"></i></td>
+                <td><a href="Material.html">BusEngine.Material</a></td>
+                <td>Класс отвечающий за хранение и обработку текстур. Это редактор (настройка) текстур движка.</td>
+              </tr>
+              <tr id="BusEngine.Model">
+                <td><i class="fa-solid fa-cube"></i></td>
+                <td><a href="Model.html">BusEngine.Model</a></td>
+                <td>Класс отвечающий за хранение данных 3D объектов и конвертацию этих данных между форматами хранения. Это редактор 3D моделей движка.</td>
+              </tr>
+              <tr id="BusEngine.Physics">
+                <td><i class="fa-brands fa-grav"></i></td>
+                <td><a href="Physics.html">BusEngine.Physics</a></td>
+                <td>Класс отвечающий за обработку данных по каждому объекту согласно законам физики. Это система поведения объектов в виртуальном мире движка.</td>
+              </tr>
               <tr id="BusEngine.Plugin">
                 <td><i class="fa-solid fa-puzzle-piece"></i></td>
                 <td><a href="Plugin.html">BusEngine.Plugin</a></td>
                 <td>Класс отвечающий за проверку наличия сторонних плагинов и запуск их методов в определённые моменты работы движка. Это система плагинов движка.</td>
+              </tr>
+              <tr id="BusEngine.Rendering">
+                <td><i class="fa-solid fa-draw-polygon"></i></td>
+                <td><a href="Rendering.html">BusEngine.Rendering</a></td>
+                <td>Класс отвечающий за обработку (расчёт) математических данных всех оъектов для правильной и быстрой их отрисовки в Камеру игрока и выводу на экран. Это построение виртуального мира движка.</td>
               </tr>
               <tr id="BusEngine.Tools.Ajax">
                 <td><i class="fa-solid fa-code-compare"></i></td>
@@ -208,7 +253,12 @@
               <tr id="BusEngine.UI.Canvas">
                 <td><i class="fa-solid fa-desktop"></i></td>
                 <td><a href="UI.Canvas.html">BusEngine.UI.Canvas</a></td>
-                <td>Класс отвечающий за работу вывода графических объектов на экран. Применяется технология WinForms, WPF, Xamarin.Forms. Это связующий элемент движка с экраном устройства.</td>
+                <td>Класс отвечающий за работу вывода графических объектов на экран. Применяется технология WinForms, WPF, Xamarin.Forms. Это связующий элемент Камеры движка с экраном устройства.</td>
+              </tr>
+              <tr id="BusEngine.Vector">
+                <td><i class="fa-solid fa-vector-square"></i></td>
+                <td><a href="Vector.html">BusEngine.Vector</a></td>
+                <td>Класс отвечающий за возможность манипулировать объектами. Это редактор координат, размеров объектов движка.</td>
               </tr>
               <tr id="BusEngine.Video">
                 <td><i class="fa-solid fa-file-video"></i></td>

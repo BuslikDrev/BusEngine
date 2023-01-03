@@ -27,9 +27,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-TileImage" content="Icons/msapplication-144x144.png">
     <meta name="theme-color" content="#ff0000">
-    <title>Localization | API BusEngine</title>
+    <title>Material | API BusEngine</title>
     <base href="">
-    <link href="https://buslikdrev.github.io/BusEngine/Localization.html" rel="canonical">
+    <link href="https://buslikdrev.github.io/BusEngine/Material.html" rel="canonical">
     <link href="bus_app.json?v=1.0.13.3" type="application/json" rel="manifest">
     <link href="Icons/favicon-16x16.png" type="image/png" rel="icon" sizes="16x16">
     <link href="Icons/favicon-32x32.png" type="image/png" rel="icon" sizes="32x32">
@@ -103,9 +103,9 @@
                     <a href="FlowGraph.html" class="lastfix red">BusEngine.FlowGraph (Class)</a>
                     <a href="Layer.html" class="lastfix black">BusEngine.Layer (Class)</a>
                     <a href="Level.html" class="lastfix black">BusEngine.Level (Class)</a>
-                    <a href="Localization.html" class="lastfix red active">BusEngine.Localization (Class)</a>
+                    <a href="Localization.html" class="lastfix red">BusEngine.Localization (Class)</a>
                     <a href="Log.html" class="lastfix red">BusEngine.Log (Class)</a>
-                    <a href="Material.html" class="lastfix black">BusEngine.Material (Class)</a>
+                    <a href="Material.html" class="lastfix black active">BusEngine.Material (Class)</a>
                     <a href="Model.html" class="lastfix black">BusEngine.Model (Class)</a>
                     <a href="Physics.html" class="lastfix black">BusEngine.Physics (Class)</a>
                     <a href="Plugin.html" class="lastfix red">BusEngine.Plugin (Class)</a>
@@ -136,7 +136,7 @@
             <a class="n1" href="index.html">Главная</a>
           </div>
           <p>BusEngine.dll</p>
-          <h1>BusEngine.Localization (Class)</h1>
+          <h1>BusEngine.Material (Class)</h1>
           <p>Тут описание...</p>
           <h2 id="Constants" class="h2">Константы</h2>
           <table>
@@ -146,40 +146,12 @@
           <h2 id="Fields" class="h2">Поля</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.Localization.LanguageDefault">
-                <td><a href="#BusEngine.Localization.LanguageDefault">(string)BusEngine.Localization.LanguageDefault</a></td>
-                <td>Поле уровня класса принимает string строку для установки по умолчанию названия файла языковых перемен который будет загружаться, если не найден файл указаный в "BusEngine.Localization.Language". По умолчанию "Belarusian".</td>
-              </tr>
-              <tr id="BusEngine.Localization.Language">
-                <td><a href="#BusEngine.Localization.Language">(string)BusEngine.Localization.Language</a></td>
-                <td>Поле уровня класса принимает string строку для установки названия файла языковых перемен, который нужно загрузить сейчас. По умолчанию не установлено, загружается "BusEngine.Localization.LanguageDefault".</td>
-              </tr>
-              <tr id="BusEngine.Localization.File">
-                <td><a href="#BusEngine.Localization.File">(string)BusEngine.Localization.File</a></td>
-                <td>Поле уровня класса принимает string строку для установки иного названия файла языковых перемен. По умолчанию не установлено, загружается "BusEngine.Localization.Language". Если указать своё название, то этот файл должен находиться в папке с названием языка указанным в "BusEngine.Localization.Language".</td>
-              </tr>
-              <tr id="BusEngine.Localization.Format">
-                <td><a href="#BusEngine.Localization.Format">(string)BusEngine.Localization.Format</a></td>
-                <td>Поле уровня класса принимает string строку для установки расширения файла языковых перемен. По умолчанию "cfg".</td>
-              </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.Localization.GetLanguage">
-                <td><a href="#BusEngine.Localization.GetLanguage">(string)BusEngine.Localization.GetLanguage(string)</a></td>
-                <td>Метод (статический) уровня класса принимает string строку для получения из языкового файла значение указанной переменной. "string text_start_game = BusEngine.Localization.GetLanguage("text_start_game");" Если переменной нет в файле, то вернёт название переменной.</td>
-              </tr>
-              <tr id="BusEngine.Localization.SetLanguage">
-                <td><a href="#BusEngine.Localization.SetLanguage">(void)BusEngine.Localization.SetLanguage(string, string)</a></td>
-                <td>Метод (статический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. "BusEngine.Localization.SetLanguage("text_start_game", "Начать игру");".</td>
-              </tr>
-              <tr id="BusEngine.Localization.Load">
-                <td><a href="#BusEngine.Localization.Load">(void)BusEngine.Localization.Load(string)</a></td>
-                <td>Метод (статический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. "BusEngine.Localization.SetLanguage("text_start_game", "Начать игру");".</td>
-              </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
@@ -188,7 +160,7 @@
             <tbody>
             </tbody>
           </table>
-          <h2 id="api" class="h2">Пример файла Program.cs</h2>
+          <h2 id="Example" class="h2">Пример файла Program.cs</h2>
           <p>В коде отражён запуск перевода при старте своего плагина с названием MyPlugin.</p>
           <div class="csharp">
 
