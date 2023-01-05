@@ -29,6 +29,8 @@ BusEngine.UI
 	}
 
 	internal class Start {
+        private static System.Threading.Mutex Mutex;
+
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
@@ -48,19 +50,24 @@ BusEngine.UI
 			}
 			*/
 
+			// допускаем только один запуск
+            /* bool createdNew;
+            Mutex = new System.Threading.Mutex(true, "0968cb8e-b0e3-46c7-96a9-2efb99223941", out createdNew);
+            if (!createdNew) {
+                //System.Windows.Forms.MessageBox.Show("Программа уже запущена.");
+
+				System.Windows.Forms.Application.Exit();
+
+                return;
+            } */
+
+			//Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory);
+			//Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)
+
 			// генерируем BusEngine API
 			BusEngine.Engine.GenerateStatLink();
 
 			BusEngine.Engine.Platform = "BUSENGINE_WINFORM";
-
-
-
-			
-			
-			//Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory);
-			//Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)
-
-			
 
 			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			//BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
@@ -82,7 +89,7 @@ BusEngine.UI
 			BusEngine.Log.Info("xxxxxxxxxxx");
 			
 			
-			
+			//BusEngine.Log.Info(System.Runtime.InteropServices.GuidAttribute.GetHashCode());
 			
 			//проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
 			
@@ -229,9 +236,9 @@ BusEngine.UI
 
 		private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
 			//BusEngine.Log.Info("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
-			BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
-			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
-			BusEngine.UI.Canvas.WinForm.Invalidate();
+			//BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
+			//BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
+			//BusEngine.UI.Canvas.WinForm.Invalidate();
 		}
 
 		private static int FPS = 0;
