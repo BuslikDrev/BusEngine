@@ -2,7 +2,7 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* NET.Framework 4.6.2+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 /* MSBuild 15.0+        https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels?tabs=windows#android-versions */
 /* Mono                 https://learn.microsoft.com/ru-ru/xamarin/android/deploy-test/building-apps/abi-specific-apks */
@@ -185,7 +185,7 @@ BusEngine.UI.Canvas
 				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url))) {
 					Url = "https://BusEngine/" + Url;
 				} else {
-					Url = "https://buslikdrev.by/";
+					Url = "<b>ПРОВЕРЬТЕ ПУТЬ К ФАЙЛУ</b>";
 				}
 			}
 
@@ -428,15 +428,15 @@ namespace BusEngine {
 		public string LanguageDefault = "Belarusian";
 		//[Tooltip("Forced language loading")]
 		public string Language = "";
-
 		//[Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.")]
 		public string File = "";
 		//[Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt")]
 		public string Format = "cfg";
 		//[Tooltip("Translate components located in inactive objects?")]
-		public bool IncludeInactive = false;
+		private bool IncludeInactive = false;
 		//[Tooltip("Replace Resources.load with Bundle.load?")]
 		private bool BundleStatus = false;
+
 		public delegate void Call();
 		private Call CallbackStart = null;
 		private static System.Collections.Generic.Dictionary<string, string> GetLanguages = new System.Collections.Generic.Dictionary<string, string>();
@@ -472,6 +472,9 @@ namespace BusEngine {
 		}
 
 		public void Start() {
+			if (Language == null || Language == "") {
+				Language = LanguageDefault.ToString();
+			}
 			StartLocalization(Language);
 		}
 
@@ -670,7 +673,7 @@ namespace BusEngine {
 				BusEngine.Log.AttachConsole(-1);
 				BusEngine.Log.AllocConsole();
 				BusEngine.Log.StatusConsole = true;
-
+				System.Console.Title = "Console BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
 				//System.Console.Clear();
