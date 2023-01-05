@@ -34,7 +34,7 @@ namespace BusEngine.Game {
 			BusEngine.Log.Info("MyPlugin OnLevelLoaded");
 		}
 
-		// когда икрок может управлять главным героем - время игры идёт
+		// когда игрок может управлять главным героем - время игры идёт
 		public override void OnGameStart() {
 			BusEngine.Log.Info("MyPlugin OnGameStart");
 		}
