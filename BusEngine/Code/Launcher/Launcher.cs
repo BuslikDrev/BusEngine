@@ -24,19 +24,19 @@ BusEngine.Browser
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
+			// генерируем BusEngine API
+			BusEngine.Engine.GenerateStatLink();
+
 			// допускаем только один запуск
-            bool createdNew;
-            Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
-            if (!createdNew) {
-                //System.Windows.Forms.MessageBox.Show("Программа уже запущена.");
+			bool createdNew;
+			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
+			if (!createdNew) {
+				//System.Windows.Forms.MessageBox.Show("Программа уже запущена.");
 
 				System.Windows.Forms.Application.Exit();
 
-                return;
-            }
-
-			// генерируем BusEngine API
-			BusEngine.Engine.GenerateStatLink();
+				return;
+			}
 
 			// создаём форму System.Windows.Forms
 			BusEngine.Form _form = new Form();

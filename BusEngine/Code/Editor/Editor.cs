@@ -28,15 +28,15 @@ BusEngine.Browser
 			BusEngine.Engine.GenerateStatLink();
 
 			// допускаем только один запуск
-            bool createdNew;
-            Mutex = new System.Threading.Mutex(true, "28cb03ec-5416-439d-81a7-b530e7a54c2a", out createdNew);
-            if (!createdNew) {
+			bool createdNew;
+			Mutex = new System.Threading.Mutex(true, "28cb03ec-5416-439d-81a7-b530e7a54c2a", out createdNew);
+			if (!createdNew) {
 				if (System.Windows.Forms.MessageBox.Show("Программа уже запущена. Продолжить запуск копии?", System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine уже запущен", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No) {
 					System.Windows.Forms.Application.Exit();
 
 					return;
 				}
-            }
+			}
 
 			// создаём форму System.Windows.Forms
 			BusEngine.Form _form = new Form();
