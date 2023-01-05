@@ -7,8 +7,8 @@
     <RootNamespace>BusEngine</RootNamespace>
     <AssemblyName>Launcher</AssemblyName>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netstandard2.0;net400</TargetFrameworks>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworks>netstandard2.0;net461;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationIcon>..\..\Data\Icons\BusEngine.ico</ApplicationIcon>
     <FileAlignment>512</FileAlignment>

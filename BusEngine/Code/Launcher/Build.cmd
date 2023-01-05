@@ -93,8 +93,8 @@ SET win="%BusEngineFolder:"=%/Bin/Win/%Name:"=%.exe"
 )
 SET android="%BusEngineFolder:"=%/Bin/Android"
 SET xbox="%BusEngineFolder:"=%/Bin/Xbox/%Name:"=%.exe"
-SET Dump="%BusEngineFolder:"=%/Code/%Name:"=%/Dump.csproj"
-SET CSProj="%BusEngineFolder:"=%/Code/%Name:"=%/%Name:"=%.csproj"
+SET Dump="%~dp0Dump.csproj"
+SET CSProj="%~dp0%Name:"=%.csproj"
 
 REM Убираем повторы слэшей | Removing repeated slashes
 SET win64=%win64:/=\%
