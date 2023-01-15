@@ -2,8 +2,8 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.2+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 /** дорожная карта
 - написать запуск игры BusEngine
@@ -13,7 +13,8 @@
 https://www.cyberforum.ru/blogs/529033/blog5215.html
 */
 
-#define BUSENGINE_WINFORM
+#define BUSENGINE_WINFORMS
+#define BUSENGINE_WINDOWS
 namespace BusEngine {
 /*
 Зависит от плагинов:
@@ -29,45 +30,87 @@ BusEngine.UI
 	}
 
 	internal class Start {
-        private static System.Threading.Mutex Mutex;
+        //private static System.Threading.Mutex Mutex;
 
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			/** моя мечта
 			if (WINXP) {
-				System.Windows.Forms.Form _form = new System.Windows.Forms.Form();
-				BusEngine.UI.Canvas(_form);
-				Android.App.LoadApplication(_form);
+				System.Windows.Forms.Form form = new System.Windows.Forms.Form();
+				BusEngine.UI.Canvas(form);
+				Android.App.LoadApplication(form);
 			} else if (ANDROID) {
-				Xamarin.Forms.Application _form = new Xamarin.Forms.Application();
-				BusEngine.UI.Canvas(_form);
-				Xamarin.Forms.LoadApplication(_form);
+				Xamarin.Forms.Application form = new Xamarin.Forms.Application();
+				BusEngine.UI.Canvas(form);
+				Xamarin.Forms.LoadApplication(form);
 			} else {
-				System.Windows.Application _form = new System.Windows.Application();
-				BusEngine.UI.Canvas(_form);
-				System.Windows.Application.Run(_form);
+				System.Windows.Application form = new System.Windows.Application();
+				BusEngine.UI.Canvas(form);
+				System.Windows.Application.Run(form);
 			}
 			*/
 
-			//Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory);
-			//Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)
+			// проверяем целостность библиотек движка
+			bool statusLibrary = System.IO.File.Exists(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\BusEngine.dll");
+			System.Console.WriteLine(statusLibrary);
+
+			if (statusLibrary == false) {
+				string title;
+				string desc;
+
+				if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "English") {
+					title = "Memory Manager";
+					desc = "Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory)";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Russian") {
+					title = "Диспетчер памяти";
+					desc = "Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Ukrainian") {
+					title = "Менеджер пам'яті";
+					desc = "Менеджер пам'яті: не можна зв'язати функції керування пам'яттю. Хмара не має доступу до BusEngine.dll (перевірте робочий каталог)";
+				} else {
+					title = "Дыспетчар памяці";
+					desc = "Дыспетчар памяці: немагчыма звязаць функцыі кіравання памяццю. Воблака не мае доступу да BusEngine.dll (праверце працоўны каталог)";
+				}
+
+				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+
+				System.Windows.Forms.Application.Exit();
+
+				return;
+			} else {
 
 			// генерируем BusEngine API
 			BusEngine.Engine.GenerateStatLink();
+			BusEngine.Engine.Platform = "Windows";
 
 			// допускаем только один запуск
 			/* bool createdNew;
-			Mutex = new System.Threading.Mutex(true, "0968cb8e-b0e3-46c7-96a9-2efb99223941", out createdNew);
+			Mutex = new System.Threading.Mutex(true, "2b3001ad-2d9b-43a9-82cd-8a6465e1cc5d", out createdNew);
 			if (!createdNew) {
-				//System.Windows.Forms.MessageBox.Show("Программа уже запущена.");
+				string title;
+				string desc;
+
+				if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "English") {
+					title = "Attention!";
+					desc = "The program is already running.";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Russian") {
+					title = "Внимание!";
+					desc = "Программа уже запущена.";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Ukrainian") {
+					title = "Увага!";
+					desc = "Програму вже запущено.";
+				} else {
+					title = "Увага!";
+					desc = "Праграма ўжо запушчана.";
+				}
+
+				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
 				System.Windows.Forms.Application.Exit();
 
 				return;
 			} */
-
-			BusEngine.Engine.Platform = "BUSENGINE_WINFORM";
 
 			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			//BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
@@ -76,7 +119,6 @@ BusEngine.UI
 			foreach (System.Reflection.Module md in mods) {
 				//BusEngine.Log.Info("This assembly contains the Game.exe {0} module", md.Name);
 			}
-
 
 			//System.Type myType = System.Type.GetType("BusEngine.Game");
 			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
@@ -91,7 +133,7 @@ BusEngine.UI
 			
 			//BusEngine.Log.Info(System.Runtime.InteropServices.GuidAttribute.GetHashCode());
 			
-			//проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
+			// проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
 			
 			
 			BusEngine.Log.Info("gggggggggggggg");
@@ -111,7 +153,7 @@ BusEngine.UI
 			}
 			BusEngine.Log.Info("gggggggggggggg");
 			
-			//"TestReflection" искомое пространство
+			// "TestReflection" искомое пространство
 			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
 			System.Type[] typelist = System.Reflection.Assembly.GetEntryAssembly().GetTypes();
 			
@@ -120,10 +162,10 @@ BusEngine.UI
 				BusEngine.Log.Info("ssssssssssss");
 				BusEngine.Log.Info(type.FullName);
 				BusEngine.Log.Info("ssssssssssss");
-				//создание объекта
+				// создание объекта
 				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
  
-				//что бы получить public методы без базовых(наследованных от object)
+				// чтобы получить public методы без базовых(наследованных от object)
 				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 				foreach (var methodInfo in methods) {
 					BusEngine.Log.Info("ssssssssssss");
@@ -147,15 +189,15 @@ BusEngine.UI
 			BusEngine.Log.Info("============== ajax запустили");
 
 			// создаём форму System.Windows.Forms
-			Form _form = new Form();
+			Form form = new Form();
 
-			// покдлючаем  BusEngine API
-			BusEngine.UI.Canvas.WinForm = _form;
+			// подключаем  BusEngine API
+			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
-			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				//_canvas.WinForm = _form;
-			//}
-			
+			/* if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
+				_canvas.WinForm = form;
+			} */
+
 			/* System.Windows.Forms.Application.EnableVisualStyles();
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
 
@@ -189,7 +231,43 @@ BusEngine.UI
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
-			//BusEngine.UI.Canvas.WinForm.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
+
+			/* BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
+
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
+
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
+
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8); */
+			BusEngine.UI.Canvas.WinForm.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
 
 			// зависимость от времени
 			System.Timers.Timer aTimer = new System.Timers.Timer(1000/FPSSetting);
@@ -201,12 +279,13 @@ BusEngine.UI
 			// FPS
 			System.Timers.Timer fpsTimer = new System.Timers.Timer(1000);
 			// Hook up the Elapsed event for the timer. 
-			fpsTimer.Elapsed += OnFPS;
+			fpsTimer.Elapsed += OnFPSTimer;
 			fpsTimer.AutoReset = true;
 			fpsTimer.Enabled = true;
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(_form);
+			System.Windows.Forms.Application.Run(form);
+			}
 		}
 		/** функция запуска приложения */
 
@@ -218,9 +297,15 @@ BusEngine.UI
 			}
 		} */
 
+		// Настройки
 		private static float count = 0;
+		private static float speed = 5;
 		private static bool nap = true;
 		private static int count2 = 0;
+		private static int FPS = 0;
+		private static int FPSSetting = 70;
+		private static int FPSInfo = 0;
+
 		// Создаем объекты-кисти для закрашивания фигур
 		private static System.Drawing.SolidBrush myTrub = new System.Drawing.SolidBrush(System.Drawing.Color.DeepPink);
 		private static System.Drawing.SolidBrush myCorp = new System.Drawing.SolidBrush(System.Drawing.Color.DarkMagenta);
@@ -230,21 +315,18 @@ BusEngine.UI
 		private static System.Drawing.Pen myWind = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
 
 		private static void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
-			BusEngine.UI.Canvas.WinForm.Refresh();
-			//BusEngine.UI.Canvas.WinForm.Invalidate();
+			//BusEngine.UI.Canvas.WinForm.Refresh();
+			BusEngine.UI.Canvas.WinForm.Invalidate();
 		}
 
 		private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
 			//BusEngine.Log.Info("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
-			//BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
-			//BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
-			//BusEngine.UI.Canvas.WinForm.Invalidate();
+			BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
+			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
+			BusEngine.UI.Canvas.WinForm.Invalidate();
 		}
 
-		private static int FPS = 0;
-		private static int FPSSetting = 70;
-		private static int FPSInfo = 0;
-		private static void OnFPS(object source, System.Timers.ElapsedEventArgs e) {
+		private static void OnFPSTimer(object source, System.Timers.ElapsedEventArgs e) {
 			FPSInfo = FPS;
 			FPS = 0;
 		}
@@ -259,9 +341,9 @@ BusEngine.UI
 			}
 
 			if (nap == true) {
-				count++;
+				count += speed;
 			} else {
-				count--;
+				count -= speed;
 			}
 
 			if (count/3 == System.Convert.ToInt32(count/3)) {
@@ -270,15 +352,13 @@ BusEngine.UI
 
 			BusEngine.Log.Info("Paint ============== Paint " + count + " " + count2);
 
-			//if (count/3 == System.Convert.ToInt32(count/3)) {
-			BusEngine.Log.Info("Paint2 ============== Paint " + count + " " + count2);
-			//}
-
 			// фон
 			//e.Graphics.Clear(System.Drawing.Color.Turquoise);
 		}
 
 		private static void Paint2(object sender, System.Windows.Forms.PaintEventArgs e) {
+			// https://learn.microsoft.com/ru-ru/dotnet/desktop/winforms/advanced/antialiasing-with-lines-and-curves?view=netframeworkdesktop-4.8
+			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 			// труба (прямоугольник)
 			e.Graphics.FillRectangle(myTrub, 300 + count, 125, 75, 75);
 		}
@@ -309,14 +389,14 @@ BusEngine.UI
 			e.Graphics.FillPolygon(
 				myCorp, 
 				new System.Drawing.Point[] {
-					new System.Drawing.Point(100 + (int)count,300),
-					new System.Drawing.Point(700 + (int)count,300),
-					new System.Drawing.Point(700 + (int)count,300),
-					new System.Drawing.Point(600 + (int)count,400),
-					new System.Drawing.Point(600 + (int)count,400),
-					new System.Drawing.Point(200 + (int)count,400),
-					new System.Drawing.Point(200 + (int)count,400),
-					new System.Drawing.Point(100 + (int)count,300)
+					new System.Drawing.Point(100 + (int)count, 300),
+					new System.Drawing.Point(700 + (int)count, 300),
+					new System.Drawing.Point(700 + (int)count, 300),
+					new System.Drawing.Point(600 + (int)count, 400),
+					new System.Drawing.Point(600 + (int)count, 400),
+					new System.Drawing.Point(200 + (int)count, 400),
+					new System.Drawing.Point(200 + (int)count, 400),
+					new System.Drawing.Point(100 + (int)count, 300)
 				}
 			);
 		}
@@ -369,7 +449,7 @@ BusEngine.UI
 		/** функция запуска окна приложения */
 		public Form() {
 			// название окна
-			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
 			// устанавливаем нашу иконку, есди она есть по пути exe, в противном случае устанавливаем системную
 			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
@@ -379,8 +459,8 @@ BusEngine.UI
 			}
 
 			// устанавливаем размеры окна
-			this.Width = 1024;
-			this.Height = 768;
+			this.Width = 900;
+			this.Height = 540;
 
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

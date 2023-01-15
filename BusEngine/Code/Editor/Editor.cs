@@ -2,14 +2,15 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 /** дорожная карта
 - написать редактор BusEngine
 */
 
-#define BUSENGINE_WINFORM
+#define BUSENGINE_WINFORMS
+#define BUSENGINE_WINDOWSEDITOR
 namespace BusEngine {
 /*
 Зависит от плагинов:
@@ -26,12 +27,30 @@ BusEngine.Browser
 		private static void Main(string[] args) {
 			// генерируем BusEngine API
 			BusEngine.Engine.GenerateStatLink();
+			BusEngine.Engine.Platform = "WindowsEditor";
 
 			// допускаем только один запуск
 			bool createdNew;
 			Mutex = new System.Threading.Mutex(true, "28cb03ec-5416-439d-81a7-b530e7a54c2a", out createdNew);
 			if (!createdNew) {
-				if (System.Windows.Forms.MessageBox.Show("Программа уже запущена. Продолжить запуск копии?", System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine уже запущен", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No) {
+				string title;
+				string desc;
+
+				if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "English") {
+					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine is already running";
+					desc = "The program is already running. Continue running copy?";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Russian") {
+					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine уже запущен";
+					desc = "Программа уже запущена. Продолжить запуск копии?";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Ukrainian") {
+					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine вже запущено";
+					desc = "Програму вже запущено. Продовжити запуск копії?";
+				} else {
+					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine ужо запушчаны";
+					desc = "Праграма ўжо запушчана. Працягнуць запуск копіі?";
+				}
+
+				if (System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No) {
 					System.Windows.Forms.Application.Exit();
 
 					return;
@@ -39,17 +58,17 @@ BusEngine.Browser
 			}
 
 			// создаём форму System.Windows.Forms
-			BusEngine.Form _form = new Form();
+			BusEngine.Form form = new Form();
 
-			// покдлючаем  BusEngine.UI API
-			BusEngine.UI.Canvas.WinForm = _form;
+			// подключаем  BusEngine.UI API
+			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем браузер;
 			BusEngine.Browser.Start("https://threejs.org/editor/");
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(_form);
+			System.Windows.Forms.Application.Run(form);
 		}
 		/** функция запуска приложения */
 	}

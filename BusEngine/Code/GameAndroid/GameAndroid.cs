@@ -2,19 +2,15 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.2+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
-/* MSBuild 15.0+        https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels?tabs=windows#android-versions */
-/* Mono                 https://learn.microsoft.com/ru-ru/xamarin/android/deploy-test/building-apps/abi-specific-apks */
-/* ссылки по Android 
-https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?tabs=windows
-*/
+/* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 /** дорожная карта
 - написать лаунчер BusEngine
 */
 
-#define BUSENGINE_WINFORM
+#define BUSENGINE_XAMARINFORMS
+#define BUSENGINE_ANDROID
 namespace BusEngine {
 /*
 Зависит от плагинов:
@@ -31,17 +27,17 @@ BusEngine.Browser
 			BusEngine.Engine.GenerateStatLink();
 
 			// создаём форму System.Windows.Forms
-			BusEngine.Form _form = new Form();
+			BusEngine.Form form = new Form();
 
-			// покдлючаем  BusEngine.UI API
-			BusEngine.UI.Canvas.WinForm = _form;
+			// подключаем  BusEngine.UI API
+			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем браузер
 			BusEngine.Browser.Start("index.html");
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(_form);
+			System.Windows.Forms.Application.Run(form);
 		}
 		/** функция запуска приложения */
 	}

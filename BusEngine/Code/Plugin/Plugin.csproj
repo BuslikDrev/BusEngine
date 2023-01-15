@@ -7,8 +7,8 @@
     <RootNamespace>BusEngine</RootNamespace>
     <AssemblyName>Plugin</AssemblyName>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.0;net461;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
     <!-- <Optimize>true</Optimize> -->

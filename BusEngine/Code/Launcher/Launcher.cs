@@ -2,14 +2,15 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 /** дорожная карта
 - написать лаунчер BusEngine
 */
 
-#define BUSENGINE_WINFORM
+#define BUSENGINE_WINFORMS
+#define BUSENGINE_WINDOWS
 namespace BusEngine {
 /*
 Зависит от плагинов:
@@ -26,12 +27,30 @@ BusEngine.Browser
 		private static void Main(string[] args) {
 			// генерируем BusEngine API
 			BusEngine.Engine.GenerateStatLink();
+			BusEngine.Engine.Platform = "Windows";
 
 			// допускаем только один запуск
 			bool createdNew;
 			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
 			if (!createdNew) {
-				//System.Windows.Forms.MessageBox.Show("Программа уже запущена.");
+				string title;
+				string desc;
+
+				if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "English") {
+					title = "Attention!";
+					desc = "The program is already running.";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Russian") {
+					title = "Внимание!";
+					desc = "Программа уже запущена.";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Ukrainian") {
+					title = "Увага!";
+					desc = "Програму вже запущено.";
+				} else {
+					title = "Увага!";
+					desc = "Праграма ўжо запушчана.";
+				}
+
+				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
 				System.Windows.Forms.Application.Exit();
 
@@ -39,17 +58,17 @@ BusEngine.Browser
 			}
 
 			// создаём форму System.Windows.Forms
-			BusEngine.Form _form = new Form();
+			BusEngine.Form form = new Form();
 
-			// покдлючаем  BusEngine.UI API
-			BusEngine.UI.Canvas.WinForm = _form;
+			// подключаем  BusEngine.UI API
+			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем браузер
 			BusEngine.Browser.Start("index.html");
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(_form);
+			System.Windows.Forms.Application.Run(form);
 		}
 		/** функция запуска приложения */
 	}
