@@ -2,8 +2,8 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
-/* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
+/* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 [assembly: System.Reflection.AssemblyTitle("BusEngine Plugin")]
 [assembly: System.Reflection.AssemblyDescription("The main C# interface for the BusEngine.")]
