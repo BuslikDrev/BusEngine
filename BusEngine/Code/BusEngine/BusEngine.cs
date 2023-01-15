@@ -2,7 +2,7 @@
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
-/* NET.Framework 4.6.2+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
+/* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 /* MSBuild 15.0+        https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels?tabs=windows#android-versions */
 /* Mono                 https://learn.microsoft.com/ru-ru/xamarin/android/deploy-test/building-apps/abi-specific-apks */
@@ -14,8 +14,6 @@ https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?t
 - проставить нормально модификаторы доступа https://metanit.com/sharp/tutorial/3.2.php
 - максимально весь функционал сделать независимыми плагинами и установить проверки
  на наличие плагинов перед их использованием
-- апи перенести в проект библиотеки, а текущий, только для запуска и остановки программы,
- с возможностью отказа от использования API BusEngine
 - создать: генерацию сцены (карты), камеру, консольные команды, консоль, настройка проекта
 - написать лаунчер с возможностью: безопасной регистрации, безопасной авторизации,
  скачать движок, восстановить файлы движка, удалить движок, создать проект, собрать проект,
@@ -93,25 +91,25 @@ namespace BusEngine {
 					new {
 						guid = "",
 						type = "EType::Managed",
-						path = "bin/Android/Game.dll",
+						path = "Bin/Android/Game.dll",
 						platforms = new string[] {"Android"},
 					},
 					new {
 						guid = "",
 						type = "EType::Managed",
-						path = "bin/win/Game.dll",
+						path = "Bin/Win/Game.dll",
 						platforms = new string[] {"win_x86"},
 					},
 					new {
 						guid = "",
 						type = "EType::Managed",
-						path = "bin/win_x86/Game.dll",
+						path = "Bin/Win_x86/Game.dll",
 						platforms = new string[] {"win_x86"},
 					},
 					new {
 						guid = "",
 						type = "EType::Managed",
-						path = "bin/win_x64/Game.dll",
+						path = "Bin/Win_x64/Game.dll",
 						platforms = new string[] {"Win_x64"},
 					}
 				},
@@ -148,8 +146,6 @@ BusEngine.UI.Canvas
 */
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
-		//private Browser() {}
-		//private static Browser _browser;
 		public delegate void PostMessageHandler(object sender, CefSharp.JavascriptMessageReceivedEventArgs e);
 		//public static event PostMessageHandler PostMessage;
 		public static event System.EventHandler<CefSharp.JavascriptMessageReceivedEventArgs> PostMessage;
@@ -179,13 +175,13 @@ BusEngine.UI.Canvas
 
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
-		public static void Start(string Url = "") {
+		public static void Start(string url = "") {
 			// если ссылка не обсалютный адрес, то делаем его обсалютным
-			if (Url.IndexOf(':') == -1) {
-				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url))) {
-					Url = "https://BusEngine/" + Url;
+			if (url.IndexOf(':') == -1) {
+				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
+					url = "https://BusEngine/" + url;
 				} else {
-					Url = "<b>ПРОВЕРЬТЕ ПУТЬ К ФАЙЛУ</b>";
+					url = "<b>ПРОВЕРЬТЕ ПУТЬ К ФАЙЛУ</b>";
 				}
 			}
 
@@ -198,8 +194,7 @@ BusEngine.UI.Canvas
 			CefSharp.Cef.EnableHighDPISupport();
 
 			// устанавливаем свой юзер агент
-			settings.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/0.2.0 Safari/537.36";
-			//settings.UserAgent = settings.UserAgent.Replace("Chrome", "BusEngine");
+			settings.UserAgent = BusEngine.Engine.Device.UserAgent;
 
 			// отключаем создание файла лога
 			settings.LogSeverity = CefSharp.LogSeverity.Disable;
@@ -220,21 +215,21 @@ BusEngine.UI.Canvas
 			CefSharp.Cef.Initialize(settings);
 
 			// запускаем браузер
-			CefSharp.WinForms.ChromiumWebBrowser _browser = new CefSharp.WinForms.ChromiumWebBrowser(Url);
+			CefSharp.WinForms.ChromiumWebBrowser browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
 
 			// просто подключаем левое событие - можно удалить
-			_browser.KeyDown += BusEngine.Browser.OnKeyDown;
+			browser.KeyDown += BusEngine.Browser.OnKeyDown;
 
 			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 			// подключаем событие сообщения из javascript
-			_browser.JavascriptMessageReceived += OnPostMessage;
-			_browser.JavascriptMessageReceived += PostMessage;
+			browser.JavascriptMessageReceived += OnPostMessage;
+			browser.JavascriptMessageReceived += PostMessage;
 
 			// устанавливаем размер окана браузера, как в нашей программе
-			//_browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
-			//_browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
+			//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
+			//browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
 			// подключаем браузер к нашей программе
-			BusEngine.UI.Canvas.WinForm.Controls.Add(_browser);
+			BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
 		}
 		/** функция запуска браузера */
 
@@ -276,13 +271,46 @@ BusEngine.Engine.UI
 */
 	/** API BusEngine.Engine */
 	public class Engine {
-		/** UI движка */
+		/* static Engine() {
+			Device 
+		}
+ */
 		//public static BusEngine.UI.Canvas UI { get; set; }
 		public static string DataDirectory;
 		public static string Platform;
+		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
+		public class Device {
+			public static string Name;
+			public static string Version;
+			public static string Processor;
+			public static byte ProcessorCount;
+			public static string UserAgent;
+			static Device() {
+				var os = System.Environment.OSVersion;
 
-		//private static BusEngine.UI.Canvas _canvas;
-		// MSBuild v12.0
+				switch (os.Platform) {
+					case System.PlatformID.Win32NT:
+					case System.PlatformID.Win32S:
+					case System.PlatformID.Win32Windows:
+					case System.PlatformID.WinCE:
+						Name = "Windows";
+						break;
+					case System.PlatformID.MacOSX:
+					case System.PlatformID.Unix:
+						Name = "MacOSX";
+						break;
+					default:
+						Name = "Other";
+						break;
+				}
+
+				Version = os.Version.Major + "." + os.Version.Minor;
+				Processor = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
+				ProcessorCount = (byte)System.Environment.ProcessorCount;
+				UserAgent = "Mozilla/5.0 (" + Name + " NT " + Version + "; " + System.Convert.ToString(os.Platform) + "; " + Processor + ") AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + " Safari/537.36";
+			}
+		}
+
 		public static void GenerateStatLink() {
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
@@ -382,12 +410,12 @@ BusEngine.Engine.UI
 
 			BusEngine.Engine.DataDirectory = _path + "Data/";
 
-
-
-
-
-
-
+			new BusEngine.Engine.Device();
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Version);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount);
 
 
 
@@ -402,8 +430,7 @@ BusEngine.Engine.UI
 			//BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Module);
 			BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Assembly.GetCallingAssembly().FullName);
 		}
-		/** UI движка */
-		
+
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
 
 
@@ -511,56 +538,56 @@ namespace BusEngine {
 			if (n > 0) {
 				File = "/" + File;
 			}
-			string Path, Platform, Files;
+			string path, platform, files;
 
-			Files = "";
+			files = "";
 			if (Language == null || Language == "") {
 				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
 			}
 			// https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
-			Platform = BusEngine.Engine.Platform.ToString();
+			platform = ""; //BusEngine.Engine.Platform.Name.ToString();
 			//Platform = "WebGLPlayer";
 
-			if (Platform == "WindowsEditor" || Platform == "WindowsPlayer") {
-				Path = BusEngine.Engine.DataDirectory + "../Localization/";
-				if (!System.IO.Directory.Exists(Path)) {
-					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+			if (platform == "WindowsEditor" || platform == "WindowsPlayer") {
+				path = BusEngine.Engine.DataDirectory + "../Localization/";
+				if (!System.IO.Directory.Exists(path)) {
+					path = BusEngine.Engine.DataDirectory + "/Localization/";
 				}
-				if (!System.IO.Directory.Exists(Path)) {
-					Path = BusEngine.Engine.DataDirectory + "/Resources/Localization/";
+				if (!System.IO.Directory.Exists(path)) {
+					path = BusEngine.Engine.DataDirectory + "/Resources/Localization/";
 				}
-				if (!System.IO.Directory.Exists(Path)) {
-					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+				if (!System.IO.Directory.Exists(path)) {
+					path = BusEngine.Engine.DataDirectory + "/Localization/";
 				}
 			} else {
-				if (Platform == "WebGLPlayer" && !BundleStatus) {
-					Path = "Localization/";
+				if (platform == "WebGLPlayer" && !BundleStatus) {
+					path = "Localization/";
 				} else {
 					// https://docs.unity3d.com/Manual/StreamingAssets.html
 					// https://docs.unity3d.com/ScriptReference/Application-streamingAssetsPath.html
-					Path = BusEngine.Engine.DataDirectory + "/Localization/";
+					path = BusEngine.Engine.DataDirectory + "/Localization/";
 				}
 			}
 
-			if (Platform == "WebGLPlayer") {
+			if (platform == "WebGLPlayer") {
 				// https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
 				// https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
 				/* if (BundleStatus) {
-					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(Path + Language + File + "." + format);
-					//TextAsset resources = bundle.Load<TextAsset>(File + "." + format);
+					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(path + Language + File + "." + Format);
+					//TextAsset resources = bundle.Load<TextAsset>(File + "." + Format);
 				} else {
 					// https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
-					TextAsset resources = Resources.Load(Path + Language + File, typeof(TextAsset)) as TextAsset;
+					TextAsset resources = Resources.Load(path + Language + File, typeof(TextAsset)) as TextAsset;
 					if (resources != null) {
-						Files = resources.text;
-						//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
+						files = resources.text;
+						//files = System.Text.Encoding.UTF8.GetString(resources.bytes);
 						//Resources.UnloadAsset(resources);
 					} else {
 						Language = LanguageDefault;
-						resources = Resources.Load(Path + Language + File, typeof(TextAsset)) as TextAsset;
+						resources = Resources.Load(path + Language + File, typeof(TextAsset)) as TextAsset;
 						if (resources != null) {
-							Files = resources.text;
-							//Files = System.Text.Encoding.UTF8.GetString(resources.bytes);
+							files = resources.text;
+							//files = System.Text.Encoding.UTF8.GetString(resources.bytes);
 							//Resources.UnloadAsset(resources);
 						}
 					}
@@ -580,32 +607,32 @@ namespace BusEngine {
 						byte[] results = www.downloadHandler.data;
 					}
 				}
-				Files = StartCoroutine(GetText("https://buslikdrev.by/game/StreamingAssets/Localization/Belarusian.txt")).ToString();
-				UnityEngine.Debug.Log(Files); */
+				files = StartCoroutine(GetText("https://buslikdrev.by/game/StreamingAssets/Localization/Belarusian.txt")).ToString();
+				UnityEngine.Debug.Log(files); */
 			} else {
-				if (System.IO.File.Exists(Path + Language + File + "." + Format)) {
-					Files = System.IO.File.ReadAllText(Path + Language + File + "." + Format);
-					//byte[] Bytes = File.ReadAllBytes(Path + Language + file + "." + Format);
+				if (System.IO.File.Exists(path + Language + File + "." + Format)) {
+					files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
+					//byte[] Bytes = File.ReadAllBytes(path + Language + file + "." + Format);
 					//Files = System.Text.Encoding.UTF8.GetString(Bytes);
 				} else {
 					Language = LanguageDefault;
-					if (System.IO.File.Exists(Path + Language + File + "." + Format)) {
-						Files = System.IO.File.ReadAllText(Path + Language + File + "." + Format);
-						//byte[] Bytes = System.IO.File.ReadAllBytes(Path + Language + File + "." + Format);
-						//Files = System.Text.Encoding.UTF8.GetString(Bytes);
+					if (System.IO.File.Exists(path + Language + File + "." + Format)) {
+						files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
+						//byte[] Bytes = System.IO.File.ReadAllBytes(path + Language + File + "." + Format);
+						//files = System.Text.Encoding.UTF8.GetString(Bytes);
 					}
 				}
 			}
 
-			GetLanguages["text_debug"] = "" + Path + Language + File + "." + Format + "";
+			GetLanguages["text_debug"] = "" + path + Language + File + "." + Format + "";
 
-			if (Files != "") {
-				GetLanguages["text_debug"] = Files;
+			if (files != "") {
+				GetLanguages["text_debug"] = files;
 				string[] lines, pairs;
 				int i;
 
-				lines = Files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
-				Files = null;
+				lines = files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+				files = null;
 				System.GC.Collect();
 
 				for (i = 0; i < lines.Length; ++i) {
@@ -788,6 +815,10 @@ namespace BusEngine {
 			System.Console.WriteLine("int");
 		}
 		public static void Info(double args1) {
+			System.Console.WriteLine(args1);
+			System.Console.WriteLine("double");
+		}
+		public static void Info(byte args1) {
 			System.Console.WriteLine(args1);
 			System.Console.WriteLine("double");
 		}
