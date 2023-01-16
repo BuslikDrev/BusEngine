@@ -15,6 +15,7 @@ https://www.cyberforum.ru/blogs/529033/blog5215.html
 
 #define BUSENGINE_WINFORMS
 #define BUSENGINE_WINDOWS
+/** API BusEngine */
 namespace BusEngine {
 /*
 Зависит от плагинов:
@@ -80,8 +81,8 @@ BusEngine.UI
 				return;
 			} else {
 
-			// генерируем BusEngine API
-			BusEngine.Engine.GenerateStatLink();
+			// инициализируем API BusEngine
+			BusEngine.Engine.Initialize();
 			BusEngine.Engine.Platform = "Windows";
 
 			// допускаем только один запуск
@@ -191,7 +192,7 @@ BusEngine.UI
 			// создаём форму System.Windows.Forms
 			Form form = new Form();
 
-			// подключаем  BusEngine API
+			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
 			/* if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
