@@ -22,7 +22,9 @@ body::-webkit-scrollbar-thumb:hover {
 body.languagefix {
     top: 0 !important;
 }
-
+body.languagefix .goog-te-banner-frame.skiptranslate {
+	display: none !important;
+}
 
 .page_start .body{
     position: relative;
@@ -1829,7 +1831,7 @@ table td img {
 table td i {
     font-size: 30px;
 }
-.skiptranslate {
+#goog-gt-tt {
     display: none !important;
 }
 #language .skiptranslate.goog-te-gadget {
