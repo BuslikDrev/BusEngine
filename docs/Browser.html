@@ -160,6 +160,10 @@
                 <td><a href="#BusEngine.Browser.Start">(void)BusEngine.Browser.Start(string)</a></td>
                 <td>Метод уровня класса принимает string строку веб адреса или полного, или относительного пути до HTML страницы для запуска браузера и загрузки указанной страницы.</td>
               </tr>
+              <tr id="BusEngine.Browser.ExecuteJS">
+                <td><a href="#BusEngine.Browser.ExecuteJS">(void)BusEngine.Browser.ExecuteJS(string)</a></td>
+                <td>Метод уровня класса принимает string строку JavaScript кода для его выполнения в текущей вкладки браузера. Это полезно для передачи данных из СSharp кода.</td>
+              </tr>
               <tr id="BusEngine.Browser.Shutdown">
                 <td><a href="#BusEngine.Browser.Shutdown">(void)BusEngine.Browser.Shutdown()</a></td>
                 <td>Метод уровня класса для закрытия "BusEngine.Browser".</td>
@@ -176,7 +180,7 @@
             <tbody>
               <tr id="BusEngine.Browser.PostMessage">
                 <td><a href="#BusEngine.Browser.Dispose">(void)BusEngine.Browser.PostMessage</a></td>
-                <td>Событие уровня класса принимает метод с двумя параметрами (object, string). Событие "BusEngine.Browser.PostMessage" будет вызывать ваш метод, когда вы вызываете в js коде функцию "BusEngine.PostMessage(string)" и передавать строку во второй параметр вашего метода.</td>
+                <td>Событие уровня класса принимает метод с двумя параметрами (object, string). Событие "BusEngine.Browser.PostMessage" будет вызывать ваш метод, когда вы вызываете в JavaScript коде функцию "BusEngine.PostMessage(string)" и передавать строку во второй параметр вашего метода.</td>
               </tr>
             </tbody>
           </table>
