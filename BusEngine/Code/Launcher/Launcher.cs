@@ -67,11 +67,19 @@ BusEngine.Browser
 
 			// запускаем браузер
 			BusEngine.Browser.Start("index.html");
+			BusEngine.Browser.PostMessage += OnPostMessage;
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
 		}
 		/** функция запуска приложения */
+
+		private static void OnPostMessage(object sender, string message) {
+			BusEngine.Log.Info("браузер клик" + message);
+			if (message == "Exit") {
+				BusEngine.Engine.Shutdown();
+			}
+		}
 	}
 
 	// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
