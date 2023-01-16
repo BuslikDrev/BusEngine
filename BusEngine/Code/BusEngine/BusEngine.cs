@@ -77,11 +77,11 @@ namespace BusEngine {
 				libs = new {
 					name = "BusEngine",
 					shared = new {
-						any = "",
+						Any = "",
 						Android = "",
-						win = "",
-						win_x64 = "",
-						win_x86 = "",
+						Win = "",
+						Win_x64 = "",
+						Win_x86 = "",
 					},
 				},
 			};
@@ -311,7 +311,7 @@ BusEngine.Engine.UI
 			}
 		}
 
-		public static void GenerateStatLink() {
+		public static void Initialize() {
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
 
