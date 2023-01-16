@@ -6,6 +6,7 @@
 /* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 #define BUSENGINE_WINFORM
+/** API BusEngine */
 namespace BusEngine {
 /*
 Зависит от плагинов:
@@ -24,14 +25,14 @@ BusEngine.UI
 		/** функция запуска приложения */
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
-			// генерируем BusEngine API
-			BusEngine.Engine.GenerateStatLink();
+			// инициализируем API BusEngine
+			BusEngine.Engine.Initialize();
 			BusEngine.Engine.Platform = "BUSENGINE_WINFORM";
 
 			// создаём форму System.Windows.Forms
 			Form form = new Form();
 
-			// покдлючаем BusEngine API Canvas
+			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
 
