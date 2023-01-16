@@ -146,12 +146,11 @@ BusEngine.UI.Canvas
 */
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
-		public delegate void PostMessageHandler(object sender, CefSharp.JavascriptMessageReceivedEventArgs e);
-		//public static event PostMessageHandler PostMessage;
-		public static event System.EventHandler<CefSharp.JavascriptMessageReceivedEventArgs> PostMessage;
+		public delegate void PostMessageHandler(object sender, string e);
+		public static event PostMessageHandler PostMessage;
 
 		/** событие клика из браузера */
-		private static void OnBrowserClick(object o, object e) {
+		/* private static void OnBrowserClick(object o, object e) {
 			BusEngine.Log.Info("браузер клик тест 1");
 		}
 
@@ -160,18 +159,14 @@ BusEngine.UI.Canvas
 			//BusEngine.Browser.Dispose();
 			BusEngine.Log.Info("браузер клик тест 2");
 			BusEngine.Engine.Shutdown();
-		}
+		} */
 		/** событие клика из браузера */
 
-		/** все события из js браузера */
+		/** все события из PostMessage js браузера */
 		private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
-			BusEngine.Log.Info("браузер клик");
-			string windowSelection = (string)e.Message;
-			if (windowSelection == "Exit") {
-				BusEngine.Engine.Shutdown();
-			}
+			PostMessage.Invoke(sender, (string)e.Message);
 		}
-		/** все события из js браузера */
+		/** все события из PostMessage js браузера */
 
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
@@ -218,12 +213,12 @@ BusEngine.UI.Canvas
 			CefSharp.WinForms.ChromiumWebBrowser browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
 
 			// просто подключаем левое событие - можно удалить
-			browser.KeyDown += BusEngine.Browser.OnKeyDown;
+			//browser.KeyDown += BusEngine.Browser.OnKeyDown;
 
 			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 			// подключаем событие сообщения из javascript
 			browser.JavascriptMessageReceived += OnPostMessage;
-			browser.JavascriptMessageReceived += PostMessage;
+			//browser.JavascriptMessageReceived += PostMessage;
 
 			// устанавливаем размер окана браузера, как в нашей программе
 			//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
