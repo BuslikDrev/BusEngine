@@ -193,3 +193,8 @@ BusEngine.loadScript = function(url, callback) {
 		ss.appendChild(s);
 	}
 };
+
+BusEngine.PostMessage = function(m) {};
+if ('CefSharp' in window) {
+	BusEngine.PostMessage = CefSharp.PostMessage;
+}

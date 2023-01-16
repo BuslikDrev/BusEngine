@@ -82,8 +82,8 @@
 				if (element) {
 					element.innerText = 'Выход произошёл! ' + window.location.href;
 					setTimeout(function() {
-						//element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
-						CefSharp.PostMessage('Exit');
+						element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
+						BusEngine.PostMessage('Exit');
 					}, 2000);
 				}
 			});
