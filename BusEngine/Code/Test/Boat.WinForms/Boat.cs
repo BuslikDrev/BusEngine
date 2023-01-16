@@ -26,25 +26,16 @@ BusEngine.UI
 		private static void Main(string[] args) {
 			// генерируем BusEngine API
 			BusEngine.Engine.GenerateStatLink();
-
 			BusEngine.Engine.Platform = "BUSENGINE_WINFORM";
 
 			// создаём форму System.Windows.Forms
-			Form _form = new Form();
+			Form form = new Form();
 
-			// покдлючаем  BusEngine API
-			BusEngine.UI.Canvas.WinForm = _form;
+			// покдлючаем BusEngine API Canvas
+			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
-			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				//_canvas.WinForm = _form;
-			//}
-
-			/* System.Windows.Forms.Application.EnableVisualStyles();
-			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
 
 			// запускаем видео
-			//BusEngine.Video.Play("Videos/BusEngine.mp4");
-			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 
 			// запускаем браузер
@@ -53,6 +44,7 @@ BusEngine.UI
 			// тест графики
 			// https://rsdn.org/article/gdi/gdiplus2mag.xml
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
+			//BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint1);
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
@@ -60,134 +52,147 @@ BusEngine.UI
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
+			// подключаем событие мыши
 			//BusEngine.UI.Canvas.WinForm.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
 
 			// зависимость от времени
 			System.Timers.Timer aTimer = new System.Timers.Timer(1000/FPSSetting);
-			// Hook up the Elapsed event for the timer. 
+			// Hook up the Elapsed event for the timer.
+			// подключаем событие времени
 			aTimer.Elapsed += OnTimedEvent;
 			aTimer.AutoReset = true;
 			aTimer.Enabled = true;
 
 			// FPS
 			System.Timers.Timer fpsTimer = new System.Timers.Timer(1000);
-			// Hook up the Elapsed event for the timer. 
+			// Hook up the Elapsed event for the timer.
+			// подключаем событие FPS
 			fpsTimer.Elapsed += OnFPS;
 			fpsTimer.AutoReset = true;
 			fpsTimer.Enabled = true;
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(_form);
+			System.Windows.Forms.Application.Run(form);
 		}
 		/** функция запуска приложения */
 
-		/* private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
-			BusEngine.Log.Info("браузер клик");
-			string windowSelection = (string)e.Message;
-			if (windowSelection == "Log") {
-				BusEngine.Log.Info("============== Log");
-			}
-		} */
+		// настройки
+		private static float Count = 0;
+		private static bool Nap = true;
+		private static int Count2 = 0;
+		private static int FPS = 0;
+		private static int FPSSetting = 70;
+		private static int FPSInfo = 0;
 
-		private static float count = 0;
-		private static bool nap = true;
-		private static int count2 = 0;
-		// Создаем объекты-кисти для закрашивания фигур
+		// создаем объекты-кисти для закрашивания фигур
 		private static System.Drawing.SolidBrush myTrub = new System.Drawing.SolidBrush(System.Drawing.Color.DeepPink);
 		private static System.Drawing.SolidBrush myCorp = new System.Drawing.SolidBrush(System.Drawing.Color.DarkMagenta);
 		private static System.Drawing.SolidBrush myTrum = new System.Drawing.SolidBrush(System.Drawing.Color.DarkOrchid);
 		private static System.Drawing.SolidBrush mySeа = new System.Drawing.SolidBrush(System.Drawing.Color.Blue);
-		//Выбираем перо myPen желтого цвета толщиной в 2 пикселя:
+		// выбираем перо myPen желтого цвета толщиной в 1 пиксель:
 		private static System.Drawing.Pen myWind = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
 
+		// событие мыши
 		private static void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
-			BusEngine.UI.Canvas.WinForm.Refresh();
-			//BusEngine.UI.Canvas.WinForm.Invalidate();
+			BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
+			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
+			//BusEngine.UI.Canvas.WinForm.Refresh();
+			BusEngine.UI.Canvas.WinForm.Invalidate();
 		}
 
+		// событие времени
 		private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
 			//BusEngine.Log.Info("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
 			BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
 			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
+			//BusEngine.UI.Canvas.WinForm.Refresh();
 			BusEngine.UI.Canvas.WinForm.Invalidate();
 		}
 
-		private static int FPS = 0;
-		private static int FPSSetting = 70;
-		private static int FPSInfo = 0;
+		// событие FPS
 		private static void OnFPS(object source, System.Timers.ElapsedEventArgs e) {
 			FPSInfo = FPS;
 			FPS = 0;
 		}
 
+		// событие отрисовки - главный подсчёт кадров
 		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
 			FPS++;
 
-			if (count < 10 || count < 300 && nap == true) {
-				nap = true;
+			if (Count < 10 || Count < 300 && Nap == true) {
+				Nap = true;
 			} else {
-				nap = false;
+				Nap = false;
 			}
 
-			if (nap == true) {
-				count++;
+			if (Nap == true) {
+				Count++;
 			} else {
-				count--;
+				Count--;
 			}
 
-			if (count/3 == System.Convert.ToInt32(count/3)) {
-				count2++;
+			if (Count/3 == System.Convert.ToInt32(Count/3)) {
+				Count2++;
 			}
 
-			BusEngine.Log.Info("Paint ============== Paint " + count + " " + count2);
-
-			// фон
-			//e.Graphics.Clear(System.Drawing.Color.Turquoise);
+			BusEngine.Log.Info("Paint ============== Paint " + Count + " " + Count2);
 		}
 
+		// событие отрисовки - модель 1
+		private static void Paint1(object sender, System.Windows.Forms.PaintEventArgs e) {
+			// фон
+			e.Graphics.Clear(System.Drawing.Color.Turquoise);
+		}
+
+		// событие отрисовки - модель 2
 		private static void Paint2(object sender, System.Windows.Forms.PaintEventArgs e) {
 			// труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub, 300 + count, 125, 75, 75);
+			e.Graphics.FillRectangle(myTrub, 300 + Count, 125, 75, 75);
 		}
 
+		// событие отрисовки - модель 3
 		private static void Paint3(object sender, System.Windows.Forms.PaintEventArgs e) {
 			// труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub, 480 + count, 125, 75, 75);
+			e.Graphics.FillRectangle(myTrub, 480 + Count, 125, 75, 75);
 		}
 
+		// событие отрисовки - модель 4
 		private static void Paint4(object sender, System.Windows.Forms.PaintEventArgs e) {
 			// палуба (прямоугольник)
-			e.Graphics.FillRectangle(myTrum, 250 + count, 200, 350, 100);
+			e.Graphics.FillRectangle(myTrum, 250 + Count, 200, 350, 100);
 		}
 
+		// событие отрисовки - модель 5
 		private static void Paint5(object sender, System.Windows.Forms.PaintEventArgs e) {
 			// Иллюминаторы
 			// 6 окружностей
-			e.Graphics.DrawEllipse(myWind, 300 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 350 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 400 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 450 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 500 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 550 + count, 240, 20, 20);
+			e.Graphics.DrawEllipse(myWind, 300 + Count, 240, 20, 20);
+			e.Graphics.DrawEllipse(myWind, 350 + Count, 240, 20, 20);
+			e.Graphics.DrawEllipse(myWind, 400 + Count, 240, 20, 20);
+			e.Graphics.DrawEllipse(myWind, 450 + Count, 240, 20, 20);
+			e.Graphics.DrawEllipse(myWind, 500 + Count, 240, 20, 20);
+			e.Graphics.DrawEllipse(myWind, 550 + Count, 240, 20, 20);
 		}
 
+		// событие отрисовки - модель 6
 		private static void Paint6(object sender, System.Windows.Forms.PaintEventArgs e) {
 			// корпус (трапеция)
 			e.Graphics.FillPolygon(
 				myCorp, 
 				new System.Drawing.Point[] {
-					new System.Drawing.Point(100 + (int)count,300),
-					new System.Drawing.Point(700 + (int)count,300),
-					new System.Drawing.Point(700 + (int)count,300),
-					new System.Drawing.Point(600 + (int)count,400),
-					new System.Drawing.Point(600 + (int)count,400),
-					new System.Drawing.Point(200 + (int)count,400),
-					new System.Drawing.Point(200 + (int)count,400),
-					new System.Drawing.Point(100 + (int)count,300)
+					new System.Drawing.Point(100 + (int)Count, 300),
+					new System.Drawing.Point(700 + (int)Count, 300),
+					new System.Drawing.Point(700 + (int)Count, 300),
+					new System.Drawing.Point(600 + (int)Count, 400),
+					new System.Drawing.Point(600 + (int)Count, 400),
+					new System.Drawing.Point(200 + (int)Count, 400),
+					new System.Drawing.Point(200 + (int)Count, 400),
+					new System.Drawing.Point(100 + (int)Count, 300)
 				}
 			);
 		}
 
+		// событие отрисовки - модель 7
 		private static void Paint7(object sender, System.Windows.Forms.PaintEventArgs e) {
 			// Море - 12 секторов-полуокружностей
 			int xx = 50;
@@ -198,6 +203,7 @@ BusEngine.UI
 			}
 		}
 
+		// событие отрисовки - модель 8
 		private static void Paint8(object sender, System.Windows.Forms.PaintEventArgs e) {
 			// Translate transformation matrix.
 			e.Graphics.TranslateTransform(0, 0);
@@ -281,16 +287,10 @@ BusEngine.UI
 			//this.ShowDialog();
 		}
 
-		//public static void Run(BusEngine.UI.WinForm winform = null) {
-			//if (winform != null) {
-				//_winform = winform;
-			//}
-		//}
+		/* private const int WM_ACTIVATEAPP = 0x001C;
+		private bool appActive = true;
 
-		//private const int WM_ACTIVATEAPP = 0x001C;
-		//private bool appActive = true;
-
-		/* protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
+		protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
 			if (appActive) {
 				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.ActiveCaption, 20, 20, 260, 50);
 				e.Graphics.DrawString("Application is active", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20, 20);
@@ -298,59 +298,24 @@ BusEngine.UI
 				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.InactiveCaption, 20, 20, 260, 50);
 				e.Graphics.DrawString("Application is Inactive", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20, 20);
 			}
+		}
 
-			e.Graphics.Clear(System.Drawing.Color.Turquoise);
-			// Создаем объекты-кисти для закрашивания фигур
-			System.Drawing.SolidBrush myCorp = new System.Drawing.SolidBrush(System.Drawing.Color.DarkMagenta);
-			System.Drawing.SolidBrush myTrum = new System.Drawing.SolidBrush(System.Drawing.Color.DarkOrchid);
-			System.Drawing.SolidBrush myTrub = new System.Drawing.SolidBrush(System.Drawing.Color.DeepPink);
-			System.Drawing.SolidBrush mySeа = new System.Drawing.SolidBrush(System.Drawing.Color.Blue);
-			//Выбираем перо myPen желтого цвета толщиной в 2 пикселя:
-			System.Drawing.Pen myWind = new System.Drawing.Pen(System.Drawing.Color.Yellow, 2);
-			// Закрашиваем фигуры
-			e.Graphics.FillRectangle(myTrub,300,125,75,75); // 1 труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub,480,125,75,75); // 2 труба (прямоугольник)
-			e.Graphics.FillPolygon(
-				myCorp, 
-				new System.Drawing.Point[] {
-					new System.Drawing.Point(100,300),new System.Drawing.Point(700,300),
-					new System.Drawing.Point(700,300),new System.Drawing.Point(600,400),
-					new System.Drawing.Point(600,400),new System.Drawing.Point(200,400),
-					new System.Drawing.Point(200,400),new System.Drawing.Point(100,300)
-				}
-			); // корпус (трапеция)
-			e.Graphics.FillRectangle(myTrum, 250, 200, 350, 100); // палуба (прямоугольник)
-			// Море - 12 секторов-полуокружностей
-			int xx = 50;
-			int Radius = 50;
-			while (xx <= BusEngine.UI.Canvas.WinForm.Width - Radius) {
-				e.Graphics.FillPie(mySeа, 0 + xx, 375, 50, 50, 0, -180); 
-				xx += 50;
-			}
-			// Иллюминаторы 
-			for (int yy = 300; yy <= 550; yy += 50) {
-				e.Graphics.DrawEllipse(myWind, yy, 240, 20, 20); // 6 окружностей
-			}
-
-			e.Graphics.Dispose();
-		} */
-
-		/* protected override void WndProc(ref System.Windows.Forms.Message m) {
+		protected override void WndProc(ref System.Windows.Forms.Message m) {
 			switch (m.Msg) {
 				case WM_ACTIVATEAPP:
 					appActive = (((int)m.WParam != 0));
-					Invalidate();
+					this.Invalidate();
 
 					break;
 			}
 			base.WndProc(ref m);
 		} */
 
-		/* protected override void Callback(System.IntPtr hWnd, System.Int32 msg, System.IntPtr wparam, System.IntPtr lparam) {
+		/* protected void Callback(System.IntPtr hWnd, System.Int32 msg, System.IntPtr wparam, System.IntPtr lparam) {
 			switch (m.Msg) {
 				case WM_ACTIVATEAPP:
 					appActive = (((int)m.WParam != 0));
-					Invalidate();
+					this.Invalidate();
 
 					break;
 			}
