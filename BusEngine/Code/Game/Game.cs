@@ -113,91 +113,12 @@ BusEngine.UI
 				return;
 			} */
 
-			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
-			//BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
-
-			System.Reflection.Module[] mods = curAssembly.GetModules();
-			foreach (System.Reflection.Module md in mods) {
-				//BusEngine.Log.Info("This assembly contains the Game.exe {0} module", md.Name);
-			}
-
-			//System.Type myType = System.Type.GetType("BusEngine.Game");
-			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
-			BusEngine.Log.Info("dddddddddd");
-			BusEngine.Log.Info(System.Reflection.BindingFlags.Public);
-			BusEngine.Log.Info(System.Type.GetType("BusEngine.UI.Canvas.WinForm"));
-			BusEngine.Log.Info("dddddddddd");
-			BusEngine.Log.Info("xxxxxxxxxxx");
-			BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
-			BusEngine.Log.Info("xxxxxxxxxxx");
-			
-			
-			//BusEngine.Log.Info(System.Runtime.InteropServices.GuidAttribute.GetHashCode());
-			
-			// проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
-			
-			
-			BusEngine.Log.Info("gggggggggggggg");
-			System.Reflection.Assembly mainAssemblyd = typeof(BusEngine.Log).Assembly;
-			System.IO.FileStream[] x = mainAssemblyd.GetFiles();
-			foreach (System.IO.FileStream m in x) {
-			BusEngine.Log.Info(m.Name);
-			}
-			
-			
-			System.Reflection.Assembly mainAssembly = typeof(BusEngine.Start).Assembly;
-			BusEngine.Log.Info("The executing assembly is {0}.", mainAssembly);
-			System.Reflection.Module[] modss = mainAssembly.GetModules();
-			BusEngine.Log.Info("\tModules in the assembly:");
-			foreach (System.Reflection.Module m in modss) {
-				BusEngine.Log.Info("\t{0}", m);
-			}
-			BusEngine.Log.Info("gggggggggggggg");
-			
-			// "TestReflection" искомое пространство
-			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
-			System.Type[] typelist = System.Reflection.Assembly.GetEntryAssembly().GetTypes();
-			
-			BusEngine.Log.Info(typelist);
-			foreach (System.Type type in typelist) {
-				BusEngine.Log.Info("ssssssssssss");
-				BusEngine.Log.Info(type.FullName);
-				BusEngine.Log.Info("ssssssssssss");
-				// создание объекта
-				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
- 
-				// чтобы получить public методы без базовых(наследованных от object)
-				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-				foreach (var methodInfo in methods) {
-					BusEngine.Log.Info("ssssssssssss");
-					BusEngine.Log.Info(methodInfo);
-					BusEngine.Log.Info("ssssssssssss");
-					//вызов
-					//methodInfo.Invoke(targetObject, new object[] { });
-				}
-			}
-
-			/* BusEngine.Plugin _plugin = new BusEngine.Game.Default();
-			_plugin.Initialize(); */
-
-
-
-
-
-
-			BusEngine.Log.Info("============== ajax запустили");
-			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
-			BusEngine.Log.Info("============== ajax запустили");
-
 			// создаём форму System.Windows.Forms
 			Form form = new Form();
 
 			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
-			/* if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				_canvas.WinForm = form;
-			} */
 
 			/* System.Windows.Forms.Application.EnableVisualStyles();
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
@@ -205,23 +126,10 @@ BusEngine.UI
 			// запускаем видео
 			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 			//BusEngine.Video.Play("Videos/BusEngine.mp4");
-			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 
 			// запускаем браузер
 			//BusEngine.Browser.Start("index.html");
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
 			// тест графики
 			// https://rsdn.org/article/gdi/gdiplus2mag.xml
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);

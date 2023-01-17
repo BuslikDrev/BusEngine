@@ -69,15 +69,36 @@ BusEngine.Browser
 			BusEngine.Browser.Start("index.html");
 			BusEngine.Browser.PostMessage += OnPostMessage;
 
+			BusEngine.Log.Info("dddddddddddddddddddddd");
+			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
+			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
+
+			System.Reflection.Module[] mods = curAssembly.GetModules();
+			foreach (System.Reflection.Module md in mods) {
+				BusEngine.Log.Info("This assembly contains the Game.exe {0} module", md.Name);
+			}
+			BusEngine.Log.Info("dddddddddddddddddddddd");
+			System.Reflection.Assembly mainAssembly = typeof(BusEngine.Start).Assembly;
+			BusEngine.Log.Info("The executing assembly is {0}.", mainAssembly);
+			System.Reflection.Module[] modss = mainAssembly.GetModules();
+			BusEngine.Log.Info("\tModules in the assembly:");
+			foreach (System.Reflection.Module m in modss) {
+				BusEngine.Log.Info("\t{0}", m);
+			}
+			BusEngine.Log.Info("dddddddddddddddddddddd");
+
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
 		}
 		/** функция запуска приложения */
 
 		private static void OnPostMessage(object sender, string message) {
-			BusEngine.Log.Info("браузер клик" + message);
 			if (message == "Exit") {
 				BusEngine.Engine.Shutdown();
+			} else if (message == "Debug") {
+				BusEngine.Log.Info("JavaScript: Привет CSharp!");
+				BusEngine.Log.Info("На команду: " + message);
+				BusEngine.Browser.ExecuteJS("document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: " + message + "'}}));");
 			}
 		}
 	}
