@@ -27,8 +27,8 @@ BusEngine.Browser
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			// инициализируем API BusEngine
-			BusEngine.Engine.Initialize();
 			BusEngine.Engine.Platform = "WindowsEditor";
+			BusEngine.Engine.Initialize();
 
 			// допускаем только один запуск
 			bool createdNew;
@@ -37,17 +37,14 @@ BusEngine.Browser
 				string title;
 				string desc;
 
-				if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "English") {
-					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine is already running";
-					desc = "The program is already running. Continue running copy?";
-				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Russian") {
-					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine уже запущен";
-					desc = "Программа уже запущена. Продолжить запуск копии?";
-				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Ukrainian") {
-					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine вже запущено";
-					desc = "Програму вже запущено. Продовжити запуск копії?";
+				if (BusEngine.Localization.GetLanguage("error_warning_busasd") != "error_warning_busasd") {
+					title = BusEngine.Localization.GetLanguage("error_warning_busasd");
 				} else {
 					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine ужо запушчаны";
+				}
+				if (BusEngine.Localization.GetLanguage("error_warning_is_already_running_Yes") != "error_warning_is_already_running_Yes") {
+					desc = BusEngine.Localization.GetLanguage("error_warning_is_already_running_Yes");
+				} else {
 					desc = "Праграма ўжо запушчана. Працягнуць запуск копіі?";
 				}
 

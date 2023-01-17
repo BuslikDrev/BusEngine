@@ -82,8 +82,8 @@ BusEngine.UI
 			} else {
 
 			// инициализируем API BusEngine
-			BusEngine.Engine.Initialize();
 			BusEngine.Engine.Platform = "Windows";
+			BusEngine.Engine.Initialize();
 
 			// допускаем только один запуск
 			/* bool createdNew;
@@ -92,17 +92,14 @@ BusEngine.UI
 				string title;
 				string desc;
 
-				if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "English") {
-					title = "Attention!";
-					desc = "The program is already running.";
-				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Russian") {
-					title = "Внимание!";
-					desc = "Программа уже запущена.";
-				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Ukrainian") {
-					title = "Увага!";
-					desc = "Програму вже запущено.";
+				if (BusEngine.Localization.GetLanguage("error_warning") != "error_warning") {
+					title = BusEngine.Localization.GetLanguage("error_warning");
 				} else {
 					title = "Увага!";
+				}
+				if (BusEngine.Localization.GetLanguage("error_warning_is_already_running") != "error_warning_is_already_running") {
+					desc = BusEngine.Localization.GetLanguage("error_warning_is_already_running");
+				} else {
 					desc = "Праграма ўжо запушчана.";
 				}
 
@@ -124,7 +121,6 @@ BusEngine.UI
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
 
 			// запускаем видео
-			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 
 			// запускаем браузер

@@ -11,6 +11,7 @@
 
 #define BUSENGINE_XAMARINFORMS
 #define BUSENGINE_ANDROID
+/** API BusEngine */
 namespace BusEngine {
 /*
 Зависит от плагинов:
@@ -24,7 +25,8 @@ BusEngine.Browser
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			// генерируем BusEngine API
-			BusEngine.Engine.GenerateStatLink();
+			BusEngine.Engine.Platform = "Android";
+			BusEngine.Engine.Initialize();
 
 			// создаём форму System.Windows.Forms
 			BusEngine.Form form = new Form();
