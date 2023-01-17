@@ -5,7 +5,8 @@
 /* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
-#define BUSENGINE_WINFORM
+#define BUSENGINE_WINFORMS
+#define BUSENGINE_WINDOWS
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -26,8 +27,8 @@ BusEngine.UI
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			// инициализируем API BusEngine
+			BusEngine.Engine.Platform = "Windows";
 			BusEngine.Engine.Initialize();
-			BusEngine.Engine.Platform = "BUSENGINE_WINFORM";
 
 			// создаём форму System.Windows.Forms
 			Form form = new Form();
