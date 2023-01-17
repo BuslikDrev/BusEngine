@@ -16,16 +16,9 @@ BusEngine.Engine
 BusEngine.Log
 BusEngine.UI
 */
-	// https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/preprocessor-directives
-	// https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/classes-and-structs/constants
-	public class Global {
-		//public const bool BUSENGINE_WINFORM = true;
-	}
 
 	internal class Start {
-		/** функция запуска приложения */
-		//[System.STAThread] // если однопоточное приложение
-		private static void Main(string[] args) {
+		private static void Run() {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Windows";
 			BusEngine.Engine.Initialize();
@@ -75,6 +68,38 @@ BusEngine.UI
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
+		}
+
+		/** функция запуска приложения */
+		//[System.STAThread] // если однопоточное приложение
+		private static void Main(string[] args) {
+			// проверяем целостность библиотек движка
+			if (!System.IO.File.Exists(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\BusEngine.dll")) {
+				string title;
+				string desc;
+
+				if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "English") {
+					title = "Memory Manager";
+					desc = "Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory)";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Russian") {
+					title = "Диспетчер памяти";
+					desc = "Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)";
+				} else if (System.Globalization.CultureInfo.CurrentCulture.EnglishName == "Ukrainian") {
+					title = "Менеджер пам'яті";
+					desc = "Менеджер пам'яті: не можна зв'язати функції керування пам'яттю. Хмара не має доступу до BusEngine.dll (перевірте робочий каталог)";
+				} else {
+					title = "Дыспетчар памяці";
+					desc = "Дыспетчар памяці: немагчыма звязаць функцыі кіравання памяццю. Воблака не мае доступу да BusEngine.dll (праверце працоўны каталог)";
+				}
+
+				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+
+				System.Windows.Forms.Application.Exit();
+
+				return;
+			} else {
+				Run();
+			}
 		}
 		/** функция запуска приложения */
 
