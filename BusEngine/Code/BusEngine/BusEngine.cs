@@ -369,7 +369,7 @@ BusEngine.Engine.UI
 			files = System.IO.Directory.GetFiles(path, "*.busproject");
 
 			if (files.Length == 0) {
-				BusEngine.Log.Info(files.Length);
+				//BusEngine.Log.Info(files.Length);
 
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "Game.busproject")) {
@@ -377,7 +377,7 @@ BusEngine.Engine.UI
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
-				BusEngine.Log.Info(files[0]);
+				//BusEngine.Log.Info(files[0]);
 
 				// запись
 				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(files[0], false, System.Text.Encoding.UTF8)) {
@@ -419,7 +419,7 @@ BusEngine.Engine.UI
 			files = System.IO.Directory.GetFiles(path, "busengine.busengine");
 
 			if (files.Length == 0) {
-				BusEngine.Log.Info(files.Length);
+				//BusEngine.Log.Info(files.Length);
 
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "busengine.busengine")) {
@@ -427,7 +427,7 @@ BusEngine.Engine.UI
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
-				BusEngine.Log.Info(files[0]);
+				//BusEngine.Log.Info(files[0]);
 
 				using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
 					byte[] buffer = new byte[fstream.Length];
@@ -442,11 +442,11 @@ BusEngine.Engine.UI
 			BusEngine.Engine.DataDirectory = path + "Data/";
 
 			new BusEngine.Engine.Device();
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
+			/* BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
 			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
 			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Version);
 			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount); */
 
 			// инициализируем язык
 			new BusEngine.Localization().Initialize();
@@ -480,7 +480,9 @@ BusEngine.Engine.UI
 			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
 			BusEngine.Log.Info("dddddddddd");
 			BusEngine.Log.Info(System.Reflection.BindingFlags.Public);
-			BusEngine.Log.Info(System.Type.GetType("BusEngine.UI.Canvas.WinForm"));
+			if (System.Type.GetType("BusEngine.UI.Canvas") != null) {
+			BusEngine.Log.Info("1111111");
+			}
 			BusEngine.Log.Info("dddddddddd");
 			BusEngine.Log.Info("xxxxxxxxxxx");
 			BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
@@ -526,8 +528,8 @@ BusEngine.Engine.UI
 				}
 			}
 
-			/* BusEngine.Plugin _plugin = new BusEngine.Game.Default();
-			_plugin.Initialize(); */
+			BusEngine.Plugin _plugin = new BusEngine.Game.Default();
+			_plugin.Initialize();
 
 
 
@@ -538,7 +540,7 @@ BusEngine.Engine.UI
 			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
 			BusEngine.Log.Info("============== ajax запустили");
 			
-			
+			// =============================================================================
 			
 			
 			
