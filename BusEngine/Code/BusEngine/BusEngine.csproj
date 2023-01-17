@@ -123,7 +123,7 @@
     <Compile Include="**\*.cs" />
     <None Include="*.config" />
   </ItemGroup>
-  <ItemGroup>
+  <!-- <ItemGroup>
     <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
       <Link>..\..\Bin\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -140,6 +140,6 @@
       <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
+  </ItemGroup> -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

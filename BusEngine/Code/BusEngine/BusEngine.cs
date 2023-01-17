@@ -179,15 +179,28 @@ BusEngine.UI.Canvas
 		}
 		/** функция выполнения js кода в браузере */
 
+		private static bool ValidURL(string s, out System.Uri url) {
+			if (!System.Text.RegularExpressions.Regex.IsMatch(s, @"^https?:\/\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) {
+				s = "http://" + s;
+			}
+
+			if (System.Uri.TryCreate(s, System.UriKind.Absolute, out url)) {
+				return (url.Scheme == System.Uri.UriSchemeHttp || url.Scheme == System.Uri.UriSchemeHttps);
+			}
+
+			return false;
+		}
+
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
 		public static void Start(string url = "") {
 			// если ссылка не обсалютный адрес, то делаем его обсалютным
-			if (url.IndexOf(':') == -1) {
+			System.Uri uriResult;
+			if (ValidURL(url, out uriResult) && url.IndexOf(':') == -1) {
 				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
 					url = "https://BusEngine/" + url;
 				} else {
-					url = "<b>ПРОВЕРЬТЕ ПУТЬ К ФАЙЛУ</b>";
+					url = null;
 				}
 			}
 
@@ -222,6 +235,18 @@ BusEngine.UI.Canvas
 
 			// запускаем браузер
 			browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
+
+			if (url != null && !ValidURL(url, out uriResult)) {
+				CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
+			} else if (url == null) {
+				if (BusEngine.Localization.GetLanguage("error_browser_url") != "error_browser_url") {
+					url = "<meta charset=\"UTF-8\"><b>" + BusEngine.Localization.GetLanguage("error_browser_url") + "</b>";
+				} else {
+					url = "<meta charset=\"UTF-8\"><b>ПРАВЕРЦЕ ШЛЯХ ДА ФАЙЛУ!</b>";
+				}
+
+				CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
+			}
 
 			// просто подключаем левое событие - можно удалить
 			//browser.KeyDown += BusEngine.Browser.OnKeyDown;
@@ -423,8 +448,17 @@ BusEngine.Engine.UI
 			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
 			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount);
 
+			// инициализируем язык
+			new BusEngine.Localization().Initialize();
 
 
+
+
+
+
+
+
+			// =============================================================================
 			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
 
@@ -577,7 +611,7 @@ namespace BusEngine {
 			return false;
 		}
 
-		public void Start() {
+		public void Initialize() {
 			if (Language == null || Language == "") {
 				Language = LanguageDefault.ToString();
 			}
@@ -624,10 +658,9 @@ namespace BusEngine {
 				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
 			}
 			// https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
-			platform = ""; //BusEngine.Engine.Platform.Name.ToString();
-			//Platform = "WebGLPlayer";
+			platform = BusEngine.Engine.Platform;
 
-			if (platform == "WindowsEditor" || platform == "WindowsPlayer") {
+			if (platform == "WindowsEditor" || platform == "Windows") {
 				path = BusEngine.Engine.DataDirectory + "../Localization/";
 				if (!System.IO.Directory.Exists(path)) {
 					path = BusEngine.Engine.DataDirectory + "/Localization/";
