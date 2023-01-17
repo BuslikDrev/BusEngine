@@ -73,7 +73,7 @@
     </script>
     <script>
 	window.addEventListener('DOMContentLoaded', function() {
-		var element = document.querySelector('button');
+		var element = document.querySelector('#exit');
 
 		if (element) {
 			element.addEventListener('click', function() {
@@ -88,6 +88,22 @@
 				}
 			});
 		}
+
+		var element = document.querySelector('#debug');
+
+		if (element) {
+			element.addEventListener('click', function() {
+				BusEngine.PostMessage('Debug');
+			});
+		}
+	});
+
+	window.addEventListener('BusEngineMessage', function(e) {
+		element = document.querySelector('#message');
+
+		if (element) {
+			element.innerText = e.detail.hi + ' ' + e.detail.data;
+		}
 	});
     </script>
   </head>
@@ -95,7 +111,8 @@
     <div style="position: absolute;">
       <span><b>Я программист!</b></span><br>
       <span id="message"></span><br>
-      <button>ВЫЙТИ ИЗ ИГРЫ</button><br>
+      <button id="debug">ТЕСТ ОБЩЕНИЯ МЕЖДУ JS И C#</button><br>
+      <button id="exit">ВЫЙТИ ИЗ ИГРЫ</button><br>
     </div>
   </body>
 </html>
