@@ -146,6 +146,7 @@ BusEngine.UI.Canvas
 */
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
+		private static CefSharp.WinForms.ChromiumWebBrowser browser;
 		public delegate void PostMessageHandler(object sender, string e);
 		public static event PostMessageHandler PostMessage;
 
@@ -163,10 +164,20 @@ BusEngine.UI.Canvas
 		/** событие клика из браузера */
 
 		/** все события из PostMessage js браузера */
+		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
 			PostMessage.Invoke(sender, (string)e.Message);
+			//browser.ExecuteScriptAsyncWhenPageLoaded(@"");
 		}
 		/** все события из PostMessage js браузера */
+
+		/** функция выполнения js кода в браузере */
+		public static void ExecuteJS(string js = "") {
+			if (browser != null) {
+				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
+			}
+		}
+		/** функция выполнения js кода в браузере */
 
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
@@ -210,7 +221,7 @@ BusEngine.UI.Canvas
 			CefSharp.Cef.Initialize(settings);
 
 			// запускаем браузер
-			CefSharp.WinForms.ChromiumWebBrowser browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
+			browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
 
 			// просто подключаем левое событие - можно удалить
 			//browser.KeyDown += BusEngine.Browser.OnKeyDown;
@@ -218,11 +229,11 @@ BusEngine.UI.Canvas
 			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 			// подключаем событие сообщения из javascript
 			browser.JavascriptMessageReceived += OnPostMessage;
-			//browser.JavascriptMessageReceived += PostMessage;
 
 			// устанавливаем размер окана браузера, как в нашей программе
 			//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
 			//browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
+
 			// подключаем браузер к нашей программе
 			BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
 		}
@@ -233,7 +244,7 @@ BusEngine.UI.Canvas
 		}
 
 		public void Dispose() {
-			BusEngine.Log.ConsoleHide();
+
 		}
 	}
 	/** API BusEngine.Browser */
@@ -316,56 +327,56 @@ BusEngine.Engine.UI
 			// https://metanit.com/sharp/tutorial/5.4.php
 			// https://metanit.com/sharp/tutorial/6.4.php
 			// https://dir.by/developer/csharp/serialization_json/?lang=eng
-			string _path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
+			string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
 
-			if (!System.IO.Directory.Exists(_path)) {
-				_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../Bin/";
+			if (!System.IO.Directory.Exists(path)) {
+				path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../Bin/";
 
-				if (!System.IO.Directory.Exists(_path)) {
-					_path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Bin/";
+				if (!System.IO.Directory.Exists(path)) {
+					path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Bin/";
 				}
 			}
 
-			_path = System.IO.Path.GetFullPath(_path + "../");
+			path = System.IO.Path.GetFullPath(path + "../");
 
-			string[] _files;
+			string[] files;
 
-			_files = System.IO.Directory.GetFiles(_path, "*.busproject");
+			files = System.IO.Directory.GetFiles(path, "*.busproject");
 
-			if (_files.Length == 0) {
-				BusEngine.Log.Info(_files.Length);
+			if (files.Length == 0) {
+				BusEngine.Log.Info(files.Length);
 
 				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "Game.busproject")) {
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "Game.busproject")) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
-				BusEngine.Log.Info(_files[0]);
+				BusEngine.Log.Info(files[0]);
 
 				// запись
-				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(_files[0], false, System.Text.Encoding.UTF8)) {
+				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(files[0], false, System.Text.Encoding.UTF8)) {
 					fstream.Write(BusEngine.Tools.Json.SerializeObject(_setting_project));
 				} */
 
 				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_files[0])) {
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(files[0])) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(BusEngine.Tools.Json.DeserializeObject(BusEngine.Tools.Json.SerializeObject(_setting_project))));
 
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 
 				// запись
-				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+				/* using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
 					fstream.WriteAsync(buffer, 0, buffer.Length);
 				} */
 
 				// запись
-				//System.IO.File.WriteAllText(_files[0], BusEngine.Tools.Json.SerializeObject(_setting_project));
+				//System.IO.File.WriteAllText(files[0], BusEngine.Tools.Json.SerializeObject(_setting_project));
 
 				// чтение
-				/* using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+				/* using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
 					byte[] buffer = new byte[fstream.Length];
 					fstream.ReadAsync(buffer, 0, buffer.Length);
 					// декодируем байты в строку
@@ -373,27 +384,27 @@ BusEngine.Engine.UI
 				} */
 
 				// чтение
-				//BusEngine.Tools.Json.DeserializeObject(System.IO.File.ReadAllText(_files[0]));
+				//BusEngine.Tools.Json.DeserializeObject(System.IO.File.ReadAllText(files[0]));
 			}
 
 			// тестирование плагина - прогонка кода
 			//Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
 			BusEngine.Tools.Json.DeserializeObject(BusEngine.Tools.Json.SerializeObject(_setting_project));
 
-			_files = System.IO.Directory.GetFiles(_path, "busengine.busengine");
+			files = System.IO.Directory.GetFiles(path, "busengine.busengine");
 
-			if (_files.Length == 0) {
-				BusEngine.Log.Info(_files.Length);
+			if (files.Length == 0) {
+				BusEngine.Log.Info(files.Length);
 
 				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(_path + "busengine.busengine")) {
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "busengine.busengine")) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
-				BusEngine.Log.Info(_files[0]);
+				BusEngine.Log.Info(files[0]);
 
-				using (System.IO.FileStream fstream = new System.IO.FileStream(_files[0], System.IO.FileMode.OpenOrCreate)) {
+				using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
 					byte[] buffer = new byte[fstream.Length];
 					fstream.ReadAsync(buffer, 0, buffer.Length);
 					// декодируем байты в строку
@@ -403,7 +414,7 @@ BusEngine.Engine.UI
 				}
 			}
 
-			BusEngine.Engine.DataDirectory = _path + "Data/";
+			BusEngine.Engine.DataDirectory = path + "Data/";
 
 			new BusEngine.Engine.Device();
 			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
@@ -424,6 +435,79 @@ BusEngine.Engine.UI
 
 			//BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Module);
 			BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Assembly.GetCallingAssembly().FullName);
+			
+			
+			
+			
+			
+			
+
+			//System.Type myType = System.Type.GetType("BusEngine.Game");
+			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
+			BusEngine.Log.Info("dddddddddd");
+			BusEngine.Log.Info(System.Reflection.BindingFlags.Public);
+			BusEngine.Log.Info(System.Type.GetType("BusEngine.UI.Canvas.WinForm"));
+			BusEngine.Log.Info("dddddddddd");
+			BusEngine.Log.Info("xxxxxxxxxxx");
+			BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
+			BusEngine.Log.Info("xxxxxxxxxxx");
+			
+			
+			//BusEngine.Log.Info(System.Runtime.InteropServices.GuidAttribute.GetHashCode());
+			
+			// проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
+			
+			
+			BusEngine.Log.Info("gggggggggggggg");
+			System.Reflection.Assembly mainAssemblyd = typeof(BusEngine.Log).Assembly;
+			System.IO.FileStream[] x = mainAssemblyd.GetFiles();
+			foreach (System.IO.FileStream m in x) {
+			BusEngine.Log.Info(m.Name);
+			}
+			
+			
+
+			BusEngine.Log.Info("gggggggggggggg");
+			
+			// "TestReflection" искомое пространство
+			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
+			System.Type[] typelist = System.Reflection.Assembly.GetEntryAssembly().GetTypes();
+			
+			BusEngine.Log.Info(typelist);
+			foreach (System.Type type in typelist) {
+				BusEngine.Log.Info("ssssssssssss");
+				BusEngine.Log.Info(type.FullName);
+				BusEngine.Log.Info("ssssssssssss");
+				// создание объекта
+				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
+ 
+				// чтобы получить public методы без базовых(наследованных от object)
+				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+				foreach (var methodInfo in methods) {
+					BusEngine.Log.Info("ssssssssssss");
+					BusEngine.Log.Info(methodInfo);
+					BusEngine.Log.Info("ssssssssssss");
+					//вызов
+					//methodInfo.Invoke(targetObject, new object[] { });
+				}
+			}
+
+			/* BusEngine.Plugin _plugin = new BusEngine.Game.Default();
+			_plugin.Initialize(); */
+
+
+
+
+
+
+			BusEngine.Log.Info("============== ajax запустили");
+			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
+			BusEngine.Log.Info("============== ajax запустили");
+			
+			
+			
+			
+			
 		}
 
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
@@ -432,8 +516,8 @@ BusEngine.Engine.UI
 
 		/** функция остановки приложения */
 		public static void Shutdown() {
-			BusEngine.Plugin _plugin = new BusEngine.Game.Default();
-			_plugin.Shutdown();
+			BusEngine.Plugin plugin = new BusEngine.Game.Default();
+			plugin.Shutdown();
 			BusEngine.Log.ConsoleHide();
 			System.Windows.Forms.Application.Exit();
 		}
