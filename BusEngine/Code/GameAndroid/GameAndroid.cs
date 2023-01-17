@@ -21,10 +21,8 @@ BusEngine.UI
 BusEngine.Browser
 */
 	internal class Start {
-		/** функция запуска приложения */
-		//[System.STAThread] // если однопоточное приложение
-		private static void Main(string[] args) {
-			// генерируем BusEngine API
+		private static void Run() {
+			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Android";
 			BusEngine.Engine.Initialize();
 
@@ -40,6 +38,12 @@ BusEngine.Browser
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
+		}
+
+		/** функция запуска приложения */
+		//[System.STAThread] // если однопоточное приложение
+		private static void Main(string[] args) {
+			Run();
 		}
 		/** функция запуска приложения */
 	}
