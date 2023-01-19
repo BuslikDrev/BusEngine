@@ -94,6 +94,8 @@
 		if (element) {
 			element.addEventListener('click', function() {
 				BusEngine.PostMessage('Debug');
+				console.log('Debug js console.log');
+				BusEngine.log('Debug js BusEngine.log');
 			});
 		}
 	});
