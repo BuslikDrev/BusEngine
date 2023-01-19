@@ -63,7 +63,7 @@ BusEngine.Browser
 			BusEngine.Browser.Start("index.html");
 			BusEngine.Browser.PostMessage += OnPostMessage;
 
-			BusEngine.Log.Info("dddddddddddddddddddddd");
+			/* BusEngine.Log.Info("dddddddddddddddddddddd");
 			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
 
@@ -79,7 +79,7 @@ BusEngine.Browser
 			foreach (System.Reflection.Module m in modss) {
 				BusEngine.Log.Info("\t{0}", m);
 			}
-			BusEngine.Log.Info("dddddddddddddddddddddd");
+			BusEngine.Log.Info("dddddddddddddddddddddd"); */
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
@@ -125,6 +125,10 @@ BusEngine.Browser
 				BusEngine.Log.Info("JavaScript: Привет CSharp!");
 				BusEngine.Log.Info("На команду: " + message);
 				BusEngine.Browser.ExecuteJS("document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: " + message + "'}}));");
+			} else {
+				if (message.Substring(0, 8) == "console|") {
+					BusEngine.Log.Info(message.Substring(8));
+				}
 			}
 		}
 	}
