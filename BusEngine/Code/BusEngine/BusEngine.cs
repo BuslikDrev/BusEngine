@@ -493,7 +493,7 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 			// =============================================================================
 			BusEngine.Log.Info("=============================================================================");
 
-			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
+			/* System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
 
 			System.Reflection.Module[] mods = curAssembly.GetModules();
@@ -549,18 +549,34 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 					//вызов
 					//methodInfo.Invoke(targetObject, new object[] { });
 				}
-			}
+			} */
 
 			
 			new BusEngine.Game.Default().Initialize();
 
-			new BusEngine.Plugin().Initialize();
+			//new BusEngine.Plugin().Initialize();
 			
-
+			//System.Reflection.Assembly.GetAssembly(typeof(BusEngine.Plugin)).GetTypes();
 			
+			BusEngine.Log.Info("gggggggggggggg {0}", System.Reflection.Assembly.GetAssembly(typeof(BusEngine.Plugin)).GetTypes());
 
-
-
+			/* foreach (System.Type type in typeof(BusEngine.Plugin).Assembly.GetTypes()) {
+				BusEngine.Log.Info("ssssssssssss");
+				BusEngine.Log.Info(type.FullName);
+				BusEngine.Log.Info("ssssssssssss");
+				// создание объекта
+				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
+ 
+				// чтобы получить public методы без базовых(наследованных от object)
+				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+				foreach (var methodInfo in methods) {
+					BusEngine.Log.Info("ssssssssssss");
+					BusEngine.Log.Info(methodInfo);
+					BusEngine.Log.Info("ssssssssssss");
+					//вызов
+					//methodInfo.Invoke(targetObject, new object[] { });
+				}
+			} */
 
 
 
@@ -1133,34 +1149,10 @@ namespace BusEngine {
 /** API BusEngine */
 namespace BusEngine {
 	/** API BusEngine.Plugin */
-	public class Plugin {
+	public abstract class Plugin {
 		// при заапуске BusEngine до создания формы
 		public virtual void Initialize() {
 			BusEngine.Log.Info("Plugin Initialize");
-		
-			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
-			System.Reflection.Assembly xhhhh = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
-			BusEngine.Log.Info("плагин {0} ", xhhhh.GetTypes());
-			
-			foreach (System.Type type in xhhhh.GetTypes()) {
-				BusEngine.Log.Info("ssssssssssss");
-				BusEngine.Log.Info(type.FullName);
-				BusEngine.Log.Info("ssssssssssss");
-				// создание объекта
-				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
- 
-				// чтобы получить public методы без базовых(наследованных от object)
-				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-				foreach (var methodInfo in methods) {
-					BusEngine.Log.Info("ssssssssssss");
-					BusEngine.Log.Info(methodInfo);
-					BusEngine.Log.Info("ssssssssssss");
-					//вызов
-					//methodInfo.Invoke(targetObject, new object[] { });
-				}
-			}
-		
-		
 		}
 
 		// после загрузки определённого плагина
@@ -1340,10 +1332,35 @@ BusEngine.UI.Canvas
 /** API BusEngine.Game - пользовательский код для теста */
 namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
-	public class Default : BusEngine.Plugin {
+	internal class Default : BusEngine.Plugin {
 		// при заапуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("Default Initialize");
+			
+			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
+			System.Reflection.Assembly xhhhh = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
+			BusEngine.Log.Info("плагин {0} ", xhhhh.GetTypes());
+			
+			foreach (System.Type type in xhhhh.GetTypes()) {
+				if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
+					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
+					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
+					BusEngine.Log.Info(type);
+					BusEngine.Log.Info("ssssssssssss");
+					// создание объекта
+					//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
+	 
+					// чтобы получить public методы без базовых(наследованных от object)
+					var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+					foreach (var methodInfo in methods) {
+						BusEngine.Log.Info("ssssssssssss");
+						BusEngine.Log.Info(methodInfo);
+						BusEngine.Log.Info("ssssssssssss");
+						//вызов
+						//methodInfo.Invoke(targetObject, new object[] { });
+					}
+				}
+			}
 		}
 
 		// после загрузки определённого плагина
@@ -1841,7 +1858,6 @@ BusEngine.UI
 				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
 				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
 				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
-				System.Console.WriteLine("Консоль BusEngine4444444444444444444444");
 			}
 		}
 
@@ -1857,7 +1873,6 @@ BusEngine.UI
 				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
 				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
 				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
-				System.Console.WriteLine("Консоль BusEngine4444444444444444444444");
 			//}
 			//#endif
 		}
