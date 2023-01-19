@@ -33,14 +33,21 @@ try {
 	}
 }); */
 
-// Internet Explorer fix
+// Fix Internet Explorer
 if (!window.console) {
 	window.console = {};
 	window.console.log = window.console.assert = function(){};
 	window.console.warn = window.console.assert = function(){};
 }
 
-var BusEngine = {};
+// contextmenu off Internet Explorer 8+
+document.oncontextmenu = function () {
+   return false;
+};
+
+if (!('BusEngine' in window)) {
+	window.BusEngine = {};
+}
 
 BusEngine.cookie = {
 	'set': function(name, value, domain, path, day) {
@@ -193,8 +200,3 @@ BusEngine.loadScript = function(url, callback) {
 		ss.appendChild(s);
 	}
 };
-
-BusEngine.PostMessage = function(m) {};
-if ('CefSharp' in window) {
-	BusEngine.PostMessage = CefSharp.PostMessage;
-}
