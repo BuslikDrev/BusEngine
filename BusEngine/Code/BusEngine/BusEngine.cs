@@ -203,7 +203,10 @@ BusEngine.UI.Canvas
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
 		public static void Start(string url = "") {
-			// если ссылка не обсалютный адрес, то делаем его обсалютным
+			Start(url, BusEngine.Engine.DataDirectory);
+		}
+		public static void Start(string url = "", string root = "") {
+			// если ссылка не абсолютный адрес, то делаем его абсолютным
 			System.Uri uriResult;
 			if (ValidURL(url, out uriResult) && url.IndexOf(':') == -1) {
 				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
@@ -211,6 +214,12 @@ BusEngine.UI.Canvas
 				} else {
 					url = null;
 				}
+			}
+
+			if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root))) {
+				root = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root);
+			} else {
+				root = BusEngine.Engine.DataDirectory;
 			}
 
 			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
@@ -227,13 +236,17 @@ BusEngine.UI.Canvas
 			// отключаем создание файла лога
 			settings.LogSeverity = CefSharp.LogSeverity.Disable;
 
+			/* if (setting.GetType().GetField("root") == null) {
+				setting.root = BusEngine.Engine.DataDirectory;
+			} */
+;
 			// https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
 			// регистрируем свою схему
 			settings.RegisterScheme(new CefSharp.CefCustomScheme {
 				SchemeName = "https",
 				DomainName = "BusEngine",
 				SchemeHandlerFactory = new CefSharp.SchemeHandler.FolderSchemeHandlerFactory (
-					rootFolder: BusEngine.Engine.DataDirectory,
+					rootFolder: root,
 					hostName: "BusEngine",
 					defaultPage: "index.html"
 				)
@@ -310,15 +323,10 @@ namespace BusEngine {
 BusEngine.Core
 BusEngine.Log
 BusEngine.Plugin
-BusEngine.Engine.UI
+BusEngine.Tools
 */
 	/** API BusEngine.Engine */
 	public class Engine {
-		/* static Engine() {
-			Device 
-		}
- */
-		//public static BusEngine.UI.Canvas UI { get; set; }
 		public static string DataDirectory;
 		public static string Platform;
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
