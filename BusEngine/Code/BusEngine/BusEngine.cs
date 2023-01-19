@@ -34,89 +34,82 @@ namespace BusEngine {
 Зависимости нет
 */
 	/** API BusEngine.ProjectSettingDefault */
-	internal class ProjectSettingDefault {
-		public static object console_commands;
-		public static object console_variables;
-		public static string version;
-		public static string type;
-		public static object info;
-		public static object content;
-		public static object require;
-		public static BusEngine.ProjectSettingDefault Setting;
-
-		public ProjectSettingDefault() {
-			console_commands = new {
-				sys_spec = "1",
-				e_WaterOcean = "0",
-				r_WaterOcean = "0",
-				r_VolumetricClouds = "1",
-				r_Displayinfo = "0",
-				r_Fullscreen = "0",
-				r_Width = "1280",
-				r_Height = "720",
-			};
-			console_variables = new {
-				sys_spec = "1",
-				e_WaterOcean = "0",
-				r_WaterOcean = "0",
-				r_VolumetricClouds = "1",
-				r_Displayinfo = "0",
-				r_Fullscreen = "0",
-				r_Width = "1280",
-				r_Height = "720",
-			};
-			version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-			type = "";
-			info = new {
-				name = "Game",
-				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
-			};
-			content = new {
-				assets = new string[] {"GameData"},
-				code = new string[] {"Code"},
-				libs = new {
-					name = "BusEngine",
-					shared = new {
-						Any = "",
-						Android = "",
-						Win = "",
-						Win_x64 = "",
-						Win_x86 = "",
-					},
-				},
-			};
-			require = new {
-				engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-				plugins = new object[] {
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Android/Game.dll",
-						platforms = new string[] {"Android"},
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Win/Game.dll",
-						platforms = new string[] {"win_x86"},
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Win_x86/Game.dll",
-						platforms = new string[] {"win_x86"},
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Win_x64/Game.dll",
-						platforms = new string[] {"Win_x64"},
-					}
-				},
-			};
-
-			BusEngine.ProjectSettingDefault.Setting = this;
+	internal class ProjectDefault {
+		public ProjectDefault(object setting) {
+			Setting = setting;
 		}
+
+		public static object Setting = new {
+				console_commands = new {
+					sys_spec = "1",
+					e_WaterOcean = "0",
+					r_WaterOcean = "0",
+					r_VolumetricClouds = "1",
+					r_Displayinfo = "0",
+					r_Fullscreen = "0",
+					r_Width = "1280",
+					r_Height = "720",
+				},
+				console_variables = new {
+					sys_spec = "1",
+					e_WaterOcean = "0",
+					r_WaterOcean = "0",
+					r_VolumetricClouds = "1",
+					r_Displayinfo = "0",
+					r_Fullscreen = "0",
+					r_Width = "1280",
+					r_Height = "720",
+				},
+				version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+				type = "",
+				info = new {
+					name = "Game",
+					guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
+				},
+				Content = new {
+					assets = new string[] {"GameData"},
+					code = new string[] {"Code"},
+					libs = new {
+						name = "BusEngine",
+						shared = new {
+							Any = "",
+							Android = "",
+							Win = "",
+							Win_x64 = "",
+							Win_x86 = "",
+						},
+					},
+				},
+				require = new {
+					engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+					plugins = new object[] {
+						new {
+							guid = "",
+							type = "EType::Managed",
+							path = "Bin/Android/Game.dll",
+							platforms = new string[] {"Android"},
+						},
+						new {
+							guid = "",
+							type = "EType::Managed",
+							path = "Bin/Win/Game.dll",
+							platforms = new string[] {"win_x86"},
+						},
+						new {
+							guid = "",
+							type = "EType::Managed",
+							path = "Bin/Win_x86/Game.dll",
+							platforms = new string[] {"win_x86"},
+						},
+						new {
+							guid = "",
+							type = "EType::Managed",
+							path = "Bin/Win_x64/Game.dll",
+							platforms = new string[] {"Win_x64"},
+						}
+					},
+				},
+		};
 	}
 	/** API BusEngine.ProjectSettingDefault */
 }
@@ -149,6 +142,8 @@ BusEngine.UI.Canvas
 		private static CefSharp.WinForms.ChromiumWebBrowser browser;
 		public delegate void PostMessageHandler(object sender, string e);
 		public static event PostMessageHandler PostMessage;
+		//public delegate void LoadHandler(object sender, object e);
+		//public static event LoadHandler Load;
 
 		/** событие клика из браузера */
 		/* private static void OnBrowserClick(object o, object e) {
@@ -167,9 +162,23 @@ BusEngine.UI.Canvas
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
 			PostMessage.Invoke(sender, (string)e.Message);
-			//browser.ExecuteScriptAsyncWhenPageLoaded(@"");
 		}
 		/** все события из PostMessage js браузера */
+
+		/** событие загрузки страницы браузера */
+		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
+		/* private static void OnFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
+			BusEngine.Log.Info("OnFrameLoadEnd {0}", (object)e);
+			//Load.Invoke(sender, e);
+		} */
+		/** событие загрузки страницы браузера */
+
+		/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
+		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
+		private static void OnCefSharpReplace(object sender, CefSharp.FrameLoadEndEventArgs e) {
+			ExecuteJS("if ('CefSharp' in window) {BusEngine.PostMessage = CefSharp.PostMessage;} else {BusEngine.PostMessage = function(m) {};}");
+		}
+		/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
 
 		/** функция выполнения js кода в браузере */
 		public static void ExecuteJS(string js = "") {
@@ -254,6 +263,9 @@ BusEngine.UI.Canvas
 			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 			// подключаем событие сообщения из javascript
 			browser.JavascriptMessageReceived += OnPostMessage;
+			// подключаем событие загрузски страницы
+			browser.FrameLoadEnd += OnCefSharpReplace;
+			//browser.FrameLoadEnd += OnFrameLoadEnd;
 
 			// устанавливаем размер окана браузера, как в нашей программе
 			//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
@@ -346,8 +358,19 @@ BusEngine.Engine.UI
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
 
-			// устанавливаем данные проекта по умолчанию
-			BusEngine.ProjectSettingDefault _setting_project = new BusEngine.ProjectSettingDefault();
+BusEngine.Log.Info("ddd {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
+BusEngine.Log.Info("ddd {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
+//https://ru.stackoverflow.com/questions/713566/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BC%D0%B5%D1%80%D0%BD%D1%8B%D0%B5-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D1%8B-c-%D1%81-%D1%80%D0%B0%D0%B7%D0%BD%D1%8B%D0%BC%D0%B8-%D1%82%D0%B8%D0%BF%D0%B0%D0%BC%D0%B8
+				System.Collections.Generic.Dictionary<string, dynamic> her = new System.Collections.Generic.Dictionary<string, dynamic>();
+				her["user"] = new System.Collections.Generic.Dictionary<string, string>() {
+					{"xat", "111111112222222"}
+				};
+				//her["user"]["xat"] = "111111112222222";
+
+BusEngine.Log.Info("ddd {0}", her["user"]["xat"]);
+if (her.ContainsKey("user2")) {
+BusEngine.Log.Info("ddd {0}", her["user2"]);
+}
 
 			// https://metanit.com/sharp/tutorial/5.4.php
 			// https://metanit.com/sharp/tutorial/6.4.php
@@ -373,7 +396,7 @@ BusEngine.Engine.UI
 
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "Game.busproject")) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
@@ -381,40 +404,40 @@ BusEngine.Engine.UI
 
 				// запись
 				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(files[0], false, System.Text.Encoding.UTF8)) {
-					fstream.Write(BusEngine.Tools.Json.SerializeObject(_setting_project));
+					fstream.Write(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 				} */
 
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(files[0])) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(BusEngine.Tools.Json.DeserializeObject(BusEngine.Tools.Json.SerializeObject(_setting_project))));
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting))));
 
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 
 				// запись
 				/* using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 					fstream.WriteAsync(buffer, 0, buffer.Length);
 				} */
 
 				// запись
-				//System.IO.File.WriteAllText(files[0], BusEngine.Tools.Json.SerializeObject(_setting_project));
+				//System.IO.File.WriteAllText(files[0], BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 
 				// чтение
 				/* using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
 					byte[] buffer = new byte[fstream.Length];
 					fstream.ReadAsync(buffer, 0, buffer.Length);
 					// декодируем байты в строку
-					BusEngine.Tools.Json.DeserializeObject(System.Text.Encoding.UTF8.GetString(buffer));
+					BusEngine.Tools.Json.Decode(System.Text.Encoding.UTF8.GetString(buffer));
 				} */
 
 				// чтение
-				//BusEngine.Tools.Json.DeserializeObject(System.IO.File.ReadAllText(files[0]));
+				//BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(files[0]));
 			}
 
 			// тестирование плагина - прогонка кода
 			//Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-			BusEngine.Tools.Json.DeserializeObject(BusEngine.Tools.Json.SerializeObject(_setting_project));
+			//BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 
 			files = System.IO.Directory.GetFiles(path, "busengine.busengine");
 
@@ -423,7 +446,7 @@ BusEngine.Engine.UI
 
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "busengine.busengine")) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.SerializeObject(_setting_project));
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
@@ -433,8 +456,17 @@ BusEngine.Engine.UI
 					byte[] buffer = new byte[fstream.Length];
 					fstream.ReadAsync(buffer, 0, buffer.Length);
 					// декодируем байты в строку
-					object _ProjectSettingDefault = BusEngine.Tools.Json.DeserializeObject(System.Text.Encoding.UTF8.GetString(buffer));
-					//BusEngine.Log.Info(_setting_project.content.assets);
+					var _ProjectSettingDefault = BusEngine.Tools.Json.Decode(System.Text.Encoding.UTF8.GetString(buffer));
+					//BusEngine.Log.Info("ddd {0}", _ProjectSettingDefault.ToString());
+
+					var xat = Newtonsoft.Json.Linq.JObject.Parse(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
+					if (xat["console_commands"]["sys_spec5"] != null) {
+						BusEngine.Log.Info("ddd {0}", xat["console_commands"]["sys_spec5"]["5555"]);
+					}
+					//System.Type content = xat.GetType().GetInterface("content");
+
+					
+					//BusEngine.Log.Info("ddd {0}", xat.GetType().ContainsKey("content"));
 					//BusEngine.ProjectSettingDefault.content = _ProjectSettingDefault.content;
 				}
 			}
@@ -452,13 +484,15 @@ BusEngine.Engine.UI
 			new BusEngine.Localization().Initialize();
 
 
-
+//https://vscode.ru/prog-lessons/dinamicheskoe-podklyuchenie-dll-v-c.html#:~:text=%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5%20dll%20%D0%BF%D1%80%D0%BE%D0%B8%D1%81%D1%85%D0%BE%D0%B4%D0%B8%D1%82%20%D0%B2%D0%BE,%D1%8F%D0%B2%D0%BD%D0%BE%2C%20%D0%BF%D1%80%D0%B8%20%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B8%20%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B0.
 
 
 
 
 
 			// =============================================================================
+			BusEngine.Log.Info("=============================================================================");
+
 			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
 
@@ -469,47 +503,36 @@ BusEngine.Engine.UI
 
 			//BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Module);
 			BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Assembly.GetCallingAssembly().FullName);
-			
-			
-			
-			
-			
-			
 
-			//System.Type myType = System.Type.GetType("BusEngine.Game");
+			BusEngine.Log.Info("aaaaaaaaaaaaaaaaaa");
+			System.Type myType = System.Type.GetType("BusEngine.Game");
+			BusEngine.Log.Info(myType);
 			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
+			BusEngine.Log.Info("aaaaaaaaaaaaaaaaaa");
 			BusEngine.Log.Info("dddddddddd");
 			BusEngine.Log.Info(System.Reflection.BindingFlags.Public);
 			if (System.Type.GetType("BusEngine.UI.Canvas") != null) {
-			BusEngine.Log.Info("1111111");
+				BusEngine.Log.Info("1111111");
 			}
 			BusEngine.Log.Info("dddddddddd");
 			BusEngine.Log.Info("xxxxxxxxxxx");
 			BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
 			BusEngine.Log.Info("xxxxxxxxxxx");
-			
-			
-			//BusEngine.Log.Info(System.Runtime.InteropServices.GuidAttribute.GetHashCode());
-			
+
 			// проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
-			
-			
+			// получаем путь библиотеки по пространству имени
 			BusEngine.Log.Info("gggggggggggggg");
-			System.Reflection.Assembly mainAssemblyd = typeof(BusEngine.Log).Assembly;
+			System.Reflection.Assembly mainAssemblyd = typeof(BusEngine.Game.Default).Assembly;
 			System.IO.FileStream[] x = mainAssemblyd.GetFiles();
 			foreach (System.IO.FileStream m in x) {
-			BusEngine.Log.Info(m.Name);
+				BusEngine.Log.Info(m.Name);
 			}
-			
-			
-
 			BusEngine.Log.Info("gggggggggggggg");
-			
+
 			// "TestReflection" искомое пространство
 			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
 			System.Type[] typelist = System.Reflection.Assembly.GetEntryAssembly().GetTypes();
-			
-			BusEngine.Log.Info(typelist);
+
 			foreach (System.Type type in typelist) {
 				BusEngine.Log.Info("ssssssssssss");
 				BusEngine.Log.Info(type.FullName);
@@ -528,18 +551,23 @@ BusEngine.Engine.UI
 				}
 			}
 
-			BusEngine.Plugin _plugin = new BusEngine.Game.Default();
-			_plugin.Initialize();
-
-
-
-
-
-
-			BusEngine.Log.Info("============== ajax запустили");
-			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
-			BusEngine.Log.Info("============== ajax запустили");
 			
+			new BusEngine.Game.Default().Initialize();
+
+			new BusEngine.Plugin().Initialize();
+			
+
+			
+
+
+
+
+
+
+			/* BusEngine.Log.Info("============== ajax запустили");
+			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
+			BusEngine.Log.Info("============== ajax запустили"); */
+			BusEngine.Log.Info("=============================================================================");
 			// =============================================================================
 			
 			
@@ -1105,9 +1133,35 @@ namespace BusEngine {
 /** API BusEngine */
 namespace BusEngine {
 	/** API BusEngine.Plugin */
-	public abstract class Plugin {
+	public class Plugin {
 		// при заапуске BusEngine до создания формы
-		public virtual void Initialize() { }
+		public virtual void Initialize() {
+			BusEngine.Log.Info("Plugin Initialize");
+		
+			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
+			System.Reflection.Assembly xhhhh = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
+			BusEngine.Log.Info("плагин {0} ", xhhhh.GetTypes());
+			
+			foreach (System.Type type in xhhhh.GetTypes()) {
+				BusEngine.Log.Info("ssssssssssss");
+				BusEngine.Log.Info(type.FullName);
+				BusEngine.Log.Info("ssssssssssss");
+				// создание объекта
+				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
+ 
+				// чтобы получить public методы без базовых(наследованных от object)
+				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+				foreach (var methodInfo in methods) {
+					BusEngine.Log.Info("ssssssssssss");
+					BusEngine.Log.Info(methodInfo);
+					BusEngine.Log.Info("ssssssssssss");
+					//вызов
+					//methodInfo.Invoke(targetObject, new object[] { });
+				}
+			}
+		
+		
+		}
 
 		// после загрузки определённого плагина
 		public virtual void Initialize(string plugin) { }
@@ -1289,7 +1343,7 @@ namespace BusEngine.Game {
 	public class Default : BusEngine.Plugin {
 		// при заапуске BusEngine до создания формы
 		public override void Initialize() {
-			BusEngine.Log.Info("Initialize");
+			BusEngine.Log.Info("Default Initialize");
 		}
 
 		// после загрузки определённого плагина
@@ -1476,7 +1530,7 @@ Newtonsoft.Json
 									if (success != null && Result != null) {
 										responseType = responseType.ToLower();
 										if (responseType == "dictionary") {
-											success(BusEngine.Tools.Json.DeserializeObject(await Result.Content.ReadAsStringAsync()), Result);
+											success(BusEngine.Tools.Json.Decode(await Result.Content.ReadAsStringAsync()), Result);
 										} else if (responseType == "list") {
 											
 										} else if (responseType == "json") {
@@ -1567,7 +1621,7 @@ Newtonsoft.Json
 									if (success != null && Result != null) {
 										responseType = responseType.ToLower();
 										if (responseType == "dictionary") {
-											success(BusEngine.Tools.Json.DeserializeObject(Result.Content.ReadAsStringAsync().Result), Result);
+											success(BusEngine.Tools.Json.Decode(Result.Content.ReadAsStringAsync().Result), Result);
 										} else if (responseType == "list") {
 											
 										} else if (responseType == "json") {
@@ -1696,13 +1750,19 @@ namespace BusEngine.Tools {
 Newtonsoft.Json
 */
 	/** API BusEngine.Tools.Json */
+	//https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/migrate-from-newtonsoft?pivots=dotnet-7-0
+	//https://www.nuget.org/packages/System.Text.Json#readme-body-tab
 	public class Json : System.IDisposable {
-		public static string SerializeObject(object t) {
+		public static string Encode(object t) {
+			// object c#
 			return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
 		}
 
-		public static object DeserializeObject(string t) {
-			return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
+		public static object Decode(string t) {
+			// массив php
+			//return Newtonsoft.Json.Linq.JObject.Parse(t);
+			// object c#
+			return Newtonsoft.Json.JsonConvert.DeserializeObject<object>(t);
 		}
 
 		public static void Shutdown() {
