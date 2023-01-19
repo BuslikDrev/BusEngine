@@ -483,8 +483,9 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 			// инициализируем язык
 			new BusEngine.Localization().Initialize();
 
+			// инициализируем плагины
+			new BusEngine.IPlugin().Initialize();
 
-//https://vscode.ru/prog-lessons/dinamicheskoe-podklyuchenie-dll-v-c.html#:~:text=%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5%20dll%20%D0%BF%D1%80%D0%BE%D0%B8%D1%81%D1%85%D0%BE%D0%B4%D0%B8%D1%82%20%D0%B2%D0%BE,%D1%8F%D0%B2%D0%BD%D0%BE%2C%20%D0%BF%D1%80%D0%B8%20%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B8%20%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B0.
 
 
 
@@ -551,13 +552,6 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 				}
 			} */
 
-			
-			new BusEngine.Game.Default().Initialize();
-
-			//new BusEngine.Plugin().Initialize();
-			
-			//System.Reflection.Assembly.GetAssembly(typeof(BusEngine.Plugin)).GetTypes();
-			
 			BusEngine.Log.Info("gggggggggggggg {0}", System.Reflection.Assembly.GetAssembly(typeof(BusEngine.Plugin)).GetTypes());
 
 			/* foreach (System.Type type in typeof(BusEngine.Plugin).Assembly.GetTypes()) {
@@ -596,8 +590,7 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 
 		/** функция остановки приложения */
 		public static void Shutdown() {
-			BusEngine.Plugin plugin = new BusEngine.Game.Default();
-			plugin.Shutdown();
+			new BusEngine.IPlugin().Shutdown();
 			BusEngine.Log.ConsoleHide();
 			System.Windows.Forms.Application.Exit();
 		}
@@ -1183,6 +1176,86 @@ namespace BusEngine {
 		public virtual void OnClientDisconnected(int channelId) { }
 	}
 	/** API BusEngine.Plugin */
+
+	/** API BusEngine.IPlugin */
+	internal class IPlugin : BusEngine.Plugin {
+		// https://vscode.ru/prog-lessons/dinamicheskoe-podklyuchenie-dll-v-c.html#:~:text=%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5%20dll%20%D0%BF%D1%80%D0%BE%D0%B8%D1%81%D1%85%D0%BE%D0%B4%D0%B8%D1%82%20%D0%B2%D0%BE,%D1%8F%D0%B2%D0%BD%D0%BE%2C%20%D0%BF%D1%80%D0%B8%20%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B8%20%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B0.
+		// при заапуске BusEngine до создания формы
+		public override void Initialize() {
+			BusEngine.Log.Info("Default Initialize");
+			
+			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
+			System.Reflection.Assembly xhhhh = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
+			BusEngine.Log.Info("плагин {0} ", xhhhh.GetTypes());
+			
+			foreach (System.Type type in xhhhh.GetTypes()) {
+				if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
+					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
+					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
+					BusEngine.Log.Info(type);
+					BusEngine.Log.Info("ssssssssssss");
+					// создание объекта
+					//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
+	 
+					// чтобы получить public методы без базовых(наследованных от object)
+					var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+					foreach (var methodInfo in methods) {
+						BusEngine.Log.Info("ssssssssssss");
+						BusEngine.Log.Info(methodInfo);
+						BusEngine.Log.Info("ssssssssssss");
+						//вызов
+						//methodInfo.Invoke(targetObject, new object[] { });
+					}
+				}
+			}
+		}
+
+		// после загрузки определённого плагина
+		public override void Initialize(string plugin) {
+			BusEngine.Log.Info("Initialize " + plugin);
+		}
+
+		// перед закрытием BusEngine
+		public override void Shutdown() {
+			BusEngine.Log.Info("Shutdown");
+		}
+
+		// перед загрузкой игрового уровня
+		public override void OnLevelLoading(string level) {
+			BusEngine.Log.Info("OnLevelLoading");
+		}
+
+		// после загрузки игрового уровня
+		public override void OnLevelLoaded(string level) {
+			BusEngine.Log.Info("OnLevelLoaded");
+		}
+
+		// когда икрок может управлять главным героем - время игры идёт
+		public override void OnGameStart() {
+			BusEngine.Log.Info("OnGameStart");
+		}
+
+		// когда время остановлено - пауза
+		public override void OnGameStop() {
+			BusEngine.Log.Info("OnGameStop");
+		}
+
+		// когда игрок начинает подключаться к серверу
+		public override void OnClientConnectionReceived(int channelId) {
+			BusEngine.Log.Info("OnClientConnectionReceived");
+		}
+
+		// когда игрок подключился к серверу
+		public override void OnClientReadyForGameplay(int channelId) {
+			BusEngine.Log.Info("OnClientReadyForGameplay");
+		}
+
+		// когда игрока выкинуло из сервера - обрыв связи с сервером
+		public override void OnClientDisconnected(int channelId) {
+			BusEngine.Log.Info("OnClientDisconnected");
+		}
+	}
+	/** API BusEngine.IPlugin */
 }
 /** API BusEngine */
 
@@ -1328,89 +1401,6 @@ BusEngine.UI.Canvas
 	/** API BusEngine.Video */
 }
 /** API BusEngine */
-
-/** API BusEngine.Game - пользовательский код для теста */
-namespace BusEngine.Game {
-	/** API BusEngine.Plugin */
-	internal class Default : BusEngine.Plugin {
-		// при заапуске BusEngine до создания формы
-		public override void Initialize() {
-			BusEngine.Log.Info("Default Initialize");
-			
-			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
-			System.Reflection.Assembly xhhhh = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
-			BusEngine.Log.Info("плагин {0} ", xhhhh.GetTypes());
-			
-			foreach (System.Type type in xhhhh.GetTypes()) {
-				if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
-					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
-					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
-					BusEngine.Log.Info(type);
-					BusEngine.Log.Info("ssssssssssss");
-					// создание объекта
-					//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
-	 
-					// чтобы получить public методы без базовых(наследованных от object)
-					var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-					foreach (var methodInfo in methods) {
-						BusEngine.Log.Info("ssssssssssss");
-						BusEngine.Log.Info(methodInfo);
-						BusEngine.Log.Info("ssssssssssss");
-						//вызов
-						//methodInfo.Invoke(targetObject, new object[] { });
-					}
-				}
-			}
-		}
-
-		// после загрузки определённого плагина
-		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("Initialize " + plugin);
-		}
-
-		// перед закрытием BusEngine
-		public override void Shutdown() {
-			BusEngine.Log.Info("Shutdown");
-		}
-
-		// перед загрузкой игрового уровня
-		public override void OnLevelLoading(string level) {
-			BusEngine.Log.Info("OnLevelLoading");
-		}
-
-		// после загрузки игрового уровня
-		public override void OnLevelLoaded(string level) {
-			BusEngine.Log.Info("OnLevelLoaded");
-		}
-
-		// когда икрок может управлять главным героем - время игры идёт
-		public override void OnGameStart() {
-			BusEngine.Log.Info("OnGameStart");
-		}
-
-		// когда время остановлено - пауза
-		public override void OnGameStop() {
-			BusEngine.Log.Info("OnGameStop");
-		}
-
-		// когда игрок начинает подключаться к серверу
-		public override void OnClientConnectionReceived(int channelId) {
-			BusEngine.Log.Info("OnClientConnectionReceived");
-		}
-
-		// когда игрок подключился к серверу
-		public override void OnClientReadyForGameplay(int channelId) {
-			BusEngine.Log.Info("OnClientReadyForGameplay");
-		}
-
-		// когда игрока выкинуло из сервера - обрыв связи с сервером
-		public override void OnClientDisconnected(int channelId) {
-			BusEngine.Log.Info("OnClientDisconnected");
-		}
-	}
-	/** API BusEngine.Plugin */
-}
-/** API BusEngine.Game - пользовательский код для теста */
 
 /** API BusEngine.Tools */
 namespace BusEngine.Tools {
