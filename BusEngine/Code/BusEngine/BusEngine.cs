@@ -40,75 +40,147 @@ namespace BusEngine {
 		}
 
 		public static object Setting = new {
-				console_commands = new {
-					sys_spec = "1",
-					e_WaterOcean = "0",
-					r_WaterOcean = "0",
-					r_VolumetricClouds = "1",
-					r_Displayinfo = "0",
-					r_Fullscreen = "0",
-					r_Width = "1280",
-					r_Height = "720",
-				},
-				console_variables = new {
-					sys_spec = "1",
-					e_WaterOcean = "0",
-					r_WaterOcean = "0",
-					r_VolumetricClouds = "1",
-					r_Displayinfo = "0",
-					r_Fullscreen = "0",
-					r_Width = "1280",
-					r_Height = "720",
-				},
-				version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-				type = "",
-				info = new {
-					name = "Game",
-					guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
-				},
-				Content = new {
-					assets = new string[] {"GameData"},
-					code = new string[] {"Code"},
-					libs = new {
-						name = "BusEngine",
-						shared = new {
-							Any = "",
-							Android = "",
-							Win = "",
-							Win_x64 = "",
-							Win_x86 = "",
-						},
+			console_commands = new {
+				sys_spec = "1",
+				e_WaterOcean = "0",
+				r_WaterOcean = "0",
+				r_VolumetricClouds = "1",
+				r_Displayinfo = "0",
+				r_Fullscreen = "0",
+				r_Width = "1280",
+				r_Height = "720"
+			},
+			console_variables = new {
+				sys_spec = "1",
+				e_WaterOcean = "0",
+				r_WaterOcean = "0",
+				r_VolumetricClouds = "1",
+				r_Displayinfo = "0",
+				r_Fullscreen = "0",
+				r_Width = "1280",
+				r_Height = "720"
+			},
+			version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+			type = "",
+			info = new {
+				name = "Game",
+				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
+			},
+			Content = new {
+				assets = new string[] {"GameData"},
+				code = new string[] {"Code"},
+				libs = new {
+					name = "BusEngine",
+					shared = new {
+						Any = "",
+						Android = "",
+						Win = "",
+						Win_x64 = "",
+						Win_x86 = ""
 					},
 				},
-				require = new {
-					engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-					plugins = new object[] {
-						new {
-							guid = "",
-							type = "EType::Managed",
-							path = "Bin/Android/Game.dll",
-							platforms = new string[] {"Android"},
-						},
-						new {
-							guid = "",
-							type = "EType::Managed",
-							path = "Bin/Win/Game.dll",
-							platforms = new string[] {"win_x86"},
-						},
-						new {
-							guid = "",
-							type = "EType::Managed",
-							path = "Bin/Win_x86/Game.dll",
-							platforms = new string[] {"win_x86"},
-						},
-						new {
-							guid = "",
-							type = "EType::Managed",
-							path = "Bin/Win_x64/Game.dll",
-							platforms = new string[] {"Win_x64"},
-						}
+			},
+			require = new {
+				engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+				plugins = new object[] {
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "Bin/Android/Game.dll",
+						platforms = new string[] {"Android"}
 					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "Bin/Win/Game.dll",
+						platforms = new string[] {"win_x86"}
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "Bin/Win_x86/Game.dll",
+						platforms = new string[] {"win_x86"}
+					},
+					new {
+						guid = "",
+						type = "EType::Managed",
+						path = "Bin/Win_x64/Game.dll",
+						platforms = new string[] {"Win_x64"}
+					}
 				},
+			},
+		};
+
+		public static System.Collections.Generic.Dictionary<string, dynamic> Setting2 = new System.Collections.Generic.Dictionary<string, dynamic>() {
+			{"console_commands", new System.Collections.Generic.Dictionary<string, string>() {
+				{"sys_spec", "1"},
+				{"e_WaterOcean", "0"},
+				{"r_WaterOcean", "0"},
+				{"r_VolumetricClouds", "1"},
+				{"r_Displayinfo", "0"},
+				{"r_Fullscreen", "0"},
+				{"r_Width", "1280"},
+				{"r_Height", "720"}
+			}},
+			{"console_variables", new System.Collections.Generic.Dictionary<string, string>() {
+				{"sys_spec", "1"},
+				{"e_WaterOcean", "0"},
+				{"r_WaterOcean", "0"},
+				{"r_VolumetricClouds", "1"},
+				{"r_Displayinfo", "0"},
+				{"r_Fullscreen", "0"},
+				{"r_Width", "1280"},
+				{"r_Height", "720"}
+			}},
+			{"version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
+			{"type", ""},
+			{"info", new System.Collections.Generic.Dictionary<string, string>() {
+				{"name", "Game"},
+				{"guid", "ddc2049b-3a86-425b-9713-ee1babec5365"}
+			}},
+			{"Content", new System.Collections.Generic.Dictionary<string, dynamic>() {
+				{"assets", new string[] {"GameData"}},
+				{"code", new string[] {"Code"}},
+				{"libs", new System.Collections.Generic.Dictionary<string, dynamic>() {
+					{"name", "BusEngine"},
+					{"shared", new System.Collections.Generic.Dictionary<string, string>() {
+						{"Any", ""},
+						{"Android", ""},
+						{"Win", ""},
+						{"Win_x64", ""},
+						{"Win_x86", ""}
+					}}
+				}}
+			}},
+			{"require", new System.Collections.Generic.Dictionary<string, dynamic>() {
+				{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
+				{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, dynamic>>() {
+					new System.Collections.Generic.Dictionary<string, dynamic>() {
+						{"System", ""},
+						{"type", "EType::Managed"},
+						{"path", "Bin/Android/Game.dll"},
+						{"platforms", new string[] {"Android"}}
+					},
+					new System.Collections.Generic.Dictionary<string, dynamic>() {
+						{"System", ""},
+						{"type", "EType::Managed"},
+						{"path", "Bin/Win/Game.dll"},
+						{"platforms", new string[] {"win_x86"}}
+					},
+					new System.Collections.Generic.Dictionary<string, dynamic>() {
+						{"System", ""},
+						{"type", "EType::Managed"},
+						{"path", "Bin/Win_x86/Game.dll"},
+						{"platforms", new string[] {"win_x86"}}
+					},
+					new System.Collections.Generic.Dictionary<string, dynamic>() {
+						{"System", ""},
+						{"type", "EType::Managed"},
+						{"path", "Bin/Win_x64/Game.dll"},
+						{"platforms", new string[] {"Win_x64"}}
+					}
+				}}
+			}}
 		};
 	}
 	/** API BusEngine.ProjectSettingDefault */
@@ -366,8 +438,41 @@ BusEngine.Tools
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
 
-BusEngine.Log.Info("ddd {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
-BusEngine.Log.Info("ddd {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
+			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
+			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
+			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true));
+
+			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["version"]);
+			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["console_commands"]["sys_spec"]);
+			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //https://ru.stackoverflow.com/questions/713566/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BC%D0%B5%D1%80%D0%BD%D1%8B%D0%B5-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D1%8B-c-%D1%81-%D1%80%D0%B0%D0%B7%D0%BD%D1%8B%D0%BC%D0%B8-%D1%82%D0%B8%D0%BF%D0%B0%D0%BC%D0%B8
 				System.Collections.Generic.Dictionary<string, dynamic> her = new System.Collections.Generic.Dictionary<string, dynamic>();
 				her["user"] = new System.Collections.Generic.Dictionary<string, string>() {
@@ -379,6 +484,7 @@ BusEngine.Log.Info("ddd {0}", her["user"]["xat"]);
 if (her.ContainsKey("user2")) {
 BusEngine.Log.Info("ddd {0}", her["user2"]);
 }
+BusEngine.Log.Info("ddd {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(her)));
 
 			// https://metanit.com/sharp/tutorial/5.4.php
 			// https://metanit.com/sharp/tutorial/6.4.php
@@ -417,7 +523,7 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(files[0])) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting))));
+					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true)));
 
 					fstream.Write(buffer, 0, buffer.Length);
 				}
@@ -445,7 +551,7 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 
 			// тестирование плагина - прогонка кода
 			//Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-			//BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
+			//BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true);
 
 			files = System.IO.Directory.GetFiles(path, "busengine.busengine");
 
@@ -464,8 +570,8 @@ BusEngine.Log.Info("ddd {0}", her["user2"]);
 					byte[] buffer = new byte[fstream.Length];
 					fstream.ReadAsync(buffer, 0, buffer.Length);
 					// декодируем байты в строку
-					var _ProjectSettingDefault = BusEngine.Tools.Json.Decode(System.Text.Encoding.UTF8.GetString(buffer));
-					//BusEngine.Log.Info("ddd {0}", _ProjectSettingDefault.ToString());
+					var _ProjectSettingDefault = BusEngine.Tools.Json.Decode(System.Text.Encoding.UTF8.GetString(buffer), true);
+					BusEngine.Log.Info("ddd {0}", _ProjectSettingDefault);
 
 					var xat = Newtonsoft.Json.Linq.JObject.Parse(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 					if (xat["console_commands"]["sys_spec5"] != null) {
@@ -1774,10 +1880,16 @@ Newtonsoft.Json
 		}
 
 		public static object Decode(string t) {
-			// массив php
-			//return Newtonsoft.Json.Linq.JObject.Parse(t);
-			// object c#
-			return Newtonsoft.Json.JsonConvert.DeserializeObject<object>(t);
+			return Decode(t, false);
+		}
+		public static object Decode(string t, bool o = false) {
+			if (o) {
+				// object c#
+				return Newtonsoft.Json.JsonConvert.DeserializeObject<object>(t);
+			} else {
+				//массив php
+				return Newtonsoft.Json.Linq.JObject.Parse(t);
+			}
 		}
 
 		public static void Shutdown() {
