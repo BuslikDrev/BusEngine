@@ -49,6 +49,12 @@ if (!('BusEngine' in window)) {
 	window.BusEngine = {};
 }
 
+BusEngine.logs = console.log;
+BusEngine.log = console.log = function(...args) {
+	BusEngine.PostMessage('console|' + args);
+	BusEngine.logs.apply(this, args);
+};
+
 BusEngine.cookie = {
 	'set': function(name, value, domain, path, day) {
 		if (typeof name == 'undefined' || typeof name != 'string') {
