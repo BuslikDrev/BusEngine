@@ -10,7 +10,7 @@
     "r_Height": "720"
   },
   "console_variables": {
-    "sys_spec": "1",
+    "sys_spec": "1111111111",
     "e_WaterOcean": "0",
     "r_WaterOcean": "0",
     "r_VolumetricClouds": "1",
@@ -25,7 +25,7 @@
     "name": "Game",
     "guid": "ddc2049b-3a86-425b-9713-ee1babec5365"
   },
-  "content": {
+  "Content": {
     "assets": [
       "GameData"
     ],
@@ -76,6 +76,14 @@
         "path": "Bin/Win_x64/Game.dll",
         "platforms": [
           "Win_x64"
+        ]
+      },
+      {
+        "guid": "",
+        "type": "EType::Managed",
+        "path": "Bin/Win/Plugin.dll",
+        "platforms": [
+          "Any"
         ]
       }
     ]
