@@ -389,7 +389,12 @@ BusEngine.Tools
 	/** API BusEngine.Engine */
 	public class Engine {
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
+		public static string EngineDirectory;
+		public static string ExeDirectory;
+		public static string BinDirectory;
+		public static string EditorDirectory;
 		public static string DataDirectory;
+		public static string ToolsDirectory;
 		public static string Platform;
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
 		public class Device {
@@ -439,19 +444,24 @@ BusEngine.Tools
 			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)))); */
 
 			// устанавливаем ссылку на рабочий каталог
-			string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
+			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+			string path = BusEngine.Engine.ExeDirectory + "\\..\\..\\Bin\\";
 
 			if (!System.IO.Directory.Exists(path)) {
-				path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../Bin/";
+				path = BusEngine.Engine.ExeDirectory + "\\..\\Bin\\";
 
 				if (!System.IO.Directory.Exists(path)) {
-					path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/Bin/";
+					path = BusEngine.Engine.ExeDirectory + "\\Bin\\";
 				}
 			}
 
-			path = System.IO.Path.GetFullPath(path + "../");
+			path = System.IO.Path.GetFullPath(path + "..\\");
 
-			BusEngine.Engine.DataDirectory = path + "Data/";
+			BusEngine.Engine.EngineDirectory = path;
+			BusEngine.Engine.BinDirectory = path + "Bin\\";
+			BusEngine.Engine.EditorDirectory = path + "Editor\\";
+			BusEngine.Engine.DataDirectory = path + "Data\\";
 
 			// определяем устройство
 			new BusEngine.Engine.Device();
@@ -560,13 +570,22 @@ BusEngine.Tools
 					for (i = 0; i < ii; ++i) {
 						BusEngine.ProjectDefault.Setting2["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>());
 						if (setting["require"]["plugins"][i]["guid"] != null) {
-							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["guid"] = setting["require"]["plugins"][i]["guid"];
+							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["guid"] = (string)setting["require"]["plugins"][i]["guid"];
 						}
 						if (setting["require"]["plugins"][i]["type"] != null) {
-							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["type"] = setting["require"]["plugins"][i]["type"];
+							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["type"] = (string)setting["require"]["plugins"][i]["type"];
 						}
 						if (setting["require"]["plugins"][i]["path"] != null) {
-							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = setting["require"]["plugins"][i]["path"];
+							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = (string)setting["require"]["plugins"][i]["path"];
+							if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] + ".dll"))) {
+								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] + ".dll");
+							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]))) {
+								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]))) {
+								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+							} else {
+								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = "";
+							}
 						}
 						if (setting["require"]["plugins"][i]["platforms"] != null) {
 							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["platforms"] = setting["require"]["plugins"][i]["platforms"];
@@ -1226,35 +1245,40 @@ namespace BusEngine {
 			BusEngine.Log.Info("=============================================================================");
 			BusEngine.Log.Info("System Plugins Initialize");
 
-			int i;
+			int i, i2, ii = BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count;
 
-			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
-			System.Type[] plugin = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll").GetTypes();
+			for (i = 0; i < ii; ++i) {
+				if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] != "") {
+					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+					BusEngine.Log.Info(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
 
-			foreach (System.Type type in plugin) {
-				if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
-					BusEngine.Log.Info("Название класса {0}", type.FullName);
-					// создание объекта
-					object targetObject = System.Activator.CreateInstance(type);
+					foreach (System.Type type in plugin.GetTypes()) {
+						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
+							BusEngine.Log.Info("Название класса {0}", type.FullName);
+							// создание объекта
+							object targetObject = System.Activator.CreateInstance(type);
 
-					// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
-					// чтобы получить public методы без базовых(наследованных от object)
-					System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-					foreach (System.Reflection.MethodInfo method in methods) {
-						if (method.MemberType.ToString().ToLower() == "method") {
-							BusEngine.Log.Info("Название метода {0}", method);
-							if (method.Name.ToLower() == "initialize") {
-								i = method.GetParameters().Length;
-								if (i == 0) {
-									method.Invoke(targetObject, null);
-								} else {
-									method.Invoke(targetObject, new object[i]);
+							// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
+							// чтобы получить public методы без базовых(наследованных от object)
+							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+							foreach (System.Reflection.MethodInfo method in methods) {
+								if (method.MemberType.ToString().ToLower() == "method") {
+									BusEngine.Log.Info("Название метода {0}", method);
+									if (method.Name.ToLower() == "initialize") {
+										i2 = method.GetParameters().Length;
+										if (i2 == 0) {
+											method.Invoke(targetObject, null);
+										} else {
+											method.Invoke(targetObject, new object[i2]);
+										}
+									}
 								}
 							}
 						}
 					}
 				}
 			}
+
 			BusEngine.Log.Info("=============================================================================");
 		}
 
@@ -1347,13 +1371,13 @@ BusEngine.UI.Canvas
 			// https://www.nuget.org/packages/Microsoft.DXSDK.D3DX#readme-body-tab
 			// https://learn.microsoft.com/en-us/previous-versions/windows/desktop/bb318762(v=vs.85)
 			//Microsoft.DirectX.AudioVideoPlayback.Audio _mediaPlayer = new Microsoft.DirectX.AudioVideoPlayback.Audio("E:\\Music\\main.mp3");
-			/* Microsoft.DirectX.AudioVideoPlayback.Video _mediaPlayer = new Microsoft.DirectX.AudioVideoPlayback.Video(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/Videos/BusEngine.mp4");
+			/* Microsoft.DirectX.AudioVideoPlayback.Video _mediaPlayer = new Microsoft.DirectX.AudioVideoPlayback.Video(BusEngine.Engine.ExeDirectory + "/../../Data/Videos/BusEngine.mp4");
 			_mediaPlayer.Owner = _winform.GetForm;
 			_mediaPlayer.Play(); */
 
 			// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.media.mediaplayer?view=windowsdesktop-7.0
 			/* System.Windows.Media.MediaPlayer _mediaPlayer = new System.Windows.Media.MediaPlayer();
-			_mediaPlayer.Open(new System.Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Data/Videos/BusEngine.mp4"));
+			_mediaPlayer.Open(new System.Uri(BusEngine.Engine.ExeDirectory + "/../../Data/Videos/BusEngine.mp4"));
 			_mediaPlayer.Play(); */
 
 			// https://www.nuget.org/packages/WMPLib#supportedframeworks-body-tab
