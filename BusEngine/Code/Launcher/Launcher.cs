@@ -6,7 +6,14 @@
 /* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
 /** дорожная карта
-- написать лаунчер BusEngine
+- написать лаунчер с возможностью: безопасной регистрации, безопасной авторизации,
+ скачать движок, восстановить файлы движка, удалить движок, создать проект, собрать проект,
+ сгенерировать csproj, удалить проект, изменить язык лаунчера, настроить путь компилятора
+ под каждый проект, настроить платформу для проекта с помощью чекбокса, добавить универсальное
+ поле указания конфигурации csproj, вывести блок информации из сайта с ограничением в 4-6 шт
+ (новости index.php?route=api/busengine/information&order=DESC&limit=4, последние товары кроме
+ плагинов index.php?route=api/busengine/product&order=DESC&limit=4&type_exception=["plugin"],
+ последние плагины index.php?route=api/busengine/product&order=DESC&limit=4&type=["plugin"])
 */
 
 #define BUSENGINE_WINFORMS
