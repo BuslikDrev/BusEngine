@@ -10,7 +10,7 @@
     "r_Height": "720"
   },
   "console_variables": {
-    "sys_spec": "1111111111",
+    "sys_spec": "1",
     "e_WaterOcean": "0",
     "r_WaterOcean": "0",
     "r_VolumetricClouds": "1",
@@ -25,7 +25,7 @@
     "name": "Game",
     "guid": "ddc2049b-3a86-425b-9713-ee1babec5365"
   },
-  "Content": {
+  "content": {
     "assets": [
       "GameData"
     ],
