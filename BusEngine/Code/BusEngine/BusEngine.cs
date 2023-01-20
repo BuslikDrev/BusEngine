@@ -130,10 +130,10 @@ namespace BusEngine {
 				{"name", "Game"},
 				{"guid", "ddc2049b-3a86-425b-9713-ee1babec5365"}
 			}},
-			{"content", new System.Collections.Generic.Dictionary<string, dynamic>() {
+			{"content", new System.Collections.Generic.Dictionary<string, object>() {
 				{"assets", new string[] {"GameData"}},
 				{"code", new string[] {"Code"}},
-				{"libs", new System.Collections.Generic.Dictionary<string, dynamic>() {
+				{"libs", new System.Collections.Generic.Dictionary<string, object>() {
 					{"name", "BusEngine"},
 					{"shared", new System.Collections.Generic.Dictionary<string, string>() {
 						{"Any", ""},
@@ -144,28 +144,28 @@ namespace BusEngine {
 					}}
 				}}
 			}},
-			{"require", new System.Collections.Generic.Dictionary<string, dynamic>() {
+			{"require", new System.Collections.Generic.Dictionary<string, object>() {
 				{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
 				{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>() {
-					new System.Collections.Generic.Dictionary<string, dynamic>() {
+					new System.Collections.Generic.Dictionary<string, object>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Android/Game.dll"},
 						{"platforms", new string[] {"Android"}}
 					},
-					new System.Collections.Generic.Dictionary<string, dynamic>() {
+					new System.Collections.Generic.Dictionary<string, object>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Win/Game.dll"},
 						{"platforms", new string[] {"win_x86"}}
 					},
-					new System.Collections.Generic.Dictionary<string, dynamic>() {
+					new System.Collections.Generic.Dictionary<string, object>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Win_x86/Game.dll"},
 						{"platforms", new string[] {"win_x86"}}
 					},
-					new System.Collections.Generic.Dictionary<string, dynamic>() {
+					new System.Collections.Generic.Dictionary<string, object>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Win_x64/Game.dll"},
@@ -387,6 +387,7 @@ BusEngine.Tools
 */
 	/** API BusEngine.Engine */
 	public class Engine {
+		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
 		public static string DataDirectory;
 		public static string Platform;
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
@@ -422,6 +423,7 @@ BusEngine.Tools
 			}
 		}
 
+		/** функция запуска API BusEngine */
 		public static void Initialize() {
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
@@ -550,8 +552,6 @@ BusEngine.Tools
 					//BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_variables"]));
 				}
 
-				BusEngine.Log.Info("plugins {0}", setting["require"]["plugins"].GetType().IsArray);
-
 				if (setting.ContainsKey("require") && setting["require"].GetType().GetProperty("Type") != null && setting["require"].ContainsKey("plugins") && setting["require"]["plugins"] is object) {
 					BusEngine.ProjectDefault.Setting2["require"]["plugins"].Clear();
 					int i;
@@ -645,16 +645,18 @@ BusEngine.Tools
 			BusEngine.Log.Info("=============================================================================");
 			// =============================================================================
 		}
+		/** функция запуска API BusEngine */
 
-		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
-
-		/** функция остановки приложения */
+		/** функция остановки API BusEngine  */
 		public static void Shutdown() {
+			// отключаем плагины
 			new BusEngine.IPlugin().Shutdown();
+			// закрываем окно консоли
 			BusEngine.Log.ConsoleHide();
+			// закрываем окно BusEngine
 			System.Windows.Forms.Application.Exit();
 		}
-		/** функция остановки приложения */
+		/** функция остановки API BusEngine  */
 	}
 	/** API BusEngine.Engine */
 }
@@ -1167,19 +1169,6 @@ namespace BusEngine {
 			//object4.
 			BusEngine.Log.Info(object6);
 			/** переменные разных типов (массив) */
-
-			/* try {
-				// Get the Type object corresponding to MyClass.
-				System.Type myType = typeof(BusEngine.UI.Canvas);
-				// Get an array of nested type objects in MyClass.
-				System.Type[] nestType = myType.GetNestedTypes();
-				BusEngine.Log.Info("The number of nested types is {0}.", nestType.Length);
-				foreach (System.Type t in nestType) {
-					BusEngine.Log.Info("Nested type is {0}.", t.ToString());
-				}
-			} catch(System.Exception e) {
-				BusEngine.Log.Info("Error"+e.Message);
-			} */
 		}
 
 		public static void Shutdown() {}
@@ -1198,36 +1187,34 @@ namespace BusEngine {
 	/** API BusEngine.Plugin */
 	public abstract class Plugin {
 		// при заапуске BusEngine до создания формы
-		public virtual void Initialize() {
-			BusEngine.Log.Info("Plugin Initialize");
-		}
+		public virtual void Initialize() {BusEngine.Log.Info("Plugin Initialize");}
 
 		// после загрузки определённого плагина
-		public virtual void Initialize(string plugin) { }
+		public virtual void Initialize(string plugin) {}
 
 		// перед закрытием BusEngine
-		public virtual void Shutdown() { }
+		public virtual void Shutdown() {}
 
 		// перед загрузкой игрового уровня
-		public virtual void OnLevelLoading(string level) { }
+		public virtual void OnLevelLoading(string level) {}
 
 		// после загрузки игрового уровня
-		public virtual void OnLevelLoaded(string level) { }
+		public virtual void OnLevelLoaded(string level) {}
 
 		// когда икрок может управлять главным героем - время игры идёт
-		public virtual void OnGameStart() { }
+		public virtual void OnGameStart() {}
 
 		// когда время остановлено - пауза
-		public virtual void OnGameStop() { }
+		public virtual void OnGameStop() {}
 
 		// когда игрок начинает подключаться к серверу
-		public virtual void OnClientConnectionReceived(int channelId) { }
+		public virtual void OnClientConnectionReceived(int channelId) {}
 
 		// когда игрок подключился к серверу
-		public virtual void OnClientReadyForGameplay(int channelId) { }
+		public virtual void OnClientReadyForGameplay(int channelId) {}
 
 		// когда игрока выкинуло из сервера - обрыв связи с сервером
-		public virtual void OnClientDisconnected(int channelId) { }
+		public virtual void OnClientDisconnected(int channelId) {}
 	}
 	/** API BusEngine.Plugin */
 
@@ -1236,32 +1223,36 @@ namespace BusEngine {
 		// https://vscode.ru/prog-lessons/dinamicheskoe-podklyuchenie-dll-v-c.html#:~:text=%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5%20dll%20%D0%BF%D1%80%D0%BE%D0%B8%D1%81%D1%85%D0%BE%D0%B4%D0%B8%D1%82%20%D0%B2%D0%BE,%D1%8F%D0%B2%D0%BD%D0%BE%2C%20%D0%BF%D1%80%D0%B8%20%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B8%20%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B0.
 		// при заапуске BusEngine до создания формы
 		public override void Initialize() {
+			BusEngine.Log.Info("=============================================================================");
 			BusEngine.Log.Info("Default Initialize");
-			
+
 			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
-			System.Reflection.Assembly xhhhh = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
-			BusEngine.Log.Info("плагин {0} ", xhhhh.GetTypes());
-			
-			foreach (System.Type type in xhhhh.GetTypes()) {
+			System.Type[] plugin = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll").GetTypes();
+
+			foreach (System.Type type in plugin) {
 				if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
-					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
-					BusEngine.Log.Info("ssssssssssss {0}", type.IsSubclassOf(typeof(BusEngine.Plugin)));
-					BusEngine.Log.Info(type);
-					BusEngine.Log.Info("ssssssssssss");
+					BusEngine.Log.Info("Название класса {0}", type.FullName);
 					// создание объекта
-					//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
-	 
+					object targetObject = System.Activator.CreateInstance(type);
+
+					// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
 					// чтобы получить public методы без базовых(наследованных от object)
-					var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-					foreach (var methodInfo in methods) {
-						BusEngine.Log.Info("ssssssssssss");
-						BusEngine.Log.Info(methodInfo);
-						BusEngine.Log.Info("ssssssssssss");
-						//вызов
-						//methodInfo.Invoke(targetObject, new object[] { });
+					System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+					foreach (System.Reflection.MethodInfo method in methods) {
+					BusEngine.Log.Info("Название метода {0}", method.Name);
+						BusEngine.Log.Info(method);
+						if (method.Name.ToLower() == "initialize") {
+							if (1 == 1 || method.Name.ToLower() == "initialize()") {
+								method.Invoke(targetObject, null);
+							} else {
+								method.Invoke(targetObject, new object[1]);
+							}
+						}
+						break;
 					}
 				}
 			}
+			BusEngine.Log.Info("=============================================================================");
 		}
 
 		// после загрузки определённого плагина
@@ -1821,13 +1812,13 @@ Newtonsoft.Json
 		}
 
 		// массив php
-		public static System.Collections.Generic.Dictionary<dynamic, dynamic> Decode(string t) {
+		public static System.Collections.Generic.Dictionary<string, dynamic> Decode(string t) {
 			try {
-				return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<dynamic, dynamic>>(t);
+				return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, dynamic>>(t);
 				//return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
 			} catch (System.Exception e) {
 				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_decode") + ": {0}", e.Message);
-				return new System.Collections.Generic.Dictionary<dynamic, dynamic>();
+				return new System.Collections.Generic.Dictionary<string, dynamic>();
 			}
 		}
 
