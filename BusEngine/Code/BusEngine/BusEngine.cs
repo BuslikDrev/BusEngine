@@ -581,7 +581,7 @@ BusEngine.Tools
 			new BusEngine.IPlugin().Initialize();
 
 			// =============================================================================
-			BusEngine.Log.Info("=============================================================================");
+			//BusEngine.Log.Info("=============================================================================");
 			/* System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
 
@@ -643,7 +643,7 @@ BusEngine.Tools
 			/* BusEngine.Log.Info("============== ajax запустили");
 			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
 			BusEngine.Log.Info("============== ajax запустили"); */
-			BusEngine.Log.Info("=============================================================================");
+			//BusEngine.Log.Info("=============================================================================");
 			// =============================================================================
 		}
 		/** функция запуска API BusEngine */
@@ -1224,7 +1224,9 @@ namespace BusEngine {
 		// при заапуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("=============================================================================");
-			BusEngine.Log.Info("Default Initialize");
+			BusEngine.Log.Info("System Plugins Initialize");
+
+			int i;
 
 			BusEngine.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll");
 			System.Type[] plugin = System.Reflection.Assembly.LoadFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Plugin.dll").GetTypes();
@@ -1239,16 +1241,17 @@ namespace BusEngine {
 					// чтобы получить public методы без базовых(наследованных от object)
 					System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 					foreach (System.Reflection.MethodInfo method in methods) {
-						BusEngine.Log.Info("Название метода {0}", method.Name);
-						BusEngine.Log.Info(method.MemberType);
-						if (method.Name.ToLower() == "initialize") {
-							if (1 == 1 || method.Name.ToLower() == "initialize()") {
-								method.Invoke(targetObject, null);
-							} else {
-								method.Invoke(targetObject, new object[1]);
+						if (method.MemberType.ToString().ToLower() == "method") {
+							BusEngine.Log.Info("Название метода {0}", method);
+							if (method.Name.ToLower() == "initialize") {
+								i = method.GetParameters().Length;
+								if (i == 0) {
+									method.Invoke(targetObject, null);
+								} else {
+									method.Invoke(targetObject, new object[i]);
+								}
 							}
 						}
-						break;
 					}
 				}
 			}
