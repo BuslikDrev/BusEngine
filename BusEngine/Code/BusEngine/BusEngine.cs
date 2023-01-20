@@ -15,14 +15,6 @@ https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?t
 - максимально весь функционал сделать независимыми плагинами и установить проверки
  на наличие плагинов перед их использованием
 - создать: генерацию сцены (карты), камеру, консольные команды, консоль, настройка проекта
-- написать лаунчер с возможностью: безопасной регистрации, безопасной авторизации,
- скачать движок, восстановить файлы движка, удалить движок, создать проект, собрать проект,
- сгенерировать csproj, удалить проект, изменить язык лаунчера, настроить путь компилятора
- под каждый проект, настроить платформу для проекта с помощью чекбокса, добавить универсальное
- поле указания конфигурации csproj, вывести блок информации из сайта с ограничением в 4-6 шт
- (новости index.php?route=api/busengine/information&order=DESC&limit=4, последние товары кроме
- плагинов index.php?route=api/busengine/product&order=DESC&limit=4&type_exception=["plugin"],
- последние плагины index.php?route=api/busengine/product&order=DESC&limit=4&type=["plugin"])
 - добавить поддержку форматов .dae https://docs.fileformat.com/ru/3d/dae/, .png, .mtl, .obj
 - написать сборку игры для windows 7+ и Android 5+
 */
@@ -33,7 +25,7 @@ namespace BusEngine {
 /*
 Зависимости нет
 */
-	/** API BusEngine.ProjectSettingDefault */
+	/** API BusEngine.ProjectDefault */
 	internal class ProjectDefault {
 		public ProjectDefault(object setting) {
 			Setting = setting;
@@ -66,7 +58,7 @@ namespace BusEngine {
 				name = "Game",
 				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
 			},
-			Content = new {
+			content = new {
 				assets = new string[] {"GameData"},
 				code = new string[] {"Code"},
 				libs = new {
@@ -138,7 +130,7 @@ namespace BusEngine {
 				{"name", "Game"},
 				{"guid", "ddc2049b-3a86-425b-9713-ee1babec5365"}
 			}},
-			{"Content", new System.Collections.Generic.Dictionary<string, dynamic>() {
+			{"content", new System.Collections.Generic.Dictionary<string, dynamic>() {
 				{"assets", new string[] {"GameData"}},
 				{"code", new string[] {"Code"}},
 				{"libs", new System.Collections.Generic.Dictionary<string, dynamic>() {
@@ -154,7 +146,7 @@ namespace BusEngine {
 			}},
 			{"require", new System.Collections.Generic.Dictionary<string, dynamic>() {
 				{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
-				{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, dynamic>>() {
+				{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>() {
 					new System.Collections.Generic.Dictionary<string, dynamic>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
@@ -183,7 +175,7 @@ namespace BusEngine {
 			}}
 		};
 	}
-	/** API BusEngine.ProjectSettingDefault */
+	/** API BusEngine.ProjectDefault */
 }
 /** API BusEngine */
 
@@ -194,7 +186,7 @@ namespace BusEngine {
 BusEngine.UI.Canvas
 BusEngine.Video
 */
-	using Audio = BusEngine.Video;
+	//using Audio = BusEngine.Video;
 	/** API BusEngine.Audio */
 	/* public class Audio : System.IDisposable {
 		
@@ -361,13 +353,9 @@ BusEngine.UI.Canvas
 		}
 		/** функция запуска браузера */
 
-		public static void Shutdown() {
+		public static void Shutdown() {}
 
-		}
-
-		public void Dispose() {
-
-		}
+		public void Dispose() {}
 	}
 	/** API BusEngine.Browser */
 }
@@ -441,54 +429,13 @@ BusEngine.Tools
 			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
 			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
 			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true));
+			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting))));
 
 			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["version"]);
 			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["console_commands"]["sys_spec"]);
-			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)));
+			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2))));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//https://ru.stackoverflow.com/questions/713566/%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BC%D0%B5%D1%80%D0%BD%D1%8B%D0%B5-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D1%8B-c-%D1%81-%D1%80%D0%B0%D0%B7%D0%BD%D1%8B%D0%BC%D0%B8-%D1%82%D0%B8%D0%BF%D0%B0%D0%BC%D0%B8
-				System.Collections.Generic.Dictionary<string, dynamic> her = new System.Collections.Generic.Dictionary<string, dynamic>();
-				her["user"] = new System.Collections.Generic.Dictionary<string, string>() {
-					{"xat", "111111112222222"}
-				};
-				//her["user"]["xat"] = "111111112222222";
-
-BusEngine.Log.Info("ddd {0}", her["user"]["xat"]);
-if (her.ContainsKey("user2")) {
-BusEngine.Log.Info("ddd {0}", her["user2"]);
-}
-BusEngine.Log.Info("ddd {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(her)));
-
-			// https://metanit.com/sharp/tutorial/5.4.php
-			// https://metanit.com/sharp/tutorial/6.4.php
-			// https://dir.by/developer/csharp/serialization_json/?lang=eng
+			// устанавливаем ссылку на рабочий каталог
 			string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
 
 			if (!System.IO.Directory.Exists(path)) {
@@ -501,13 +448,29 @@ BusEngine.Log.Info("ddd {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.E
 
 			path = System.IO.Path.GetFullPath(path + "../");
 
+			BusEngine.Engine.DataDirectory = path + "Data/";
+
+			// определяем устройство
+			new BusEngine.Engine.Device();
+			/* BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Version);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount); */
+
+			// инициализируем язык
+			new BusEngine.Localization().Initialize();
+
+			// https://metanit.com/sharp/tutorial/5.4.php
+			// https://metanit.com/sharp/tutorial/5.5.php
+			// https://metanit.com/sharp/tutorial/6.4.php
+			// https://dir.by/developer/csharp/serialization_json/?lang=eng
+			// ищем, загружаем и обрабатываем настройки проекта
 			string[] files;
 
 			files = System.IO.Directory.GetFiles(path, "*.busproject");
 
 			if (files.Length == 0) {
-				//BusEngine.Log.Info(files.Length);
-
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "Game.busproject")) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
@@ -522,11 +485,11 @@ BusEngine.Log.Info("ddd {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.E
 				} */
 
 				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(files[0])) {
+				/* using (System.IO.FileStream fstream = System.IO.File.OpenWrite(files[0])) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true)));
 
 					fstream.Write(buffer, 0, buffer.Length);
-				}
+				} */
 
 				// запись
 				/* using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
@@ -564,46 +527,57 @@ BusEngine.Log.Info("ddd {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.E
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
-				//BusEngine.Log.Info(files[0]);
+				var setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(files[0]));
+				//var setting = BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 
-				using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
-					byte[] buffer = new byte[fstream.Length];
-					fstream.ReadAsync(buffer, 0, buffer.Length);
-					// декодируем байты в строку
-					var _ProjectSettingDefault = BusEngine.Tools.Json.Decode(System.Text.Encoding.UTF8.GetString(buffer), true);
-					BusEngine.Log.Info("ddd {0}", _ProjectSettingDefault);
-
-					var xat = Newtonsoft.Json.Linq.JObject.Parse(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
-					if (xat["console_commands"]["sys_spec5"] != null) {
-						BusEngine.Log.Info("ddd {0}", xat["console_commands"]["sys_spec5"]["5555"]);
+				if (setting.ContainsKey("console_commands") && setting["console_commands"] is object && setting["version"].GetType().GetProperty("Type") != null && !setting["console_variables"].GetType().IsArray) {
+					foreach (var i in setting["console_commands"]) {
+						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
+							BusEngine.ProjectDefault.Setting2["console_commands"][i.Name] = (string)setting["console_commands"][i.Name];
+						}
 					}
-					//System.Type content = xat.GetType().GetInterface("content");
 
-					
-					//BusEngine.Log.Info("ddd {0}", xat.GetType().ContainsKey("content"));
-					//BusEngine.ProjectSettingDefault.content = _ProjectSettingDefault.content;
+					BusEngine.Log.Info("console_commands {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_commands"]));
+				}
+
+				if (setting.ContainsKey("console_variables") && setting["console_variables"] is object && setting["version"].GetType().GetProperty("Type") != null && !setting["console_variables"].GetType().IsArray) {
+					foreach (var i in setting["console_variables"]) {
+						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
+							BusEngine.ProjectDefault.Setting2["console_variables"][i.Name] = (string)setting["console_variables"][i.Name];
+						}
+					}
+
+					BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_variables"]));
+				}
+
+				BusEngine.Log.Info("plugins {0}", setting["require"]["plugins"].GetType().IsArray);
+
+				if (setting.ContainsKey("require") && setting["require"].GetType().GetProperty("Type") != null && setting["require"].ContainsKey("plugins") && setting["require"]["plugins"] is object) {
+					BusEngine.ProjectDefault.Setting2["require"]["plugins"].Clear();
+					int i;
+
+					for (i = 0; i < setting["require"]["plugins"].Count; ++i) {
+						BusEngine.ProjectDefault.Setting2["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>());
+						if (setting["require"]["plugins"][i]["guid"] != null) {
+							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["guid"] = setting["require"]["plugins"][i]["guid"];
+						}
+						if (setting["require"]["plugins"][i]["type"] != null) {
+							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["type"] = setting["require"]["plugins"][i]["type"];
+						}
+						if (setting["require"]["plugins"][i]["path"] != null) {
+							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = setting["require"]["plugins"][i]["path"];
+						}
+						if (setting["require"]["plugins"][i]["platforms"] != null) {
+							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["platforms"] = setting["require"]["plugins"][i]["platforms"];
+						}
+					}
+
+					BusEngine.Log.Info("plugins {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["require"]["plugins"]));
 				}
 			}
 
-			BusEngine.Engine.DataDirectory = path + "Data/";
-
-			new BusEngine.Engine.Device();
-			/* BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Version);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount); */
-
-			// инициализируем язык
-			new BusEngine.Localization().Initialize();
-
 			// инициализируем плагины
 			new BusEngine.IPlugin().Initialize();
-
-
-
-
-
 
 			// =============================================================================
 			BusEngine.Log.Info("=============================================================================");
@@ -914,13 +888,9 @@ namespace BusEngine {
 			}
 		}
 
-		public static void Shutdown() {
+		public static void Shutdown() {}
 
-		}
-
-		public void Dispose() {
-
-		}
+		public void Dispose() {}
 	}
 }
 /** API BusEngine */
@@ -1240,9 +1210,7 @@ namespace BusEngine {
 			} */
 		}
 
-		public static void Shutdown() {
-
-		}
+		public static void Shutdown() {}
 
 		public void Dispose() {
 			BusEngine.Log.ConsoleHide();
@@ -1832,13 +1800,9 @@ Newtonsoft.Json
 			return status;
 		}
 
-		public static void Shutdown() {
+		public static void Shutdown() {}
 
-		}
-
-		public void Dispose() {
-
-		}
+		public void Dispose() {}
 	}
 
 	// заглушка
@@ -1874,31 +1838,40 @@ Newtonsoft.Json
 	//https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/migrate-from-newtonsoft?pivots=dotnet-7-0
 	//https://www.nuget.org/packages/System.Text.Json#readme-body-tab
 	public class Json : System.IDisposable {
+		// System.Type|object|string|int|Dictionary|List c#
 		public static string Encode(object t) {
-			// object c#
-			return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
-		}
-
-		public static object Decode(string t) {
-			return Decode(t, false);
-		}
-		public static object Decode(string t, bool o = false) {
-			if (o) {
-				// object c#
-				return Newtonsoft.Json.JsonConvert.DeserializeObject<object>(t);
-			} else {
-				//массив php
-				return Newtonsoft.Json.Linq.JObject.Parse(t);
+			try {
+				return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
+			} catch (System.Exception e) {
+				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_encode") + ": {0}", e.Message);
+				return "[]";
 			}
 		}
 
-		public static void Shutdown() {
-			
+		// массив php
+		public static System.Collections.Generic.Dictionary<dynamic, dynamic> Decode(string t) {
+			try {
+				return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<dynamic, dynamic>>(t);
+				//return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
+			} catch (System.Exception e) {
+				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_decode") + ": {0}", e.Message);
+				return new System.Collections.Generic.Dictionary<dynamic, dynamic>();
+			}
 		}
 
-		public void Dispose() {
-			
+		// object c#
+		public static object Decode(string t, bool o = true) {
+			try {
+				return Newtonsoft.Json.JsonConvert.DeserializeObject<object>(t);
+			} catch (System.Exception e) {
+				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_decode") + ": {0}", e.Message);
+				return new {};
+			}
 		}
+
+		public static void Shutdown() {}
+
+		public void Dispose() {}
 	}
 	/** API BusEngine.Tools.Json */
 }
@@ -2004,13 +1977,9 @@ BusEngine.UI
 			}
 		}
 
-		public static void Shutdown() {
+		public static void Shutdown() {}
 
-		}
-
-		public void Dispose() {
-			//BusEngine.Log.ConsoleHide();
-		}
+		public void Dispose() {}
 	}
 	/** API BusEngine.UI.Canvas */
 }
