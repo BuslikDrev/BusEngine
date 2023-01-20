@@ -426,14 +426,14 @@ BusEngine.Tools
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
 
-			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
+			/* BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
 			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
 			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true));
 			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting))));
 
 			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["version"]);
 			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["console_commands"]["sys_spec"]);
-			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2))));
+			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)))); */
 
 			// устанавливаем ссылку на рабочий каталог
 			string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/../../Bin/";
@@ -537,7 +537,7 @@ BusEngine.Tools
 						}
 					}
 
-					BusEngine.Log.Info("console_commands {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_commands"]));
+					//BusEngine.Log.Info("console_commands {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_commands"]));
 				}
 
 				if (setting.ContainsKey("console_variables") && setting["console_variables"] is object && setting["version"].GetType().GetProperty("Type") != null && !setting["console_variables"].GetType().IsArray) {
@@ -547,7 +547,7 @@ BusEngine.Tools
 						}
 					}
 
-					BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_variables"]));
+					//BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_variables"]));
 				}
 
 				BusEngine.Log.Info("plugins {0}", setting["require"]["plugins"].GetType().IsArray);
@@ -572,7 +572,7 @@ BusEngine.Tools
 						}
 					}
 
-					BusEngine.Log.Info("plugins {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["require"]["plugins"]));
+					//BusEngine.Log.Info("plugins {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["require"]["plugins"]));
 				}
 			}
 
@@ -581,7 +581,6 @@ BusEngine.Tools
 
 			// =============================================================================
 			BusEngine.Log.Info("=============================================================================");
-
 			/* System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
 			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
 
@@ -640,41 +639,14 @@ BusEngine.Tools
 				}
 			} */
 
-			BusEngine.Log.Info("gggggggggggggg {0}", System.Reflection.Assembly.GetAssembly(typeof(BusEngine.Plugin)).GetTypes());
-
-			/* foreach (System.Type type in typeof(BusEngine.Plugin).Assembly.GetTypes()) {
-				BusEngine.Log.Info("ssssssssssss");
-				BusEngine.Log.Info(type.FullName);
-				BusEngine.Log.Info("ssssssssssss");
-				// создание объекта
-				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
- 
-				// чтобы получить public методы без базовых(наследованных от object)
-				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-				foreach (var methodInfo in methods) {
-					BusEngine.Log.Info("ssssssssssss");
-					BusEngine.Log.Info(methodInfo);
-					BusEngine.Log.Info("ssssssssssss");
-					//вызов
-					//methodInfo.Invoke(targetObject, new object[] { });
-				}
-			} */
-
-
-
 			/* BusEngine.Log.Info("============== ajax запустили");
 			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
 			BusEngine.Log.Info("============== ajax запустили"); */
 			BusEngine.Log.Info("=============================================================================");
 			// =============================================================================
-			
-			
-			
 		}
 
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
-
-
 
 		/** функция остановки приложения */
 		public static void Shutdown() {
