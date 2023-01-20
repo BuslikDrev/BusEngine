@@ -28,6 +28,7 @@ namespace BusEngine {
 	/** API BusEngine.ProjectDefault */
 	internal class ProjectDefault {
 		public ProjectDefault(object setting) {
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 			Setting = setting;
 		}
 
@@ -303,7 +304,7 @@ BusEngine.UI.Canvas
 			/* if (setting.GetType().GetField("root") == null) {
 				setting.root = BusEngine.Engine.DataDirectory;
 			} */
-;
+
 			// https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
 			// регистрируем свою схему
 			settings.RegisterScheme(new CefSharp.CefCustomScheme {
@@ -554,9 +555,9 @@ BusEngine.Tools
 
 				if (setting.ContainsKey("require") && setting["require"].GetType().GetProperty("Type") != null && setting["require"].ContainsKey("plugins") && setting["require"]["plugins"] is object) {
 					BusEngine.ProjectDefault.Setting2["require"]["plugins"].Clear();
-					int i;
+					int i, ii = setting["require"]["plugins"].Count;
 
-					for (i = 0; i < setting["require"]["plugins"].Count; ++i) {
+					for (i = 0; i < ii; ++i) {
 						BusEngine.ProjectDefault.Setting2["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>());
 						if (setting["require"]["plugins"][i]["guid"] != null) {
 							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["guid"] = setting["require"]["plugins"][i]["guid"];
@@ -825,14 +826,12 @@ namespace BusEngine {
 			} else {
 				if (System.IO.File.Exists(path + Language + File + "." + Format)) {
 					files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
-					//byte[] Bytes = File.ReadAllBytes(path + Language + file + "." + Format);
-					//Files = System.Text.Encoding.UTF8.GetString(Bytes);
+					//files = System.Text.Encoding.UTF8.GetString(File.ReadAllBytes(path + Language + file + "." + Format));
 				} else {
 					Language = LanguageDefault;
 					if (System.IO.File.Exists(path + Language + File + "." + Format)) {
 						files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
-						//byte[] Bytes = System.IO.File.ReadAllBytes(path + Language + File + "." + Format);
-						//files = System.Text.Encoding.UTF8.GetString(Bytes);
+						//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + File + "." + Format));
 					}
 				}
 			}
@@ -842,13 +841,14 @@ namespace BusEngine {
 			if (files != "") {
 				GetLanguages["text_debug"] = files;
 				string[] lines, pairs;
-				int i;
+				int i, ii;
 
 				lines = files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+				ii = lines.Length;
 				files = null;
 				System.GC.Collect();
 
-				for (i = 0; i < lines.Length; ++i) {
+				for (i = 0; i < ii; ++i) {
 					pairs = lines[i].Split(new char[] {'='}, 2);
 					if (pairs.Length == 2) {
 						GetLanguages[pairs[0].Trim()] = pairs[1].Trim();
@@ -985,87 +985,87 @@ namespace BusEngine {
 		// функция вывода строки в консоль
 		public static void Info() {
 			System.Console.WriteLine();
-			System.Console.WriteLine("ничего");
+			//System.Console.WriteLine("ничего");
 		}
 		public static void Info(System.Type args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("System.Type");
+			//System.Console.WriteLine("System.Type");
 		}
 		public static void Info(string args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("string");
+			//System.Console.WriteLine("string");
 		}
 		public static void Info(string[] args1) {
 			System.Console.WriteLine(args1.ToString());
-			System.Console.WriteLine("string[]");
+			//System.Console.WriteLine("string[]");
 		}
 		public static void Info(ulong args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("ulong");
+			//System.Console.WriteLine("ulong");
 		}
 		public static void Info(uint args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("uint");
+			//System.Console.WriteLine("uint");
 		}
 		public static void Info(float args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("float");
+			//System.Console.WriteLine("float");
 		}
 		public static void Info(decimal args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("decimal");
+			//System.Console.WriteLine("decimal");
 		}
 		public static void Info(long args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("long");
+			//System.Console.WriteLine("long");
 		}
 		public static void Info(int args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("int");
+			//System.Console.WriteLine("int");
 		}
 		public static void Info(double args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("double");
+			//System.Console.WriteLine("double");
 		}
 		public static void Info(byte args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("double");
+			//System.Console.WriteLine("double");
 		}
 		public static void Info(char args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("char");
+			//System.Console.WriteLine("char");
 		}
 		public static void Info(char[] args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("char[]");
+			//System.Console.WriteLine("char[]");
 		}
 		public static void Info(bool args1) {
 			System.Console.WriteLine(args1);
-			System.Console.WriteLine("bool");
+			//System.Console.WriteLine("bool");
 		}
 		public static void Info(object args1) {
 			System.Console.WriteLine(args1.ToString());
-			System.Console.WriteLine("object");
+			//System.Console.WriteLine("object");
 		}
 		public static void Info(object[] args1) {
 			System.Console.WriteLine(args1.ToString());
-			System.Console.WriteLine("object[]");
+			//System.Console.WriteLine("object[]");
 		}
 		public static void Info(string args1, string args2) {
 			System.Console.WriteLine(args1, args2);
-			System.Console.WriteLine("string string");
+			//System.Console.WriteLine("string string");
 		}
 		public static void Info(string args1, object args2) {
 			System.Console.WriteLine(args1, args2);
-			System.Console.WriteLine("string object");
+			//System.Console.WriteLine("string object");
 		}
 		public static void Info(string args1, int args2) {
 			System.Console.WriteLine(args1, args2);
-			System.Console.WriteLine("string int");
+			//System.Console.WriteLine("string int");
 		}
 		public static void Info(string args1, long args2) {
 			System.Console.WriteLine(args1, args2);
-			System.Console.WriteLine("string long");
+			//System.Console.WriteLine("string long");
 		}
 
 /* 		public static void Info(params object[] args) {
@@ -1239,8 +1239,8 @@ namespace BusEngine {
 					// чтобы получить public методы без базовых(наследованных от object)
 					System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 					foreach (System.Reflection.MethodInfo method in methods) {
-					BusEngine.Log.Info("Название метода {0}", method.Name);
-						BusEngine.Log.Info(method);
+						BusEngine.Log.Info("Название метода {0}", method.Name);
+						BusEngine.Log.Info(method.MemberType);
 						if (method.Name.ToLower() == "initialize") {
 							if (1 == 1 || method.Name.ToLower() == "initialize()") {
 								method.Invoke(targetObject, null);
