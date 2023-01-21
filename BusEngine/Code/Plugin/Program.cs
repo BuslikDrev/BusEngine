@@ -27,15 +27,15 @@ namespace BusEngine.Game {
 
 		// перед загрузкой игрового уровня
 		public override void OnLevelLoading(string level) {
-			BusEngine.Log.Info("MyPlugin OnLevelLoading");
+			BusEngine.Log.Info("MyPlugin OnLevelLoading: {0}", level);
 		}
 
 		// после загрузки игрового уровня
 		public override void OnLevelLoaded(string level) {
-			BusEngine.Log.Info("MyPlugin OnLevelLoaded");
+			BusEngine.Log.Info("MyPlugin OnLevelLoaded: {0}", level);
 		}
 
-		// когда икрок может управлять главным героем - время игры идёт
+		// когда игрок может управлять главным героем - время игры идёт
 		public override void OnGameStart() {
 			BusEngine.Log.Info("MyPlugin OnGameStart");
 		}
@@ -52,17 +52,17 @@ namespace BusEngine.Game {
 
 		// когда игрок начинает подключаться к серверу
 		public override void OnClientConnectionReceived(int channelId) {
-			BusEngine.Log.Info("MyPlugin OnClientConnectionReceived");
+			BusEngine.Log.Info("MyPlugin OnClientConnectionReceived: {0}", channelId);
 		}
 
 		// когда игрок подключился к серверу
 		public override void OnClientReadyForGameplay(int channelId) {
-			BusEngine.Log.Info("MyPlugin OnClientReadyForGameplay");
+			BusEngine.Log.Info("MyPlugin OnClientReadyForGameplay: {0}", channelId);
 		}
 
 		// когда игрока выкинуло из сервера - обрыв связи с сервером
 		public override void OnClientDisconnected(int channelId) {
-			BusEngine.Log.Info("MyPlugin OnClientDisconnected");
+			BusEngine.Log.Info("MyPlugin OnClientDisconnected: {0}", channelId);
 		}
 	}
 	/** API BusEngine.Plugin */
