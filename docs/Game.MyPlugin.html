@@ -144,7 +144,6 @@
               <tr>Своих констант нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="SubClasses" class="h2">Подклассы</h2>
           <table>
             <tbody>
@@ -158,18 +157,59 @@
               <tr>Своих полей нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="Properties" class="h2">Свойства</h2>
           <table>
             <tbody>
               <tr>Своих свойств нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
-              <tr>Своих методов нет</tr>
+              <tr id="BusEngine.Plugin.Initialize">
+                <td><a href="#BusEngine.Plugin.Initialize">(void)BusEngine.Plugin.Initialize()</a></td>
+                <td>Метод (виртуальный) уровня класса запускает библиотеку указанную в файле настроек проекта *.busproject или настрок редактора *.busengine во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.Initialize_1">
+                <td><a href="#BusEngine.Plugin.Initialize_1">(void)BusEngine.Plugin.Initialize(string)</a></td>
+                <td>Метод (виртуальный) уровня класса запускает библиотеку столько раз, сколько указанно библиотек в файле настроек проекта *.busproject или настрок редактова *.busengine во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>". Первый параметр string строка выводит название файла библиотеки которая сейчас была загружена.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.Shutdown">
+                <td><a href="#BusEngine.Plugin.Shutdown">(void)BusEngine.Plugin.Shutdown()</a></td>
+                <td>Метод (виртуальный) уровня класса для остановки библиотеки и уничтожения объектов библиотеки для освобождения памяти при остановки BusEngine.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnLevelLoading">
+                <td><a href="#BusEngine.Plugin.OnLevelLoading">(void)BusEngine.Plugin.OnLevelLoading(string)</a></td>
+                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время начала загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас начал загружаться.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnLevelLoaded">
+                <td><a href="#BusEngine.Plugin.OnLevelLoaded">(void)BusEngine.Plugin.OnLevelLoaded(string)</a></td>
+                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время завершения загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас окончил загружаться.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnGameStart">
+                <td><a href="#BusEngine.Plugin.OnGameStart">(void)BusEngine.Plugin.OnGameStart()</a></td>
+                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время начала управления игровым персонажем или начала отсчёта времени игры.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnGameStop">
+                <td><a href="#BusEngine.Plugin.OnGameStop">(void)BusEngine.Plugin.OnGameStop()</a></td>
+                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время окончании управления игровым персонажем или окончании отсчёта времени игры.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnGameUpdate">
+                <td><a href="#BusEngine.Plugin.OnGameUpdate">(void)BusEngine.Plugin.OnGameUpdate()</a></td>
+                <td>Метод (виртуальный) уровня класса для запуска библиотеки при отрисовки каждого кадра.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnClientConnectionReceived">
+                <td><a href="#BusEngine.Plugin.OnClientConnectionReceived">(void)BusEngine.Plugin.OnClientConnectionReceived(int)</a></td>
+                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время начала подключения к игровому серверу. Первый параметр int строка выводит числового id игрока кторый начал подключаться к серверу.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnClientReadyForGameplay">
+                <td><a href="#BusEngine.Plugin.OnClientReadyForGameplay">(void)BusEngine.Plugin.OnClientReadyForGameplay(int)</a></td>
+                <td>Метод (виртуальный) уровня класса для остановки библиотеки во время окончания подключения к игровому серверу. Первый параметр int строка выводит числового id игрока кторый окончил подключаться к серверу.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnClientDisconnected">
+                <td><a href="#BusEngine.Plugin.OnClientDisconnected">(void)BusEngine.Plugin.OnClientDisconnected(int)</a></td>
+                <td>Метод (виртуальный) уровня класса для остановки библиотеки во время окончания игры в игровомм сервере. Первый параметр int строка выводит числового id игрока кторый начал отключаться от сервера.</td>
+              </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
