@@ -267,10 +267,10 @@ BusEngine.UI.Canvas
 
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
-		public static void Start(string url = "") {
-			Start(url, BusEngine.Engine.DataDirectory);
+		public static void Initialize(string url = "") {
+			Initialize(url, BusEngine.Engine.DataDirectory);
 		}
-		public static void Start(string url = "", string root = "") {
+		public static void Initialize(string url = "", string root = "") {
 			// если ссылка не абсолютный адрес, то делаем его абсолютным
 			System.Uri uriResult;
 			if (ValidURL(url, out uriResult) && url.IndexOf(':') == -1) {
@@ -281,7 +281,7 @@ BusEngine.UI.Canvas
 				}
 			}
 
-			if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root))) {
+			if (System.IO.Directory.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root))) {
 				root = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root);
 			} else {
 				root = BusEngine.Engine.DataDirectory;
