@@ -388,6 +388,8 @@ BusEngine.Tools
 */
 	/** API BusEngine.Engine */
 	public class Engine {
+		public static System.Collections.Generic.Dictionary<string, dynamic> SettingEngine = new System.Collections.Generic.Dictionary<string, dynamic>();
+		public static System.Collections.Generic.Dictionary<string, dynamic> SettingProject = new System.Collections.Generic.Dictionary<string, dynamic>();
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
 		public static string EngineDirectory;
 		public static string ExeDirectory;
@@ -543,7 +545,7 @@ BusEngine.Tools
 				var setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(files[0]));
 				//var setting = BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 
-				if (setting.ContainsKey("console_commands") && setting["console_commands"] is object && setting["version"].GetType().GetProperty("Type") != null && !setting["console_variables"].GetType().IsArray) {
+				if (setting.ContainsKey("console_commands") && setting["console_commands"] is object && !setting["console_commands"].GetType().IsArray) {
 					foreach (var i in setting["console_commands"]) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
 							BusEngine.ProjectDefault.Setting2["console_commands"][i.Name] = (string)setting["console_commands"][i.Name];
@@ -553,7 +555,7 @@ BusEngine.Tools
 					//BusEngine.Log.Info("console_commands {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_commands"]));
 				}
 
-				if (setting.ContainsKey("console_variables") && setting["console_variables"] is object && setting["version"].GetType().GetProperty("Type") != null && !setting["console_variables"].GetType().IsArray) {
+				if (setting.ContainsKey("console_variables") && setting["console_variables"] is object && !setting["console_variables"].GetType().IsArray) {
 					foreach (var i in setting["console_variables"]) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
 							BusEngine.ProjectDefault.Setting2["console_variables"][i.Name] = (string)setting["console_variables"][i.Name];
@@ -595,6 +597,8 @@ BusEngine.Tools
 					//BusEngine.Log.Info("plugins {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["require"]["plugins"]));
 				}
 			}
+
+			BusEngine.Engine.SettingEngine = BusEngine.ProjectDefault.Setting2;
 
 			// инициализируем плагины
 			new BusEngine.IPlugin().Initialize();
