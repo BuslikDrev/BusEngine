@@ -16,7 +16,7 @@ namespace BusEngine.Game {
 
 		// после загрузки определённого плагина
 		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("MyPlugin Initialize " + plugin);
+			BusEngine.Log.Info("MyPlugin Initialize: {0}", plugin);
 		}
 
 		// перед закрытием BusEngine
@@ -35,14 +35,19 @@ namespace BusEngine.Game {
 			BusEngine.Log.Info("MyPlugin OnLevelLoaded");
 		}
 
-		// когда игрок может управлять главным героем - время игры идёт
+		// когда икрок может управлять главным героем - время игры идёт
 		public override void OnGameStart() {
 			BusEngine.Log.Info("MyPlugin OnGameStart");
 		}
 
-		// когда время остановлено - пауза
+		// когда время остановлено - пауза или закрытие уровня
 		public override void OnGameStop() {
 			BusEngine.Log.Info("MyPlugin OnGameStop");
+		}
+
+		// вызывается при отрисовки каждого кадра
+		public override void OnGameUpdate() {
+			BusEngine.Log.Info("MyPlugin OnGameUpdate");
 		}
 
 		// когда игрок начинает подключаться к серверу
