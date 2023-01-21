@@ -150,8 +150,16 @@ BusEngine.Browser
 			}
 
 			// устанавливаем размеры окна
-			this.Width = 1024;
-			this.Height = 768;
+			if (BusEngine.Engine.Setting["console_commands"]["r_Width"] != null) {
+				this.Width = (int)BusEngine.Engine.Setting["console_commands"]["r_Width"];
+			} else {
+				this.Width = 1024;
+			}
+			if (BusEngine.Engine.Setting["console_commands"]["r_Height"] != null) {
+				this.Height = (int)BusEngine.Engine.Setting["console_commands"]["r_Height"];
+			} else {
+				this.Height = 768;
+			}
 
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
