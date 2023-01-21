@@ -34,6 +34,16 @@ BusEngine.Browser
 			BusEngine.Engine.Platform = "Windows";
 			BusEngine.Engine.Initialize();
 
+			BusEngine.Form splashScreen = new Form();
+			splashScreen.Width = 640;
+			splashScreen.Height = 360;
+			splashScreen.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png"))) {
+				splashScreen.BackgroundImage = System.Drawing.Image.FromFile(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png");
+			}
+			splashScreen.Show();
+			System.Threading.Thread.Sleep(1000);
+
 			// допускаем только один запуск
 			bool createdNew;
 			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
@@ -60,7 +70,7 @@ BusEngine.Browser
 			}
 
 			// создаём форму System.Windows.Forms
-			BusEngine.Form form = new Form();
+			BusEngine.Form form = new BusEngine.Form();
 
 			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
@@ -87,6 +97,9 @@ BusEngine.Browser
 				BusEngine.Log.Info("\t{0}", m);
 			}
 			BusEngine.Log.Info("dddddddddddddddddddddd"); */
+
+			splashScreen.Close();
+			splashScreen.Dispose();
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
