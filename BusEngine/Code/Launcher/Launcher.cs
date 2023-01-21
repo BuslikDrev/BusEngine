@@ -27,7 +27,7 @@ BusEngine.Engine
 BusEngine.UI
 BusEngine.Browser
 */
-	internal class Start {
+	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
 		private static void Run() {
 			// инициализируем API BusEngine
@@ -77,7 +77,7 @@ BusEngine.Browser
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем браузер
-			BusEngine.Browser.Start("index.html");
+			BusEngine.Browser.Initialize("index.html");
 			BusEngine.Browser.PostMessage += OnPostMessage;
 
 			splashScreen.Close();

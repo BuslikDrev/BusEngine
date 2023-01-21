@@ -70,7 +70,7 @@ BusEngine.Browser
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем браузер;
-			BusEngine.Browser.Start("https://threejs.org/editor/");
+			BusEngine.Browser.Initialize("https://threejs.org/editor/");
 
 			splashScreen.Close();
 			splashScreen.Dispose();

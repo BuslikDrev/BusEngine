@@ -20,7 +20,7 @@ BusEngine.Engine
 BusEngine.UI
 BusEngine.Browser
 */
-	internal class Start {
+	internal class Initialize {
 		private static void Run() {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Android";
@@ -34,7 +34,7 @@ BusEngine.Browser
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем браузер
-			BusEngine.Browser.Start("index.html");
+			BusEngine.Browser.Initialize("index.html");
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);

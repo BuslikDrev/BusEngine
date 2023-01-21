@@ -30,7 +30,7 @@ BusEngine.UI
 		//public const bool BUSENGINE_WINFORM = true;
 	}
 
-	internal class Start {
+	internal class Initialize {
         //private static System.Threading.Mutex Mutex;
 		private static void Run() {
 			// инициализируем API BusEngine
@@ -76,7 +76,7 @@ BusEngine.UI
 			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 
 			// запускаем браузер
-			//BusEngine.Browser.Start("index.html");
+			//BusEngine.Browser.Initialize("index.html");
 
 			// тест графики
 			// https://rsdn.org/article/gdi/gdiplus2mag.xml
