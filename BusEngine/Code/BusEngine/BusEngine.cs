@@ -1239,7 +1239,9 @@ namespace BusEngine {
 
 	/** API BusEngine.IPlugin */
 	internal class IPlugin : BusEngine.Plugin {
-		// https://vscode.ru/prog-lessons/dinamicheskoe-podklyuchenie-dll-v-c.html#:~:text=%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5%20dll%20%D0%BF%D1%80%D0%BE%D0%B8%D1%81%D1%85%D0%BE%D0%B4%D0%B8%D1%82%20%D0%B2%D0%BE,%D1%8F%D0%B2%D0%BD%D0%BE%2C%20%D0%BF%D1%80%D0%B8%20%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B8%20%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B0.
+		private static int Count = 0;
+		private static System.Type[] Plugins = new System.Type[BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count];
+
 		// при заапуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("=============================================================================");
@@ -1249,28 +1251,36 @@ namespace BusEngine {
 
 			for (i = 0; i < ii; ++i) {
 				if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] != "") {
+					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
 					BusEngine.Log.Info(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
 
 					foreach (System.Type type in plugin.GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
+							//Plugins[Count] = type;
+							Count++;
 							BusEngine.Log.Info("Название класса {0}", type.FullName);
-							// создание объекта
-							object targetObject = System.Activator.CreateInstance(type);
 
 							// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
 							// чтобы получить public методы без базовых(наследованных от object)
-							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+							/* System.Reflection.MethodInfo method = type.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly, null, type.GetGenericArguments(), null);
+							BusEngine.Log.Info("Название метода {0}", method);
+							i2 = method.GetParameters().Length;
+							if (i2 == 0) {
+								method.Invoke(System.Activator.CreateInstance(type), null);
+							} else {
+								method.Invoke(System.Activator.CreateInstance(type), new object[i2]);
+							} */
+
+							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 							foreach (System.Reflection.MethodInfo method in methods) {
-								if (method.MemberType.ToString().ToLower() == "method") {
+								if (method.Name.ToLower() == "initialize") {
 									BusEngine.Log.Info("Название метода {0}", method);
-									if (method.Name.ToLower() == "initialize") {
-										i2 = method.GetParameters().Length;
-										if (i2 == 0) {
-											method.Invoke(targetObject, null);
-										} else {
-											method.Invoke(targetObject, new object[i2]);
-										}
+									i2 = method.GetParameters().Length;
+									if (i2 == 0) {
+										method.Invoke(System.Activator.CreateInstance(type), null);
+									} else {
+										method.Invoke(System.Activator.CreateInstance(type), new object[i2]);
 									}
 								}
 							}
@@ -1284,47 +1294,79 @@ namespace BusEngine {
 
 		// после загрузки определённого плагина
 		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("Initialize " + plugin);
+			BusEngine.Log.Info("System Plugins Initialize " + plugin);
 		}
 
 		// перед закрытием BusEngine
 		public override void Shutdown() {
-			BusEngine.Log.Info("Shutdown");
+			BusEngine.Log.Info("=============================================================================");
+			BusEngine.Log.Info("System Plugins Shutdown");
+
+			int i, i2, ii = BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count;
+
+			for (i = 0; i < ii; ++i) {
+				if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] != "") {
+					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+					BusEngine.Log.Info(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+
+					foreach (System.Type type in plugin.GetTypes()) {
+						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
+							Count--;
+							BusEngine.Log.Info("Название класса {0}", type.FullName);
+
+							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+							foreach (System.Reflection.MethodInfo method in methods) {
+								if (method.Name.ToLower() == "shutdown") {
+									BusEngine.Log.Info("Название метода {0}", method);
+									i2 = method.GetParameters().Length;
+									if (i2 == 0) {
+										method.Invoke(System.Activator.CreateInstance(type), null);
+									} else {
+										method.Invoke(System.Activator.CreateInstance(type), new object[i2]);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			BusEngine.Log.Info("=============================================================================");
 		}
 
 		// перед загрузкой игрового уровня
 		public override void OnLevelLoading(string level) {
-			BusEngine.Log.Info("OnLevelLoading");
+			BusEngine.Log.Info("System Plugins OnLevelLoading");
 		}
 
 		// после загрузки игрового уровня
 		public override void OnLevelLoaded(string level) {
-			BusEngine.Log.Info("OnLevelLoaded");
+			BusEngine.Log.Info("System Plugins OnLevelLoaded");
 		}
 
 		// когда икрок может управлять главным героем - время игры идёт
 		public override void OnGameStart() {
-			BusEngine.Log.Info("OnGameStart");
+			BusEngine.Log.Info("System Plugins OnGameStart");
 		}
 
 		// когда время остановлено - пауза
 		public override void OnGameStop() {
-			BusEngine.Log.Info("OnGameStop");
+			BusEngine.Log.Info("System Plugins OnGameStop");
 		}
 
 		// когда игрок начинает подключаться к серверу
 		public override void OnClientConnectionReceived(int channelId) {
-			BusEngine.Log.Info("OnClientConnectionReceived");
+			BusEngine.Log.Info("System Plugins OnClientConnectionReceived");
 		}
 
 		// когда игрок подключился к серверу
 		public override void OnClientReadyForGameplay(int channelId) {
-			BusEngine.Log.Info("OnClientReadyForGameplay");
+			BusEngine.Log.Info("System Plugins OnClientReadyForGameplay");
 		}
 
 		// когда игрока выкинуло из сервера - обрыв связи с сервером
 		public override void OnClientDisconnected(int channelId) {
-			BusEngine.Log.Info("OnClientDisconnected");
+			BusEngine.Log.Info("System Plugins OnClientDisconnected");
 		}
 	}
 	/** API BusEngine.IPlugin */
