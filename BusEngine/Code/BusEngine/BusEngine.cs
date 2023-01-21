@@ -1549,7 +1549,7 @@ Newtonsoft.Json
 		private Call HttpClientAsync = null;
 
 		// https://metanit.com/sharp/tutorial/2.9.php
-		public Ajax(string engine = null, string url = null, string[] urlAlternative = null, string metod = "POST", dynamic data = null, string responseType = "text", string dataType = "text", string headers = null, bool async = true, bool cache = false, string user = null, string password = null, BeforeSend beforeSend = null, Success success = null, Error error = null, Complete complete = null) {
+		public Ajax(string engine = null, string url = null, string[] urlAlternative = null, string method = "POST", dynamic data = null, string responseType = "text", string dataType = "text", string headers = null, bool async = true, bool cache = false, string user = null, string password = null, BeforeSend beforeSend = null, Success success = null, Error error = null, Complete complete = null) {
 			if (urlAlternative == null) {
 				urlAlternative = new string[] {"https://buslikdrev.by/", "111111"};
 			}
@@ -1615,9 +1615,9 @@ Newtonsoft.Json
 								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
 
 								try {
-									metod = metod.ToLower();
+									method = method.ToLower();
 									dataType = dataType.ToLower();
-									if (data != null && metod == "post") {
+									if (data != null && method == "post") {
 										if (dataType == "object") {
 											/* object keys = new [] {};
 
@@ -1635,7 +1635,7 @@ Newtonsoft.Json
 										} else {
 											Result = await client.PostAsync(baseAddress, data);
 										}
-									} else if (data != null && metod == "put") {
+									} else if (data != null && method == "put") {
 										if (dataType == "object") {
 											/* object keys = new [] {};
 
@@ -1718,11 +1718,11 @@ Newtonsoft.Json
 								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
 
 								try {
-									metod = metod.ToLower();
+									method = method.ToLower();
 									dataType = dataType.ToLower();
-									if (metod == "get") {
+									if (method == "get") {
 										Result = client.GetAsync(baseAddress).Result;
-									} else if (metod == "put" || metod == "post") {
+									} else if (method == "put" || method == "post") {
 										if (dataType == "object") {
 
 											Result = client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data)).Result;
@@ -1818,10 +1818,6 @@ Newtonsoft.Json
 				beforeSend: () => {
 					System.Console.WriteLine("beforeSend");
 				},
-				/* data: new[] {
-					new KeyValuePair<string, string>("user", "user1"),
-					new KeyValuePair<string, string>("pass", "pass1"),
-				}, */
 				data: new System.Collections.Generic.Dictionary<string, string>() {
 					{"user", "user1"},
 					{"pass", "pass1"},
