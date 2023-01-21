@@ -9,7 +9,7 @@
 namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
 	public class MyPlugin : BusEngine.Plugin {
-		// при заапуске BusEngine до создания формы
+		// при запуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("MyPlugin Initialize");
 		}
@@ -60,7 +60,7 @@ namespace BusEngine.Game {
 			BusEngine.Log.Info("MyPlugin OnClientReadyForGameplay: {0}", channelId);
 		}
 
-		// когда игрока выкинуло из сервера - обрыв связи с сервером
+		// когда игрока выкинуло из сервера - обрыв связи с сервером или он отключился сам
 		public override void OnClientDisconnected(int channelId) {
 			BusEngine.Log.Info("MyPlugin OnClientDisconnected: {0}", channelId);
 		}
