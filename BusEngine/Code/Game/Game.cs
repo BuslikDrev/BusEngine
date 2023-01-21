@@ -49,8 +49,8 @@ BusEngine.UI
 				} else {
 					title = "Увага!";
 				}
-				if (BusEngine.Localization.GetLanguage("error_warning_is_already_running") != "error_warning_is_already_running") {
-					desc = BusEngine.Localization.GetLanguage("error_warning_is_already_running");
+				if (BusEngine.Localization.GetLanguage("error_is_already_running") != "error_is_already_running") {
+					desc = BusEngine.Localization.GetLanguage("error_is_already_running");
 				} else {
 					desc = "Праграма ўжо запушчана.";
 				}
