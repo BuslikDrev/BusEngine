@@ -1220,11 +1220,14 @@ namespace BusEngine {
 		// после загрузки игрового уровня
 		public virtual void OnLevelLoaded(string level) {}
 
-		// когда икрок может управлять главным героем - время игры идёт
+		// когда игрок может управлять главным героем - время игры идёт
 		public virtual void OnGameStart() {}
 
-		// когда время остановлено - пауза
+		// когда время остановлено - пауза или закрытие уровня
 		public virtual void OnGameStop() {}
+
+		// вызывается при отрисовки каждого кадра
+		public virtual void OnGameUpdate() {}
 
 		// когда игрок начинает подключаться к серверу
 		public virtual void OnClientConnectionReceived(int channelId) {}
@@ -1247,7 +1250,7 @@ namespace BusEngine {
 			BusEngine.Log.Info("=============================================================================");
 			BusEngine.Log.Info("System Plugins Initialize");
 
-			int i, i2, ii = BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count;
+			int i, i2, i3, ii = BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count;
 
 			for (i = 0; i < ii; ++i) {
 				if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] != "") {
@@ -1280,7 +1283,13 @@ namespace BusEngine {
 									if (i2 == 0) {
 										method.Invoke(System.Activator.CreateInstance(type), null);
 									} else {
-										method.Invoke(System.Activator.CreateInstance(type), new object[i2]);
+										for (i3 = 0; i3 < ii; ++i3) {
+											if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"] != "" && BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"] != BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]) {
+												object[] x = new object[i2];
+												x[0] = System.IO.Path.GetFileName(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"]);
+												method.Invoke(System.Activator.CreateInstance(type), x);
+											}
+										}
 									}
 								}
 							}
@@ -1344,14 +1353,19 @@ namespace BusEngine {
 			BusEngine.Log.Info("System Plugins OnLevelLoaded");
 		}
 
-		// когда икрок может управлять главным героем - время игры идёт
+		// когда игрок может управлять главным героем - время игры идёт
 		public override void OnGameStart() {
 			BusEngine.Log.Info("System Plugins OnGameStart");
 		}
 
-		// когда время остановлено - пауза
+		// когда время остановлено - пауза или закрытие уровня
 		public override void OnGameStop() {
 			BusEngine.Log.Info("System Plugins OnGameStop");
+		}
+
+		// вызывается при отрисовки каждого кадра
+		public override void OnGameUpdate() {
+			BusEngine.Log.Info("System Plugins OnGameUpdate");
 		}
 
 		// когда игрок начинает подключаться к серверу
