@@ -34,7 +34,7 @@ BusEngine.Browser
 			BusEngine.Engine.Platform = "Windows";
 			BusEngine.Engine.Initialize();
 
-			BusEngine.Form splashScreen = new Form();
+			BusEngine.Form splashScreen = new BusEngine.Form();
 			splashScreen.Width = 640;
 			splashScreen.Height = 360;
 			splashScreen.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -79,24 +79,6 @@ BusEngine.Browser
 			// запускаем браузер
 			BusEngine.Browser.Start("index.html");
 			BusEngine.Browser.PostMessage += OnPostMessage;
-
-			/* BusEngine.Log.Info("dddddddddddddddddddddd");
-			System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
-			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
-
-			System.Reflection.Module[] mods = curAssembly.GetModules();
-			foreach (System.Reflection.Module md in mods) {
-				BusEngine.Log.Info("This assembly contains the Game.exe {0} module", md.Name);
-			}
-			BusEngine.Log.Info("dddddddddddddddddddddd");
-			System.Reflection.Assembly mainAssembly = typeof(BusEngine.Start).Assembly;
-			BusEngine.Log.Info("The executing assembly is {0}.", mainAssembly);
-			System.Reflection.Module[] modss = mainAssembly.GetModules();
-			BusEngine.Log.Info("\tModules in the assembly:");
-			foreach (System.Reflection.Module m in modss) {
-				BusEngine.Log.Info("\t{0}", m);
-			}
-			BusEngine.Log.Info("dddddddddddddddddddddd"); */
 
 			splashScreen.Close();
 			splashScreen.Dispose();

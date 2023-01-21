@@ -27,6 +27,16 @@ BusEngine.Browser
 			BusEngine.Engine.Platform = "WindowsEditor";
 			BusEngine.Engine.Initialize();
 
+			BusEngine.Form splashScreen = new BusEngine.Form();
+			splashScreen.Width = 640;
+			splashScreen.Height = 360;
+			splashScreen.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png"))) {
+				splashScreen.BackgroundImage = System.Drawing.Image.FromFile(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png");
+			}
+			splashScreen.Show();
+			System.Threading.Thread.Sleep(1000);
+
 			// допускаем только один запуск
 			bool createdNew;
 			Mutex = new System.Threading.Mutex(true, "28cb03ec-5416-439d-81a7-b530e7a54c2a", out createdNew);
@@ -53,7 +63,7 @@ BusEngine.Browser
 			}
 
 			// создаём форму System.Windows.Forms
-			BusEngine.Form form = new Form();
+			BusEngine.Form form = new BusEngine.Form();
 
 			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
@@ -61,6 +71,9 @@ BusEngine.Browser
 
 			// запускаем браузер;
 			BusEngine.Browser.Start("https://threejs.org/editor/");
+
+			splashScreen.Close();
+			splashScreen.Dispose();
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);

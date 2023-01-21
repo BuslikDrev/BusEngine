@@ -27,7 +27,7 @@ BusEngine.Browser
 			BusEngine.Engine.Initialize();
 
 			// создаём форму System.Windows.Forms
-			BusEngine.Form form = new Form();
+			BusEngine.Form form = new BusEngine.Form();
 
 			// подключаем  BusEngine.UI API
 			BusEngine.UI.Canvas.WinForm = form;

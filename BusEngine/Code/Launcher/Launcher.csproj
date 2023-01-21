@@ -59,6 +59,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
       <HintPath>..\..\Bin\Win_x64\BusEngine.dll</HintPath>
