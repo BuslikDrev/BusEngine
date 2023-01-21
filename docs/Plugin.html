@@ -103,23 +103,23 @@
                     <a href="FlowGraph.html" class="lastfix red">BusEngine.FlowGraph (Class)</a>
                     <a href="Layer.html" class="lastfix black">BusEngine.Layer (Class)</a>
                     <a href="Level.html" class="lastfix black">BusEngine.Level (Class)</a>
-                    <a href="Localization.html" class="lastfix red">BusEngine.Localization (Class)</a>
-                    <a href="Log.html" class="lastfix red">BusEngine.Log (Class)</a>
+                    <a href="Localization.html" class="lastfix blue">BusEngine.Localization (Class)</a>
+                    <a href="Log.html" class="lastfix blue">BusEngine.Log (Class)</a>
                     <a href="Material.html" class="lastfix black">BusEngine.Material (Class)</a>
                     <a href="Model.html" class="lastfix black">BusEngine.Model (Class)</a>
                     <a href="Physics.html" class="lastfix black">BusEngine.Physics (Class)</a>
-                    <a href="Plugin.html" class="lastfix red active">BusEngine.Plugin (Class)</a>
+                    <a href="Plugin.html" class="lastfix blue active">BusEngine.Plugin (Class)</a>
                     <a href="Rendering.html" class="lastfix black">BusEngine.Rendering (Class)</a>
                     <a href="Vector.html" class="lastfix black">BusEngine.Vector (Class)</a>
                     <a href="Video.html" class="lastfix blue">BusEngine.Video (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-5-2"><label for="menu-5-2" position="2"><span>BusEngine.Game (Namespace)</span></label>
                   <div class="menu-5-2" position="2">
-                    <a href="Game.MyPlugin.html" class="lastfix gray">BusEngine.Game.MyPlugin (Class)</a>
+                    <a href="Game.MyPlugin.html" class="lastfix blue">BusEngine.Game.MyPlugin (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-5-3"><label for="menu-5-3" position="2"><span>BusEngine.Tools (Namespace)</span></label>
                   <div class="menu-5-3" position="2">
-                    <a href="Tools.Ajax.html" class="lastfix red">BusEngine.Tools.Ajax (Class)</a>
+                    <a href="Tools.Ajax.html" class="lastfix blue">BusEngine.Tools.Ajax (Class)</a>
                     <a href="Tools.Json.html" class="lastfix blue">BusEngine.Tools.Json (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-5-10"><label for="menu-5-10" position="2"><span>BusEngine.UI (Namespace)</span></label>
@@ -136,7 +136,7 @@
             <a class="n1" href="index.html">Главная</a>
           </div>
           <p>BusEngine.dll</p>
-          <h1>BusEngine.Plugin (Class)</h1>
+          <h1>BusEngine.Plugin (Abstract Class)</h1>
           <p>Тут описание...</p>
           <h2 id="Constants" class="h2">Константы</h2>
           <table>
@@ -144,32 +144,71 @@
               <tr>Своих констант нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="SubClasses" class="h2">Подклассы</h2>
           <table>
             <tbody>
               <tr>Своих подклассов нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="Fields" class="h2">Поля</h2>
           <table>
             <tbody>
               <tr>Своих полей нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="Properties" class="h2">Свойства</h2>
           <table>
             <tbody>
               <tr>Своих свойств нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
-              <tr>Своих методов нет</tr>
+              <tr id="BusEngine.Plugin.Initialize">
+                <td><a href="#BusEngine.Plugin.Initialize">(void)BusEngine.Plugin.Initialize()</a></td>
+                <td>Метод (виртуальный) уровня класса запускает библиотеки указанные в файле настроек проекта *.busproject или настрок редактова *.busengine во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.Initialize_1">
+                <td><a href="#BusEngine.Plugin.Initialize_1">(void)BusEngine.Plugin.Initialize(string)</a></td>
+                <td>Метод (виртуальный) уровня класса запускает все библиотеки указанные в файле настроек проекта *.busproject или настрок редактова *.busengine во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.Shutdown">
+                <td><a href="#BusEngine.Plugin.Shutdown">(void)BusEngine.Plugin.Shutdown()</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnLevelLoading">
+                <td><a href="#BusEngine.Plugin.OnLevelLoading">(void)BusEngine.Plugin.OnLevelLoading(string)</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnLevelLoaded">
+                <td><a href="#BusEngine.Plugin.OnLevelLoaded">(void)BusEngine.Plugin.OnLevelLoaded(string)</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnGameStart">
+                <td><a href="#BusEngine.Plugin.OnGameStart">(void)BusEngine.Plugin.OnGameStart()</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnGameStop">
+                <td><a href="#BusEngine.Plugin.OnGameStop">(void)BusEngine.Plugin.OnGameStop()</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnGameUpdate">
+                <td><a href="#BusEngine.Plugin.OnGameUpdate">(void)BusEngine.Plugin.OnGameUpdate()</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnClientConnectionReceived">
+                <td><a href="#BusEngine.Plugin.OnClientConnectionReceived">(void)BusEngine.Plugin.OnClientConnectionReceived(int)</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnClientReadyForGameplay">
+                <td><a href="#BusEngine.Plugin.OnClientReadyForGameplay">(void)BusEngine.Plugin.OnClientReadyForGameplay(int)</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
+              <tr id="BusEngine.Plugin.OnClientDisconnected">
+                <td><a href="#BusEngine.Plugin.OnClientDisconnected">(void)BusEngine.Plugin.OnClientDisconnected(int)</a></td>
+                <td>Метод (виртуальный) уровня класса для закрытия "BusEngine.Plugin" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Plugin.Shutdown()".</td>
+              </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
@@ -179,7 +218,6 @@
               <tr>Своих событий нет</tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
           <h2 id="Example" class="h2">Пример файла Program.cs</h2>
           <p>В коде отражён запуск плагина при старте своего плагина с названием MyPlugin.</p>
           <div class="csharp">
