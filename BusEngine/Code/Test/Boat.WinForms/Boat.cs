@@ -17,7 +17,7 @@ BusEngine.Log
 BusEngine.UI
 */
 
-	internal class Start {
+	internal class Initialize {
 		private static void Run() {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Windows";
@@ -34,7 +34,7 @@ BusEngine.UI
 			//BusEngine.Video.Play("Videos/BusEngine.mp4");
 
 			// запускаем браузер
-			//BusEngine.Browser.Start("index.html");
+			//BusEngine.Browser.Initialize("index.html");
 
 			// тест графики
 			// https://rsdn.org/article/gdi/gdiplus2mag.xml
