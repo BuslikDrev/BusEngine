@@ -22,7 +22,6 @@ namespace BusEngine.Game {
 		// перед закрытием BusEngine
 		public override void Shutdown() {
 			BusEngine.Log.Info("MyPlugin Shutdown");
-			//base.Shutdown();
 		}
 
 		// перед загрузкой игрового уровня
