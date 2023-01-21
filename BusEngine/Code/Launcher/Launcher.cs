@@ -72,6 +72,24 @@ BusEngine.Browser
 			// создаём форму System.Windows.Forms
 			BusEngine.Form form = new BusEngine.Form();
 
+			// устанавливаем размеры окна
+			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] != null) {
+				form.Width = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Width"]);
+			}
+			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] != null) {
+				form.Height = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Height"]);
+			}
+
+			// открываем окно на весь экран
+			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) > 0) {
+				form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			}
+
+			// убираем линии, чтобы окно было полностью на весь экран
+			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -1 || System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == 1) {
+				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			}
+
 			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
 			BusEngine.UI.Canvas.Initialize();
@@ -150,16 +168,8 @@ BusEngine.Browser
 			}
 
 			// устанавливаем размеры окна
-			if (BusEngine.Engine.Setting["console_commands"]["r_Width"] != null) {
-				this.Width = (int)BusEngine.Engine.Setting["console_commands"]["r_Width"];
-			} else {
-				this.Width = 1024;
-			}
-			if (BusEngine.Engine.Setting["console_commands"]["r_Height"] != null) {
-				this.Height = (int)BusEngine.Engine.Setting["console_commands"]["r_Height"];
-			} else {
-				this.Height = 768;
-			}
+			this.Width = 900;
+			this.Height = 540;
 
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
