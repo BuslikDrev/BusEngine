@@ -1205,7 +1205,7 @@ namespace BusEngine {
 namespace BusEngine {
 	/** API BusEngine.Plugin */
 	public abstract class Plugin {
-		// при заапуске BusEngine до создания формы
+		// при запуске BusEngine до создания формы
 		public virtual void Initialize() {BusEngine.Log.Info("Plugin Initialize");}
 
 		// после загрузки определённого плагина
@@ -1245,7 +1245,7 @@ namespace BusEngine {
 		private static int Count = 0;
 		private static System.Type[] Plugins = new System.Type[BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count];
 
-		// при заапуске BusEngine до создания формы
+		// при запуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("=============================================================================");
 			BusEngine.Log.Info("System Plugins Initialize");
