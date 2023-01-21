@@ -44,6 +44,8 @@
     <OutputRoot>..\..\Bin\Win\</OutputRoot>
   </PropertyGroup>
   <ItemGroup>
+    <!-- возможность использовать dynamic -->
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
       <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
