@@ -16,22 +16,23 @@ namespace BusEngine.Game {
 
 		// после загрузки определённого плагина
 		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("MyPlugin Initialize " + plugin);
+			BusEngine.Log.Info("MyPlugin Initialize: {0}", plugin);
 		}
 
 		// перед закрытием BusEngine
 		public override void Shutdown() {
 			BusEngine.Log.Info("MyPlugin Shutdown");
+			//base.Shutdown();
 		}
 
 		// перед загрузкой игрового уровня
 		public override void OnLevelLoading(string level) {
-			BusEngine.Log.Info("MyPlugin OnLevelLoading");
+			BusEngine.Log.Info("MyPlugin OnLevelLoading: {0}", level);
 		}
 
 		// после загрузки игрового уровня
 		public override void OnLevelLoaded(string level) {
-			BusEngine.Log.Info("MyPlugin OnLevelLoaded");
+			BusEngine.Log.Info("MyPlugin OnLevelLoaded: {0}", level);
 		}
 
 		// когда игрок может управлять главным героем - время игры идёт
@@ -39,24 +40,29 @@ namespace BusEngine.Game {
 			BusEngine.Log.Info("MyPlugin OnGameStart");
 		}
 
-		// когда время остановлено - пауза
+		// когда время остановлено - пауза или закрытие уровня
 		public override void OnGameStop() {
 			BusEngine.Log.Info("MyPlugin OnGameStop");
 		}
 
+		// вызывается при отрисовки каждого кадра
+		public override void OnGameUpdate() {
+			BusEngine.Log.Info("MyPlugin OnGameUpdate");
+		}
+
 		// когда игрок начинает подключаться к серверу
 		public override void OnClientConnectionReceived(int channelId) {
-			BusEngine.Log.Info("MyPlugin OnClientConnectionReceived");
+			BusEngine.Log.Info("MyPlugin OnClientConnectionReceived: {0}", channelId);
 		}
 
 		// когда игрок подключился к серверу
 		public override void OnClientReadyForGameplay(int channelId) {
-			BusEngine.Log.Info("MyPlugin OnClientReadyForGameplay");
+			BusEngine.Log.Info("MyPlugin OnClientReadyForGameplay: {0}", channelId);
 		}
 
 		// когда игрока выкинуло из сервера - обрыв связи с сервером
 		public override void OnClientDisconnected(int channelId) {
-			BusEngine.Log.Info("MyPlugin OnClientDisconnected");
+			BusEngine.Log.Info("MyPlugin OnClientDisconnected: {0}", channelId);
 		}
 	}
 	/** API BusEngine.Plugin */
