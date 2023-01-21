@@ -431,18 +431,6 @@ BusEngine.Tools
 
 		/** функция запуска API BusEngine */
 		public static void Initialize() {
-			// включаем консоль
-			BusEngine.Log.ConsoleShow();
-
-			/* BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
-			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
-			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true));
-			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting))));
-
-			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["version"]);
-			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["console_commands"]["sys_spec"]);
-			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)))); */
-
 			// устанавливаем ссылку на рабочий каталог
 			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
@@ -473,6 +461,18 @@ BusEngine.Tools
 
 			// инициализируем язык
 			new BusEngine.Localization().Initialize();
+
+			// включаем консоль
+			BusEngine.Log.ConsoleShow();
+
+			/* BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
+			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
+			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true));
+			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting))));
+
+			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["version"]);
+			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["console_commands"]["sys_spec"]);
+			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)))); */
 
 			// https://metanit.com/sharp/tutorial/5.4.php
 			// https://metanit.com/sharp/tutorial/5.5.php
@@ -928,11 +928,11 @@ namespace BusEngine {
 				BusEngine.Log.AttachConsole(-1);
 				BusEngine.Log.AllocConsole();
 				BusEngine.Log.StatusConsole = true;
-				System.Console.Title = "Console BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+				System.Console.Title = BusEngine.Localization.GetLanguage("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
 				//System.Console.Clear();
-				BusEngine.Log.Info("Консоль BusEngine");
+				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_console"));
 				while (true) {
 					break;
 					//if (System.Console.ReadKey(true).Key == System.ConsoleKey.Enter) {
@@ -1262,7 +1262,7 @@ namespace BusEngine {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
 							//Plugins[Count] = type;
 							Count++;
-							BusEngine.Log.Info("Название класса {0}", type.FullName);
+							BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_class") + ": {0}", type.FullName);
 
 							// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
 							// чтобы получить public методы без базовых(наследованных от object)
@@ -1278,7 +1278,7 @@ namespace BusEngine {
 							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 							foreach (System.Reflection.MethodInfo method in methods) {
 								if (method.Name.ToLower() == "initialize") {
-									BusEngine.Log.Info("Название метода {0}", method);
+									BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", method);
 									i2 = method.GetParameters().Length;
 									if (i2 == 0) {
 										method.Invoke(System.Activator.CreateInstance(type), null);
@@ -1321,12 +1321,12 @@ namespace BusEngine {
 					foreach (System.Type type in plugin.GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
 							Count--;
-							BusEngine.Log.Info("Название класса {0}", type.FullName);
+							BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_class") + ": {0}", type.FullName);
 
 							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 							foreach (System.Reflection.MethodInfo method in methods) {
 								if (method.Name.ToLower() == "shutdown") {
-									BusEngine.Log.Info("Название метода {0}", method);
+									BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", method);
 									i2 = method.GetParameters().Length;
 									if (i2 == 0) {
 										method.Invoke(System.Activator.CreateInstance(type), null);
