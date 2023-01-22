@@ -139,13 +139,15 @@
           <p>После просмотра урока, за основу возьмите плагин в папке "<a href="https://github.com/BuslikDrev/BusEngine/tree/v0.3.0/BusEngine/Code/Plugin" rel="noreferrer noopener nofollow" target="_blank">BusEngine/Code/Plugin</a>" измените везде Plugin на своё название, пропишите путь к своему плагину в файле настройки проекта *.busproject или busengine.busengine и можете приступать к творению!
             <iframe loading="lazy" width="100%" height="100%" data-src="https://www.youtube.com/embed/R1MwBJZzpsk" title="BusEngine video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 <script type="text/javascript">
-document.addEventListener('DOMContentLoaded', function() {
+var init = function() {
+	window.removeEventListener('mouseover', init);
 	var element = document.querySelector('iframe');
 	element.setAttribute('src', element.getAttribute('data-src'));
 	element.onload = function(e) {
 		e.target.style['height'] = (e.target.offsetWidth / 16 * 9) + 'px';
 	};
-});
+};
+window.addEventListener('mouseover', init);
 window.addEventListener('resize', function() {
 	document.querySelector('iframe').style['height'] = (document.querySelector('iframe').offsetWidth / 16 * 9) + 'px';
 });
