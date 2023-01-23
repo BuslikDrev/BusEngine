@@ -34,16 +34,6 @@ BusEngine.Browser
 			BusEngine.Engine.Platform = "Windows";
 			BusEngine.Engine.Initialize();
 
-			BusEngine.Form splashScreen = new BusEngine.Form();
-			splashScreen.Width = 640;
-			splashScreen.Height = 360;
-			splashScreen.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png"))) {
-				splashScreen.BackgroundImage = System.Drawing.Image.FromFile(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png");
-			}
-			splashScreen.Show();
-			System.Threading.Thread.Sleep(1000);
-
 			// допускаем только один запуск
 			bool createdNew;
 			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
@@ -72,6 +62,11 @@ BusEngine.Browser
 			// создаём форму System.Windows.Forms
 			BusEngine.Form form = new BusEngine.Form();
 
+			// устанавливаем нашу иконку
+			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
+				form.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
+			}
+
 			// устанавливаем размеры окна
 			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] != null) {
 				form.Width = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Width"]);
@@ -88,18 +83,19 @@ BusEngine.Browser
 			// убираем линии, чтобы окно было полностью на весь экран
 			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -1 || System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == 1) {
 				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			} else if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -2) {
+				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+				form.MaximizeBox = true;
 			}
+
+			// скрываем иконку в системном меню
+			//form.ShowInTaskbar = false;
 
 			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
+
+			// инициализируем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.Initialize();
-
-			// запускаем браузер
-			BusEngine.Browser.Initialize("index.html");
-			BusEngine.Browser.PostMessage += OnPostMessage;
-
-			splashScreen.Close();
-			splashScreen.Dispose();
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
@@ -137,20 +133,6 @@ BusEngine.Browser
 			}
 		}
 		/** функция запуска приложения */
-
-		private static void OnPostMessage(object sender, string message) {
-			if (message == "Exit") {
-				BusEngine.Engine.Shutdown();
-			} else if (message == "Debug") {
-				BusEngine.Log.Info("JavaScript: Привет CSharp!");
-				BusEngine.Log.Info("На команду: " + message);
-				BusEngine.Browser.ExecuteJS("document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: " + message + "'}}));");
-			} else {
-				if (message.Substring(0, 8) == "console|") {
-					BusEngine.Log.Info(message.Substring(8));
-				}
-			}
-		}
 	}
 
 	// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
@@ -160,12 +142,8 @@ BusEngine.Browser
 			// название окна
 			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-			// устанавливаем нашу иконку, есди она есть по пути exe, в противном случае устанавливаем системную
-			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
-				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
-			} else {
-				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
-			}
+			// системная иконка
+			this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 
 			// устанавливаем размеры окна
 			this.Width = 900;
@@ -177,7 +155,7 @@ BusEngine.Browser
 			// открываем окно на весь экран
 			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 
-			// убираем линии, чтобы окно было полностью на весь экран
+			// устанавливаем стиль границ окна
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 
 			// убираем кнопку развернуть

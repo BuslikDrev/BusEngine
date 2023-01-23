@@ -29,12 +29,11 @@ BusEngine.Browser
 			// создаём форму System.Windows.Forms
 			BusEngine.Form form = new BusEngine.Form();
 
-			// подключаем  BusEngine.UI API
+			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
-			BusEngine.UI.Canvas.Initialize();
 
-			// запускаем браузер
-			BusEngine.Browser.Initialize("index.html");
+			// инициализируем API BusEngine.UI.Canvas
+			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Run(form);
@@ -55,16 +54,12 @@ BusEngine.Browser
 			// название окна
 			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-			// устанавливаем нашу иконку, есди она есть по пути exe, в противном случае устанавливаем системную
-			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
-				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
-			} else {
-				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
-			}
+			// системная иконка
+			this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 
 			// устанавливаем размеры окна
-			this.Width = 1024;
-			this.Height = 768;
+			this.Width = 900;
+			this.Height = 540;
 
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -72,8 +67,14 @@ BusEngine.Browser
 			// открываем окно на весь экран
 			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 
-			// убираем линии, чтобы окно было полностью на весь экран
-			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			// устанавливаем стиль границ окна
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+
+			// убираем кнопку развернуть
+			this.MaximizeBox = false;
+
+			// убираем кнопку свернуть
+			//this.MinimizeBox = false;
 
 			// устанавливаем чёрный цвет фона окна
 			this.BackColor = System.Drawing.Color.Black;
