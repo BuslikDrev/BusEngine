@@ -29,7 +29,6 @@ namespace BusEngine {
 	/** API BusEngine.ProjectDefault */
 	internal class ProjectDefault {
 		public ProjectDefault(object setting) {
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 			Setting = setting;
 		}
 
