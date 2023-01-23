@@ -31,7 +31,7 @@ BusEngine.Browser
 		private static System.Threading.Mutex Mutex;
 		private static void Run() {
 			// инициализируем API BusEngine
-			BusEngine.Engine.Platform = "Windows";
+			BusEngine.Engine.Platform = "WindowsLauncher";
 			BusEngine.Engine.Initialize();
 
 			// допускаем только один запуск

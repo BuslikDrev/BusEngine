@@ -406,6 +406,13 @@ BusEngine.UI
 			this.KeyPreview = true;
 			//this.KeyDown += OnKeyDown;
 
+			// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.controlstyles?view=netframework-4.6.2#system-windows-forms-controlstyles-userpaint
+			// убираем мерцание и доступна настройка только в этом месте.
+			this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.FixedHeight, false);
+			this.SetStyle(System.Windows.Forms.ControlStyles.FixedWidth, false);
+
 			// устанавливаем событие закрытия окна
 			//this.FormClosed += OnClosed;
 			//this.Disposed += new System.EventHandler(OnDisposed);

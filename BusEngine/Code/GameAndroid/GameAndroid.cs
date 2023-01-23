@@ -29,6 +29,11 @@ BusEngine.Browser
 			// создаём форму System.Windows.Forms
 			BusEngine.Form form = new BusEngine.Form();
 
+			// устанавливаем нашу иконку
+			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
+				form.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
+			}
+
 			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
 

@@ -1,11 +1,11 @@
 /** API BusEngine.Game - пользовательский код */
 namespace BusEngine.Game {
-    /** API BusEngine.Plugin */
-    public class MyPlugin : BusEngine.Plugin {
+	/** API BusEngine.Plugin */
+	public class MyPlugin : BusEngine.Plugin {
 		private static System.Windows.Forms.Form SplashScreen = new System.Windows.Forms.Form();
 
-        // при запуске BusEngine после создания формы Canvas
-        public override void Initialize() {
+		// при запуске BusEngine до создания формы
+		public override void Initialize() {
 			// добавляем обложку
 			SplashScreen = new System.Windows.Forms.Form();
 			SplashScreen.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -17,20 +17,33 @@ namespace BusEngine.Game {
 			}
 			SplashScreen.Show();
 			System.Threading.Thread.Sleep(1000);
-        }
+		}
 
-        // при запуске BusEngine после создания формы Canvas
-        public override void InitializeСanvas() {
+		// при запуске BusEngine после создания формы Canvas
+		public override void InitializeСanvas() {
 			SplashScreen.Close();
 			SplashScreen.Dispose();
 
+			if (BusEngine.Engine.Platform == "WindowsLauncher") {
+				BusEngine.UI.Canvas.WinForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				BusEngine.UI.Canvas.WinForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+				BusEngine.UI.Canvas.WinForm.Width = 1920;
+				BusEngine.UI.Canvas.WinForm.Height = 1080;
+			}
+
 			// запускаем видео
-            //BusEngine.Video.Play("Videos/BusEngine.mp4");
+			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
+				BusEngine.Video.Play("Videos/BusEngine.mp4");
+			}
 
 			// запускаем браузер
-			//BusEngine.Browser.Initialize("index.html");
-			//BusEngine.Browser.PostMessage += OnPostMessage;
-        }
+			if (BusEngine.Engine.Platform == "WindowsEditor") {
+				BusEngine.Browser.Initialize("https://threejs.org/editor/");
+			} else if (BusEngine.Engine.Platform == "WindowsLauncher") {
+				BusEngine.Browser.Initialize("index.html");
+				BusEngine.Browser.PostMessage += OnPostMessage;
+			}
+		}
 
 		private static void OnPostMessage(object sender, string message) {
 			if (message == "Exit") {
@@ -45,7 +58,7 @@ namespace BusEngine.Game {
 				}
 			}
 		}
-    }
-    /** API BusEngine.Plugin */
+	}
+	/** API BusEngine.Plugin */
 }
 /** API BusEngine.Game - пользовательский код */
