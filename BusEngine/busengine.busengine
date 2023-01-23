@@ -5,9 +5,18 @@
     "r_WaterOcean": "0",
     "r_VolumetricClouds": "1",
     "r_Displayinfo": "0",
+    /* r_Fullscreen работает (
+    РазрешитьИзменятьРазмерыОкна=-2, 
+    СкрытьРамкуОкна=-1, 
+    ЗапретитьИзменятьРазмерыОкна=0, 
+    СделатьНаВесьЭкран=1, 
+    СделатьНаВесьЭкранСРамкой=2
+    ) */
     "r_Fullscreen": "0",
-    "r_Width": "1280",
-    "r_Height": "720"
+    // r_Width работает
+    "r_Width": "800",
+    // r_Height работает
+    "r_Height": "480"
   },
   "console_variables": {
     "sys_spec": "1",
@@ -45,6 +54,7 @@
   },
   "require": {
     "engine": "0.3.0.0",
+    // plugins работает
     "plugins": [
       {
         "guid": "",
