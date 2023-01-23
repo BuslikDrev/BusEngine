@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+    <meta property="og:locale" content="ru_BY">
+    <meta property="og:rich_attachment" content="true">
+    <meta property="og:title" content="API BusEngine">
+    <meta property="og:description" content="BusEngine,API,документация,cryengine,uengine,unigine,unity">
+    <meta property="og:type" content="website">
+    <!-- <meta property="og:image" content="Icons/BusEngine.png"> -->
+    <meta property="og:image" content="https://opengraph.githubassets.com/407a55b9b48e4056fbd78e3bc81d145859a60475f09583bea08dc3c350be72c7/BuslikDrev/BusEngine" />
+    <meta property="og:image:alt" content="API игрового движка BusEngine." />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="600" />
+    <meta property="og:site_name" content="API BusEngine">
+    <meta name="robots" content="nocache,noarchive">
+    <meta name="description" content="API документация по игровому движку BusEngine.">
+    <meta name="keywords" content= "BusEngine,API,документация,cryengine,uengine,unigine,unity">
+    <meta name="apple-mobile-web-app-title" content="API BusEngine">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-TileImage" content="Icons/msapplication-144x144.png">
+    <meta name="theme-color" content="#000000">
+    <title>API BusEngine</title>
+    <base href="">
+    <link href="https://buslikdrev.github.io/BusEngine/index.html" rel="canonical">
+    <link href="bus_app.json?v=1.0.13.3" type="application/json" rel="manifest">
+    <link href="Icons/favicon-16x16.png" type="image/png" rel="icon" sizes="16x16">
+    <link href="Icons/favicon-32x32.png" type="image/png" rel="icon" sizes="32x32">
+    <link href="Icons/favicon-48x48.png" type="image/png" rel="icon" sizes="48x48">
+    <link href="Icons/favicon-96x96.png" type="image/png" rel="icon" sizes="96x96">
+    <link href="Icons/favicon-192x192.png" type="image/png" rel="icon" sizes="192x192">
+    <link href="Icons/apple-57x57.png" type="image/png" rel="apple-touch-icon" sizes="57x57">
+    <link href="Icons/apple-60x60.png" type="image/png" rel="apple-touch-icon" sizes="60x60">
+    <link href="Icons/apple-72x72.png" type="image/png" rel="apple-touch-icon" sizes="72x72">
+    <link href="Icons/apple-76x76.png" type="image/png" rel="apple-touch-icon" sizes="76x76">
+    <link href="Icons/apple-114x114.png" type="image/png" rel="apple-touch-icon" sizes="114x114">
+    <link href="Icons/apple-120x120.png" type="image/png" rel="apple-touch-icon" sizes="120x120">
+    <link href="Icons/apple-144x144.png" type="image/png" rel="apple-touch-icon" sizes="144x144">
+    <link href="Icons/apple-152x152.png" type="image/png" rel="apple-touch-icon" sizes="152x152">
+    <link href="Icons/apple-180x180.png" type="image/png" rel="apple-touch-icon" sizes="180x180">
+    <link href="Icons/mask-700x700.svg" rel="mask-icon" color="#ffffff">
+    <link href="Styles/FontAwesome/css/all.css" type="text/css" rel="stylesheet preload" as="style" media="screen">
+    <link href="Styles/BusEngine/BusEngine.css?v=0.4" type="text/css" rel="stylesheet preload" as="style" media="screen">
+    <link href="Scripts/BusEngine/BusEngine.js?v=0.4" rel="preload" as="script">
+    <script src="Scripts/BusEngine/BusEngine.js?v=0.4"></script>
+    <script src="Scripts/BusEngine/bus_app.js" async></script>
+  </head>
+  <body class="languagefix">
+    <header class="headerBox">
+      <div class="header">
+        <div class="content">
+          <a href="index.html" class="top_logo"><img src="Icons/BusEngine.png" width="48" height="48" alt="API"></a>
+          <a href="index.html" style="color:white">BusEngine Документация</a>
+          <div class="top_menu">
+            <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
+            <!-- <a href="Examples.html">Примеры</a> -->
+            <a href="https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz" rel="noreferrer noopener nofollow" target="_blank">YouTube</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="body">
+      <div class="content">
+        <div class="navigation col-lg-3 col-md-3">
+          <!-- <div id="search">
+            <form method="get" action="index.html">
+              <input type="search" accesskey="f"  placeholder="Поиск не работает..." value="" autocomplete="off">
+              <button type="submit" formaction="index.html" title="Начать поиск" aria-label="Начать поиск"><i class="fa fa-search"></i></button>
+            </form>
+          </div> -->
+          <div id="language"></div>
+          <div id="menu_vertical">
+            <ul>
+              <li class="lioff lastfix green"> - можно использовать</li>
+              <li class="lioff lastfix red"> - в разработке</li>
+              <li class="lioff lastfix blue"> - тестируется</li>
+              <li class="lioff lastfix gray"> - есть но недокументированно</li>
+              <li class="lioff lastfix black"> - в мечтах</li>
+              <li class="lioff"><input type="checkbox" id="menu-1"><label for="menu-1" position="2"><a href="index.html#start">НАЧАЛО РАБОТЫ</a></label>
+                <div class="menu-1" position="2">
+                  <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" class="lastfix blue" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
+                  <a href="Possibilities.html" class="lastfix blue">Возможности движка</a>
+                  <a href="Environment.html" class="lastfix blue">Настройка окружения</a>
+                  <a href="Examples.html" class="lastfix blue">Готовые примеры</a>
+                </div>
+              </li>
+              <li class="lioff"><input type="checkbox" id="menu-5"><label for="menu-5" position="2"><a href="index.html#api">API BusEngine</a></label>
+                <div class="menu-5" position="2">
+                  <input type="checkbox" id="menu-5-1"><label for="menu-5-1" position="2"><span>BusEngine (Namespace)</span></label>
+                  <div class="menu-5-1" position="2">
+                    <a href="#BusEngine.Audio" class="lastfix red">BusEngine.Audio (Class)</a>
+                    <a href="#BusEngine.Browser" class="lastfix blue">BusEngine.Browser (Class)</a>
+                    <a href="#BusEngine.Camera" class="lastfix black">BusEngine.Camera (Class)</a>
+                    <a href="#BusEngine.Core" class="lastfix black">BusEngine.Core (Class)</a>
+                    <a href="#BusEngine.Engine" class="lastfix red">BusEngine.Engine (Class)</a>
+                    <a href="#BusEngine.FlowGraph" class="lastfix red">BusEngine.FlowGraph (Class)</a>
+                    <a href="#BusEngine.Layer" class="lastfix black">BusEngine.Layer (Class)</a>
+                    <a href="#BusEngine.Level" class="lastfix black">BusEngine.Level (Class)</a>
+                    <a href="#BusEngine.Localization" class="lastfix blue">BusEngine.Localization (Class)</a>
+                    <a href="#BusEngine.Log" class="lastfix blue">BusEngine.Log (Class)</a>
+                    <a href="#BusEngine.Material" class="lastfix black">BusEngine.Material (Class)</a>
+                    <a href="#BusEngine.Model" class="lastfix black">BusEngine.Model (Class)</a>
+                    <a href="#BusEngine.Physics" class="lastfix black">BusEngine.Physics (Class)</a>
+                    <a href="#BusEngine.Plugin" class="lastfix blue">BusEngine.Plugin (Class)</a>
+                    <a href="#BusEngine.Rendering" class="lastfix black">BusEngine.Rendering (Class)</a>
+                    <a href="#BusEngine.Vector" class="lastfix black">BusEngine.Vector (Class)</a>
+                    <a href="#BusEngine.Video" class="lastfix blue">BusEngine.Video (Class)</a>
+                  </div>
+                  <input type="checkbox" id="menu-5-2"><label for="menu-5-2" position="2"><span>BusEngine.Game (Namespace)</span></label>
+                  <div class="menu-5-2" position="2">
+                    <a href="#BusEngine.Game.MyPlugin" class="lastfix blue">BusEngine.Game.MyPlugin (Class)</a>
+                  </div>
+                  <input type="checkbox" id="menu-5-3"><label for="menu-5-3" position="2"><span>BusEngine.Tools (Namespace)</span></label>
+                  <div class="menu-5-3" position="2">
+                    <a href="#BusEngine.Tools.Ajax" class="lastfix blue">BusEngine.Tools.Ajax (Class)</a>
+                    <a href="#BusEngine.Tools.Json" class="lastfix blue">BusEngine.Tools.Json (Class)</a>
+                  </div>
+                  <input type="checkbox" id="menu-5-10"><label for="menu-5-10" position="2"><span>BusEngine.UI (Namespace)</span></label>
+                  <div class="menu-5-10" position="2">
+                    <a href="#BusEngine.UI.Canvas" class="lastfix red">BusEngine.UI.Canvas (Class)</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <!-- <ul>
+              <li class=" current"><a href="index.html#api">API BusEngine</a></li>
+              <ul>
+                <li><a href="index.html">BusEngine (Namespace)</a></li>
+                <li><a href="index.html">BusEngine.UI (Namespace)</a></li>
+              </ul>
+              <li class=""><a href="index.html#api">API BusEngine</a></li>
+            </ul> -->
+          </div>
+        </div>
+        <div id="doc_content" class="doc col-lg-9 col-md-9">
+          <h1>API Reference</h1>
+          <h2 id="start" class="h2">Начало работы</h2>
+          <table>
+            <tbody>
+              <tr>
+                <td><i class="fa-solid fa-sliders"></i></td>
+                <td><a href="Possibilities.html">Возможности движка</a></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-street-view"></i></td>
+                <td><a href="Environment.html">Настройка окружения</a></td>
+                <td>Настройка необходимых программ.</td>
+              </tr>
+              <tr>
+                <td><i class="fa-solid fa-book"></i></td>
+                <td><a href="Examples.html">Готовые примеры</a></td>
+                <td>Подборка готовых примеров.</td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="#top" class="top_link">Наверх</a>
+          <h2 id="api" class="h2">API BusEngine</h2>
+          <table>
+            <tbody>
+              <tr id="BusEngine.Audio">
+                <td><i class="fa-solid fa-file-audio"></i></td>
+                <td><a href="Audio.html">BusEngine.Audio</a></td>
+                <td>Класс отвечающий за работу с Аудио файлами (mp3, wav, ogg). Это Аудио плеер движка.</td>
+              </tr>
+              <tr id="BusEngine.Browser">
+                <td><i class="fa-brands fa-chrome"></i></td>
+                <td><a href="Browser.html">BusEngine.Browser</a></td>
+                <td>Класс отвечающий за работу с Web файлами (htm, html, css, js, xml и т.д.). Это Web браузер движка.</td>
+              </tr>
+              <tr id="BusEngine.Camera">
+                <td><i class="fa-solid fa-video"></i></td>
+                <td><a href="Camera.html">BusEngine.Camera</a></td>
+                <td>Класс отвечающий за работу виртуальной камеры игрока. Это глаза в 2D,3D мире движка.</td>
+              </tr>
+              <tr id="BusEngine.Core">
+                <td><i class="fa-brands fa-codepen"></i></td>
+                <td><a href="Core.html">BusEngine.Core</a></td>
+                <td>Пока не знаю зачем это создавать.</td>
+              </tr>
+              <tr id="BusEngine.Engine">
+                <td><i class="fa-solid fa-user-gear"></i></td>
+                <td><a href="Engine.html">BusEngine.Engine</a></td>
+                <td>Класс отвечающий за главные параметры движка.</td>
+              </tr>
+              <tr id="BusEngine.FlowGraph">
+                <td><i class="fa-solid fa-diagram-project"></i></td>
+                <td><a href="FlowGraph.html">BusEngine.FlowGraph</a></td>
+                <td>Класс отвечающий за визуальное программирование. Это визуальное управление готовыми функциями на основе текущего API движка.</td>
+              </tr>
+              <tr id="BusEngine.Game.MyPlugin">
+                <td><i class="fa-solid fa-puzzle-piece"></i></td>
+                <td><a href="Game.MyPlugin.html">BusEngine.Game.MyPlugin</a></td>
+                <td>Класс отвечающий за работу своего плагина. Название класса "MyPlugin" может быть любым, но индивидуальным в пространстве имён "BusEngine.Game". Класс "MyPlugin" должен наследоваться от "BusEngine.Plugin". Пространство имён "BusEngine.Game" также может быть любым.</td>
+              </tr>
+              <tr id="BusEngine.Layer">
+                <td><i class="fa-solid fa-layer-group"></i></td>
+                <td><a href="Layer.html">BusEngine.Layer</a></td>
+                <td>Класс отвечающий за разделение объектов уровня на слои. Это разделитель объектов размещённых в уровне движка.</td>
+              </tr>
+              <tr id="BusEngine.Level">
+                <td><i class="fa-solid fa-database"></i></td>
+                <td><a href="Level.html">BusEngine.Level</a></td>
+                <td>Класс отвечающий за хранение данных виртуального мира и размещённых в нём объектов (модели, специальные эффекты, шейдеры, текстуры, аудио, видео, скрипты, сценарии и т.д.).</td>
+              </tr>
+              <tr id="BusEngine.Localization">
+                <td><i class="fa-solid fa-language"></i></td>
+                <td><a href="Localization.html">BusEngine.Localization</a></td>
+                <td>Класс отвечающий за работу с Языковыми файлами. Это мультиязычность движка.</td>
+              </tr>
+              <tr id="BusEngine.Log">
+                <td><i class="fa-solid fa-terminal"></i></td>
+                <td><a href="Log.html">BusEngine.Log</a></td>
+                <td>Класс отвечающий за отладку кода. Это консоль движка.</td>
+              </tr>
+              <tr id="BusEngine.Material">
+                <td><i class="fa-solid fa-swatchbook"></i></td>
+                <td><a href="Material.html">BusEngine.Material</a></td>
+                <td>Класс отвечающий за хранение и обработку текстур. Это редактор (настройка) текстур движка.</td>
+              </tr>
+              <tr id="BusEngine.Model">
+                <td><i class="fa-solid fa-cube"></i></td>
+                <td><a href="Model.html">BusEngine.Model</a></td>
+                <td>Класс отвечающий за хранение данных 3D объектов и конвертацию этих данных между форматами хранения. Это редактор 3D моделей движка.</td>
+              </tr>
+              <tr id="BusEngine.Physics">
+                <td><i class="fa-brands fa-grav"></i></td>
+                <td><a href="Physics.html">BusEngine.Physics</a></td>
+                <td>Класс отвечающий за обработку данных по каждому объекту согласно законам физики. Эта система поведения объектов в виртуальном мире движка.</td>
+              </tr>
+              <tr id="BusEngine.Plugin">
+                <td><i class="fa-solid fa-puzzle-piece"></i></td>
+                <td><a href="Plugin.html">BusEngine.Plugin</a></td>
+                <td>Класс отвечающий за проверку наличия сторонних плагинов и запуск их методов в определённые моменты работы движка. Это система плагинов движка.</td>
+              </tr>
+              <tr id="BusEngine.Rendering">
+                <td><i class="fa-solid fa-draw-polygon"></i></td>
+                <td><a href="Rendering.html">BusEngine.Rendering</a></td>
+                <td>Класс отвечающий за обработку (расчёт) математических данных всех объектов для правильной и быстрой их отрисовки в Камеру игрока и выводу на экран. Это построение виртуального мира движка.</td>
+              </tr>
+              <tr id="BusEngine.Tools.Ajax">
+                <td><i class="fa-solid fa-code-compare"></i></td>
+                <td><a href="Tools.Ajax.html">BusEngine.Tools.Ajax</a></td>
+                <td>Класс отвечающий за отправку Web запросов на Web ресурсы в стиле библиотеки Ajax jQuery. Поддерживается отправка запросов GET, POST, PUT.</td>
+              </tr>
+              <tr id="BusEngine.Tools.Json">
+                <td><i class="fa-solid fa-code-compare"></i></td>
+                <td><a href="Tools.Json.html">BusEngine.Tools.Json</a></td>
+                <td>Класс отвечающий за конвертацию object содержащие различные типы данных в строку формата Json и обратно - сериализация и десериализация.</td>
+              </tr>
+              <tr id="BusEngine.UI.Canvas">
+                <td><i class="fa-solid fa-desktop"></i></td>
+                <td><a href="UI.Canvas.html">BusEngine.UI.Canvas</a></td>
+                <td>Класс отвечающий за работу вывода графических объектов на экран. Применяется технология WinForms, WPF, Xamarin.Forms. Это связующий элемент Камеры движка с экраном устройства.</td>
+              </tr>
+              <tr id="BusEngine.Vector">
+                <td><i class="fa-solid fa-vector-square"></i></td>
+                <td><a href="Vector.html">BusEngine.Vector</a></td>
+                <td>Класс отвечающий за возможность манипулировать объектами. Это редактор координат, размеров объектов движка.</td>
+              </tr>
+              <tr id="BusEngine.Video">
+                <td><i class="fa-solid fa-file-video"></i></td>
+                <td><a href="Video.html">BusEngine.Video</a></td>
+                <td>Класс отвечающий за работу с Видео файлами (mp4, wmv, ogv). Это Видео плеер движка.</td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="#top" class="top_link">Наверх</a>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>
