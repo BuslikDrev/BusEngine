@@ -12,6 +12,16 @@ namespace BusEngine.Game {
 		// при запуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("MyPlugin Initialize");
+
+			// =============================================================================
+			//BusEngine.Log.Info("=============================================================================");
+			/* System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly; */
+
+			/* BusEngine.Log.Info("============== ajax запустили");
+			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
+			BusEngine.Log.Info("============== ajax запустили"); */
+			//BusEngine.Log.Info("=============================================================================");
+			// =============================================================================
 		}
 
 		// после загрузки определённого плагина

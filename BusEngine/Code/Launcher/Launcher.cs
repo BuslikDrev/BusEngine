@@ -178,7 +178,13 @@ BusEngine.Browser
 			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 
 			// убираем линии, чтобы окно было полностью на весь экран
-			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+
+			// убираем кнопку развернуть
+			this.MaximizeBox = false;
+
+			// убираем кнопку свернуть
+			//this.MinimizeBox = false;
 
 			// устанавливаем чёрный цвет фона окна
 			this.BackColor = System.Drawing.Color.Black;
