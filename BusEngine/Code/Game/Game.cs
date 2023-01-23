@@ -381,8 +381,8 @@ BusEngine.UI
 			this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 
 			// устанавливаем размеры окна
-			this.Width = 900;
-			this.Height = 540;
+			this.Width = 800;
+			this.Height = 480;
 
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -391,10 +391,10 @@ BusEngine.UI
 			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 
 			// устанавливаем стиль границ окна
-			//this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 
 			// убираем кнопку развернуть
-			//this.MaximizeBox = false;
+			this.MaximizeBox = false;
 
 			// убираем кнопку свернуть
 			//this.MinimizeBox = false;
@@ -422,12 +422,6 @@ BusEngine.UI
 			//this.ShowDialog();
 		}
 
-		//public static void Run(BusEngine.UI.WinForm winform = null) {
-			//if (winform != null) {
-				//_winform = winform;
-			//}
-		//}
-
 		//private const int WM_ACTIVATEAPP = 0x001C;
 		//private bool appActive = true;
 
@@ -439,41 +433,6 @@ BusEngine.UI
 				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.InactiveCaption, 20, 20, 260, 50);
 				e.Graphics.DrawString("Application is Inactive", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20, 20);
 			}
-			
-			e.Graphics.Clear(System.Drawing.Color.Turquoise);
-			// Создаем объекты-кисти для закрашивания фигур
-			System.Drawing.SolidBrush myCorp = new System.Drawing.SolidBrush(System.Drawing.Color.DarkMagenta);
-			System.Drawing.SolidBrush myTrum = new System.Drawing.SolidBrush(System.Drawing.Color.DarkOrchid);
-			System.Drawing.SolidBrush myTrub = new System.Drawing.SolidBrush(System.Drawing.Color.DeepPink);
-			System.Drawing.SolidBrush mySeа = new System.Drawing.SolidBrush(System.Drawing.Color.Blue);
-			//Выбираем перо myPen желтого цвета толщиной в 2 пикселя:
-			System.Drawing.Pen myWind = new System.Drawing.Pen(System.Drawing.Color.Yellow, 2);
-			// Закрашиваем фигуры
-			e.Graphics.FillRectangle(myTrub,300,125,75,75); // 1 труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub,480,125,75,75); // 2 труба (прямоугольник)
-			e.Graphics.FillPolygon(
-				myCorp, 
-				new System.Drawing.Point[] {
-					new System.Drawing.Point(100,300),new System.Drawing.Point(700,300),
-					new System.Drawing.Point(700,300),new System.Drawing.Point(600,400),
-					new System.Drawing.Point(600,400),new System.Drawing.Point(200,400),
-					new System.Drawing.Point(200,400),new System.Drawing.Point(100,300)
-				}
-			); // корпус (трапеция)
-			e.Graphics.FillRectangle(myTrum, 250, 200, 350, 100); // палуба (прямоугольник)
-			// Море - 12 секторов-полуокружностей
-			int xx = 50;
-			int Radius = 50;
-			while (xx <= BusEngine.UI.Canvas.WinForm.Width - Radius) {
-				e.Graphics.FillPie(mySeа, 0 + xx, 375, 50, 50, 0, -180); 
-				xx += 50;
-			}
-			// Иллюминаторы 
-			for (int yy = 300; yy <= 550; yy += 50) {
-				e.Graphics.DrawEllipse(myWind, yy, 240, 20, 20); // 6 окружностей
-			}
-
-			e.Graphics.Dispose();
 		} */
 
 		/* protected override void WndProc(ref System.Windows.Forms.Message m) {

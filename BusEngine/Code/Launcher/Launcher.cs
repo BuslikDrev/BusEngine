@@ -146,8 +146,8 @@ BusEngine.Browser
 			this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 
 			// устанавливаем размеры окна
-			this.Width = 900;
-			this.Height = 540;
+			this.Width = 800;
+			this.Height = 480;
 
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

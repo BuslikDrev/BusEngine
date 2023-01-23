@@ -60,6 +60,27 @@ BusEngine.Browser
 				form.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
 			}
 
+			// устанавливаем размеры окна
+			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] != null) {
+				form.Width = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Width"]);
+			}
+			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] != null) {
+				form.Height = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Height"]);
+			}
+
+			// открываем окно на весь экран
+			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) > 0) {
+				form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			}
+
+			// убираем линии, чтобы окно было полностью на весь экран
+			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -1 || System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == 1) {
+				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			} else if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -2) {
+				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+				form.MaximizeBox = true;
+			}
+
 			// подключаем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.WinForm = form;
 
@@ -115,8 +136,8 @@ BusEngine.Browser
 			this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 
 			// устанавливаем размеры окна
-			this.Width = 900;
-			this.Height = 540;
+			this.Width = 800;
+			this.Height = 480;
 
 			// центрируем окно
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -139,6 +160,13 @@ BusEngine.Browser
 			// устанавливаем событие нажатий клавиш
 			this.KeyPreview = true;
 			//this.KeyDown += OnKeyDown;
+
+			// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.controlstyles?view=netframework-4.6.2#system-windows-forms-controlstyles-userpaint
+			// убираем мерцание и доступна настройка только в этом месте.
+			/* this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.FixedHeight, false);
+			this.SetStyle(System.Windows.Forms.ControlStyles.FixedWidth, false); */
 
 			// устанавливаем событие закрытия окна
 			//this.FormClosed += OnClosed;

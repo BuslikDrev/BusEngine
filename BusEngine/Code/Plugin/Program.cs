@@ -24,13 +24,6 @@ namespace BusEngine.Game {
 			SplashScreen.Close();
 			SplashScreen.Dispose();
 
-			if (BusEngine.Engine.Platform == "WindowsLauncher") {
-				BusEngine.UI.Canvas.WinForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-				BusEngine.UI.Canvas.WinForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-				BusEngine.UI.Canvas.WinForm.Width = 1920;
-				BusEngine.UI.Canvas.WinForm.Height = 1080;
-			}
-
 			// запускаем видео
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
 				BusEngine.Video.Play("Videos/BusEngine.mp4");
