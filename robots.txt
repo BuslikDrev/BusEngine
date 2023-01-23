@@ -1,3 +1,0 @@
-User-agent: *
-Host: https://buslikdrev.github.io/BusEngine/
-Sitemap: https://buslikdrev.github.io/BusEngine/sitemap.xml
