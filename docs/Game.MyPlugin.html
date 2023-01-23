@@ -85,10 +85,10 @@
               <li class="lioff lastfix black"> - в мечтах</li>
               <li class="lioff"><input type="checkbox" id="menu-1"><label for="menu-1" position="2"><a href="index.html#start">НАЧАЛО РАБОТЫ</a></label>
                 <div class="menu-1" position="2">
-                  <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" class="lastfix red" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
-                  <a href="Possibilities.html" class="lastfix red">Возможности движка</a>
-                  <a href="Environment.html" class="lastfix red">Настройка окружения</a>
-                  <a href="Examples.html" class="lastfix red">Готовые примеры</a>
+                  <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" class="lastfix blue" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
+                  <a href="Possibilities.html" class="lastfix blue">Возможности движка</a>
+                  <a href="Environment.html" class="lastfix blue">Настройка окружения</a>
+                  <a href="Examples.html" class="lastfix blue">Готовые примеры</a>
                 </div>
               </li>
               <li class="lioff"><input type="checkbox" id="menu-5" checked="checked"><label for="menu-5" position="2"><a href="index.html#api">API BusEngine</a></label>
@@ -136,8 +136,8 @@
             <a class="n1" href="index.html">Главная</a>
           </div>
           <p>BusEngine.dll</p>
-          <h1>BusEngine.Game.MyPlugin (Class)</h1>
-          <p>Класс отвечающий за работу своего плагина. Название класса "MyPlugin" может быть любым в пространстве имён "BusEngine.Game". Класс "MyPlugin" должен наследоваться от "BusEngine.Plugin". Пространство имён "BusEngine.Game" также может быть любым.</p>
+          <h1>BusEngine.Game.MyPlugin : BusEngine.Plugin (Class)</h1>
+          <p>Класс отвечающий за работу своего плагина. Класс "MyPlugin" должен наследоваться от "BusEngine.Plugin". Название класса "MyPlugin" может быть любым в пространстве имён "BusEngine.Game". Пространство имён "BusEngine.Game" также может быть любым. Плагин подключается в файле настроек проекта "*.busproject" или настроек редактора "busengine.busengine".</p>
           <h2 id="Constants" class="h2">Константы</h2>
           <table>
             <tbody>
@@ -167,47 +167,51 @@
             <tbody>
               <tr id="BusEngine.Plugin.Initialize">
                 <td><a href="#BusEngine.Plugin.Initialize">(void)BusEngine.Plugin.Initialize()</a></td>
-                <td>Метод (виртуальный) уровня класса запускает библиотеку указанную в файле настроек проекта *.busproject или настроек редактора *.busengine во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>".</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>".</td>
               </tr>
               <tr id="BusEngine.Plugin.Initialize_1">
                 <td><a href="#BusEngine.Plugin.Initialize_1">(void)BusEngine.Plugin.Initialize(string)</a></td>
-                <td>Метод (виртуальный) уровня класса запускает библиотеку столько раз, сколько указанно библиотек в файле настроек проекта *.busproject или настрок редактова *.busengine во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>". Первый параметр string строка выводит название файла библиотеки которая сейчас была загружена.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>" столько раз, сколько плагинов подключено. Первый параметр string строка выводит название файла плагина который сейчас был загружен.</td>
+              </tr>
+              <tr id="BusEngine.Plugin.InitializeCanvas">
+                <td><a href="#BusEngine.Plugin.InitializeCanvas">(void)BusEngine.Plugin.InitializeCanvas()</a></td>
+                <td>Метод (переопределяемый) уровня класса запускается во время выполнения "<a href="UI.Canvas.html#BusEngine.UI.Canvas.Initialize" target="_blank">BusEngine.UI.Canvas.Initialize()</a>".</td>
               </tr>
               <tr id="BusEngine.Plugin.Shutdown">
                 <td><a href="#BusEngine.Plugin.Shutdown">(void)BusEngine.Plugin.Shutdown()</a></td>
-                <td>Метод (виртуальный) уровня класса для остановки библиотеки и уничтожения объектов библиотеки для освобождения памяти при остановки BusEngine.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время выполнения остановки BusEngine для уничтожения объектов плагина и освобождения оперативной памяти при остановки BusEngine.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnLevelLoading">
                 <td><a href="#BusEngine.Plugin.OnLevelLoading">(void)BusEngine.Plugin.OnLevelLoading(string)</a></td>
-                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время начала загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас начал загружаться.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время начала загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас начал загружаться.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnLevelLoaded">
                 <td><a href="#BusEngine.Plugin.OnLevelLoaded">(void)BusEngine.Plugin.OnLevelLoaded(string)</a></td>
-                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время завершения загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас окончил загружаться.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время завершения загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас окончил загружаться.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnGameStart">
                 <td><a href="#BusEngine.Plugin.OnGameStart">(void)BusEngine.Plugin.OnGameStart()</a></td>
-                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время начала управления игровым персонажем или начала отсчёта времени игры.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время начала управления игровым персонажем или начала отсчёта времени игры.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnGameStop">
                 <td><a href="#BusEngine.Plugin.OnGameStop">(void)BusEngine.Plugin.OnGameStop()</a></td>
-                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время окончании управления игровым персонажем или окончании отсчёта времени игры.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время окончании управления игровым персонажем или окончании отсчёта времени игры.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnGameUpdate">
                 <td><a href="#BusEngine.Plugin.OnGameUpdate">(void)BusEngine.Plugin.OnGameUpdate()</a></td>
-                <td>Метод (виртуальный) уровня класса для запуска библиотеки при отрисовки каждого кадра.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время отрисовки каждого кадра.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnClientConnectionReceived">
                 <td><a href="#BusEngine.Plugin.OnClientConnectionReceived">(void)BusEngine.Plugin.OnClientConnectionReceived(int)</a></td>
-                <td>Метод (виртуальный) уровня класса для запуска библиотеки во время начала подключения к игровому серверу. Первый параметр int строка выводит числового id игрока кторый начал подключаться к серверу.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время начала подключения к игровому серверу. Первый параметр int строка выводит числовой id игрока который начал подключаться к серверу.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnClientReadyForGameplay">
                 <td><a href="#BusEngine.Plugin.OnClientReadyForGameplay">(void)BusEngine.Plugin.OnClientReadyForGameplay(int)</a></td>
-                <td>Метод (виртуальный) уровня класса для остановки библиотеки во время окончания подключения к игровому серверу. Первый параметр int строка выводит числового id игрока кторый окончил подключаться к серверу.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время окончания подключения к игровому серверу. Первый параметр int строка выводит числовой id игрока который окончил подключаться к серверу.</td>
               </tr>
               <tr id="BusEngine.Plugin.OnClientDisconnected">
                 <td><a href="#BusEngine.Plugin.OnClientDisconnected">(void)BusEngine.Plugin.OnClientDisconnected(int)</a></td>
-                <td>Метод (виртуальный) уровня класса для остановки библиотеки во время окончания игры в игровомм сервере. Первый параметр int строка выводит числового id игрока кторый начал отключаться от сервера.</td>
+                <td>Метод (переопределяемый) уровня класса запускается во время окончания игры в игровом сервере. Первый параметр int строка выводит числовой id игрока который начал отключаться от сервера.</td>
               </tr>
             </tbody>
           </table>
@@ -230,52 +234,56 @@
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Initialize<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin Initialize"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// после загрузки определённого плагина</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Initialize<span class="br0">(</span><span class="kw4">string</span> plugin<span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin Initialize: {0}"</span>, plugin<span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> InitializeCanvas<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin InitializeCanvas"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// перед закрытием BusEngine</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Shutdown<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin Shutdown"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// перед загрузкой игрового уровня</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnLevelLoading<span class="br0">(</span><span class="kw4">string</span> level<span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnLevelLoading: {0}"</span>, level<span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// после загрузки игрового уровня</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnLevelLoaded<span class="br0">(</span><span class="kw4">string</span> level<span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnLevelLoaded: {0}"</span>, level<span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// когда игрок может управлять главным героем - время игры идёт</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnGameStart<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnGameStart"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// когда время остановлено - пауза или закрытие уровня</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnGameStop<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnGameStop"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// вызывается при отрисовки каждого кадра</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnGameUpdate<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnGameUpdate"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// когда игрок начинает подключаться к серверу</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnClientConnectionReceived<span class="br0">(</span><span class="kw4">int</span> channelId<span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnClientConnectionReceived: {0}"</span>, channelId<span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// когда игрок подключился к серверу</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnClientReadyForGameplay<span class="br0">(</span><span class="kw4">int</span> channelId<span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnClientReadyForGameplay: {0}"</span>, channelId<span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;</div></li>
+<li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// когда игрока выкинуло из сервера - обрыв связи с сервером или он отключился сам</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> OnClientDisconnected<span class="br0">(</span><span class="kw4">int</span> channelId<span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin OnClientDisconnected: {0}"</span>, channelId<span class="br0">)</span><span class="sy0">;</span></div></li>
