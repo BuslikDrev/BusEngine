@@ -454,7 +454,7 @@ BusEngine.Tools
 		public static string EditorDirectory;
 		public static string DataDirectory;
 		public static string ToolsDirectory;
-		public static string Platform;
+		public static string Platform = "BusEngine";
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
 		public class Device {
 			public static string Name;
@@ -686,14 +686,14 @@ BusEngine.Tools
 			BusEngine.Engine.SettingEngine = BusEngine.ProjectDefault.Setting2;
 
 			// инициализируем плагины
-			new BusEngine.IPlugin().Initialize();
+			new BusEngine.IPlugin("Initialize");
 		}
 		/** функция запуска API BusEngine */
 
 		/** функция остановки API BusEngine  */
 		public static void Shutdown() {
 			// отключаем плагины
-			new BusEngine.IPlugin().Shutdown();
+			new BusEngine.IPlugin("Shutdown");
 			// закрываем окно консоли
 			BusEngine.Log.ConsoleHide();
 			// закрываем окно BusEngine
@@ -1281,6 +1281,9 @@ namespace BusEngine {
 		// после загрузки определённого плагина
 		public virtual void Initialize(string plugin) {}
 
+		// при запуске BusEngine после создания формы Canvas
+		public virtual void InitializeСanvas() {}
+
 		// перед закрытием BusEngine
 		public virtual void Shutdown() {}
 
@@ -1311,29 +1314,24 @@ namespace BusEngine {
 	/** API BusEngine.Plugin */
 
 	/** API BusEngine.IPlugin */
-	internal class IPlugin : BusEngine.Plugin {
+	internal class IPlugin : System.IDisposable {
 		private static int Count = 0;
-		private static System.Type[] Plugins = new System.Type[BusEngine.Engine.SettingEngine["require"]["plugins"].Count];
 
 		// при запуске BusEngine до создания формы
-		public override void Initialize() {
+		public IPlugin(string stage = "Initialize") {
 			BusEngine.Log.Info("=============================================================================");
-			BusEngine.Log.Info("System Plugins Initialize");
+			BusEngine.Log.Info("System Plugins " + stage);
 
 			int i, i2, i3, ii = BusEngine.Engine.SettingEngine["require"]["plugins"].Count;
+			string s = "";
 
 			for (i = 0; i < ii; ++i) {
 				if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
-					BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
 
 					foreach (System.Type type in plugin.GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
-							//Plugins[Count] = type;
-							Count++;
-							BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_class") + ": {0}", type.FullName);
-
 							// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
 							// чтобы получить public методы без базовых(наследованных от object)
 							/* System.Reflection.MethodInfo method = type.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly, null, type.GetGenericArguments(), null);
@@ -1347,17 +1345,25 @@ namespace BusEngine {
 
 							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
 							foreach (System.Reflection.MethodInfo method in methods) {
-								if (method.Name.ToLower() == "initialize") {
-									BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", method);
+								if (method.Name.ToLower() == stage.ToLower()) {
+									if (s == "") {
+										s = type.FullName;
+										Count++;
+										BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
+										BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_class") + ": {0}", type.FullName);
+										BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", s);
+									}
 									i2 = method.GetParameters().Length;
 									if (i2 == 0) {
 										method.Invoke(System.Activator.CreateInstance(type), null);
 									} else {
-										for (i3 = 0; i3 < ii; ++i3) {
-											if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"] != "" && BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"] != BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]) {
-												object[] x = new object[i2];
-												x[0] = System.IO.Path.GetFileName(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"]);
-												method.Invoke(System.Activator.CreateInstance(type), x);
+										if (method.Name.ToLower() == "initialize") {
+											for (i3 = 0; i3 < ii; ++i3) {
+												if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"]) {
+													object[] x = new object[i2];
+													x[0] = System.IO.Path.GetFileName(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"]);
+													method.Invoke(System.Activator.CreateInstance(type), x);
+												}
 											}
 										}
 									}
@@ -1371,87 +1377,7 @@ namespace BusEngine {
 			BusEngine.Log.Info("=============================================================================");
 		}
 
-		// после загрузки определённого плагина
-		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("System Plugins Initialize " + plugin);
-		}
-
-		// перед закрытием BusEngine
-		public override void Shutdown() {
-			BusEngine.Log.Info("=============================================================================");
-			BusEngine.Log.Info("System Plugins Shutdown");
-
-			int i, i2, ii = BusEngine.Engine.SettingEngine["require"]["plugins"].Count;
-
-			for (i = 0; i < ii; ++i) {
-				if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
-					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
-					BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
-
-					foreach (System.Type type in plugin.GetTypes()) {
-						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
-							Count--;
-							BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_class") + ": {0}", type.FullName);
-
-							System.Reflection.MethodInfo[] methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-							foreach (System.Reflection.MethodInfo method in methods) {
-								if (method.Name.ToLower() == "shutdown") {
-									BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", method);
-									i2 = method.GetParameters().Length;
-									if (i2 == 0) {
-										method.Invoke(System.Activator.CreateInstance(type), null);
-									} else {
-										method.Invoke(System.Activator.CreateInstance(type), new object[i2]);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-			BusEngine.Log.Info("=============================================================================");
-		}
-
-		// перед загрузкой игрового уровня
-		public override void OnLevelLoading(string level) {
-			BusEngine.Log.Info("System Plugins OnLevelLoading");
-		}
-
-		// после загрузки игрового уровня
-		public override void OnLevelLoaded(string level) {
-			BusEngine.Log.Info("System Plugins OnLevelLoaded");
-		}
-
-		// когда игрок может управлять главным героем - время игры идёт
-		public override void OnGameStart() {
-			BusEngine.Log.Info("System Plugins OnGameStart");
-		}
-
-		// когда время остановлено - пауза или закрытие уровня
-		public override void OnGameStop() {
-			BusEngine.Log.Info("System Plugins OnGameStop");
-		}
-
-		// вызывается при отрисовки каждого кадра
-		public override void OnGameUpdate() {
-			BusEngine.Log.Info("System Plugins OnGameUpdate");
-		}
-
-		// когда игрок начинает подключаться к серверу
-		public override void OnClientConnectionReceived(int channelId) {
-			BusEngine.Log.Info("System Plugins OnClientConnectionReceived");
-		}
-
-		// когда игрок подключился к серверу
-		public override void OnClientReadyForGameplay(int channelId) {
-			BusEngine.Log.Info("System Plugins OnClientReadyForGameplay");
-		}
-
-		// когда игрока выкинуло из сервера - обрыв связи с сервером
-		public override void OnClientDisconnected(int channelId) {
-			BusEngine.Log.Info("System Plugins OnClientDisconnected");
-		}
+		public void Dispose() {}
 	}
 	/** API BusEngine.IPlugin */
 }
@@ -1492,7 +1418,7 @@ BusEngine.UI.Canvas
 		/** событие остановки видео */
 
 		/** функция запуска видео */
-		private void VideoForm(string Url = "") {
+		private void VideoForm(string url = "") {
 			// https://www.microsoft.com/en-us/download/details.aspx?id=6812
 			// https://www.nuget.org/packages/Microsoft.DXSDK.D3DX#readme-body-tab
 			// https://learn.microsoft.com/en-us/previous-versions/windows/desktop/bb318762(v=vs.85)
@@ -1525,7 +1451,7 @@ BusEngine.UI.Canvas
 			// https://code.videolan.org/videolan/LibVLCSharp/-/blob/master/samples/LibVLCSharp.WinForms.Sample/Form1.cs
 			// https://github.com/videolan/libvlcsharp#quick-api-overview
 			_VLC = new LibVLCSharp.Shared.LibVLC();
-			LibVLCSharp.Shared.Media media = new LibVLCSharp.Shared.Media(_VLC, Url);
+			LibVLCSharp.Shared.Media media = new LibVLCSharp.Shared.Media(_VLC, url);
 			_VLC_MP = new LibVLCSharp.Shared.MediaPlayer(media);
 			media.Dispose();
 			_VLC_VideoView = new LibVLCSharp.WinForms.VideoView();
@@ -1553,19 +1479,21 @@ BusEngine.UI.Canvas
 			_VLC_VideoView.MediaPlayer.Play();
 		}
 
-		public static Video Play(string Url = "") {
-			BusEngine.Log.Info(Url);
-			if (Url.IndexOf(':') == -1) {
-				Url = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, Url);
+		public static Video Play(string url = "") {
+			BusEngine.Log.Info(url);
+			if (url.IndexOf(':') == -1) {
+				url = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url);
 			}
 
-			if (System.IO.File.Exists(Url)) {
-				BusEngine.Log.Info(Url);
-				if (_video == null) {
+			url = System.IO.Path.GetFullPath(url);
+
+			if (System.IO.File.Exists(url)) {
+				BusEngine.Log.Info(url);
+				if (_video == null && BusEngine.UI.Canvas.WinForm != null) {
 					_video = new Video();
 				}
-				_video.VideoForm(Url);
-				//_video.VideoWpf(Url);
+				_video.VideoForm(url);
+				//_video.VideoWpf(url);
 			}
 
 			return _video;
@@ -1573,7 +1501,7 @@ BusEngine.UI.Canvas
 		/** функция запуска видео */
 
 		public static void Shutdown() {
-			if (_video != null) {
+			if (_video != null && BusEngine.UI.Canvas.WinForm != null) {
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(_VLC_VideoView);
 				_video.Dispose();
 				_video = null;
@@ -2072,20 +2000,12 @@ BusEngine.UI
 			//#endif
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0117:", Target="~T:BusEngine.UI.Canvas")]
 		public static void Initialize() {
 			if (_canvas == null) {
 				_canvas = new Canvas();
-			}
-		}
-
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0117:", Target="~T:BusEngine.UI.Canvas")]
-		public static void Initialize(System.Windows.Forms.Form _form) {
-			if (_canvas == null) {
-				//#pragma error disable//, CS0117
-				if (1 == 2) {
-				//BusEngine.UI.Canvas.WinForm = _form;
-				}
-				_canvas = new Canvas(_form);
+				// инициализируем плагины
+				new BusEngine.IPlugin("InitializeСanvas");
 			}
 		}
 
