@@ -8,6 +8,7 @@
 /* Mono                 https://learn.microsoft.com/ru-ru/xamarin/android/deploy-test/building-apps/abi-specific-apks */
 /* ссылки по Android 
 https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?tabs=windows
+https://learn.microsoft.com/ru-ru/dotnet/csharp/fundamentals/coding-style/coding-conventions
 */
 
 /** дорожная карта
@@ -379,6 +380,62 @@ BusEngine.Log
 
 /** API BusEngine */
 namespace BusEngine {
+	
+/* TValue this[TKey key]
+		{
+			
+			get;
+			
+			set;
+		} */
+	
+	/** API BusEngine.Array */
+	public interface IArray<TKey, TValue> {
+		/* public Array(TKey key, TKey value) {
+			BusEngine.Log.Info("Array {0}");
+		} */
+
+		TValue this[TKey key] {	get; set; }
+		
+		bool ContainsKey(TKey key);
+		
+		void Add(TKey key, TValue value);
+		
+		bool Remove(TKey key);
+		
+		bool TryGetValue(TKey key, out TValue value);
+	}
+
+	/* public class Array<TKey, TValue> : BusEngine.IArray<TKey, TValue>, System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey, TValue>>, System.Collections.IEnumerable, System.Collections.IDictionary, System.Collections.ICollection, System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>, System.Collections.Generic.IReadOnlyCollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>, System.Runtime.Serialization.ISerializable, System.Runtime.Serialization.IDeserializationCallback {
+		public Array() : this(0, null)	{}
+
+		public TValue this[TKey key] {
+			get {return default(TValue);}
+			set {}
+		}
+
+		public Array(BusEngine.IArray<TKey, TValue> dictionary) : this(dictionary, null) {}
+
+		public Array(IArray<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : this((dictionary != null) ? dictionary.Count : 0, comparer) {
+
+		}
+
+		public bool ContainsKey(TKey key) {
+			return false;
+		}
+
+		public void Add(TKey key, TValue value) {}
+
+		public bool Remove(TKey key) {
+			return false;
+		}
+	} */
+	/** API BusEngine.Array */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
 /*
 Зависит от плагинов:
 BusEngine.Core
@@ -388,6 +445,7 @@ BusEngine.Tools
 */
 	/** API BusEngine.Engine */
 	public class Engine {
+		// https://www.manojphadnis.net/need-to-know-general-topics/listkeyvaluepair-vs-dictionary
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingEngine = new System.Collections.Generic.Dictionary<string, dynamic>();
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingProject = new System.Collections.Generic.Dictionary<string, dynamic>();
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
@@ -424,6 +482,27 @@ BusEngine.Tools
 						break;
 				}
 
+				/* switch ((0).GetType().ToString()) {
+					case "Int32":
+						Processor = "x32";
+						break;
+					case "Int64":
+						Processor = "x64";
+						break;
+					case "Int128":
+						Processor = "x128";
+						break;
+					case "Int256":
+						Processor = "x256";
+						break;
+					case "Int512":
+						Processor = "x512";
+						break;
+					default:
+						Processor = "Other";
+						break;
+				} */
+
 				Version = os.Version.Major + "." + os.Version.Minor;
 				Processor = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
 				ProcessorCount = (byte)System.Environment.ProcessorCount;
@@ -455,17 +534,18 @@ BusEngine.Tools
 
 			// определяем устройство
 			new BusEngine.Engine.Device();
-			/* BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Version);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount); */
 
 			// инициализируем язык
 			new BusEngine.Localization().Initialize();
 
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
+
+			/* BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Version);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
+			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount); */
 
 			/* BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
 			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
@@ -542,55 +622,61 @@ BusEngine.Tools
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 			} else {
-				var setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(files[0]));
-				//var setting = BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
+				// улаляем массивы данных по умолчанию т.к. они не нужны
+				BusEngine.ProjectDefault.Setting2["require"]["plugins"].Clear();
 
-				if (setting.ContainsKey("console_commands") && setting["console_commands"] is object && !setting["console_commands"].GetType().IsArray) {
-					foreach (var i in setting["console_commands"]) {
+				// получаем новые данные
+				var setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(files[0]));
+
+				dynamic console_commands;
+
+				if (setting.TryGetValue("console_commands", out console_commands) && console_commands.GetType().GetProperty("Type") != null && !console_commands.GetType().IsArray) {
+					foreach (var i in console_commands) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-							BusEngine.ProjectDefault.Setting2["console_commands"][i.Name] = (string)setting["console_commands"][i.Name];
+							BusEngine.ProjectDefault.Setting2["console_commands"][i.Name] = (string)console_commands[i.Name];
 						}
 					}
 
 					//BusEngine.Log.Info("console_commands {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_commands"]));
 				}
 
-				if (setting.ContainsKey("console_variables") && setting["console_variables"] is object && !setting["console_variables"].GetType().IsArray) {
-					foreach (var i in setting["console_variables"]) {
+				dynamic console_variables;
+
+				if (setting.TryGetValue("console_variables", out console_variables) && console_variables.GetType().GetProperty("Type") != null && !console_variables.GetType().IsArray) {
+					foreach (var i in console_variables) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-							BusEngine.ProjectDefault.Setting2["console_variables"][i.Name] = (string)setting["console_variables"][i.Name];
+							BusEngine.ProjectDefault.Setting2["console_variables"][i.Name] = (string)console_variables[i.Name];
 						}
 					}
 
 					//BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_variables"]));
 				}
 
-				if (setting.ContainsKey("require") && setting["require"].GetType().GetProperty("Type") != null && setting["require"].ContainsKey("plugins") && setting["require"]["plugins"] is object) {
-					BusEngine.ProjectDefault.Setting2["require"]["plugins"].Clear();
-					int i, ii = setting["require"]["plugins"].Count;
+				dynamic require;
+
+				if (setting.TryGetValue("require", out require) && require.GetType().GetProperty("Type") != null && require.ContainsKey("plugins") && require["plugins"].Type.ToString() == "Array") {
+					int i, ii = require["plugins"].Count;
 
 					for (i = 0; i < ii; ++i) {
-						BusEngine.ProjectDefault.Setting2["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>());
-						if (setting["require"]["plugins"][i]["guid"] != null) {
-							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["guid"] = (string)setting["require"]["plugins"][i]["guid"];
-						}
-						if (setting["require"]["plugins"][i]["type"] != null) {
-							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["type"] = (string)setting["require"]["plugins"][i]["type"];
-						}
-						if (setting["require"]["plugins"][i]["path"] != null) {
-							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = (string)setting["require"]["plugins"][i]["path"];
-							if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] + ".dll"))) {
-								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] + ".dll");
-							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]))) {
-								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
-							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]))) {
-								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+						if (require["plugins"][i].ContainsKey("path") && require["plugins"][i]["path"].Type.ToString() == "String" && require["plugins"][i]["path"] != "") {
+							if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"] + ".dll"))) {
+								require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"] + ".dll");
+							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"]))) {
+								require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"]);
+							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + require["plugins"][i]["path"]))) {
+								require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + require["plugins"][i]["path"]);
 							} else {
-								BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] = "";
+								require["plugins"][i]["path"] = "";
 							}
-						}
-						if (setting["require"]["plugins"][i]["platforms"] != null) {
-							BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["platforms"] = setting["require"]["plugins"][i]["platforms"];
+
+							if (require["plugins"][i]["path"] != "") {
+								BusEngine.ProjectDefault.Setting2["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>() {
+									{"path", System.Convert.ToString(require["plugins"][i]["path"])},
+									{"guid", (require["plugins"][i].ContainsKey("guid") && require["plugins"][i]["guid"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["guid"]) : "")},
+									{"type", (require["plugins"][i].ContainsKey("type") && require["plugins"][i]["type"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["type"]) : "")},
+									{"platforms", (require["plugins"][i].ContainsKey("platforms") && require["plugins"][i]["platforms"].Type.ToString() == "Array" ? require["plugins"][i]["platforms"] : new string[] {})}
+								});
+							}
 						}
 					}
 
@@ -602,72 +688,6 @@ BusEngine.Tools
 
 			// инициализируем плагины
 			new BusEngine.IPlugin().Initialize();
-
-			// =============================================================================
-			//BusEngine.Log.Info("=============================================================================");
-			/* System.Reflection.Assembly curAssembly = typeof(BusEngine.Engine).Assembly;
-			BusEngine.Log.Info("The current executing assembly is {0}.", curAssembly);
-
-			System.Reflection.Module[] mods = curAssembly.GetModules();
-			foreach (System.Reflection.Module md in mods) {
-				BusEngine.Log.Info("This assembly contains the {0} module", md.Name);
-			}
-
-			//BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Module);
-			BusEngine.Log.Info("FirstMethod called from: " + System.Reflection.Assembly.GetCallingAssembly().FullName);
-
-			BusEngine.Log.Info("aaaaaaaaaaaaaaaaaa");
-			System.Type myType = System.Type.GetType("BusEngine.Game");
-			BusEngine.Log.Info(myType);
-			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
-			BusEngine.Log.Info("aaaaaaaaaaaaaaaaaa");
-			BusEngine.Log.Info("dddddddddd");
-			BusEngine.Log.Info(System.Reflection.BindingFlags.Public);
-			if (System.Type.GetType("BusEngine.UI.Canvas") != null) {
-				BusEngine.Log.Info("1111111");
-			}
-			BusEngine.Log.Info("dddddddddd");
-			BusEngine.Log.Info("xxxxxxxxxxx");
-			BusEngine.Log.Info(typeof(System.IO.File).Assembly.FullName);
-			BusEngine.Log.Info("xxxxxxxxxxx");
-
-			// проверка https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.assembly.gettypes?view=net-7.0
-			// получаем путь библиотеки по пространству имени
-			BusEngine.Log.Info("gggggggggggggg");
-			System.Reflection.Assembly mainAssemblyd = typeof(BusEngine.Game.Default).Assembly;
-			System.IO.FileStream[] x = mainAssemblyd.GetFiles();
-			foreach (System.IO.FileStream m in x) {
-				BusEngine.Log.Info(m.Name);
-			}
-			BusEngine.Log.Info("gggggggggggggg");
-
-			// "TestReflection" искомое пространство
-			//System.Linq.Where x = System.Linq.Where(t => t.Namespace == "BusEngine.Game").ToArray();
-			System.Type[] typelist = System.Reflection.Assembly.GetEntryAssembly().GetTypes();
-
-			foreach (System.Type type in typelist) {
-				BusEngine.Log.Info("ssssssssssss");
-				BusEngine.Log.Info(type.FullName);
-				BusEngine.Log.Info("ssssssssssss");
-				// создание объекта
-				//object targetObject = System.Activator.CreateInstance(System.Type.GetType(type.FullName));
- 
-				// чтобы получить public методы без базовых(наследованных от object)
-				var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-				foreach (var methodInfo in methods) {
-					BusEngine.Log.Info("ssssssssssss");
-					BusEngine.Log.Info(methodInfo);
-					BusEngine.Log.Info("ssssssssssss");
-					//вызов
-					//methodInfo.Invoke(targetObject, new object[] { });
-				}
-			} */
-
-			/* BusEngine.Log.Info("============== ajax запустили");
-			BusEngine.Tools.Ajax.Test("https://buslikdrev.by/");
-			BusEngine.Log.Info("============== ajax запустили"); */
-			//BusEngine.Log.Info("=============================================================================");
-			// =============================================================================
 		}
 		/** функция запуска API BusEngine */
 
@@ -705,10 +725,11 @@ namespace BusEngine {
 		public delegate void Call();
 		private Call CallbackStart = null;
 		private static System.Collections.Generic.Dictionary<string, string> GetLanguages = new System.Collections.Generic.Dictionary<string, string>();
+		private static string Value = "";
 
 		public static string GetLanguage(string key) {
-			if (GetLanguages.ContainsKey(key)) {
-				return GetLanguages[key];
+			if (GetLanguages.TryGetValue(key, out Value)) {
+				return Value;
 			} else {
 				return key;
 			}
@@ -924,6 +945,16 @@ namespace BusEngine {
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
 		private static extern void SetStdHandle(uint nStdHandle, System.IntPtr handle);
 
+		// функия запуска команды
+		public static void RunCommand(string command, double value = 0) {
+			//ConsoleCommand.RegisterManagedConsoleCommandFunction(string commandName, uint nFlags, string commandHelpText, ManagedConsoleCommandFunctionDelegate consoleCmd Delegate)
+		}
+
+		// функция добавление (регистрации) команды
+		public static void AddCommand(string command, double value = 0, string description = "") {
+			
+		}
+
 		// функция запуска консоли
 		public static void ConsoleShow() {
 			if (BusEngine.Log.StatusConsole == false) {
@@ -1005,114 +1036,150 @@ namespace BusEngine {
 			}
 		} */
 
+		// http://dir.by/developer/csharp/class_template/
+		//public static delegate void String;
+
 		// функция вывода строки в консоль
 		public static void Info() {
 			System.Console.WriteLine();
-			//System.Console.WriteLine("ничего");
 		}
 		public static void Info(System.Type args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("System.Type");
+			System.Console.WriteLine("System.Type");
 		}
 		public static void Info(string args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("string");
+			System.Console.WriteLine("string");
 		}
 		public static void Info(string[] args1) {
 			System.Console.WriteLine(args1.ToString());
-			//System.Console.WriteLine("string[]");
+			System.Console.WriteLine("string[]");
 		}
 		public static void Info(ulong args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("ulong");
+			System.Console.WriteLine("ulong");
 		}
 		public static void Info(uint args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("uint");
+			System.Console.WriteLine("uint");
 		}
 		public static void Info(float args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("float");
+			System.Console.WriteLine("float");
 		}
 		public static void Info(decimal args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("decimal");
+			System.Console.WriteLine("decimal");
 		}
 		public static void Info(long args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("long");
+			System.Console.WriteLine("long");
 		}
 		public static void Info(int args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("int");
+			System.Console.WriteLine("int");
 		}
 		public static void Info(double args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("double");
+			System.Console.WriteLine("double");
 		}
 		public static void Info(byte args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("double");
+			System.Console.WriteLine("double");
 		}
 		public static void Info(char args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("char");
+			System.Console.WriteLine("char");
 		}
 		public static void Info(char[] args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("char[]");
+			System.Console.WriteLine("char[]");
 		}
 		public static void Info(bool args1) {
 			System.Console.WriteLine(args1);
-			//System.Console.WriteLine("bool");
+			System.Console.WriteLine("bool");
 		}
 		public static void Info(object args1) {
 			System.Console.WriteLine(args1.ToString());
-			//System.Console.WriteLine("object");
+			System.Console.WriteLine("object");
 		}
 		public static void Info(object[] args1) {
 			System.Console.WriteLine(args1.ToString());
-			//System.Console.WriteLine("object[]");
+			System.Console.WriteLine("object[]");
 		}
 		public static void Info(string args1, string args2) {
 			System.Console.WriteLine(args1, args2);
-			//System.Console.WriteLine("string string");
+			System.Console.WriteLine("string string");
 		}
 		public static void Info(string args1, object args2) {
 			System.Console.WriteLine(args1, args2);
-			//System.Console.WriteLine("string object");
+			System.Console.WriteLine("string object");
 		}
 		public static void Info(string args1, int args2) {
 			System.Console.WriteLine(args1, args2);
-			//System.Console.WriteLine("string int");
+			System.Console.WriteLine("string int");
 		}
 		public static void Info(string args1, long args2) {
 			System.Console.WriteLine(args1, args2);
-			//System.Console.WriteLine("string long");
+			System.Console.WriteLine("string long");
 		}
-
-/* 		public static void Info(params object[] args) {
-			string args1 = "";
-			dynamic args2 = null;
-
-			if (args[0] != null && args[0].GetType() == typeof(string)) {
-				args1 = System.Convert.ToString(args[0]);
+		
+		/* public static void Info<A>(A a) {
+			System.Console.WriteLine(a);
+		}
+		public static void Info<A, B>(A a, B b) {
+			System.Console.WriteLine(a, b);
+		}
+		public static void Info<A, B, C>(A a, B b, C c) {
+			System.Console.WriteLine(a, b, c);
+		}
+		public static void Info(int arg) {
+			System.Console.WriteLine(arg);
+		}
+		public static void Info(params System.Type[] arg) {
+			System.Console.WriteLine(arg);
+		}
+		public static void Info(params object[] args) {
+			int i, ii = args.Length;
+			for (i = 0; i < ii; ++i) {
+				System.Console.Write(args[i] + " ");
 			}
-
-			if (args[1] != null && args[1].GetType() == typeof(int)) {
-				args2 = System.Convert.ToInt32(args[1]);
+			System.Console.WriteLine();
+		}
+		public static void Info(params int[] args) {
+			int i, ii = args.Length;
+			for (i = 0; i < ii; ++i) {
+				System.Console.Write(args[i] + " ");
 			}
-
-			if (args2 != null) {
-				System.Console.WriteLine(args1, args2);
-			} else {
-				System.Console.WriteLine(args1);
+			System.Console.WriteLine();
+		}
+		public static void Info(params string[] args) {
+			int i, ii = args.Length;
+			for (i = 0; i < ii; ++i) {
+				System.Console.Write(args[i] + " ");
 			}
-			foreach (object o in args) {
-				//if (o.GetType() == typeof(int)) {
-					//System.Console.WriteLine(o);
-				//}
+			System.Console.WriteLine();
+		}
+		public static void Info(string arg, params object[] args) {
+			int i, ii = args.Length;
+			for (i = 0; i < ii; ++i) {
+				System.Console.Write(args[i] + " ");
 			}
+			System.Console.WriteLine();
+		}
+		public static void Info(string arg, params int[] args) {
+			int i, ii = args.Length;
+			for (i = 0; i < ii; ++i) {
+				System.Console.Write(args[i] + " ");
+			}
+			System.Console.WriteLine();
+		}
+		public static void Info(string arg, params string[] args) {
+			int i, ii = args.Length;
+			for (i = 0; i < ii; ++i) {
+				System.Console.Write(args[i] + " ");
+			}
+			System.Console.WriteLine();
 		} */
 
 		public static void Debug() {
@@ -1247,20 +1314,20 @@ namespace BusEngine {
 	/** API BusEngine.IPlugin */
 	internal class IPlugin : BusEngine.Plugin {
 		private static int Count = 0;
-		private static System.Type[] Plugins = new System.Type[BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count];
+		private static System.Type[] Plugins = new System.Type[BusEngine.Engine.SettingEngine["require"]["plugins"].Count];
 
 		// при запуске BusEngine до создания формы
 		public override void Initialize() {
 			BusEngine.Log.Info("=============================================================================");
 			BusEngine.Log.Info("System Plugins Initialize");
 
-			int i, i2, i3, ii = BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count;
+			int i, i2, i3, ii = BusEngine.Engine.SettingEngine["require"]["plugins"].Count;
 
 			for (i = 0; i < ii; ++i) {
-				if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] != "") {
+				if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
-					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
-					BusEngine.Log.Info(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
+					BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
 
 					foreach (System.Type type in plugin.GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
@@ -1315,12 +1382,12 @@ namespace BusEngine {
 			BusEngine.Log.Info("=============================================================================");
 			BusEngine.Log.Info("System Plugins Shutdown");
 
-			int i, i2, ii = BusEngine.ProjectDefault.Setting2["require"]["plugins"].Count;
+			int i, i2, ii = BusEngine.Engine.SettingEngine["require"]["plugins"].Count;
 
 			for (i = 0; i < ii; ++i) {
-				if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"] != "") {
-					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
-					BusEngine.Log.Info(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"]);
+				if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
+					System.Reflection.Assembly plugin = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
+					BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
 
 					foreach (System.Type type in plugin.GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
@@ -1908,7 +1975,7 @@ Newtonsoft.Json
 		// object c#
 		public static object Decode(string t, bool o = true) {
 			try {
-				return Newtonsoft.Json.JsonConvert.DeserializeObject<object>(t);
+				return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
 			} catch (System.Exception e) {
 				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_decode") + ": {0}", e.Message);
 				return new {};
