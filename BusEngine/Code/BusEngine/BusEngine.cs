@@ -805,7 +805,7 @@ namespace BusEngine {
 			// https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
 			platform = BusEngine.Engine.Platform;
 
-			if (platform == "WindowsEditor" || platform == "Windows") {
+			if (platform.IndexOf("Windows") != -1 || 1 == 1) {
 				path = BusEngine.Engine.DataDirectory + "../Localization/";
 				if (!System.IO.Directory.Exists(path)) {
 					path = BusEngine.Engine.DataDirectory + "/Localization/";
@@ -1351,7 +1351,7 @@ namespace BusEngine {
 										Count++;
 										BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
 										BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_class") + ": {0}", type.FullName);
-										BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", s);
+										BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", method.Name);
 									}
 									i2 = method.GetParameters().Length;
 									if (i2 == 0) {
