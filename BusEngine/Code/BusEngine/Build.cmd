@@ -17,7 +17,7 @@ REM Указать путь до dotNET (если он нужен) | Specify the
 SET dotNET="C:\Program Files\dotnet\dotnet.exe"
 
 REM 0=AnyCPU 1=x64 2=x86 3=Android
-SET Platform=2
+SET Platform=0
 
 REM 0=BusEngine 1=Launcher 2=Editor 3=Plugin 4=Server 5=Game 6=GameAndroid
 SET Type=0
