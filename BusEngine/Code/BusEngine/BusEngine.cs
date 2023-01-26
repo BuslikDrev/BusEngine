@@ -6,9 +6,12 @@
 /* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 /* MSBuild 15.0+        https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels?tabs=windows#android-versions */
 /* Mono                 https://learn.microsoft.com/ru-ru/xamarin/android/deploy-test/building-apps/abi-specific-apks */
-/* ссылки по Android 
+/* важные ссылки
+https://metanit.com/sharp/patterns/2.3.php
+https://habr.com/ru/post/125421/
 https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?tabs=windows
 https://learn.microsoft.com/ru-ru/dotnet/csharp/fundamentals/coding-style/coding-conventions
+https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/keywords/event
 */
 
 /** дорожная карта
@@ -18,6 +21,9 @@ https://learn.microsoft.com/ru-ru/dotnet/csharp/fundamentals/coding-style/coding
 - создать: генерацию сцены (карты), камеру, консольные команды, консоль, настройка проекта
 - добавить поддержку форматов .dae https://docs.fileformat.com/ru/3d/dae/, .png, .mtl, .obj
 - написать сборку игры для windows 7+ и Android 5+
+- сделать максимально под ООП (инициализировать через new, чтобы можно было в случае event получить, уничтожить этот же объект, если он не нужен, можно установить статические свойства, методы и события которые выполняют отдельную работу от объекта или имеют постоянные данные) те объекты которые
+можно загружать несколько раз. Если объект можно загрузить 1 раз, то можно static с проверкой на null.
+- сторонние библиотеки обвернуть в исключения try catch - нужно от них ожидать только ошибки.
 */
 
 #define BUSENGINE
@@ -205,43 +211,48 @@ BusEngine.UI.Canvas
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
 		private static CefSharp.WinForms.ChromiumWebBrowser browser;
-		public delegate void PostMessageHandler(object sender, string e);
-		public static event PostMessageHandler PostMessage;
-		//public delegate void LoadHandler(object sender, object e);
-		//public static event LoadHandler Load;
+		public delegate void OnPostMessageHandler(string e);
+		public static event OnPostMessageHandler OnPostMessage;
+		public delegate void OnLoadHandler();
+		public static event OnLoadHandler OnLoad;
+		public Browser() {}
 
 		/** событие клика из браузера */
-		/* private static void OnBrowserClick(object o, object e) {
-			BusEngine.Log.Info("браузер клик тест 1");
-		}
-
-		private static void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
+		/* private static void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
 			//KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
 			//BusEngine.Browser.Dispose();
 			BusEngine.Log.Info("браузер клик тест 2");
-			BusEngine.Engine.Shutdown();
+		}
+
+		private static void OnMouseClick(object o, System.Windows.Forms.MouseEventArgs e) {
+			BusEngine.Log.Info("браузер Mouse клик тест 2");
 		} */
 		/** событие клика из браузера */
 
 		/** все события из PostMessage js браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
-		private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
-			PostMessage.Invoke(sender, (string)e.Message);
+		private static void OnCefPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
+			BusEngine.Log.Info("BusEngine.Browser.{0}", "OnPostMessage");
+			OnPostMessage.Invoke((string)e.Message);
 		}
 		/** все события из PostMessage js браузера */
 
 		/** событие загрузки страницы браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
-		/* private static void OnFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
-			BusEngine.Log.Info("OnFrameLoadEnd {0}", (object)e);
-			//Load.Invoke(sender, e);
-		} */
+		private static void OnCefFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
+			if (e.Frame.IsMain && OnLoad != null) {
+				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnLoad");
+				OnLoad.Invoke();
+			}
+		}
 		/** событие загрузки страницы браузера */
 
 		/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefSharpReplace(object sender, CefSharp.FrameLoadEndEventArgs e) {
-			ExecuteJS("if ('CefSharp' in window) {BusEngine.PostMessage = CefSharp.PostMessage;} else {BusEngine.PostMessage = function(m) {};}");
+			if (e.Frame.IsMain) {
+				ExecuteJS("if ('CefSharp' in window) {BusEngine.PostMessage = CefSharp.PostMessage;} else {BusEngine.PostMessage = function(m) {};}");
+			}
 		}
 		/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
 
@@ -249,9 +260,19 @@ BusEngine.UI.Canvas
 		public static void ExecuteJS(string js = "") {
 			if (browser != null) {
 				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
+			} else {
+				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
 		}
 		/** функция выполнения js кода в браузере */
+
+		/* public static void StaticExecuteJS(Browser browser, string js = "") {
+			if (browser != null) {
+				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
+			} else {
+				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
+			}
+		} */
 
 		private static bool ValidURL(string s, out System.Uri url) {
 			if (!System.Text.RegularExpressions.Regex.IsMatch(s, @"^https?:\/\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) {
@@ -271,92 +292,96 @@ BusEngine.UI.Canvas
 			Initialize(url, BusEngine.Engine.DataDirectory);
 		}
 		public static void Initialize(string url = "", string root = "") {
-			// если ссылка не абсолютный адрес, то делаем его абсолютным
-			System.Uri uriResult;
-			if (ValidURL(url, out uriResult) && url.IndexOf(':') == -1) {
-				if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
-					url = "https://BusEngine/" + url;
-				} else {
-					url = null;
-				}
-			}
-
-			if (System.IO.Directory.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root))) {
-				root = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root);
+			if (browser != null) {
+				BusEngine.Log.Info("Ошибка! {0}", "Браузер уже запущен!");
 			} else {
-				root = BusEngine.Engine.DataDirectory;
-			}
-
-			//CefSharp.BrowserSubprocess.SelfHost.Main(args);
-
-			// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
-			CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
-
-			// включаем поддержку экранов с высоким разрешением
-			CefSharp.Cef.EnableHighDPISupport();
-
-			// устанавливаем свой юзер агент
-			settings.UserAgent = BusEngine.Engine.Device.UserAgent;
-
-			// отключаем создание файла лога
-			settings.LogSeverity = CefSharp.LogSeverity.Disable;
-
-			/* if (setting.GetType().GetField("root") == null) {
-				setting.root = BusEngine.Engine.DataDirectory;
-			} */
-
-			// https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
-			// регистрируем свою схему
-			settings.RegisterScheme(new CefSharp.CefCustomScheme {
-				SchemeName = "https",
-				DomainName = "BusEngine",
-				SchemeHandlerFactory = new CefSharp.SchemeHandler.FolderSchemeHandlerFactory (
-					rootFolder: root,
-					hostName: "BusEngine",
-					defaultPage: "index.html"
-				)
-			});
-
-			// применяем наши настройки до запуска браузера
-			CefSharp.Cef.Initialize(settings);
-
-			// запускаем браузер
-			browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
-
-			if (url != null && !ValidURL(url, out uriResult)) {
-				CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
-			} else if (url == null) {
-				if (BusEngine.Localization.GetLanguage("error_browser_url") != "error_browser_url") {
-					url = "<meta charset=\"UTF-8\"><b>" + BusEngine.Localization.GetLanguage("error_browser_url") + "</b>";
-				} else {
-					url = "<meta charset=\"UTF-8\"><b>ПРАВЕРЦЕ ШЛЯХ ДА ФАЙЛУ!</b>";
+				// если ссылка не абсолютный адрес, то делаем его абсолютным
+				System.Uri uriResult;
+				if (ValidURL(url, out uriResult) && url.IndexOf(':') == -1) {
+					if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
+						url = "https://BusEngine/" + url;
+					} else {
+						url = null;
+					}
 				}
 
-				CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
+				if (System.IO.Directory.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root))) {
+					root = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, root);
+				} else {
+					root = BusEngine.Engine.DataDirectory;
+				}
+
+				//CefSharp.BrowserSubprocess.SelfHost.Main(args);
+
+				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
+				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
+
+				// включаем поддержку экранов с высоким разрешением
+				CefSharp.Cef.EnableHighDPISupport();
+
+				// устанавливаем свой юзер агент
+				settings.UserAgent = BusEngine.Engine.Device.UserAgent;
+
+				// отключаем создание файла лога
+				settings.LogSeverity = CefSharp.LogSeverity.Disable;
+
+				// https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
+				// регистрируем свою схему
+				settings.RegisterScheme(new CefSharp.CefCustomScheme {
+					SchemeName = "https",
+					DomainName = "BusEngine",
+					SchemeHandlerFactory = new CefSharp.SchemeHandler.FolderSchemeHandlerFactory (
+						rootFolder: root,
+						hostName: "BusEngine",
+						defaultPage: "index.html"
+					)
+				});
+
+				// применяем наши настройки до запуска браузера
+				CefSharp.Cef.Initialize(settings);
+
+				// запускаем браузер
+				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
+
+				if (url != null && !ValidURL(url, out uriResult)) {
+					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
+				} else if (url == null) {
+					if (BusEngine.Localization.GetLanguage("error_browser_url") != "error_browser_url") {
+						url = "<meta charset=\"UTF-8\"><b>" + BusEngine.Localization.GetLanguage("error_browser_url") + "</b>";
+					} else {
+						url = "<meta charset=\"UTF-8\"><b>ПРАВЕРЦЕ ШЛЯХ ДА ФАЙЛУ!</b>";
+					}
+
+					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
+				}
+
+				// просто подключаем левое событие - можно удалить, оно не работает =) только через PostMessage
+				/* browser.KeyDown += OnKeyDown;
+				browser.MouseClick += OnMouseClick; */
+
+				// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
+				// подключаем событие сообщения из javascript
+				browser.JavascriptMessageReceived += OnCefPostMessage;
+				// подключаем событие загрузки страницы
+				browser.FrameLoadEnd += OnCefSharpReplace;
+				browser.FrameLoadEnd += OnCefFrameLoadEnd;
+
+				// устанавливаем размер окана браузера, как в нашей программе
+				//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
+				//browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
+
+				// подключаем браузер к нашей программе
+				BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
 			}
-
-			// просто подключаем левое событие - можно удалить
-			//browser.KeyDown += BusEngine.Browser.OnKeyDown;
-
-			// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
-			// подключаем событие сообщения из javascript
-			browser.JavascriptMessageReceived += OnPostMessage;
-			// подключаем событие загрузски страницы
-			browser.FrameLoadEnd += OnCefSharpReplace;
-			//browser.FrameLoadEnd += OnFrameLoadEnd;
-
-			// устанавливаем размер окана браузера, как в нашей программе
-			//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
-			//browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
-
-			// подключаем браузер к нашей программе
-			BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
 		}
 		/** функция запуска браузера */
 
-		public static void Shutdown() {}
+		public static void Shutdown() {
+			// одключаем браузер от нашей программы
+			BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
+		}
 
-		public void Dispose() {}
+		public void Dispose() {browser = null;}
 	}
 	/** API BusEngine.Browser */
 }
@@ -721,10 +746,13 @@ namespace BusEngine {
 		//[Tooltip("Replace Resources.load with Bundle.load?")]
 		private bool BundleStatus = false;
 
+		public delegate void LoadHandler(Localization sender, string e);
+		public static event LoadHandler OnLoad;
 		public delegate void Call();
 		private Call CallbackStart = null;
 		private static System.Collections.Generic.Dictionary<string, string> GetLanguages = new System.Collections.Generic.Dictionary<string, string>();
 		private static string Value = "";
+		private Localization _Localization;
 
 		public static string GetLanguage(string key) {
 			if (GetLanguages.TryGetValue(key, out Value)) {
@@ -735,7 +763,7 @@ namespace BusEngine {
 		}
 
 		/* public Localization() {
-			language = language;
+			_Localization = this;
 		} */
 
 		public static void SetLanguage(string key, string value) {
@@ -746,6 +774,18 @@ namespace BusEngine {
 				GetLanguages.Remove(key);
 			}
 			GetLanguages.Add(key, value); */
+		}
+
+		public string Get(string key) {
+			if (GetLanguages.TryGetValue(key, out Value)) {
+				return Value;
+			} else {
+				return key;
+			}
+		}
+
+		public void Set(string key, string value) {
+			GetLanguages[key] = value;
 		}
 
 		public static bool CallBack(Call callback = null) {
@@ -760,11 +800,13 @@ namespace BusEngine {
 			if (Language == null || Language == "") {
 				Language = LanguageDefault.ToString();
 			}
+			//OnLoad.Invoke(this, Language);
 			StartLocalization(Language);
 		}
 
 		public void Load(string Language = null) {
 			StartLocalization(Language);
+			OnLoad.Invoke(this, Language);
 		}
 
 		public void ReLoad() {
@@ -879,10 +921,7 @@ namespace BusEngine {
 				}
 			}
 
-			GetLanguages["text_debug"] = "" + path + Language + File + "." + Format + "";
-
 			if (files != "") {
-				GetLanguages["text_debug"] = files;
 				string[] lines, pairs;
 				int i, ii;
 
@@ -1403,17 +1442,24 @@ BusEngine.UI.Canvas
 				//_form = new System.Windows.Forms.Form();
 			} */
 		}
-		private static Video _video;
 
-		private static LibVLCSharp.Shared.LibVLC _VLC;
-		private static LibVLCSharp.Shared.MediaPlayer _VLC_MP;
-		private static LibVLCSharp.WinForms.VideoView _VLC_VideoView;
+		private LibVLCSharp.Shared.LibVLC _VLC;
+		private LibVLCSharp.Shared.MediaPlayer _VLC_MP;
+		private LibVLCSharp.WinForms.VideoView _VLC_VideoView;
 		/** видео */
 
 		/** событие остановки видео */
-		public static void onVideoStop(object o, object e) {
-			BusEngine.Log.Info("Видео остановилось onVideoStop");
-			BusEngine.Video.Shutdown();
+		public void onVideoStop(object o, object e) {
+			BusEngine.Log.Info("Видео остановилось onVideoStop {0}", o.GetType());
+			if (this._VLC_VideoView != null) {
+				BusEngine.UI.Canvas.WinForm.Controls.Remove(this._VLC_VideoView);
+				this._VLC_VideoView.MediaPlayer.Dispose();
+				this._VLC_VideoView.MediaPlayer.Stopped -= this.onVideoStop;
+				this._VLC_VideoView.MediaPlayer = null;
+				this._VLC_VideoView = null;
+				this.Dispose();
+			}
+			
 		}
 		/** событие остановки видео */
 
@@ -1450,36 +1496,36 @@ BusEngine.UI.Canvas
 
 			// https://code.videolan.org/videolan/LibVLCSharp/-/blob/master/samples/LibVLCSharp.WinForms.Sample/Form1.cs
 			// https://github.com/videolan/libvlcsharp#quick-api-overview
-			_VLC = new LibVLCSharp.Shared.LibVLC();
-			LibVLCSharp.Shared.Media media = new LibVLCSharp.Shared.Media(_VLC, url);
-			_VLC_MP = new LibVLCSharp.Shared.MediaPlayer(media);
+			this._VLC = new LibVLCSharp.Shared.LibVLC();
+			LibVLCSharp.Shared.Media media = new LibVLCSharp.Shared.Media(this._VLC, url);
+			this._VLC_MP = new LibVLCSharp.Shared.MediaPlayer(media);
 			media.Dispose();
-			_VLC_VideoView = new LibVLCSharp.WinForms.VideoView();
-			_VLC_VideoView.MediaPlayer = _VLC_MP;
-			((System.ComponentModel.ISupportInitialize)(_VLC_VideoView)).BeginInit();
+			this._VLC_VideoView = new LibVLCSharp.WinForms.VideoView();
+			this._VLC_VideoView.MediaPlayer = _VLC_MP;
+			((System.ComponentModel.ISupportInitialize)(this._VLC_VideoView)).BeginInit();
 			//SuspendLayout();
-			_VLC_VideoView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-			_VLC_VideoView.BackColor = System.Drawing.Color.Black;
-			//_VLC_VideoView.TabIndex = 1;
-			//_VLC_VideoView.MediaPlayer = null;
-			//_VLC_VideoView.Name = "VideoView";
-			//_VLC_VideoView.Text = "VideoView";
-			//_VLC_VideoView.Location = new System.Drawing.Point(0, 27);
-			//_VLC_VideoView.Size = new System.Drawing.Size(800, 444);
-			_VLC_VideoView.MediaPlayer.EnableKeyInput = true;
+			this._VLC_VideoView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+			this._VLC_VideoView.BackColor = System.Drawing.Color.Black;
+			//this._VLC_VideoView.TabIndex = 1;
+			//this._VLC_VideoView.MediaPlayer = null;
+			//this._VLC_VideoView.Name = "VideoView";
+			//this._VLC_VideoView.Text = "VideoView";
+			//this._VLC_VideoView.Location = new System.Drawing.Point(0, 27);
+			//this._VLC_VideoView.Size = new System.Drawing.Size(800, 444);
+			this._VLC_VideoView.MediaPlayer.EnableKeyInput = true;
 			// установить массив функций в дополнительных библиотеках
-			_VLC_VideoView.MediaPlayer.Stopped += BusEngine.Video.onVideoStop;
-			//_VLC_VideoView.MediaPlayer.Stop += videoStop;
+			this._VLC_VideoView.MediaPlayer.Stopped += this.onVideoStop;
+			//this._VLC_VideoView.MediaPlayer.Stop += videoStop;
 			// проверяем существование поля
 			// https://learn.microsoft.com/ru-ru/dotnet/api/system.type.getfield?view=netframework-4.8
 			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
 				_VLC_VideoView.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
-				BusEngine.UI.Canvas.WinForm.Controls.Add(_VLC_VideoView);
+				BusEngine.UI.Canvas.WinForm.Controls.Add(this._VLC_VideoView);
 			}
-			_VLC_VideoView.MediaPlayer.Play();
+			this._VLC_VideoView.MediaPlayer.Play();
 		}
 
-		public static Video Play(string url = "") {
+		public Video Play(string url = "") {
 			BusEngine.Log.Info(url);
 			if (url.IndexOf(':') == -1) {
 				url = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url);
@@ -1489,39 +1535,49 @@ BusEngine.UI.Canvas
 
 			if (System.IO.File.Exists(url)) {
 				BusEngine.Log.Info(url);
-				if (_video == null && BusEngine.UI.Canvas.WinForm != null) {
-					_video = new Video();
-				}
-				_video.VideoForm(url);
-				//_video.VideoWpf(url);
+				this.VideoForm(url);
+				//this.VideoWpf(url);
 			}
 
-			return _video;
+			return this;
 		}
 		/** функция запуска видео */
 
-		public static void Shutdown() {
-			if (_video != null && BusEngine.UI.Canvas.WinForm != null) {
-				BusEngine.UI.Canvas.WinForm.Controls.Remove(_VLC_VideoView);
-				_video.Dispose();
-				_video = null;
-				BusEngine.Log.Info("Видео остановилось Shutdown");
+		public void Stop() {
+			BusEngine.Log.Info("Видео остановилось Stop");
+			if (this._VLC_VideoView != null) {
+				this._VLC_VideoView.MediaPlayer.Stopped -= this.onVideoStop;
+				this._VLC_VideoView.MediaPlayer.Stop();
 			}
+			if (this._VLC_MP != null) {
+				this._VLC_MP.Stop();
+			}
+			this.Dispose();
 		}
 
+		/* public void Shutdown() {
+			BusEngine.Log.Info("Видео остановилось Shutdown");
+			this.Dispose();
+		} */
+
 		public void Dispose() {
-			//BusEngine.Log.ConsoleHide();
-			if (_VLC_VideoView != null) {
-				_VLC_VideoView.MediaPlayer.Dispose();
-				_VLC_VideoView = null;
-			}
-			if (_VLC_MP != null) {
-				_VLC_MP.Dispose();
-			}
-			if (_VLC != null) {
-				_VLC.Dispose();
-			}
-			BusEngine.Log.Info("Видео остановилось Dispose");
+
+				if (this._VLC_VideoView != null && BusEngine.UI.Canvas.WinForm != null) {
+					BusEngine.UI.Canvas.WinForm.Controls.Remove(this._VLC_VideoView);
+					this._VLC_VideoView.MediaPlayer.Dispose();
+					this._VLC_VideoView.MediaPlayer = null;
+					this._VLC_VideoView = null;
+				}
+				if (this._VLC_MP != null) {
+					this._VLC_MP.Dispose();
+					this._VLC_MP = null;
+				}
+				if (this._VLC != null) {
+					this._VLC.Dispose();
+					this._VLC = null;
+				}
+				BusEngine.Log.Info("Видео остановилось Dispose");
+
 		}
 	}
 	/** API BusEngine.Video */
@@ -1925,37 +1981,12 @@ BusEngine.UI
 */
 	/** API BusEngine.UI.Canvas */
 	public class Canvas : System.IDisposable {
-		#if (BUSENGINE_WINFORM == true)
+		#if BUSENGINE_WINFORMS
 		public static System.Windows.Forms.Form WinForm;
 		#else
-		public static System.Windows.Forms.Form WinForm;
+		public static System.Windows.Forms.Form WPF;
 		//public static BusEngine.UI.Canvas Canvas;
 		#endif
-
-		/** событие нажатия любой кнопки */
-		// https://learn.microsoft.com/en-us/dotnet/api/system.consolekey?view=netframework-4.8
-		private void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
-			BusEngine.Log.Info("клавиатура клик");
-			BusEngine.Log.Info();
-			// Выключаем движок по нажатию на Esc
-			if (e.KeyCode == System.Windows.Forms.Keys.Escape) {
-				#if (BUSENGINE_WINFORM == true)
-				BusEngine.UI.Canvas.WinForm.KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
-				#endif
-				//Dispose();
-				BusEngine.Engine.Shutdown();
-			}
-			// Вкл\Выкл консоль движка по нажатию на ~
-			if (e.KeyCode == System.Windows.Forms.Keys.Oem3) {
-				BusEngine.Log.ConsoleToggle();
-				System.Console.WriteLine("Консоль BusEngine");
-			}
-			// Выкл Видео
-			if (e.KeyCode == System.Windows.Forms.Keys.Space) {
-				BusEngine.Video.Shutdown();
-			}
-		}
-		/** событие нажатия любой кнопки */
 
 		/** событие уничтожения окна */
 		private void OnDisposed(object o, System.EventArgs e) {
@@ -1971,12 +2002,11 @@ BusEngine.UI
 		}
 		/** событие закрытия окна */
 
-		public static Canvas _canvas;
+		private static Canvas _canvas;
 
 		public Canvas() {
 			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
 				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
-				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
 				// устанавливаем событи закрытия окна
 				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
 				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
@@ -1991,7 +2021,6 @@ BusEngine.UI
 					BusEngine.UI.Canvas.WinForm = _form;
 				}
 				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
-				BusEngine.UI.Canvas.WinForm.KeyDown += OnKeyDown;
 				// устанавливаем событи закрытия окна
 				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
 				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
