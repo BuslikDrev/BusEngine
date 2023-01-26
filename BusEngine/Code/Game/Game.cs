@@ -167,6 +167,8 @@ BusEngine.UI
 		}
 
 		/** функция запуска приложения */
+		// https://www.cyberforum.ru/cmd-bat/thread940960.html
+		// https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.start?view=net-7.0
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			/** моя мечта

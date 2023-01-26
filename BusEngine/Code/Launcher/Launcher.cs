@@ -16,8 +16,6 @@
  последние плагины index.php?route=api/busengine/product&order=DESC&limit=4&type=["plugin"])
 */
 
-#define BUSENGINE_WINFORMS
-#define BUSENGINE_WINDOWS
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -102,6 +100,8 @@ BusEngine.Browser
 		}
 
 		/** функция запуска приложения */
+		// https://www.cyberforum.ru/cmd-bat/thread940960.html
+		// https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.start?view=net-7.0
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			// проверяем целостность библиотек движка

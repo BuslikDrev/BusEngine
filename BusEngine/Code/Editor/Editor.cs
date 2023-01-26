@@ -20,7 +20,7 @@ BusEngine.Engine
 BusEngine.UI
 BusEngine.Browser
 */
-	internal class Start {
+	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
 		private static void Run() {
 			// инициализируем API BusEngine
@@ -92,6 +92,8 @@ BusEngine.Browser
 		}
 
 		/** функция запуска приложения */
+		// https://www.cyberforum.ru/cmd-bat/thread940960.html
+		// https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.start?view=net-7.0
 		//[System.STAThread] // если однопоточное приложение
 		private static void Main(string[] args) {
 			// проверяем целостность библиотек движка
