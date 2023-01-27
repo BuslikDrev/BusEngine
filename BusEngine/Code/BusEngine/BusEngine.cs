@@ -212,9 +212,9 @@ BusEngine.UI.Canvas
 	public class Browser : System.IDisposable {
 		private static CefSharp.WinForms.ChromiumWebBrowser browser;
 		public delegate void OnPostMessageHandler(string e);
-		public static event OnPostMessageHandler OnPostMessage;
+		public static event OnPostMessageHandler SOnPostMessage;
 		public delegate void OnLoadHandler();
-		public static event OnLoadHandler OnLoad;
+		public static event OnLoadHandler SOnLoad;
 		public Browser() {}
 
 		/** событие клика из браузера */
@@ -232,17 +232,19 @@ BusEngine.UI.Canvas
 		/** все события из PostMessage js браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
-			BusEngine.Log.Info("BusEngine.Browser.{0}", "OnPostMessage");
-			OnPostMessage.Invoke((string)e.Message);
+			if (SOnPostMessage != null) {
+				BusEngine.Log.Info("BusEngine.Browser.{0}", "SOnPostMessage");
+				SOnPostMessage.Invoke((string)e.Message);
+			}
 		}
 		/** все события из PostMessage js браузера */
 
 		/** событие загрузки страницы браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
-			if (e.Frame.IsMain && OnLoad != null) {
-				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnLoad");
-				OnLoad.Invoke();
+			if (e.Frame.IsMain && SOnLoad != null) {
+				BusEngine.Log.Info("BusEngine.Browser.{0}", "SOnLoad");
+				SOnLoad.Invoke();
 			}
 		}
 		/** событие загрузки страницы браузера */
@@ -251,13 +253,13 @@ BusEngine.UI.Canvas
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefSharpReplace(object sender, CefSharp.FrameLoadEndEventArgs e) {
 			if (e.Frame.IsMain) {
-				ExecuteJS("if ('CefSharp' in window) {BusEngine.PostMessage = CefSharp.PostMessage;} else {BusEngine.PostMessage = function(m) {};}");
+				SExecuteJS("if ('CefSharp' in window) {BusEngine.PostMessage = CefSharp.PostMessage;} else {BusEngine.PostMessage = function(m) {};}");
 			}
 		}
 		/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
 
 		/** функция выполнения js кода в браузере */
-		public static void ExecuteJS(string js = "") {
+		public static void SExecuteJS(string js = "") {
 			if (browser != null) {
 				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
 			} else {
@@ -274,7 +276,7 @@ BusEngine.UI.Canvas
 			}
 		} */
 
-		private static bool ValidURL(string s, out System.Uri url) {
+		private static bool SValidURL(string s, out System.Uri url) {
 			if (!System.Text.RegularExpressions.Regex.IsMatch(s, @"^https?:\/\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) {
 				s = "http://" + s;
 			}
@@ -297,7 +299,7 @@ BusEngine.UI.Canvas
 			} else {
 				// если ссылка не абсолютный адрес, то делаем его абсолютным
 				System.Uri uriResult;
-				if (ValidURL(url, out uriResult) && url.IndexOf(':') == -1) {
+				if (SValidURL(url, out uriResult) && url.IndexOf(':') == -1) {
 					if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
 						url = "https://BusEngine/" + url;
 					} else {
@@ -343,11 +345,11 @@ BusEngine.UI.Canvas
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
 
-				if (url != null && !ValidURL(url, out uriResult)) {
+				if (url != null && !SValidURL(url, out uriResult)) {
 					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
 				} else if (url == null) {
-					if (BusEngine.Localization.GetLanguage("error_browser_url") != "error_browser_url") {
-						url = "<meta charset=\"UTF-8\"><b>" + BusEngine.Localization.GetLanguage("error_browser_url") + "</b>";
+					if (BusEngine.Localization.SGetLanguage("error_browser_url") != "error_browser_url") {
+						url = "<meta charset=\"UTF-8\"><b>" + BusEngine.Localization.SGetLanguage("error_browser_url") + "</b>";
 					} else {
 						url = "<meta charset=\"UTF-8\"><b>ПРАВЕРЦЕ ШЛЯХ ДА ФАЙЛУ!</b>";
 					}
@@ -746,15 +748,16 @@ namespace BusEngine {
 		//[Tooltip("Replace Resources.load with Bundle.load?")]
 		private bool BundleStatus = false;
 
-		public delegate void LoadHandler(Localization sender, string e);
-		public static event LoadHandler OnLoad;
+		public delegate void LocalizationHandler(Localization sender, string language);
+		public event LocalizationHandler OnLoad;
+		public static event LocalizationHandler SOnLoad;
 		public delegate void Call();
 		private Call CallbackStart = null;
 		private static System.Collections.Generic.Dictionary<string, string> GetLanguages = new System.Collections.Generic.Dictionary<string, string>();
 		private static string Value = "";
 		private Localization _Localization;
 
-		public static string GetLanguage(string key) {
+		public static string SGetLanguage(string key) {
 			if (GetLanguages.TryGetValue(key, out Value)) {
 				return Value;
 			} else {
@@ -766,7 +769,7 @@ namespace BusEngine {
 			_Localization = this;
 		} */
 
-		public static void SetLanguage(string key, string value) {
+		public static void SSetLanguage(string key, string value) {
 			// C# 6.0+
 			GetLanguages[key] = value;
 			// C# 4.0+
@@ -776,7 +779,7 @@ namespace BusEngine {
 			GetLanguages.Add(key, value); */
 		}
 
-		public string Get(string key) {
+		public string GetLanguage(string key) {
 			if (GetLanguages.TryGetValue(key, out Value)) {
 				return Value;
 			} else {
@@ -784,7 +787,7 @@ namespace BusEngine {
 			}
 		}
 
-		public void Set(string key, string value) {
+		public void SetLanguage(string key, string value) {
 			GetLanguages[key] = value;
 		}
 
@@ -800,13 +803,23 @@ namespace BusEngine {
 			if (Language == null || Language == "") {
 				Language = LanguageDefault.ToString();
 			}
-			//OnLoad.Invoke(this, Language);
 			StartLocalization(Language);
+			if (OnLoad != null) {
+				OnLoad.Invoke(this, Language);
+			}
+			if (SOnLoad != null) {
+				SOnLoad.Invoke(this, Language);
+			}
 		}
 
 		public void Load(string Language = null) {
 			StartLocalization(Language);
-			OnLoad.Invoke(this, Language);
+			if (OnLoad != null) {
+				OnLoad.Invoke(this, Language);
+			}
+			if (SOnLoad != null) {
+				SOnLoad.Invoke(this, Language);
+			}
 		}
 
 		public void ReLoad() {
@@ -1001,11 +1014,11 @@ namespace BusEngine {
 				BusEngine.Log.AttachConsole(-1);
 				BusEngine.Log.AllocConsole();
 				BusEngine.Log.StatusConsole = true;
-				System.Console.Title = BusEngine.Localization.GetLanguage("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+				System.Console.Title = BusEngine.Localization.SGetLanguage("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
 				//System.Console.Clear();
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_console"));
+				BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("text_name_console"));
 				while (true) {
 					break;
 					//if (System.Console.ReadKey(true).Key == System.ConsoleKey.Enter) {
@@ -1389,8 +1402,8 @@ namespace BusEngine {
 										s = type.FullName;
 										Count++;
 										BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
-										BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_class") + ": {0}", type.FullName);
-										BusEngine.Log.Info(BusEngine.Localization.GetLanguage("text_name_method") + ": {0}", method.Name);
+										BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("text_name_class") + ": {0}", type.FullName);
+										BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("text_name_method") + ": {0}", method.Name);
 									}
 									i2 = method.GetParameters().Length;
 									if (i2 == 0) {
@@ -1431,37 +1444,32 @@ BusEngine.UI.Canvas
 	/** API BusEngine.Video */
 	public class Video : System.IDisposable {
 		/** видео */
-		public Video(string Url = "") {
-			/* System.Type myType = System.Type.GetType("MyNamespace.MyClass");
-			System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
-
-			if (_form == null) {
-				if (System.Type.GetType("MyNamespace.MyClass") != null) {
-					
-				}
-				//_form = new System.Windows.Forms.Form();
-			} */
-		}
-
 		private LibVLCSharp.Shared.LibVLC _VLC;
 		private LibVLCSharp.Shared.MediaPlayer _VLC_MP;
 		private LibVLCSharp.WinForms.VideoView _VLC_VideoView;
 		/** видео */
 
-		/** событие остановки видео */
-		public void onVideoStop(object o, object e) {
-			BusEngine.Log.Info("Видео остановилось onVideoStop {0}", o.GetType());
-			if (this._VLC_VideoView != null) {
-				BusEngine.UI.Canvas.WinForm.Controls.Remove(this._VLC_VideoView);
-				this._VLC_VideoView.MediaPlayer.Dispose();
-				this._VLC_VideoView.MediaPlayer.Stopped -= this.onVideoStop;
-				this._VLC_VideoView.MediaPlayer = null;
-				this._VLC_VideoView = null;
-				this.Dispose();
-			}
-			
+		public delegate void VideoHandler(Video sender, string url);
+		public event VideoHandler OnPlay;
+		public event VideoHandler OnStop;
+		public event VideoHandler OnPause;
+		public event VideoHandler OnLooped;
+		public event VideoHandler OnNotFound;
+		public event VideoHandler OnDispose;
+
+		public string Url = "";
+		public bool Loop = false;
+		public byte Volume = 100;
+
+		public Video() {}
+		public Video(string url = "") {
+			this.Url = url;
 		}
-		/** событие остановки видео */
+		public Video(string[] urls) {
+			if (urls != null) {
+
+			}
+		}
 
 		/** функция запуска видео */
 		private void VideoForm(string url = "") {
@@ -1514,7 +1522,7 @@ BusEngine.UI.Canvas
 			//this._VLC_VideoView.Size = new System.Drawing.Size(800, 444);
 			this._VLC_VideoView.MediaPlayer.EnableKeyInput = true;
 			// установить массив функций в дополнительных библиотеках
-			this._VLC_VideoView.MediaPlayer.Stopped += this.onVideoStop;
+			this._VLC_VideoView.MediaPlayer.Stopped += this.OnVideoStop;
 			//this._VLC_VideoView.MediaPlayer.Stop += videoStop;
 			// проверяем существование поля
 			// https://learn.microsoft.com/ru-ru/dotnet/api/system.type.getfield?view=netframework-4.8
@@ -1522,10 +1530,18 @@ BusEngine.UI.Canvas
 				_VLC_VideoView.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
 				BusEngine.UI.Canvas.WinForm.Controls.Add(this._VLC_VideoView);
 			}
+			//this._VLC_VideoView.MediaPlayer.WatchTimeOnUpdate += WatchTimeOnUpdate;
+			this._VLC_VideoView.MediaPlayer.Volume = this.Volume; // 0 - 100
 			this._VLC_VideoView.MediaPlayer.Play();
+			BusEngine.Log.Info("ВРЕМЯ {0}", this._VLC_VideoView.MediaPlayer.Time);
+			
 		}
 
+		public Video Play() {
+			return this.Play(Url);
+		}
 		public Video Play(string url = "") {
+			this.Url = url;
 			BusEngine.Log.Info(url);
 			if (url.IndexOf(':') == -1) {
 				url = System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url);
@@ -1537,48 +1553,95 @@ BusEngine.UI.Canvas
 				BusEngine.Log.Info(url);
 				this.VideoForm(url);
 				//this.VideoWpf(url);
+				if (this.OnPlay != null) {
+					this.OnPlay.Invoke(this, Url);
+				}
+			} else {
+				if (this.OnNotFound != null) {
+					this.OnNotFound.Invoke(this, this.Url);
+				}
 			}
 
 			return this;
 		}
 		/** функция запуска видео */
 
+		/** событие времени видео */
+		private void WatchTimeOnUpdate(object o, object e) {
+			BusEngine.Log.Info("ВРЕМЯ {0}", o);
+			BusEngine.Log.Info("ВРЕМЯ {0}", e);
+		}
+		/** событие времени видео */
+
+		/** событие остановки видео */
+		private void OnVideoStop(object o, object e) {
+			BusEngine.Log.Info("Видео остановилось OnVideoStop");
+			this._VLC_VideoView.MediaPlayer.Stopped -= this.OnVideoStop;
+			//System.Threading.Thread.Sleep(1000);
+			//this._VLC_VideoView.MediaPlayer.Dispose();
+			if (this.OnStop != null) {
+				this.OnStop.Invoke(this, this.Url);
+			}
+			this.Dispose();
+		}
+		/** событие остановки видео */
+
+		/** функция остановки видео */
+		public void Pause() {
+			BusEngine.Log.Info("Видео остановилось Pause");
+			/* if (this._VLC_VideoView != null) {
+				//this._VLC_VideoView.MediaPlayer.Stopped -= this.OnVideoStop;
+				//this._VLC_VideoView.MediaPlayer.Stop();
+				
+			}
+			if (this._VLC_MP != null) {
+				//this._VLC_MP.Stop();
+			}
+			
+			this.Dispose(); */
+		}
 		public void Stop() {
 			BusEngine.Log.Info("Видео остановилось Stop");
 			if (this._VLC_VideoView != null) {
-				this._VLC_VideoView.MediaPlayer.Stopped -= this.onVideoStop;
-				this._VLC_VideoView.MediaPlayer.Stop();
+				//this._VLC_VideoView.MediaPlayer.Stopped -= this.OnVideoStop;
+				//this._VLC_VideoView.MediaPlayer.Stop();
+				
 			}
 			if (this._VLC_MP != null) {
-				this._VLC_MP.Stop();
+				//this._VLC_MP.Stop();
+			}
+			if (this.OnStop != null) {
+				this.OnStop.Invoke(this, this.Url);
 			}
 			this.Dispose();
 		}
+		/** функция остановки видео */
 
-		/* public void Shutdown() {
-			BusEngine.Log.Info("Видео остановилось Shutdown");
-			this.Dispose();
-		} */
-
+		/** функция уничтожения объекта видео */
 		public void Dispose() {
-
-				if (this._VLC_VideoView != null && BusEngine.UI.Canvas.WinForm != null) {
-					BusEngine.UI.Canvas.WinForm.Controls.Remove(this._VLC_VideoView);
-					this._VLC_VideoView.MediaPlayer.Dispose();
-					this._VLC_VideoView.MediaPlayer = null;
-					this._VLC_VideoView = null;
-				}
-				if (this._VLC_MP != null) {
-					this._VLC_MP.Dispose();
-					this._VLC_MP = null;
-				}
-				if (this._VLC != null) {
-					this._VLC.Dispose();
-					this._VLC = null;
-				}
-				BusEngine.Log.Info("Видео остановилось Dispose");
-
+			BusEngine.Log.Info("Видео остановилось Dispose1 {0}", this._VLC_VideoView);
+			if (this._VLC_VideoView != null && BusEngine.UI.Canvas.WinForm != null) {
+				BusEngine.UI.Canvas.WinForm.Controls.Remove(this._VLC_VideoView);
+				this._VLC_VideoView.Dispose();
+				this._VLC_VideoView = null;
+				BusEngine.Log.Info("Видео остановилось Dispose1 {0}", this._VLC_VideoView);
+			}
+			if (this._VLC_MP != null) {
+				BusEngine.Log.Info("Видео остановилось Dispose2");
+				this._VLC_MP.Dispose();
+				this._VLC_MP = null;
+			}
+			if (this._VLC != null) {
+				BusEngine.Log.Info("Видео остановилось Dispose3");
+				this._VLC.Dispose();
+				this._VLC = null;
+			}
+			BusEngine.Log.Info("Видео остановилось Dispose4");
+			if (this.OnDispose != null) {
+				this.OnDispose.Invoke(this, this.Url);
+			}
 		}
+		/** функция уничтожения объекта видео */
 	}
 	/** API BusEngine.Video */
 }
@@ -1608,7 +1671,7 @@ Newtonsoft.Json
 				urlAlternative = new string[] {"https://buslikdrev.by/", "111111"};
 			}
 			beforeSend();
-			//BusEngine.Localization.getLanguage("error_server_not")
+			//BusEngine.Localization.SGetLanguage("error_server_not")
 			dynamic E = new G();
 
 			if (url != "" && url != null) {
@@ -1939,7 +2002,7 @@ Newtonsoft.Json
 			try {
 				return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
 			} catch (System.Exception e) {
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_encode") + ": {0}", e.Message);
+				BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("error") + " " + BusEngine.Localization.SGetLanguage("error_json_encode") + ": {0}", e.Message);
 				return "[]";
 			}
 		}
@@ -1950,7 +2013,7 @@ Newtonsoft.Json
 				return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, dynamic>>(t);
 				//return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
 			} catch (System.Exception e) {
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_decode") + ": {0}", e.Message);
+				BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("error") + " " + BusEngine.Localization.SGetLanguage("error_json_decode") + ": {0}", e.Message);
 				return new System.Collections.Generic.Dictionary<string, dynamic>();
 			}
 		}
@@ -1960,7 +2023,7 @@ Newtonsoft.Json
 			try {
 				return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
 			} catch (System.Exception e) {
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguage("error") + " " + BusEngine.Localization.GetLanguage("error_json_decode") + ": {0}", e.Message);
+				BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("error") + " " + BusEngine.Localization.SGetLanguage("error_json_decode") + ": {0}", e.Message);
 				return new {};
 			}
 		}
@@ -1981,12 +2044,9 @@ BusEngine.UI
 */
 	/** API BusEngine.UI.Canvas */
 	public class Canvas : System.IDisposable {
-		#if BUSENGINE_WINFORMS
 		public static System.Windows.Forms.Form WinForm;
-		#else
-		public static System.Windows.Forms.Form WPF;
+		//public static System.Windows.Forms.Form WPF;
 		//public static BusEngine.UI.Canvas Canvas;
-		#endif
 
 		/** событие уничтожения окна */
 		private void OnDisposed(object o, System.EventArgs e) {

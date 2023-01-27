@@ -16,7 +16,6 @@
     <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
     <!-- <DebugType>none</DebugType> -->
     <!-- <Optimize>true</Optimize> -->
-    <!-- <DefineConstants>TRACE</DefineConstants> -->
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <!-- https://stackoverflow.com/questions/57509951/use-windows-forms-in-a-net-core-class-library-net-core-control-library -->
@@ -33,24 +32,28 @@
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <OutputPath>..\..\Bin\Win_x64\</OutputPath>
     <OutputRoot>..\..\Bin\Win_x64\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
     <OutputPath>..\..\Bin\Win_x86\</OutputPath>
     <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
+    <DefineConstants>BUSENGINE_XAMARIN;BUSENGINE_ANDROID</DefineConstants>
     <!-- <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit> -->
     <OutputPath>..\..\Bin\Android\</OutputPath>
     <OutputRoot>..\..\Bin\Android\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <!-- <Prefer32Bit>true</Prefer32Bit> -->
     <OutputPath>..\..\Bin\Win\</OutputPath>
