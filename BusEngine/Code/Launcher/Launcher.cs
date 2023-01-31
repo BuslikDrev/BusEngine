@@ -16,22 +16,30 @@
  последние плагины index.php?route=api/busengine/product&order=DESC&limit=4&type=["plugin"])
 */
 
+#define RUN_LOG
 /** API BusEngine */
 namespace BusEngine {
 /*
 Зависит от плагинов:
 System.Windows.Forms
 BusEngine.Engine
+BusEngine.Log
 BusEngine.UI
-BusEngine.Browser
 */
 	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
 		private static void Run() {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "WindowsLauncher";
+			BusEngine.Engine.OnInitialize += BusEngine.Initialize.OnRun;
+			BusEngine.Engine.OnShutdown += BusEngine.Initialize.OnExit;
 			BusEngine.Engine.Initialize();
+		}
 
+		private static void OnRun() {
+			#if RUN_LOG
+			BusEngine.Log.Info("OnRun");
+			#endif
 			// допускаем только один запуск
 			bool createdNew;
 			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
@@ -52,7 +60,7 @@ BusEngine.Browser
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
-				System.Windows.Forms.Application.Exit();
+				//System.Windows.Forms.Application.Exit();
 
 				return;
 			}
@@ -60,30 +68,41 @@ BusEngine.Browser
 			// создаём форму System.Windows.Forms
 			BusEngine.Form form = new BusEngine.Form();
 
+			// фикс создания дескриптора раньше плагинов
+			System.IntPtr hWnd = form.Handle;
+
+			// поверх всех окон
+			//form.TopMost = true;
+
 			// устанавливаем нашу иконку
 			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
 				form.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
 			}
 
 			// устанавливаем размеры окна
-			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] != null) {
-				form.Width = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Width"]);
+			string r_Width;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
+				form.Width = System.Convert.ToInt32(r_Width);
 			}
-			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] != null) {
-				form.Height = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Height"]);
-			}
-
-			// открываем окно на весь экран
-			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) > 0) {
-				form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			string r_Height;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
+				form.Height = System.Convert.ToInt32(r_Height);
 			}
 
-			// убираем линии, чтобы окно было полностью на весь экран
-			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -1 || System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == 1) {
-				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			} else if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -2) {
-				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-				form.MaximizeBox = true;
+			string r_Fullscreen;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
+				// открываем окно на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) > 0) {
+					form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+				}
+
+				// убираем линии, чтобы окно было полностью на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
+					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				} else if (System.Convert.ToInt32(r_Fullscreen) == -2) {
+					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+					form.MaximizeBox = true;
+				}
 			}
 
 			// скрываем иконку в системном меню
@@ -96,13 +115,22 @@ BusEngine.Browser
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(form);
+			System.Windows.Forms.Application.Run(BusEngine.UI.Canvas.WinForm);
+		}
+
+		private static void OnExit() {
+			#if RUN_LOG
+			BusEngine.Log.Info("OnExit");
+			#endif
+			// закрываем приложение System.Windows.Forms
+			System.Windows.Forms.Application.Exit();
 		}
 
 		/** функция запуска приложения */
 		// https://www.cyberforum.ru/cmd-bat/thread940960.html
 		// https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.start?view=net-7.0
 		//[System.STAThread] // если однопоточное приложение
+		[System.Runtime.ExceptionServices.HandleProcessCorruptedStateExceptions]
 		private static void Main(string[] args) {
 			// проверяем целостность библиотек движка
 			if (!System.IO.File.Exists(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\BusEngine.dll")) {
@@ -125,11 +153,21 @@ BusEngine.Browser
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
-				System.Windows.Forms.Application.Exit();
+				//System.Windows.Forms.Application.Exit();
 
 				return;
 			} else {
-				Run();
+				#if RUN_LOG
+				try {
+				#endif
+					Run();
+				#if RUN_LOG
+				} catch (System.AccessViolationException e) {
+					BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("error") + " " + BusEngine.Localization.SGetLanguage("error_audio_format") + ": {0}", e.Message);
+					System.Console.Beep();
+					System.Console.ReadLine();
+				}
+				#endif
 			}
 		}
 		/** функция запуска приложения */

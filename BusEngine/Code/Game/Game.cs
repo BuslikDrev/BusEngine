@@ -13,26 +13,21 @@
 https://www.cyberforum.ru/blogs/529033/blog5215.html
 */
 
-#define BUSENGINE_WINFORMS
-#define BUSENGINE_WINDOWS
 /** API BusEngine */
 namespace BusEngine {
 /*
 Зависит от плагинов:
-BusEngine.ProjectSettingDefault
+System.Windows.Forms
 BusEngine.Engine
 BusEngine.Log
 BusEngine.UI
 */
 	// https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/preprocessor-directives
 	// https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/classes-and-structs/constants
-	public class Global {
-		//public const bool BUSENGINE_WINFORM = true;
-	}
-
 	internal class Initialize {
         //private static System.Threading.Mutex Mutex;
 		private static void Run() {
+			//BusEngine.WinApi.TimeEndPeriod(16);
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Windows";
 			BusEngine.Engine.Initialize();
@@ -64,6 +59,7 @@ BusEngine.UI
 
 			// создаём форму System.Windows.Forms
 			BusEngine.Form form = new BusEngine.Form();
+			System.IntPtr hWnd = form.Handle;
 
 			// устанавливаем нашу иконку
 			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
@@ -71,24 +67,29 @@ BusEngine.UI
 			}
 
 			// устанавливаем размеры окна
-			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] != null) {
-				form.Width = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Width"]);
+			string r_Width;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
+				form.Width = System.Convert.ToInt32(r_Width);
 			}
-			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] != null) {
-				form.Height = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Height"]);
-			}
-
-			// открываем окно на весь экран
-			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) > 0) {
-				form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			string r_Height;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
+				form.Height = System.Convert.ToInt32(r_Height);
 			}
 
-			// убираем линии, чтобы окно было полностью на весь экран
-			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -1 || System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == 1) {
-				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			} else if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -2) {
-				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-				form.MaximizeBox = true;
+			string r_Fullscreen;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
+				// открываем окно на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) > 0) {
+					form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+				}
+
+				// убираем линии, чтобы окно было полностью на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
+					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				} else if (System.Convert.ToInt32(r_Fullscreen) == -2) {
+					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+					form.MaximizeBox = true;
+				}
 			}
 
 			// подключаем API BusEngine.UI.Canvas
@@ -231,7 +232,7 @@ BusEngine.UI
 		private static bool nap = true;
 		private static int count2 = 0;
 		private static int FPS = 0;
-		private static int FPSSetting = 70;
+		private static int FPSSetting = 300;
 		private static int FPSInfo = 0;
 
 		// Создаем объекты-кисти для закрашивания фигур
@@ -459,6 +460,16 @@ BusEngine.UI
 			base.WndProc(ref m);
 		} */
 		/** функция запуска окна приложения */
+	}
+
+	internal static class WinApi {
+		//[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage"), SuppressUnmanagedCodeSecurity]
+		[System.Runtime.InteropServices.DllImport("winmm.dll", EntryPoint="timeBeginPeriod", SetLastError=true)]
+		public static extern uint TimeBeginPeriod(uint uMilliseconds);
+
+		//[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage"), SuppressUnmanagedCodeSecurity]
+		[System.Runtime.InteropServices.DllImport("winmm.dll", EntryPoint="timeEndPeriod", SetLastError=true)]
+		public static extern uint TimeEndPeriod(uint uMilliseconds);
 	}
 }
 /** API BusEngine */

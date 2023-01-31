@@ -35,24 +35,29 @@ BusEngine.Browser
 			}
 
 			// устанавливаем размеры окна
-			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] != null) {
-				form.Width = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Width"]);
+			string r_Width;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
+				form.Width = System.Convert.ToInt32(r_Width);
 			}
-			if (BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] != null) {
-				form.Height = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Height"]);
-			}
-
-			// открываем окно на весь экран
-			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) > 0) {
-				form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			string r_Height;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
+				form.Height = System.Convert.ToInt32(r_Height);
 			}
 
-			// убираем линии, чтобы окно было полностью на весь экран
-			if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -1 || System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == 1) {
-				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			} else if (System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"]) == -2) {
-				form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-				form.MaximizeBox = true;
+			string r_Fullscreen;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
+				// открываем окно на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) > 0) {
+					form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+				}
+
+				// убираем линии, чтобы окно было полностью на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
+					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				} else if (System.Convert.ToInt32(r_Fullscreen) == -2) {
+					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+					form.MaximizeBox = true;
+				}
 			}
 
 			// подключаем API BusEngine.UI.Canvas
