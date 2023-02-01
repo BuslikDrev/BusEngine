@@ -143,20 +143,20 @@
           <table>
             <tbody>
               <tr id="BusEngine.Video">
-                <td><a href="#BusEngine.Video">var _video = (BusEngine.Video)new BusEngine.Video(string|string[])</a></td>
+                <td><a href="#BusEngine.Video">var _video = (BusEngine.Video)new BusEngine.Video(null|string|string[])</a></td>
                 <td>Метод конструктор (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания после вызова "<a href="#BusEngine.Video.Play" title="BusEngine.Video.Play">_video.Play()</a>". Также можно указать string[] массив строк, тогда каждое видео будет проигривать по порядку, вызов "<a href="#BusEngine.Video.Dispose" title="BusEngine.Video.Dispose">_video.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Video.Stop" title="BusEngine.Video.Stop">_video.Stop()</a>" текущее. Поддерживаемые форматы: mp4, wmv, ogv.</td>
               </tr>
               <tr id="BusEngine.Video.Play">
-                <td><a href="#BusEngine.Video.Play">(void)_video.Play(string|string[])</a></td>
+                <td><a href="#BusEngine.Video.Play">(void)_video.Play(null|string|string[])</a></td>
                 <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания сначала или момента паузы. Также можно указать string[] массив строк, тогда каждое видео будет проигривать по порядку, вызов "<a href="#BusEngine.Video.Dispose" title="BusEngine.Video.Dispose">_video.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Video.Stop" title="BusEngine.Video.Stop">_video.Stop()</a>" текущее. Поддерживаемые форматы: mp4, wmv, ogv.</td>
-              </tr>
-              <tr id="BusEngine.Video.Stop">
-                <td><a href="#BusEngine.Video.Stop">(void)_video.Stop(string)</a></td>
-                <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для Остановки Видео файла.</td>
               </tr>
               <tr id="BusEngine.Video.Pause">
                 <td><a href="#BusEngine.Video.Pause">(void)_video.Pause(string)</a></td>
                 <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для Временной остановки и воспроизведения Видео файла в определённом месте.</td>
+              </tr>
+              <tr id="BusEngine.Video.Stop">
+                <td><a href="#BusEngine.Video.Stop">(void)_video.Stop(string)</a></td>
+                <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для Остановки Видео файла.</td>
               </tr>
               <tr id="BusEngine.Video.Dispose">
                 <td><a href="#BusEngine.Video.Dispose">(void)_video.Dispose()</a></td>
@@ -180,6 +180,10 @@
           <h2 id="Fields" class="h2">Поля</h2>
           <table>
             <tbody>
+              <tr id="BusEngine.Video.Urls">
+                <td><a href="#BusEngine.Video.Url">(string[])_video.Urls = string[]</a></td>
+                <td>Поле (нестатическое) уровня класса принимает или возвращает string[] массив строк полного или относительного пути до Видео файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp4, wmv, ogv.</td>
+              </tr>
               <tr id="BusEngine.Video.Url">
                 <td><a href="#BusEngine.Video.Url">(string)_video.Url = string</a></td>
                 <td>Поле (нестатическое) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp4, wmv, ogv.</td>
@@ -202,9 +206,17 @@
           <h2 id="Properties" class="h2">Свойства</h2>
           <table>
             <tbody>
-              <tr>Своих свойств нет</tr>
+              <tr id="BusEngine.Video.Duration">
+                <td><a href="#BusEngine.Video.Duration">(double)_video.Duration</a></td>
+                <td>Свойство (нестатическое) уровня класса возвращает double значение. Текущая позиция проигривания файла в секундах.</td>
+              </tr>
+              <tr id="BusEngine.Video.Position">
+                <td><a href="#BusEngine.Video.Position">(double)_video.Position = double</a></td>
+                <td>Свойство (нестатическое) уровня класса принимает или возвращает double значение. Установка позиции проигривания файла в секундах. По умолчанию 0.</td>
+              </tr>
             </tbody>
           </table>
+          <a href="#top" class="top_link">Наверх</a>
           <h2 id="Events" class="h2">События</h2>
           <table>
             <tbody>
