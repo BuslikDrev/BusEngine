@@ -32,13 +32,13 @@ BusEngine.UI
 				string title;
 				string desc;
 
-				if (BusEngine.Localization.SGetLanguage("error_warning_busasd") != "error_warning_busasd") {
-					title = BusEngine.Localization.SGetLanguage("error_warning_busasd");
+				if (BusEngine.Localization.GetLanguageStatic("error_warning_busasd") != "error_warning_busasd") {
+					title = BusEngine.Localization.GetLanguageStatic("error_warning_busasd");
 				} else {
 					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine ужо запушчаны";
 				}
-				if (BusEngine.Localization.SGetLanguage("error_warning_is_already_running_Yes") != "error_warning_is_already_running_Yes") {
-					desc = BusEngine.Localization.SGetLanguage("error_warning_is_already_running_Yes");
+				if (BusEngine.Localization.GetLanguageStatic("error_warning_is_already_running_Yes") != "error_warning_is_already_running_Yes") {
+					desc = BusEngine.Localization.GetLanguageStatic("error_warning_is_already_running_Yes");
 				} else {
 					desc = "Праграма ўжо запушчана. Працягнуць запуск копіі?";
 				}

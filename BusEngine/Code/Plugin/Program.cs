@@ -1,23 +1,32 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 
+//#define AUDIO_LOG
+//#define BROWSER_LOG
+//#define LOCALIZATION_LOG
+#define VIDEO_LOG
 /** API BusEngine.Game - пользовательский код */
+[assembly: BusEngine.Tooltip("Это описание сборки для BusEngine.Editor")]
 namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
+	[BusEngine.Tooltip("Это описание класса для BusEngine.Editor")]
 	public class MyPlugin : BusEngine.Plugin {
+		[BusEngine.Tooltip("Это описание поля для BusEngine.Editor")]
 		private static System.Windows.Forms.Form SplashScreen;
-		private static BusEngine.Audio video;
-		private static string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4"};
 
 		// при запуске BusEngine до создания формы
 		public override void Initialize() {
 			// загружаем свой язык
-			BusEngine.Localization.SOnLoad += OnLoadLanguage;
-			BusEngine.Log.Info("2 {0}", BusEngine.Localization.SGetLanguage("error"));
+			BusEngine.Localization.OnLoadStatic += OnLoadLanguage;
+			#if LOCALIZATION_LOG
+			BusEngine.Log.Info("2 {0}", BusEngine.Localization.GetLanguageStatic("error"));
+			#endif
 			BusEngine.Localization localization = new BusEngine.Localization();
 			localization.Load("Ukrainian");
-			//BusEngine.Log.Info("2 {0}", localization.GetLanguage("error"));
-			//BusEngine.Log.Info("2 {0}", BusEngine.Localization.SGetLanguage("error"));
+			#if LOCALIZATION_LOG
+			BusEngine.Log.Info("2 {0}", localization.GetLanguage("error"));
+			BusEngine.Log.Info("2 {0}", BusEngine.Localization.GetLanguageStatic("error"));
+			#endif
 
 			// добавляем стартовую обложку
 			SplashScreen = new System.Windows.Forms.Form();
@@ -31,16 +40,16 @@ namespace BusEngine.Game {
 			SplashScreen.Show();
 			// запускаем аудио
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
-				BusEngine.Audio a = new BusEngine.Audio();
-				a.Position = 0;
-				a.OnStop += (o, e) => {
+				BusEngine.Audio x = new BusEngine.Audio("Audios/BusEngine.mp3").Play();
+				x.OnStop += (o, e) => {
 					o.Dispose();
 				};
-				a.Play("Audios/BusEngine.mp3");
-				System.Threading.Thread.Sleep(3000);
-				a.Stop();
+				//System.Threading.Thread.Sleep(3000);
+				//System.Threading.Tasks.Task.Delay(3000).Wait();
+				x.Stop();
 			} else {
-				System.Threading.Thread.Sleep(1000);
+				//System.Threading.Thread.Sleep(1000);
+				System.Threading.Tasks.Task.Delay(1000).Wait();
 			}
 		}
 
@@ -57,26 +66,35 @@ namespace BusEngine.Game {
 				BusEngine.Audio audio = new BusEngine.Audio();
 				/** событие запуска аудио */
 				audio.OnPlay += (BusEngine.Audio a, string url) => {
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Аудио OnPlayAudio: {0}", url);
 					BusEngine.Log.Info("Аудио OnPlayAudio: {0}", a.Url);
+					#endif
 				};
 				/** событие запуска аудио */
 				/** событие повтора аудио */
 				audio.OnLoop += (BusEngine.Audio a, string url) => {
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Аудио OnLoopAudio: {0}", url);
 					BusEngine.Log.Info("Аудио OnLoopAudio: {0}", a.Url);
+					#endif
 				};
 				/** событие повтора аудио */
 				/** событие временной остановки аудио */
 				audio.OnPause += (BusEngine.Audio a, string url) => {
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Аудио OnPauseAudio: {0}", url);
 					BusEngine.Log.Info("Аудио OnPauseAudio: {0}", a.Url);
+					#endif
 				};
 				/** событие временной остановки аудио */
 				/** событие ручной остановки аудио */
 				audio.OnStop += (BusEngine.Audio a, string url) => {
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Аудио OnStopAudio: {0}", url);
 					BusEngine.Log.Info("Аудио OnStopAudio: {0}", a.Url);
+					#endif
+					a.Dispose();
 
 					if (audios.Length > 0) {
 						System.Array.Reverse(audios);
@@ -91,8 +109,10 @@ namespace BusEngine.Game {
 				/** событие ручной остановки аудио */
 				/** событие автоматической остановки аудио */
 				audio.OnEnd += (BusEngine.Audio a, string url) => {
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Аудио OnEndAudio: {0}", url);
 					BusEngine.Log.Info("Аудио OnEndAudio: {0}", a.Url);
+					#endif
 					a.Dispose();
 
 					if (audios.Length > 0) {
@@ -108,28 +128,33 @@ namespace BusEngine.Game {
 				/** событие автоматической остановки аудио */
 				/** событие удаления аудио */
 				audio.OnDispose += (BusEngine.Audio a, string url) => {
-					BusEngine.Log.Info("Аудио OnEndAudio: {0}", url);
-					BusEngine.Log.Info("Аудио OnEndAudio: {0}", a.Url);
+					#if AUDIO_LOG
+					BusEngine.Log.Info("Аудио OnDisposeAudio: {0}", url);
+					BusEngine.Log.Info("Аудио OnDisposeAudio: {0}", a.Url);
+					#endif
 				};
 				/** событие удаления аудио */
 				/** событие отсутствия аудио */
 				audio.OnNotFound += (BusEngine.Audio a, string url) => {
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Аудио OnNotFoundAudio: {0}", url);
 					BusEngine.Log.Info("Аудио OnNotFoundAudio: {0}", a.Url);
+					#endif
 				};
 				/** событие отсутствия аудио */
 				audio.Position = 0;
-				audio.Play(audios[0]);
+				//audio.Play(audios[0]);
 				//audio.Stop();
 				BusEngine.UI.Canvas.WinForm.KeyDown += (o, e) => {
 					// выкл аудио
 					if (e.KeyCode == System.Windows.Forms.Keys.Space) {
 						if (audio != null) {
 							if (audios.Length == 0) {
+								//audio.Dispose();
 								audio = null;
 							} else {
-								audio.Stop();
-								audio.Dispose();
+								//audio.Stop();
+								//audio.Dispose();
 							}
 						}
 					}
@@ -137,14 +162,107 @@ namespace BusEngine.Game {
 			}
 
 			// запускаем видео
-			/* if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
+			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
+				string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4", "Videos/BusEngine.mp4", "https://buslikdrev.by/video/Unity.mp4"};
 				BusEngine.Video video = new BusEngine.Video();
-				//video.OnPlay += OnPlayVideo;
-				video.OnStop += OnStopVideo;
-				video.OnDispose += OnDisposeVideo;
-				//video.Play("https://buslikdrev.by/video/Unity.mp4");
-				video.Play("Videos/BusEngine.mp4");
-			} */
+				/** событие запуска видео */
+				video.OnPlay += (BusEngine.Video v, string url) => {
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео OnPlayVideo: {0}", url);
+					BusEngine.Log.Info("Видео OnPlayVideo: {0}", v.Url);
+					#endif
+				};
+				/** событие запуска видео */
+				/** событие повтора видео */
+				video.OnLoop += (BusEngine.Video v, string url) => {
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео OnLoopVideo: {0}", url);
+					BusEngine.Log.Info("Видео OnLoopVideo: {0}", v.Url);
+					#endif
+				};
+				/** событие повтора видео */
+				/** событие временной остановки видео */
+				video.OnPause += (BusEngine.Video v, string url) => {
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео OnPauseVideo: {0}", url);
+					BusEngine.Log.Info("Видео OnPauseVideo: {0}", v.Url);
+					#endif
+				};
+				/** событие временной остановки видео */
+				/** событие ручной остановки видео */
+				video.OnStop += (BusEngine.Video v, string url) => {
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео OnStopVideo: {0}", url);
+					BusEngine.Log.Info("Видео OnStopVideo: {0}", v.Url);
+					#endif
+					//v.Dispose();
+
+					if (videos.Length > 0) {
+						System.Array.Reverse(videos);
+						System.Array.Resize(ref videos, videos.Length - 1);
+						System.Array.Reverse(videos);
+					}
+
+					if (videos.Length > 0) {
+						v.Play(videos[0]);
+					}
+				};
+				/** событие ручной остановки видео */
+				/** событие автоматической остановки видео */
+				video.OnEnd += (BusEngine.Video v, string url) => {
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео OnEndVideo: {0}", url);
+					BusEngine.Log.Info("Видео OnEndVideo: {0}", v.Url);
+					#endif
+BusEngine.Log.Info("Видео OnEndVideo: {0}", videos.Length);
+					v.Pause();
+					//v.Dispose();
+
+					if (videos.Length > 0) {
+						System.Array.Reverse(videos);
+						System.Array.Resize(ref videos, videos.Length - 1);
+						System.Array.Reverse(videos);
+					}
+
+					if (videos.Length > 0) {
+						v.Play(videos[0]);
+					}
+				};
+				/** событие автоматической остановки видео */
+				/** событие удаления видео */
+				video.OnDispose += (BusEngine.Video v, string url) => {
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео OnDisposeVideo: {0}", url);
+					BusEngine.Log.Info("Видео OnDisposeVideo: {0}", v.Url);
+					#endif
+				};
+				/** событие удаления видео */
+				/** событие отсутствия видео */
+				video.OnNotFound += (BusEngine.Video v, string url) => {
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео OnNotFoundVideo: {0}", url);
+					BusEngine.Log.Info("Видео OnNotFoundVideo: {0}", v.Url);
+					#endif
+				};
+				/** событие отсутствия видео */
+				video.Position = 0;
+				video.Play(videos[0]);
+				//video.Stop();
+				BusEngine.UI.Canvas.WinForm.KeyDown += (o, e) => {
+					// выкл видео
+					if (e.KeyCode == System.Windows.Forms.Keys.Space) {
+						if (video != null) {
+							if (videos.Length == 0) {
+								//video.Dispose();
+								video = null;
+							} else {
+								video.Stop();
+								//video.Dispose();
+							}
+						}
+					}
+				};
+			}
 
 			// запускаем браузер
 			if (BusEngine.Engine.Platform == "WindowsEditor") {
@@ -152,7 +270,7 @@ namespace BusEngine.Game {
 				BusEngine.Browser.Initialize("https://buslikdrev.by/");
 			} else if (1 == 0 && BusEngine.Engine.Platform == "WindowsLauncher") {
 				BusEngine.Browser.Initialize("index.html");
-				BusEngine.Browser.SOnPostMessage += OnPostMessage;
+				BusEngine.Browser.OnPostMessageStatic += OnPostMessage;
 			}
 		}
 
@@ -176,8 +294,10 @@ namespace BusEngine.Game {
 
 		/** событие загрузки языка */
 		private void OnLoadLanguage(BusEngine.Localization l, string language) {
+			#if LOCALIZATION_LOG
 			BusEngine.Log.Info("Язык именился: {0}", language);
 			BusEngine.Log.Info("Язык именился: {0}", l.GetLanguage("error"));
+			#endif
 		}
 		/** событие загрузки языка */
 
@@ -218,8 +338,8 @@ namespace BusEngine.Game {
 
 		/** событие удаления аудио */
 		private void OnDisposeAudio(BusEngine.Audio a, string url) {
-			BusEngine.Log.Info("Аудио OnEndAudio: {0}", url);
-			BusEngine.Log.Info("Аудио OnEndAudio: {0}", a.Url);
+			BusEngine.Log.Info("Аудио OnDisposeAudio: {0}", url);
+			BusEngine.Log.Info("Аудио OnDisposeAudio: {0}", a.Url);
 		}
 		/** событие удаления аудио */
 
@@ -231,40 +351,53 @@ namespace BusEngine.Game {
 		/** событие отсутствия аудио */
 
 		/** событие запуска видео */
-		private void OnPlayVideo(BusEngine.Video v, string url) {
+		private void OnPlayAudio(BusEngine.Video v, string url) {
 			BusEngine.Log.Info("Видео OnPlayVideo: {0}", url);
 			BusEngine.Log.Info("Видео OnPlayVideo: {0}", v.Url);
 		}
 		/** событие запуска видео */
 
-		/** событие остановки видео */
+		/** событие повтора видео */
+		private void OnLoopVideo(BusEngine.Video v, string url) {
+			BusEngine.Log.Info("Видео OnLoopVideo: {0}", url);
+			BusEngine.Log.Info("Видео OnLoopVideo: {0}", v.Url);
+		}
+		/** событие повтора видео */
+
+		/** событие временной остановки видео */
+		private void OnPauseVideo(BusEngine.Video v, string url) {
+			BusEngine.Log.Info("Видео OnPauseVideo: {0}", url);
+			BusEngine.Log.Info("Видео OnPauseVideo: {0}", v.Url);
+		}
+		/** событие временной остановки видео */
+
+		/** событие ручной остановки видео */
 		private void OnStopVideo(BusEngine.Video v, string url) {
 			BusEngine.Log.Info("Видео OnStopVideo: {0}", url);
 			BusEngine.Log.Info("Видео OnStopVideo: {0}", v.Url);
-			//v.Play("https://buslikdrev.by/video/Unity.mp4");
-			//v.Stop();
 		}
-		/** событие остановки видео */
+		/** событие ручной остановки видео */
+
+		/** событие автоматической остановки видео */
+		private void OnEndVideo(BusEngine.Video v, string url) {
+			BusEngine.Log.Info("Видео OnEndVideo: {0}", url);
+			BusEngine.Log.Info("Видео OnEndVideo: {0}", v.Url);
+		}
+		/** событие автоматической остановки видео */
 
 		/** событие удаления видео */
 		private void OnDisposeVideo(BusEngine.Video v, string url) {
 			BusEngine.Log.Info("Видео OnDisposeVideo: {0}", url);
 			BusEngine.Log.Info("Видео OnDisposeVideo: {0}", v.Url);
-			//video.Play("https://buslikdrev.by/video/Unity.mp4");
-			//video.OnDispose -= OnDisposeVideo;
-			//video.Dispose();
-			BusEngine.Log.Info("Stop ===========");
-			//v.OnDispose -= OnDisposeVideo;
-
-			var x = new BusEngine.Video();
-			//x.OnPlay += OnPlayVideo;
-			//x.OnStop += OnStopVideo;
-			x.OnDispose += OnDisposeVideo;
-			x.Play("https://buslikdrev.by/video/Unity.mp4");
-
-			BusEngine.Log.Info("Stop ===========");
 		}
 		/** событие удаления видео */
+
+		/** событие отсутствия видео */
+		private void OnNotFoundVideo(BusEngine.Video v, string url) {
+			BusEngine.Log.Info("Видео OnNotFoundVideo: {0}", url);
+			BusEngine.Log.Info("Видео OnNotFoundVideo: {0}", v.Url);
+		}
+		/** событие отсутствия видео */
 
 		/** событие получения сообщения из браузера */
 		private void OnPostMessage(string message) {
@@ -273,7 +406,7 @@ namespace BusEngine.Game {
 			} else if (message == "Debug") {
 				BusEngine.Log.Info("JavaScript: Привет CSharp!");
 				BusEngine.Log.Info("На команду: " + message);
-				BusEngine.Browser.SExecuteJS("document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: " + message + "'}}));");
+				BusEngine.Browser.ExecuteJSStatic("document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: " + message + "'}}));");
 			} else {
 				if (message.Substring(0, 8) == "console|") {
 					BusEngine.Log.Info(message.Substring(8));

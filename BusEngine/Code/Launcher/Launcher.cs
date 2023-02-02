@@ -47,13 +47,13 @@ BusEngine.UI
 				string title;
 				string desc;
 
-				if (BusEngine.Localization.SGetLanguage("error_warning") != "error_warning") {
-					title = BusEngine.Localization.SGetLanguage("error_warning");
+				if (BusEngine.Localization.GetLanguageStatic("error_warning") != "error_warning") {
+					title = BusEngine.Localization.GetLanguageStatic("error_warning");
 				} else {
 					title = "Увага!";
 				}
-				if (BusEngine.Localization.SGetLanguage("error_is_already_running") != "error_is_already_running") {
-					desc = BusEngine.Localization.SGetLanguage("error_is_already_running");
+				if (BusEngine.Localization.GetLanguageStatic("error_is_already_running") != "error_is_already_running") {
+					desc = BusEngine.Localization.GetLanguageStatic("error_is_already_running");
 				} else {
 					desc = "Праграма ўжо запушчана.";
 				}
@@ -163,7 +163,7 @@ BusEngine.UI
 					Run();
 				#if RUN_LOG
 				} catch (System.AccessViolationException e) {
-					BusEngine.Log.Info(BusEngine.Localization.SGetLanguage("error") + " " + BusEngine.Localization.SGetLanguage("error_audio_format") + ": {0}", e.Message);
+					BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_audio_format") + ": {0}", e.Message);
 					System.Console.Beep();
 					System.Console.ReadLine();
 				}
