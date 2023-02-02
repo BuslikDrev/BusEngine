@@ -41,7 +41,7 @@
 
   https://www.nuget.org/packages/CefSharp.Wpf/107.1.90 (из "lib/net452/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/" и в "Code/BusEngine/BusPlugins/CefSharp/")
 
-  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.18 (из "build/x*/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/", потом папку "plugins" и файлы "libvlccore.dll,libvlccore.lib" из "Code/BusEngine/BusContent/Win_x*/LibVLC/" в "Code/BusEngine/BusContent/Win_x*/")
+  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.18 (из "build/x*/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/Win-x*/")
 
   https://www.nuget.org/packages/LibVLCSharp/3.6.7 (из "lib/net40/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
 
