@@ -45,7 +45,7 @@ namespace BusEngine.Game {
 					o.Dispose();
 				};
 				//System.Threading.Thread.Sleep(3000);
-				//System.Threading.Tasks.Task.Delay(3000).Wait();
+				System.Threading.Tasks.Task.Delay(3000).Wait();
 				x.Stop();
 			} else {
 				//System.Threading.Thread.Sleep(1000);
@@ -163,8 +163,16 @@ namespace BusEngine.Game {
 
 			// запускаем видео
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
-				string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4", "Videos/BusEngine.mp4", "https://buslikdrev.by/video/Unity.mp4"};
-				BusEngine.Video video = new BusEngine.Video();
+				//string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4"};
+				string[] videos = {"Videos/BusEngine.mp4"};
+				//new BusEngine.Video("https://buslikdrev.by/video/Unity.mp4");
+				/* new BusEngine.Video("Videos/BusEngine.mp4").Play();
+				new BusEngine.Video("Videos/BusEngine.mp4").Play();
+				new BusEngine.Video("Videos/BusEngine.mp4").Play();
+				new BusEngine.Video("Videos/BusEngine.mp4").Play();
+				new BusEngine.Video("Videos/BusEngine.mp4").Play();
+				new BusEngine.Video("Videos/BusEngine.mp4").Play(); */
+				BusEngine.Video video = new BusEngine.Video().Play();
 				/** событие запуска видео */
 				video.OnPlay += (BusEngine.Video v, string url) => {
 					#if VIDEO_LOG
@@ -195,7 +203,7 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Видео OnStopVideo: {0}", url);
 					BusEngine.Log.Info("Видео OnStopVideo: {0}", v.Url);
 					#endif
-					//v.Dispose();
+					v.Dispose();
 
 					if (videos.Length > 0) {
 						System.Array.Reverse(videos);
@@ -205,6 +213,8 @@ namespace BusEngine.Game {
 
 					if (videos.Length > 0) {
 						v.Play(videos[0]);
+					} else {
+						//Browser();
 					}
 				};
 				/** событие ручной остановки видео */
@@ -214,9 +224,11 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Видео OnEndVideo: {0}", url);
 					BusEngine.Log.Info("Видео OnEndVideo: {0}", v.Url);
 					#endif
-BusEngine.Log.Info("Видео OnEndVideo: {0}", videos.Length);
-					v.Pause();
+
+					//video.Pause();
+					v.Dispose();
 					//v.Dispose();
+					//v.Stop();
 
 					if (videos.Length > 0) {
 						System.Array.Reverse(videos);
@@ -226,6 +238,8 @@ BusEngine.Log.Info("Видео OnEndVideo: {0}", videos.Length);
 
 					if (videos.Length > 0) {
 						v.Play(videos[0]);
+					} else {
+						//Browser();
 					}
 				};
 				/** событие автоматической остановки видео */
@@ -249,6 +263,7 @@ BusEngine.Log.Info("Видео OnEndVideo: {0}", videos.Length);
 				video.Play(videos[0]);
 				//video.Stop();
 				BusEngine.UI.Canvas.WinForm.KeyDown += (o, e) => {
+					BusEngine.Log.Info("клавиатура клик video {0}", o.GetType());
 					// выкл видео
 					if (e.KeyCode == System.Windows.Forms.Keys.Space) {
 						if (video != null) {
@@ -264,14 +279,23 @@ BusEngine.Log.Info("Видео OnEndVideo: {0}", videos.Length);
 				};
 			}
 
-			// запускаем браузер
-			if (BusEngine.Engine.Platform == "WindowsEditor") {
-				BusEngine.Browser.Initialize("https://threejs.org/editor/");
-				BusEngine.Browser.Initialize("https://buslikdrev.by/");
-			} else if (1 == 0 && BusEngine.Engine.Platform == "WindowsLauncher") {
-				BusEngine.Browser.Initialize("index.html");
-				BusEngine.Browser.OnPostMessageStatic += OnPostMessage;
-			}
+			// запускаем браузер WinForm только в одном потоке =(
+			Browser();
+		}
+
+		private void Browser() {
+			//new System.Threading.Thread(new System.Threading.ThreadStart(delegate {
+			//System.Threading.Tasks.Task.Run(() => {
+				// запускаем браузер
+				if (BusEngine.Engine.Platform == "WindowsEditor") {
+					BusEngine.Browser.Initialize("https://threejs.org/editor/");
+					BusEngine.Browser.Initialize("https://buslikdrev.by/");
+				} else if (1 == 1 && BusEngine.Engine.Platform == "WindowsLauncher") {
+					BusEngine.Browser.Initialize("index.html");
+					BusEngine.Browser.OnPostMessageStatic += OnPostMessage;
+				}
+			//});
+			//})).Start();
 		}
 
 		/** событие нажатия любой кнопки */

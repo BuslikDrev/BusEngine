@@ -28,6 +28,7 @@ BusEngine.UI
 */
 	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
+		//[System.STAThread]
 		private static void Run() {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "WindowsLauncher";
@@ -122,6 +123,9 @@ BusEngine.UI
 			#if RUN_LOG
 			BusEngine.Log.Info("OnExit");
 			#endif
+
+			//System.Windows.Forms.Application.EnableVisualStyles();
+			//System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 			// закрываем приложение System.Windows.Forms
 			System.Windows.Forms.Application.Exit();
 		}
