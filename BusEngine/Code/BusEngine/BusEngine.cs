@@ -31,7 +31,7 @@ https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/
 //#define AUDIO_LOG
 //#define BROWSER_LOG
 //#define LOG_TYPE
-#define VIDEO_LOG
+//#define VIDEO_LOG
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -372,7 +372,7 @@ BusEngine.Log
 				this.Urls = urls;
 				this.Url = urls[0];
 				this.OnStop += (BusEngine.Audio a, string url) => {
-					#if VIDEO_LOG
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Audio OnStopVideo: {0}", url);
 					BusEngine.Log.Info("Audio OnStopVideo: {0}", a.Url);
 					#endif
@@ -389,7 +389,7 @@ BusEngine.Log
 					}
 				};
 				this.OnEnd += (BusEngine.Audio a, string url) => {
-					#if VIDEO_LOG
+					#if AUDIO_LOG
 					BusEngine.Log.Info("Audio OnStopVideo: {0}", url);
 					BusEngine.Log.Info("Audio OnStopVideo: {0}", a.Url);
 					#endif
@@ -540,7 +540,7 @@ BusEngine.Log
 					//System.Threading.Thread.Sleep(4000);
 				});
 				threads[xach].Name = xach;
-				BusEngine.Log.Info("Аудио Dispose() 1 {0}", xach);
+				//BusEngine.Log.Info("Аудио Dispose() 1 {0}", xach);
 				threads[xach].Start();
 			}
 		}
@@ -1984,7 +1984,15 @@ BusEngine.UI.Canvas
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео OnPlay {0}", Duration);
 			#endif
-			if (this.OnPlay != null && !WinForm.IsDisposed) {
+
+			System.Timers.Timer timer = new System.Timers.Timer(100);
+			timer.Elapsed += (to, te) => {
+				this.IsDispose = false;
+			};
+			timer.AutoReset = false;
+			timer.Enabled = true;
+
+			if (this.OnPlay != null) {
 				this.OnPlay.Invoke(this, Url);
 			}
 		}
@@ -1996,7 +2004,7 @@ BusEngine.UI.Canvas
 			BusEngine.Log.Info("Видео OnLoop {0}", Duration);
 			#endif
 			this.Play(Url);
-			if (this.OnLoop != null && !WinForm.IsDisposed) {
+			if (this.OnLoop != null) {
 				this.OnLoop.Invoke(this, Url);
 			}
 		}
@@ -2007,8 +2015,8 @@ BusEngine.UI.Canvas
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео OnPause {0}", Position);
 			#endif
-			if (OnPause != null && !WinForm.IsDisposed) {
-				OnPause.Invoke(this, Url);
+			if (this.OnPause != null) {
+				this.OnPause.Invoke(this, Url);
 			}
 		}
 		/** событие временной остановки видео */
@@ -2018,8 +2026,8 @@ BusEngine.UI.Canvas
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео OnStop {0}", Position);
 			#endif
-			if (OnStop != null && !WinForm.IsDisposed) {
-				OnStop.Invoke(this, Url);
+			if (this.OnStop != null) {
+				this.OnStop.Invoke(this, Url);
 			}
 		}
 		/** событие ручной остановки видео */
@@ -2029,7 +2037,10 @@ BusEngine.UI.Canvas
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео OnEnd {0}", Position);
 			#endif
-			if (this.OnEnd != null && !WinForm.IsDisposed) {
+			this.IsEnd = true;
+			this.IsDispose = false;
+			this.IsPlaying = false;
+			if (this.OnEnd != null) {
 				this.OnEnd.Invoke(this, this.Url);
 			}
 		}
@@ -2040,8 +2051,8 @@ BusEngine.UI.Canvas
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео OnDispose");
 			#endif
-			if (OnDispose != null) {
-				OnDispose.Invoke(this, Url);
+			if (this.OnDispose != null) {
+				this.OnDispose.Invoke(this, Url);
 			}
 		}
 		/** событие уничтожения видео */
@@ -2079,7 +2090,6 @@ BusEngine.UI.Canvas
 					BusEngine.Log.Info("Video OnStopVideo: {0}", url);
 					BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
 					#endif
-					this.Dispose();
 
 					if (this.Urls.Length > 0) {
 						System.Array.Reverse(this.Urls);
@@ -2094,9 +2104,16 @@ BusEngine.UI.Canvas
 			}
 		}
 		public Video Play() {
-			return Play(Url);
+			return this.Play(Url);
 		}
+
+		private bool IsPlaying = false;
+
 		public Video Play(string url = "") {
+			if (this.IsPlaying) {
+				return this;
+			}
+
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео Play()");
 			#endif
@@ -2120,312 +2137,219 @@ BusEngine.UI.Canvas
 				#endif
 
 				try {
-					// https://learn.microsoft.com/en-us/previous-versions/windows/desktop/bb281556(v=vs.85)
-					//_mediaPlayer = new Microsoft.DirectX.AudioVideoPlayback.Video(url);
-
-					if (_VLC != null) {
-						BusEngine.Log.Info("_VLC +++++++++++++++ {0}", _VLC);
-						//_VLC.Dispose();
-						_VLC = null;
-					}
-					if (_mediaPlayer != null) {
-						BusEngine.Log.Info("_mediaPlayer +++++++++++++++ {0}", _mediaPlayer);
-						//_mediaPlayer.Dispose();
-						_mediaPlayer = null;
-					}
-
-					if (WinForm != null) {
-						BusEngine.Log.Info("WinForm +++++++++++++++ {0}", WinForm);
-						/* if (BusEngine.UI.Canvas.WinForm.Controls.Contains(WinForm)) {
-							BusEngine.UI.Canvas.WinForm.Controls.Remove(WinForm);
-						} */
-						//BusEngine.UI.Canvas.WinForm.Controls.Clear();
-						//BusEngine.UI.Canvas.WinForm.Update();
-						BusEngine.UI.Canvas.WinForm.Refresh();
-						//BusEngine.UI.Canvas.WinForm.Controls.Remove(WinForm);
-						//WinForm.Dispose();
-						//WinForm = null;
-					}
-
+					this.IsPlaying = true;
 					// https://code.videolan.org/videolan/LibVLCSharp/-/blob/master/samples/LibVLCSharp.WinForms.Sample/Form1.cs
 					// https://github.com/videolan/libvlcsharp#quick-api-overview
 					// https://codesailer.com/tutorials/simple_video_player/
-					if (_VLC == null) {
-						_VLC = new LibVLCSharp.Shared.LibVLC(false/* , new[] { "--verbose=0" } */);
-						/* _VLC.Log += (o, e) => {
-							BusEngine.Log.Info("1 Log 1");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						}; */
-						_VLC.CloseLogFile();
-						_VLC.ClearLibVLCError();
-						_VLC.SetUserAgent(BusEngine.UI.Canvas.WinForm.Text, BusEngine.Engine.Device.UserAgent);
-					}
-
-					if (_mediaPlayer == null) {
-						LibVLCSharp.Shared.Media media = new LibVLCSharp.Shared.Media(_VLC, new System.Uri(url));
-						_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(media);
-						media.Dispose();
-						_mediaPlayer.Media.MetaChanged += (o, e) => {
-							BusEngine.Log.Info("5 MetaChanged 5");
-						};
-						_mediaPlayer.Media.ParsedChanged += (o, e) => {
-							BusEngine.Log.Info("5 ParsedChanged 5");
-						};
-						_mediaPlayer.Media.SubItemAdded += (o, e) => {
-							BusEngine.Log.Info("5 SubItemAdded 5");
-						};
-						_mediaPlayer.Media.DurationChanged += (o, e) => {
-							BusEngine.Log.Info("5 DurationChanged 5");
-						};
-						_mediaPlayer.Media.MediaFreed += (o, e) => {
-							BusEngine.Log.Info("5 MediaFreed 5");
-						};
-						_mediaPlayer.Media.StateChanged += (o, e) => {
-							BusEngine.Log.Info("5 StateChanged 5 {0}", e.State.ToString());
-							if (e.State.ToString() == "Ended") {
-								Stop();
-								System.Threading.Tasks.Task.Delay(1000).Wait();
-			if (this.OnEnd != null && !WinForm.IsDisposed) {
-				this.OnEnd.Invoke(this, this.Url);
-			}
-								
-							}
-						};
-						_mediaPlayer.Media.SubItemTreeAdded += (o, e) => {
-							BusEngine.Log.Info("5 SubItemTreeAdded 5");
-						};
-
-						/* foreach (System.Reflection.MethodInfo method in _mediaPlayer.GetType().GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-							BusEngine.Log.Info("Видео _mediaPlayer.Media GetMethod {0}", method.Name);
-						}
-						foreach (System.Reflection.PropertyInfo method in _mediaPlayer.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-							BusEngine.Log.Info("Видео _mediaPlayer.Media Property {0}", method.Name + " " + method.GetValue(_mediaPlayer));
-						}
-						foreach (System.Reflection.FieldInfo method in _mediaPlayer.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-							BusEngine.Log.Info("Видео _mediaPlayer.Media Field {0}", method + " " + _mediaPlayer.GetType().GetField(method.Name));
-						} */
-
-						BusEngine.Log.Info("Видео Mrl {0}", _mediaPlayer.Media.Mrl);
-						BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-						BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-						BusEngine.Log.Info("Видео Position {0}", _mediaPlayer.Position);
-
-						Duration = _mediaPlayer.Media.Duration;
-						_mediaPlayer.Time = (long)position;
-						_mediaPlayer.Volume = Volume; // 0 - 100
-						_mediaPlayer.Mute = Mute;
-						_mediaPlayer.EnableKeyInput = true;
-						_mediaPlayer.Title = -1;
-
-						_mediaPlayer.Playing += OnPlaying;
-						if (Loop) {
-							_mediaPlayer.EndReached += OnLooping;
-						}
-						_mediaPlayer.Paused += OnPausing;
-						_mediaPlayer.Stopped += OnStopping;
-						//_mediaPlayer.Disposed += OnDisposing;
-						_mediaPlayer.EndReached += OnEnding;
-
-						/* _mediaPlayer.MediaChanged += (o, e) => {
-							BusEngine.Log.Info("4 MediaChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.NothingSpecial += (o, e) => {
-							BusEngine.Log.Info("4 NothingSpecial 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Opening += (o, e) => {
-							BusEngine.Log.Info("4 Opening 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Buffering += (o, e) => {
-							BusEngine.Log.Info("4 Buffering 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						}; */
-						/* _mediaPlayer.Playing += (o, e) => {
-							BusEngine.Log.Info("4 Playing 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						}; */
-						/* _mediaPlayer.Paused += (o, e) => {
-							BusEngine.Log.Info("4 Paused 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Stopped += (o, e) => {
-							BusEngine.Log.Info("4 Stopped 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Forward += (o, e) => {
-							BusEngine.Log.Info("4 Forward 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Backward += (o, e) => {
-							BusEngine.Log.Info("4 Backward 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.EndReached += (o, e) => {
-							BusEngine.Log.Info("4 EndReached 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.EncounteredError += (o, e) => {
-							BusEngine.Log.Info("4 EncounteredError 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.SeekableChanged += (o, e) => {
-							BusEngine.Log.Info("4 SeekableChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.PausableChanged += (o, e) => {
-							BusEngine.Log.Info("4 PausableChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.TitleChanged += (o, e) => {
-							BusEngine.Log.Info("4 TitleChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.ChapterChanged += (o, e) => {
-							BusEngine.Log.Info("4 ChapterChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.SnapshotTaken += (o, e) => {
-							BusEngine.Log.Info("4 SnapshotTaken 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.LengthChanged += (o, e) => {
-							BusEngine.Log.Info("4 LengthChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Vout += (o, e) => {
-							BusEngine.Log.Info("4 Vout 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.ScrambledChanged += (o, e) => {
-							BusEngine.Log.Info("4 ScrambledChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.ESAdded += (o, e) => {
-							BusEngine.Log.Info("4 ESAdded 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.ESDeleted += (o, e) => {
-							BusEngine.Log.Info("4 ESDeleted 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.ESSelected += (o, e) => {
-							BusEngine.Log.Info("4 ESSelected 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.AudioDevice += (o, e) => {
-							BusEngine.Log.Info("4 AudioDevice 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Corked += (o, e) => {
-							BusEngine.Log.Info("4 Corked 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Uncorked += (o, e) => {
-							BusEngine.Log.Info("4 Uncorked 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Muted += (o, e) => {
-							BusEngine.Log.Info("4 Muted 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						};
-						_mediaPlayer.Unmuted += (o, e) => {
-							BusEngine.Log.Info("4 Unmuted 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						}; */
-						/* _mediaPlayer.TimeChanged += (o, e) => {
-							if (_mediaPlayer.Time+2000 > _mediaPlayer.Media.Duration) {
-								BusEngine.Log.Info("4 TimeChanged 4 {0}", e.Time);
-								BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-								BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-								BusEngine.Log.Info("Видео Position {0}", _mediaPlayer.Position);
-								BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-								//this.Pause();
-								Stop();
-								if (OnStop != null) {
-									OnStop.Invoke(this, Url);
-								}
-								Dispose();
-							}
-						}; */
-						/* _mediaPlayer.PositionChanged += (o, e) => {
-							BusEngine.Log.Info("4 PositionChanged 4 {0}", e.Position);
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Position {0}", _mediaPlayer.Position);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						}; */
-						/* _mediaPlayer.VolumeChanged += (o, e) => {
-							BusEngine.Log.Info("4 VolumeChanged 4");
-							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
-							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
-							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
-						}; */
-					}
-
 					if (WinForm == null) {
 						WinForm = new LibVLCSharp.WinForms.VideoView();
 					}
 
-					
+					((System.ComponentModel.ISupportInitialize)(WinForm)).BeginInit();
+					BusEngine.UI.Canvas.WinForm.SuspendLayout();
+
+					#if VIDEO_LOG
+					if (_VLC != null) {
+						BusEngine.Log.Info("_VLC +++++++++++++++ {0}", _VLC);
+					}
+					if (_mediaPlayer != null) {
+						BusEngine.Log.Info("_mediaPlayer +++++++++++++++ {0}", _mediaPlayer);
+					}
+					if (WinForm != null) {
+						BusEngine.Log.Info("WinForm +++++++++++++++ {0}", WinForm);
+						BusEngine.Log.Info("WinForm +++++++++++++++ {0}", WinForm.IsDisposed);
+					}
+					#endif
+					#if VIDEO_LOG
+					_VLC = new LibVLCSharp.Shared.LibVLC(false, new[] { "--verbose=2" });
+					#else
+					_VLC = new LibVLCSharp.Shared.LibVLC(false);
+					#endif
+					/* _VLC.Log += (o, e) => {
+						BusEngine.Log.Info("1 Log 1 {0}", e.Message);
+					}; */
+					_VLC.CloseLogFile();
+					_VLC.ClearLibVLCError();
+					_VLC.SetUserAgent(BusEngine.UI.Canvas.WinForm.Text, BusEngine.Engine.Device.UserAgent);
+
+
+					LibVLCSharp.Shared.Media media = new LibVLCSharp.Shared.Media(_VLC, new System.Uri(url));
+					_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(media);
+					media.Dispose();
+					#if VIDEO_LOG
+					_mediaPlayer.Media.MetaChanged += (o, e) => {
+						BusEngine.Log.Info("5 MetaChanged 5");
+					};
+					_mediaPlayer.Media.ParsedChanged += (o, e) => {
+						BusEngine.Log.Info("5 ParsedChanged 5");
+					};
+					_mediaPlayer.Media.SubItemAdded += (o, e) => {
+						BusEngine.Log.Info("5 SubItemAdded 5");
+					};
+					_mediaPlayer.Media.DurationChanged += (o, e) => {
+						BusEngine.Log.Info("5 DurationChanged 5");
+					};
+					_mediaPlayer.Media.MediaFreed += (o, e) => {
+						BusEngine.Log.Info("5 MediaFreed 5");
+					};
+					_mediaPlayer.Media.StateChanged += (o, e) => {
+						BusEngine.Log.Info("5 StateChanged 5 {0}", e.State.ToString());
+						if (e.State.ToString() == "Ended") {
+/* 							Stop();
+							System.Threading.Tasks.Task.Delay(1000).Wait(); */
+							/* if (this.OnEnd != null && !WinForm.IsDisposed) {
+								this.OnEnd.Invoke(this, this.Url);
+							} */
+						}
+					};
+					_mediaPlayer.Media.SubItemTreeAdded += (o, e) => {
+						BusEngine.Log.Info("5 SubItemTreeAdded 5");
+					};
+
+					/* foreach (System.Reflection.EventInfo method in _mediaPlayer.GetType().GetEvents(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
+						BusEngine.Log.Info("Видео _mediaPlayer GetEvent {0}", method.Name);
+					}
+					foreach (System.Reflection.MethodInfo method in _mediaPlayer.GetType().GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
+						BusEngine.Log.Info("Видео _mediaPlayer.Media GetMethod {0}", method.Name);
+					}
+					foreach (System.Reflection.PropertyInfo method in _mediaPlayer.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
+						BusEngine.Log.Info("Видео _mediaPlayer.Media Property {0}", method.Name + " " + method.GetValue(_mediaPlayer));
+					}
+					foreach (System.Reflection.FieldInfo method in _mediaPlayer.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
+						BusEngine.Log.Info("Видео _mediaPlayer.Media Field {0}", method + " " + _mediaPlayer.GetType().GetField(method.Name));
+					} */
+
+					BusEngine.Log.Info("Видео Mrl {0}", _mediaPlayer.Media.Mrl);
+					BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
+					BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
+					BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
+					BusEngine.Log.Info("Видео Position {0}", _mediaPlayer.Position);
+					#endif
+
+					Duration = _mediaPlayer.Media.Duration;
+					_mediaPlayer.Time = (long)position;
+					_mediaPlayer.Volume = Volume; // 0 - 100
+					_mediaPlayer.Mute = Mute;
+					_mediaPlayer.EnableKeyInput = true;
+					_mediaPlayer.Title = -1;
+
+					_mediaPlayer.Playing += OnPlaying;
+					if (Loop) {
+						_mediaPlayer.EndReached += OnLooping;
+					}
+					_mediaPlayer.Paused += OnPausing;
+					_mediaPlayer.Stopped += OnStopping;
+					//_mediaPlayer.Disposed += OnDisposing;
+					_mediaPlayer.EndReached += OnEnding;
+
+					/* _mediaPlayer.MediaChanged += (o, e) => {
+						BusEngine.Log.Info("4 MediaChanged 4");
+					};
+					_mediaPlayer.NothingSpecial += (o, e) => {
+						BusEngine.Log.Info("4 NothingSpecial 4");
+					};
+					_mediaPlayer.Opening += (o, e) => {
+						BusEngine.Log.Info("4 Opening 4");
+					};
+					_mediaPlayer.Buffering += (o, e) => {
+						BusEngine.Log.Info("4 Buffering 4");
+					}; */
+					/* _mediaPlayer.Playing += (o, e) => {
+						BusEngine.Log.Info("4 Playing 4");
+					}; */
+					/* _mediaPlayer.Paused += (o, e) => {
+						BusEngine.Log.Info("4 Paused 4");
+					};
+					_mediaPlayer.Stopped += (o, e) => {
+						BusEngine.Log.Info("4 Stopped 4");
+					};
+					_mediaPlayer.Forward += (o, e) => {
+						BusEngine.Log.Info("4 Forward 4");
+					};
+					_mediaPlayer.Backward += (o, e) => {
+						BusEngine.Log.Info("4 Backward 4");
+					};
+					_mediaPlayer.EndReached += (o, e) => {
+						BusEngine.Log.Info("4 EndReached 4");
+					};
+					_mediaPlayer.EncounteredError += (o, e) => {
+						BusEngine.Log.Info("4 EncounteredError 4");
+					};
+					_mediaPlayer.SeekableChanged += (o, e) => {
+						BusEngine.Log.Info("4 SeekableChanged 4");
+					};
+					_mediaPlayer.PausableChanged += (o, e) => {
+						BusEngine.Log.Info("4 PausableChanged 4");
+					};
+					_mediaPlayer.TitleChanged += (o, e) => {
+						BusEngine.Log.Info("4 TitleChanged 4");
+					};
+					_mediaPlayer.ChapterChanged += (o, e) => {
+						BusEngine.Log.Info("4 ChapterChanged 4");
+					};
+					_mediaPlayer.SnapshotTaken += (o, e) => {
+						BusEngine.Log.Info("4 SnapshotTaken 4");
+					};
+					_mediaPlayer.LengthChanged += (o, e) => {
+						BusEngine.Log.Info("4 LengthChanged 4");
+					};
+					_mediaPlayer.Vout += (o, e) => {
+						BusEngine.Log.Info("4 Vout 4");
+					};
+					_mediaPlayer.ScrambledChanged += (o, e) => {
+						BusEngine.Log.Info("4 ScrambledChanged 4");
+					};
+					_mediaPlayer.ESAdded += (o, e) => {
+						BusEngine.Log.Info("4 ESAdded 4");
+					};
+					_mediaPlayer.ESDeleted += (o, e) => {
+						BusEngine.Log.Info("4 ESDeleted 4");
+					};
+					_mediaPlayer.ESSelected += (o, e) => {
+						BusEngine.Log.Info("4 ESSelected 4");
+					};
+					_mediaPlayer.AudioDevice += (o, e) => {
+						BusEngine.Log.Info("4 AudioDevice 4");
+					};
+					_mediaPlayer.Corked += (o, e) => {
+						BusEngine.Log.Info("4 Corked 4");
+					};
+					_mediaPlayer.Uncorked += (o, e) => {
+						BusEngine.Log.Info("4 Uncorked 4");
+					};
+					_mediaPlayer.Muted += (o, e) => {
+						BusEngine.Log.Info("4 Muted 4");
+					};
+					_mediaPlayer.Unmuted += (o, e) => {
+						BusEngine.Log.Info("4 Unmuted 4");
+					}; */
+					/* _mediaPlayer.TimeChanged += (o, e) => {
+						if (_mediaPlayer.Time+2000 > _mediaPlayer.Media.Duration) {
+							BusEngine.Log.Info("4 TimeChanged 4 {0}", e.Time);
+							BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
+							BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
+							BusEngine.Log.Info("Видео Position {0}", _mediaPlayer.Position);
+							BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
+							//this.Pause();
+							Stop();
+							if (OnStop != null) {
+								OnStop.Invoke(this, Url);
+							}
+							Dispose();
+						}
+					}; */
+					/* _mediaPlayer.PositionChanged += (o, e) => {
+						BusEngine.Log.Info("4 PositionChanged 4 {0}", e.Position);
+						BusEngine.Log.Info("Видео ПОЛНОЕ ВРЕМЯ {0}", _mediaPlayer.Media.Duration);
+						BusEngine.Log.Info("Видео ВРЕМЯ {0}", _mediaPlayer.Time);
+						BusEngine.Log.Info("Видео Position {0}", _mediaPlayer.Position);
+						BusEngine.Log.Info("Видео Fps {0}", _mediaPlayer.Fps);
+					}; */
+					/* _mediaPlayer.VolumeChanged += (o, e) => {
+						BusEngine.Log.Info("4 VolumeChanged 4");
+					}; */
+
+
 					WinForm.MediaPlayer = _mediaPlayer;
 					WinForm.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
 					WinForm.BackColor = System.Drawing.Color.Black;
@@ -2443,41 +2367,21 @@ BusEngine.UI.Canvas
 					//BusEngine.UI.Canvas.WinForm.Controls.Clear();
 					//BusEngine.UI.Canvas.WinForm.Update();
 					//BusEngine.UI.Canvas.WinForm.Refresh();
-					//if (!BusEngine.UI.Canvas.WinForm.Controls.Contains(WinForm)) {
+					//BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
+					
+					
+					if (!BusEngine.UI.Canvas.WinForm.Controls.Contains(WinForm)) {
+						#if VIDEO_LOG
+						BusEngine.Log.Info("WinForm eeeeeeeeeeeeee {0}", WinForm.GetHashCode());
+						#endif
 						BusEngine.UI.Canvas.WinForm.Controls.Add(WinForm);
-					//}
+						//BusEngine.UI.Canvas.WinForm.Controls.AddRange(new System.Windows.Forms.Control[]{WinForm});
+					}
+
 					((System.ComponentModel.ISupportInitialize)(WinForm)).EndInit();
 					BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
-					//((System.ComponentModel.ISupportInitialize)(WinForm)).BeginInit();
-					//SuspendLayout();
-
-
-					/* System.Timers.Timer Timer = new System.Timers.Timer(100);
-					Timer.Elapsed += () => {
-						
-					};
-					Timer.AutoReset = false;
-					Timer.Enabled = true; */
-					//BusEngine.UI.Canvas.WinForm.Controls.AddRange(new System.Windows.Forms.Control[]{WinForm});
-
 					_mediaPlayer.Play();
-
-					/* foreach (System.Reflection.EventInfo method in _VLC.GetType().GetEvents(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-						BusEngine.Log.Info("Видео _VLC GetEvent {0}", method.Name);
-					}
-					foreach (System.Reflection.EventInfo method in _mediaPlayer.GetType().GetEvents(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-						BusEngine.Log.Info("Видео _mediaPlayer GetEvent {0}", method.Name);
-					} */
-					/* foreach (System.Reflection.MethodInfo method in _mediaPlayer.Media.GetType().GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-						BusEngine.Log.Info("Видео _mediaPlayer GetMethod {0}", method);
-					}
-					foreach (System.Reflection.PropertyInfo method in _mediaPlayer.Media.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-						BusEngine.Log.Info("Видео _mediaPlayer Property {0}", method.Name + " " + method.GetValue(_mediaPlayer.Media));
-					}
-					foreach (System.Reflection.FieldInfo method in _mediaPlayer.Media.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
-						BusEngine.Log.Info("Видео _mediaPlayer Field {0}", method + " " + _mediaPlayer.Media.GetType().GetField(method.Name));
-					} */
-
+					//Disposed = false;
 
 					//_mediaPlayer.Open(url, true);
 					//_mediaPlayer.Owner = BusEngine.UI.Canvas.WinForm;
@@ -2528,11 +2432,13 @@ BusEngine.UI.Canvas
 		/** функция запуска видео */
 
 		/** функция временной остановки видео */
+		//[System.STAThread]
 		public void Pause() {
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео Pause()");
 			#endif
-			if (WinForm != null && !WinForm.IsDisposed) {
+
+			if (!Disposed && _mediaPlayer != null) {
 				//_mediaPlayer.Pause();
 				if (!_mediaPlayer.CanPause) {
 					//WinForm.MediaPlayer.Play();
@@ -2546,16 +2452,22 @@ BusEngine.UI.Canvas
 		/** функция временной остановки видео */
 
 		/** функция остановки видео */
+		//[System.STAThread]
 		public void Stop() {
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео Stop()");
 			#endif
-			
-			if (WinForm != null && !WinForm.IsDisposed) {
-				//WinForm.MediaPlayer.Stop();
-				_mediaPlayer.Stop();
-				//BusEngine.UI.Canvas.WinForm.Controls.Remove(WinForm);
-				
+
+			if (!this.IsDispose) {
+				//WinForm.MediaPlayer.Stop(); // не работает
+				//_mediaPlayer.Stop(); // не работает
+				this.Dispose();
+			}
+
+			this.IsPlaying = false;
+
+			if (this.OnStop != null) {
+				this.OnStop.Invoke(this, Url);
 			}
 		}
 		/** функция остановки видео */
@@ -2563,87 +2475,165 @@ BusEngine.UI.Canvas
 		/** функция уничтожения объекта видео */
 		// https://metanit.com/sharp/tutorial/8.2.php
 		private bool Disposed = false;
+		private bool IsDispose = false;
+		private bool IsEnd = false;
 
+		//[System.STAThread]
 		public void Dispose() {
-			if (WinForm != null && !WinForm.IsDisposed) {
-				// async
-				//new System.Threading.Thread(() => {
-					// освобождаем неуправляемые ресурсы
-					Dispose(true);
+			#if VIDEO_LOG
+			BusEngine.Log.Info("adeeeeeeeeeeeeee {0}", WinForm.GetHashCode());
+			#endif
 
-					// подавляем финализацию
-					System.GC.SuppressFinalize(this);
-				//}).Start();
-			}
+			Dispose(true);
+
+			System.GC.SuppressFinalize(this);
 		}
 
 		protected virtual void Dispose(bool disposing) {
+			if (this.IsDispose || WinForm.IsDisposed) {
+				return;
+			}
+			this.IsDispose = true;
+
+			System.Timers.Timer timer = new System.Timers.Timer(300);
+			timer.Elapsed += (to, te) => {
+				if (!this.IsPlaying) {
+					BusEngine.UI.Canvas.WinForm.Controls.Remove(WinForm);
+				}
+			};
+			timer.AutoReset = false;
+			timer.Enabled = true;
+
+			BusEngine.UI.Canvas.WinForm.SuspendLayout();
+
+			//BusEngine.UI.Canvas.WinForm.Update();
+			//BusEngine.UI.Canvas.WinForm.Refresh();
+
 			if (Disposed) {
 				// освобождаем неуправляемые объекты
-				if (WinForm != null && !WinForm.IsDisposed) {
-					#if VIDEO_LOG
-					BusEngine.Log.Info("Видео Dispose() 1 {0}", Disposed);
-					#endif
-					
-					//WinForm.MediaPlayer.Dispose();
-					WinForm.Dispose();
-					WinForm = null;
-					if (_mediaPlayer != null) {
-						new System.Threading.Thread(() => {
-						BusEngine.Log.Info("Видео Dispose() 3");
-						_mediaPlayer.Media.Dispose();
+				#if VIDEO_LOG
+				BusEngine.Log.Info("Видео Dispose(0) {0}", IsDispose);
+				BusEngine.Log.Info("Видео Dispose(0) {0}", IsEnd);
+				BusEngine.Log.Info("deeeeeeeeeeeeee {0}", WinForm.GetHashCode());
+				#endif
+
+				_mediaPlayer.Playing -= OnPlaying;
+				if (Loop) {
+					_mediaPlayer.EndReached -= OnLooping;
+				}
+				_mediaPlayer.Paused -= OnPausing;
+				_mediaPlayer.Stopped -= OnStopping;
+				//_mediaPlayer.Disposed -= OnDisposing;
+				_mediaPlayer.EndReached -= OnEnding;
+
+				if (this.IsEnd) {
+					this.IsEnd = false;
+					System.Threading.Tasks.Task.Run(() => {
+						_mediaPlayer.Media.Dispose(); // защитить от двойного
 						_mediaPlayer.Dispose();
-						_mediaPlayer = null;
-						}).Start();
-					}
-					if (_VLC != null) {
-						BusEngine.Log.Info("Видео Dispose() 4");
-						_VLC.Dispose();
-						_VLC = null;
-					}
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Видео Dispose(0) 1");
+						#endif
+					});
+				} else {
+					_mediaPlayer.Media.Dispose(); // защитить от двойного
+					_mediaPlayer.Dispose();
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео Dispose(0) 1");
+					#endif
 				}
 
-				return;
+				if (_VLC != null) {
+					_VLC.Dispose(); // защитить от двойного
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео Dispose(0) 2");
+					#endif
+				}
+
+				WinForm.MediaPlayer.Dispose();
+				//BusEngine.UI.Canvas.WinForm.Controls.Remove(WinForm);
+				WinForm.Dispose();
+				#if VIDEO_LOG
+				BusEngine.Log.Info("Видео Dispose(0) 3");
+				#endif
+
+				//return;
 			} else {
 				// освобождаем управляемые объекты
 				if (disposing) {
-					//lock (Lock) {
-					if (WinForm != null && !WinForm.IsDisposed) {
-						#if VIDEO_LOG
-						BusEngine.Log.Info("Видео Dispose() 2 {0}", Disposed);
-						#endif
-						BusEngine.UI.Canvas.WinForm.Controls.Remove(WinForm);
-						//WinForm.MediaPlayer.Dispose();
-						WinForm.Dispose();
-						WinForm = null;
-						if (_mediaPlayer != null) {
-							BusEngine.Log.Info("Видео Dispose() 3");
-							_mediaPlayer.Media.Dispose();
-							_mediaPlayer.Dispose();
-							_mediaPlayer = null;
-						}
-						if (_VLC != null) {
-							BusEngine.Log.Info("Видео Dispose() 4");
-							_VLC.Dispose();
-							_VLC = null;
-						}
-						Disposed = true;
+					Disposed = true;
+
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео Dispose() {0}", IsDispose);
+					BusEngine.Log.Info("Видео Dispose() {0}", IsEnd);
+					BusEngine.Log.Info("deeeeeeeeeeeeee {0}", WinForm.GetHashCode());
+					#endif
+
+					_mediaPlayer.Playing -= OnPlaying;
+					if (Loop) {
+						_mediaPlayer.EndReached -= OnLooping;
 					}
-					//}
+					_mediaPlayer.Paused -= OnPausing;
+					_mediaPlayer.Stopped -= OnStopping;
+					//_mediaPlayer.Disposed -= OnDisposing;
+					//_mediaPlayer.EndReached -= OnEnding;
+
+					if (this.IsEnd) {
+						this.IsEnd = false;
+						System.Threading.Tasks.Task.Run(() => {
+							_mediaPlayer.Media.Dispose(); // защитить от двойного
+							_mediaPlayer.Dispose();
+							#if VIDEO_LOG
+							BusEngine.Log.Info("Видео Dispose() 1");
+							#endif
+						});
+					} else {
+						_mediaPlayer.Media.Dispose(); // защитить от двойного
+						_mediaPlayer.Dispose();
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Видео Dispose() 1");
+						#endif
+					}
+
+					if (_VLC != null) {
+						_VLC.Dispose(); // защитить от двойного
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Видео Dispose() 2");
+						#endif
+					}
+
+					WinForm.MediaPlayer.Dispose();
+					//BusEngine.UI.Canvas.WinForm.Controls.Remove(WinForm);
+					WinForm.Dispose();
+					#if VIDEO_LOG
+					BusEngine.Log.Info("Видео Dispose() 3");
+					#endif
 				}
 			}
+
+			BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
 		}
 		/** функция уничтожения объекта видео */
 
 		/** функция уничтожения объекта видео */
 		~Video() {
 			// async
-			new System.Threading.Thread(new System.Threading.ThreadStart(delegate {
+			//new System.Threading.Thread(new System.Threading.ThreadStart(delegate {
 				#if VIDEO_LOG
 				BusEngine.Log.Info("Видео ========== Finalize()");
 				#endif
-				Dispose(false);
-			})).Start();
+				/* Dispose(false);
+				_VLC = null;
+				_mediaPlayer = null;
+				WinForm = null;
+				OnPlay = null;
+				OnLoop = null;
+				OnPause = null;
+				OnStop = null;
+				OnEnd = null;
+				OnDispose = null;
+				OnNotFound = null; */
+			//})).Start();
 		}
 		/** функция уничтожения объекта видео */
 	}

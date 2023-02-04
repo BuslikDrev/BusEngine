@@ -112,22 +112,6 @@
       <HintPath>BusPlugins\izrik\FbxSharp.dll</HintPath>
       <Private>False</Private>
     </Reference> -->
-    <!-- <Reference Include="AxInterop.WMPLib">
-      <HintPath>BusPlugins\WMPLib\AxInterop.WMPLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Interop.WMPLib">
-      <HintPath>BusPlugins\WMPLib\Interop.WMPLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference> -->
-    <!-- <Reference Include="PresentationCore">
-      <HintPath>BusPlugins\System.Windows.Media\PresentationCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="WindowsBase">
-      <HintPath>BusPlugins\System.Windows.Media\WindowsBase.dll</HintPath>
-      <Private>False</Private>
-    </Reference> -->
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
