@@ -228,23 +228,41 @@ BusEngine.language = {
 			console.log(e);
 		}, false); */
 
-		setTimeout(function() {
-			element = document.querySelector('.goog-te-banner-frame.skiptranslate');
+		if (!BusEngine.cookie.has('BusEngineLangHorizontal')) {
+			var timertick = 0;
+			var timerId = setTimeout(function tick() {
+				timertick++;
+				element = document.querySelector('iframe[id*=".container"]');
 
-			if (element && !BusEngine.cookie.has('BusEngineLangHorizontal')) {
-				document.body.classList.remove('languagefix');
-				element.style['display'] = 'block';
-				element.parentNode.style['display'] = 'block';
+				if (element) {
+					//clearTimeout(timerId);
+					document.body.classList.remove('languagefix');
+					element.style['display'] = 'block';
+					element.parentNode.style['display'] = 'block';
 
-				var e = element.contentWindow.document.querySelector('.goog-close-link');
+					var e = element.contentWindow.document.querySelector('a[id*=".close"], a[id*=".close"] img, .goog-close-link');
 
-				if (e) {
-					e.addEventListener('click', function(e) {
-						BusEngine.cookie.set('BusEngineLangHorizontal', 'none', BusEngine.language.setting.domain);
-					});
+					if (e) {
+						var s = document.createElement('a');
+						s.style = e.style;
+						s.style['margin'] = '0 10px';
+						s.style['cursor'] = 'pointer';
+						s.innerHTML = e.innerHTML;
+						s.id = 'fuckgoogle';
+						e.style['display'] = 'none';
+						e.parentNode.appendChild(s);
+						s.addEventListener('click', function(e) {
+							document.body.classList.add('languagefix');
+							BusEngine.cookie.set('BusEngineLangHorizontal', 'none', BusEngine.language.setting.domain);
+						});
+					}
+				} else {
+					if (timertick < 20) {
+						timerId = setTimeout(tick, 100);
+					}
 				}
-			}
-		}, 500);
+			}, 100);
+		}
 
 		element = document.querySelector('#language select');
 
