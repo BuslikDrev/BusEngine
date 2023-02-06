@@ -137,8 +137,8 @@
           </div>
           <p>BusEngine.dll</p>
           <h1>BusEngine.Video (Class)</h1>
-          <p>Класс отвечающий за работу с Видео файлами (mp4, wmv, ogv). Это Видео плеер движка. С помощью этого класса можно будет управлять всеми Видео (видео при старте движка, между уровней, в текстурах и т.д.).<br>В основе BusEngine.Video лежит библиотека <a href="https://github.com/videolan" rel="noreferrer noopener nofollow" target="_blank">VideoLAN | libvlcsharp</a>.</p>
-          <p><b>Класс тестируется</b>, библиотека VideoLAN | libvlcsharp имеет косяк с уничтожением объекта (когда видео самостоятельно отключается, то оперативная память не освобождается. Если вручную остановить, то нормально, но всё-равно 5-10 Мб библиотека требует на постоянной основе). Чуть позже уберу использование события остановки видео от библиотеки и напишу обходной вариант сделав таймер вызова события остановки видео по истечению времени. Тажже некоторые функции ещё не работают (повтор видео и массив ссылок).</p>
+          <p>Класс отвечающий за работу с Видео файлами (mp4, wmv, ogv). Это Видео плеер движка. С помощью этого класса можно будет управлять всеми Видео (видео при старте движка, между уровней, в текстурах и т.д.).<br>В основе BusEngine.Video лежит библиотека <a href="https://github.com/videolan" rel="noreferrer noopener nofollow" target="_blank">VideoLAN | libvlcsharp</a>. BusEngine.Video работает после загрузки BusEngine.UI.Canvas (после срабатывания события "<a href="Game.MyPlugin.html#BusEngine.Plugin.InitializeCanvas" target="_blank">BusEngine.Plugin.InitializeCanvas()</a>").</p>
+          <p><b>Класс тестируется</b>, библиотека VideoLAN | libvlcsharp имеет косяк с уничтожением объекта (5-10 Мб библиотека требует на постоянной основе). Тажже некоторые функции ещё не работают (повтор видео и массив ссылок).</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
@@ -147,7 +147,7 @@
                 <td>Метод конструктор (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания после вызова "<a href="#BusEngine.Video.Play" title="BusEngine.Video.Play">_video.Play()</a>". Также можно указать string[] массив строк, тогда каждое видео будет проигривать по порядку, вызов "<a href="#BusEngine.Video.Dispose" title="BusEngine.Video.Dispose">_video.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Video.Stop" title="BusEngine.Video.Stop">_video.Stop()</a>" текущее. Поддерживаемые форматы: mp4, wmv, ogv.</td>
               </tr>
               <tr id="BusEngine.Video.Play">
-                <td><a href="#BusEngine.Video.Play">(void)_video.Play(null|string|string[])</a></td>
+                <td><a href="#BusEngine.Video.Play">(BusEngine.Video)_video.Play(null|string|string[])</a></td>
                 <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания сначала или момента паузы. Также можно указать string[] массив строк, тогда каждое видео будет проигривать по порядку, вызов "<a href="#BusEngine.Video.Dispose" title="BusEngine.Video.Dispose">_video.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Video.Stop" title="BusEngine.Video.Stop">_video.Stop()</a>" текущее. Поддерживаемые форматы: mp4, wmv, ogv.</td>
               </tr>
               <tr id="BusEngine.Video.Pause">
