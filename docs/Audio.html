@@ -137,7 +137,7 @@
           </div>
           <p>BusEngine.dll</p>
           <h1>BusEngine.Audio (Class)</h1>
-          <p>Класс отвечающий за работу с Аудио файлами (mp3, wav, ogg). Это Аудио плеер движка. С помощью этого класса можно будет управлять всеми Аудио (фоновая музыка, разговоры, шумы и т.д.).</p><br>В основе BusEngine.Audio лежит библиотека <a href="https://github.com/videolan" rel="noreferrer noopener nofollow" target="_blank">VideoLAN | libvlcsharp</a>.</p>
+          <p>Класс отвечающий за работу с Аудио файлами (mp3, wav, ogg). Это Аудио плеер движка. С помощью этого класса можно будет управлять всеми Аудио (фоновая музыка, разговоры, шумы и т.д.).<br>В основе BusEngine.Audio лежит библиотека <a href="https://github.com/videolan" rel="noreferrer noopener nofollow" target="_blank">VideoLAN | libvlcsharp</a>.</p>
           <p><b>Класс тестируется</b>, библиотека VideoLAN | libvlcsharp имеет косяк с уничтожением объекта (5-10 Мб библиотека требует на постоянной основе). Тажже некоторые функции ещё не работают (повтор аудио и массив ссылок).</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
@@ -148,11 +148,11 @@
               </tr>
               <tr id="BusEngine.Audio.Play">
                 <td><a href="#BusEngine.Audio.Play">(BusEngine.Video)_audio.Play(null|string|string[])</a></td>
-                <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания сначала или момента паузы. Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов "<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose">_audio.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop">_audio.Stop()</a>" текущее. Поддерживаемые форматы: mp3, wav, ogg.</td>
+                <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания сначала. Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов "<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose">_audio.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop">_audio.Stop()</a>" текущее. Поддерживаемые форматы: mp3, wav, ogg.</td>
               </tr>
               <tr id="BusEngine.Audio.Pause">
                 <td><a href="#BusEngine.Audio.Pause">(void)_audio.Pause(string)</a></td>
-                <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для Временной остановки и воспроизведения Аудио файла в определённом месте.</td>
+                <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для Временной остановки в определённом месте и воспроизведения с определённого места Аудио файла.</td>
               </tr>
               <tr id="BusEngine.Audio.Stop">
                 <td><a href="#BusEngine.Audio.Stop">(void)_audio.Stop(string)</a></td>
@@ -218,6 +218,26 @@
                 <td><a href="#BusEngine.Audio.Position">(double)_audio.Position = double</a></td>
                 <td>Свойство (нестатическое) уровня класса принимает или возвращает double значение. Установка позиции проигривания файла в секундах. По умолчанию 0.</td>
               </tr>
+              <tr id="BusEngine.Audio.IsPlay">
+                <td><a href="#BusEngine.Audio.IsPlay">(bool)_audio.IsPlay</a></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - аудио файл проигривается.</td>
+              </tr>
+              <tr id="BusEngine.Audio.IsPause">
+                <td><a href="#BusEngine.Audio.IsPause">(bool)_audio.IsPause</a></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - аудио файл на паузе.</td>
+              </tr>
+              <tr id="BusEngine.Audio.IsStop">
+                <td><a href="#BusEngine.Audio.IsStop">(bool)_audio.IsStop</a></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - аудио файл остановлен вручную.</td>
+              </tr>
+              <tr id="BusEngine.Audio.IsEnd">
+                <td><a href="#BusEngine.Audio.IsEnd">(bool)_audio.IsEnd</a></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - аудио файл остановлен самостоятельно.</td>
+              </tr>
+              <tr id="BusEngine.Audio.IsDispose">
+                <td><a href="#BusEngine.Audio.IsDispose">(bool)_audio.IsDispose</a></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - объект аудио удаляется или удалено.</td>
+              </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
@@ -226,31 +246,31 @@
             <tbody>
               <tr id="BusEngine.Audio.OnPlay">
                 <td><a href="#BusEngine.Audio.OnPlay">(void)_audio.OnPlay</a></td>
-                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "_audio.OnPlay" будет вызывать ваш метод, когда запустился указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Audio, string). Событие "_audio.OnPlay" будет вызывать ваш метод, когда запустился указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
               <tr id="BusEngine.Audio.OnLoop">
                 <td><a href="#BusEngine.Audio.OnLoop">(void)_audio.OnLoop</a></td>
-                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "_audio.OnLoop" будет вызывать ваш метод, когда повторно запустился указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Audio, string). Событие "_audio.OnLoop" будет вызывать ваш метод, когда повторно запустился указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
               <tr id="BusEngine.Audio.OnPause">
                 <td><a href="#BusEngine.Audio.OnPause">(void)_audio.OnPause</a></td>
-                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "_audio.OnPause" будет вызывать ваш метод, когда остановился или начал воспроизведение с момента остановки указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Audio, string). Событие "_audio.OnPause" будет вызывать ваш метод, когда остановился или начал воспроизведение с момента остановки указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
               <tr id="BusEngine.Audio.OnStop">
                 <td><a href="#BusEngine.Audio.OnStop">(void)_audio.OnStop</a></td>
-                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "_audio.OnStop" будет вызывать ваш метод, когда остановился указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Audio, string). Событие "_audio.OnStop" будет вызывать ваш метод, когда файл остановился вручную при вызове метода "_audio.Stop()" и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
               <tr id="BusEngine.Audio.OnEnd">
                 <td><a href="#BusEngine.Audio.OnEnd">(void)_audio.OnEnd</a></td>
-                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "_audio.OnEnd" будет вызывать ваш метод, когда работа с файлом полностью прекращена (можно свободно удалить объект "BusEngine.Audio()" вызвав "_audio.Dispose()") и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Audio, string). Событие "_audio.OnEnd" будет вызывать ваш метод, когда файл остановился самостоятельно по достижению конца и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
               <tr id="BusEngine.Audio.OnDispose">
                 <td><a href="#BusEngine.Audio.OnDispose">(void)_audio.OnDispose</a></td>
-                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "_audio.OnDispose" будет вызывать ваш метод, если нет указанного файла и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Audio, string). Событие "_audio.OnDispose" будет вызывать ваш метод, когда объект "BusEngine.Audio()" уничтожени и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
               <tr id="BusEngine.Audio.OnNotFound">
                 <td><a href="#BusEngine.Audio.OnNotFound">(void)_audio.OnNotFound</a></td>
-                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "_audio.OnNotFound" будет вызывать ваш метод, если нет указанного файла и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+                <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Audio, string). Событие "_audio.OnNotFound" будет вызывать ваш метод, если нет указанного файла и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
             </tbody>
           </table>
@@ -264,8 +284,30 @@
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI">/** API BusEngine.Plugin */</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw4">class</span> MyPlugin <span class="sy0">:</span> BusEngine<span class="sy0">.</span><span class="me1">Plugin</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// при запуске BusEngine после создания формы Canvas</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> InitializeCanvas<span class="br0">()</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Audio</span><span class="sy0">.</span><span class="me1">Play</span><span class="br0">(</span><span class="st0">"Audios/BusEngine.mp3"</span>)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> InitializeСanvas<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// создаём массив ссылок или путей</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw4">string</span><span class="br0">[</span><span class="br0">]</span> audios <span class="sy0">=</span> <span class="br0">{</span><span class="st0">"Audios/BusEngine.mp3"</span>, <span class="st0">"Audios/BusEngine.mp3"</span>, <span class="st0">"Audios/BusEngine.mp3"</span><span class="br0">}</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// создаём новый объект видео</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Audio</span> _audio <span class="sy0">=</span> <a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> BusEngine<span class="sy0">.</span><span class="me1">Audio</span><span class="br0">(</span>audios<span class="br0">)</span><span class="sy0">.</span><span class="me1">Play</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// создаём событие клавиатуры внутри метода</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw5">System</span><span class="sy0">.</span><span class="me1">Windows</span><span class="sy0">.</span><span class="me1">Forms</span><span class="sy0">.</span><span class="me1">KeyEventHandler</span> KeyDownAudio <span class="sy0">=</span> <span class="br0">(</span>o, e<span class="br0">)</span> <span class="sy0">=&gt;</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// выбираем клавишу пробела</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">if</span> <span class="br0">(</span>e<span class="sy0">.</span><span class="me1">KeyCode</span> <span class="sy0">==</span> <span class="kw5">System</span><span class="sy0">.</span><span class="me1">Windows</span><span class="sy0">.</span><span class="me1">Forms</span><span class="sy0">.</span><span class="me1">Keys</span><span class="sy0">.</span><span class="me1">Space</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">if</span> <span class="br0">(</span><span class="sy0">!</span>_audio<span class="sy0">.</span><span class="me1">IsDispose</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_audio<span class="sy0">.</span><span class="me1">Stop</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"Stop Audio"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span> <span class="kw1">else</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"Dispose Audio"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_audio<span class="sy0">.</span><span class="me1">OnDispose</span> <span class="sy0">+=</span> <span class="br0">(</span>BusEngine<span class="sy0">.</span><span class="me1">Audio</span> v, <span class="kw4">string</span> url<span class="br0">)</span> <span class="sy0">=&gt;</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// удаляем событие клавиш</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">UI</span><span class="sy0">.</span><span class="me1">Canvas</span><span class="sy0">.</span><span class="me1">WinForm</span><span class="sy0">.</span><span class="me1">KeyDown</span> <span class="sy0">-=</span> KeyDownAudio<span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI">/* здесь пишем код запуска другого кода */</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// добавляем событие клавиш</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">UI</span><span class="sy0">.</span><span class="me1">Canvas</span><span class="sy0">.</span><span class="me1">WinForm</span><span class="sy0">.</span><span class="me1">KeyDown</span> <span class="sy0">+=</span> KeyDownAudio<span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI">/** API BusEngine.Plugin */</span></div></li>
