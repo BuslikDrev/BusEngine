@@ -210,13 +210,10 @@ namespace BusEngine {
 }
 /** API BusEngine */
 
-
-
 /** API BusEngine */
 namespace BusEngine {
 /*
 Зависит от плагинов:
-Microsoft.DirectX.AudioVideoPlayback.Audio
 BusEngine.Log
 */
 	/** API BusEngine.Audio */
@@ -238,19 +235,20 @@ BusEngine.Log
 		public event AudioHandler OnNotFound;
 
 		// состояния
-		/* public bool IsPlay { get; private set; }
+		public bool IsPlay { get; private set; }
 		public bool IsPause { get; private set; }
 		public bool IsStop { get; private set; }
 		public bool IsEnd { get; private set; }
-		public bool IsDispose { get; private set; } */
-		private bool IsPlay;
+		public bool IsDispose { get; private set; }
+		/* private bool IsPlay;
 		private bool IsPause;
 		private bool IsStop;
 		private bool IsEnd;
-		private bool IsDispose;
+		private bool IsDispose; */
 
 		// список ссылок
 		public string[] Urls;
+		private string[] UrlsArray;
 		// ссылка
 		public string Url = "";
 		// вкл\выкл повтор воспроизведения
@@ -316,7 +314,6 @@ BusEngine.Log
 			#if AUDIO_LOG
 			BusEngine.Log.Info("Аудио OnStop {0}", this.Position);
 			#endif
-			this.IsStop = true;
 			this.IsPlay = false;
 			this.Dispose();
 
@@ -383,8 +380,9 @@ BusEngine.Log
 			this.Url = url;
 		}
 		public Audio(string[] urls) : this() {
-			if (urls != null && urls.Length > 0) {
+			if (urls.Length > 0) {
 				this.Urls = urls;
+				this.UrlsArray = urls;
 				this.Url = urls[0];
 				this.OnStop += (BusEngine.Audio a, string url) => {
 					#if AUDIO_LOG
@@ -392,14 +390,14 @@ BusEngine.Log
 					BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
 					#endif
 
-					if (this.Urls.Length > 0) {
-						System.Array.Reverse(this.Urls);
-						System.Array.Resize(ref this.Urls, this.Urls.Length - 1);
-						System.Array.Reverse(this.Urls);
+					if (this.UrlsArray.Length > 0) {
+						System.Array.Reverse(this.UrlsArray);
+						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+						System.Array.Reverse(this.UrlsArray);
 					}
 
-					if (this.Urls.Length > 0) {
-						this.Play(this.Urls[0]);
+					if (this.UrlsArray.Length > 0) {
+						this.Play(this.UrlsArray[0]);
 					}
 				};
 				this.OnEnd += (BusEngine.Audio a, string url) => {
@@ -408,14 +406,14 @@ BusEngine.Log
 					BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
 					#endif
 
-					if (this.Urls.Length > 0) {
-						System.Array.Reverse(this.Urls);
-						System.Array.Resize(ref this.Urls, this.Urls.Length - 1);
-						System.Array.Reverse(this.Urls);
+					if (this.UrlsArray.Length > 0) {
+						System.Array.Reverse(this.UrlsArray);
+						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+						System.Array.Reverse(this.UrlsArray);
 					}
 
-					if (this.Urls.Length > 0) {
-						this.Play(Urls[0]);
+					if (this.UrlsArray.Length > 0) {
+						this.Play(UrlsArray[0]);
 					}
 				};
 				this.OnNotFound += (BusEngine.Audio a, string url) => {
@@ -424,14 +422,14 @@ BusEngine.Log
 					BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
 					#endif
 
-					if (this.Urls.Length > 0) {
-						System.Array.Reverse(this.Urls);
-						System.Array.Resize(ref this.Urls, this.Urls.Length - 1);
-						System.Array.Reverse(this.Urls);
+					if (this.UrlsArray.Length > 0) {
+						System.Array.Reverse(this.UrlsArray);
+						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+						System.Array.Reverse(this.UrlsArray);
 					}
 
-					if (this.Urls.Length > 0) {
-						this.Play(Urls[0]);
+					if (this.UrlsArray.Length > 0) {
+						this.Play(UrlsArray[0]);
 					}
 				};
 			}
@@ -533,6 +531,7 @@ BusEngine.Log
 			if (this.IsStop) {
 				return;
 			}
+			this.IsStop = true;
 			#if AUDIO_LOG
 			BusEngine.Log.Info("Аудио Stop()");
 			#endif
@@ -1953,6 +1952,7 @@ namespace BusEngine {
 namespace BusEngine {
 /* 
 Зависит от плагинов:
+BusEngine.Log
 BusEngine.UI.Canvas
 */
 	/** API BusEngine.Video */
@@ -1976,19 +1976,20 @@ BusEngine.UI.Canvas
 		public event VideoHandler OnNotFound;
 
 		// состояния
-		/* public bool IsPlay { get; private set; }
+		public bool IsPlay { get; private set; }
 		public bool IsPause { get; private set; }
 		public bool IsStop { get; private set; }
 		public bool IsEnd { get; private set; }
-		public bool IsDispose { get; private set; } */
-		private bool IsPlay;
+		public bool IsDispose { get; private set; }
+		/* private bool IsPlay;
 		private bool IsPause;
 		private bool IsStop;
 		private bool IsEnd;
-		private bool IsDispose;
+		private bool IsDispose; */
 
 		// список ссылок
 		public string[] Urls;
+		private string[] UrlsArray;
 		// ссылка
 		public string Url = "";
 		// вкл\выкл повтор воспроизведения
@@ -2054,7 +2055,6 @@ BusEngine.UI.Canvas
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео OnStop {0}", this.Position);
 			#endif
-			this.IsStop = true;
 			this.IsPlay = false;
 			this.Dispose();
 
@@ -2155,8 +2155,9 @@ BusEngine.UI.Canvas
 			this.Url = url;
 		}
 		public Video(string[] urls) : this() {
-			if (urls != null && urls.Length > 0) {
+			if (urls.Length > 0) {
 				this.Urls = urls;
+				this.UrlsArray = urls;
 				this.Url = urls[0];
 				this.OnStop += (BusEngine.Video v, string url) => {
 					#if VIDEO_LOG
@@ -2164,14 +2165,14 @@ BusEngine.UI.Canvas
 					BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
 					#endif
 
-					if (this.Urls.Length > 0) {
-						System.Array.Reverse(this.Urls);
-						System.Array.Resize(ref this.Urls, this.Urls.Length - 1);
-						System.Array.Reverse(this.Urls);
+					if (this.UrlsArray.Length > 0) {
+						System.Array.Reverse(this.UrlsArray);
+						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+						System.Array.Reverse(this.UrlsArray);
 					}
 
-					if (this.Urls.Length > 0) {
-						this.Play(this.Urls[0]);
+					if (this.UrlsArray.Length > 0) {
+						this.Play(this.UrlsArray[0]);
 					}
 				};
 				this.OnEnd += (BusEngine.Video v, string url) => {
@@ -2180,14 +2181,14 @@ BusEngine.UI.Canvas
 					BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
 					#endif
 
-					if (this.Urls.Length > 0) {
-						System.Array.Reverse(this.Urls);
-						System.Array.Resize(ref this.Urls, this.Urls.Length - 1);
-						System.Array.Reverse(this.Urls);
+					if (this.UrlsArray.Length > 0) {
+						System.Array.Reverse(this.UrlsArray);
+						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+						System.Array.Reverse(this.UrlsArray);
 					}
 
-					if (this.Urls.Length > 0) {
-						this.Play(Urls[0]);
+					if (this.UrlsArray.Length > 0) {
+						this.Play(UrlsArray[0]);
 					}
 				};
 				this.OnNotFound += (BusEngine.Video v, string url) => {
@@ -2196,14 +2197,14 @@ BusEngine.UI.Canvas
 					BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
 					#endif
 
-					if (this.Urls.Length > 0) {
-						System.Array.Reverse(this.Urls);
-						System.Array.Resize(ref this.Urls, this.Urls.Length - 1);
-						System.Array.Reverse(this.Urls);
+					if (this.UrlsArray.Length > 0) {
+						System.Array.Reverse(this.UrlsArray);
+						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+						System.Array.Reverse(this.UrlsArray);
 					}
 
-					if (this.Urls.Length > 0) {
-						this.Play(Urls[0]);
+					if (this.UrlsArray.Length > 0) {
+						this.Play(UrlsArray[0]);
 					}
 				};
 			}
@@ -2470,6 +2471,7 @@ BusEngine.UI.Canvas
 			if (this.IsStop) {
 				return;
 			}
+			this.IsStop = true;
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео Stop()");
 			#endif
@@ -2487,6 +2489,7 @@ BusEngine.UI.Canvas
 			#if VIDEO_LOG
 			BusEngine.Log.Info("Видео Dispose()");
 			#endif
+
 			Dispose(true);
 
 			System.GC.SuppressFinalize(this);
@@ -2564,7 +2567,7 @@ BusEngine.UI.Canvas
 				#if VIDEO_LOG
 				BusEngine.Log.Info("Видео ========== Finalize()");
 				#endif
-				//Dispose(true);
+				//Dispose(false);
 				/* _VLC = null;
 				_mediaPlayer = null;
 				_winForm = null;
