@@ -276,7 +276,7 @@
           </table>
           <a href="#top" class="top_link">Наверх</a>
           <h2 id="Example" class="h2">Пример файла Program.cs</h2>
-          <p>В коде отражено воспроизведение аудио файла расположенного относительно папки игровых файлов при старте своего плагина с названием MyPlugin.</p>
+          <p>В коде отражено воспроизведение аудио файлов расположенных относительно папки игровых файлов при старте своего плагина с названием "MyPlugin", с возможностью пропуска по нажатию клавиши "Пробела".</p>
           <div class="csharp">
 <ol>
 <li class="li1"><div class="de1"><span class="coMULTI">/** API BusEngine.Game - пользовательский код */</span></div></li>
@@ -287,7 +287,7 @@
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> InitializeСanvas<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// создаём массив ссылок или путей</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw4">string</span><span class="br0">[</span><span class="br0">]</span> audios <span class="sy0">=</span> <span class="br0">{</span><span class="st0">"Audios/BusEngine.mp3"</span>, <span class="st0">"Audios/BusEngine.mp3"</span>, <span class="st0">"Audios/BusEngine.mp3"</span><span class="br0">}</span><span class="sy0">;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// создаём новый объект видео</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// создаём новый объект аудио</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Audio</span> _audio <span class="sy0">=</span> <a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> BusEngine<span class="sy0">.</span><span class="me1">Audio</span><span class="br0">(</span>audios<span class="br0">)</span><span class="sy0">.</span><span class="me1">Play</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1">// создаём событие клавиатуры внутри метода</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw5">System</span><span class="sy0">.</span><span class="me1">Windows</span><span class="sy0">.</span><span class="me1">Forms</span><span class="sy0">.</span><span class="me1">KeyEventHandler</span> KeyDownAudio <span class="sy0">=</span> <span class="br0">(</span>o, e<span class="br0">)</span> <span class="sy0">=&gt;</span> <span class="br0">{</span></div></li>
