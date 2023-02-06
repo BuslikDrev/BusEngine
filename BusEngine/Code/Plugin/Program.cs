@@ -41,8 +41,8 @@ namespace BusEngine.Game {
 			// запускаем аудио
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
 				BusEngine.Audio x = new BusEngine.Audio("Audios/BusEngine.mp3").Play();
-				x.OnStop += (o, e) => {
-					o.Dispose();
+				x.OnEnd += (BusEngine.Audio a, string url) => {
+					a.Dispose();
 				};
 				//System.Threading.Thread.Sleep(3000);
 				System.Threading.Tasks.Task.Delay(3000).Wait();
@@ -164,7 +164,7 @@ namespace BusEngine.Game {
 			// запускаем видео
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
 				//string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4"};
-				string[] videos = {"Videos/BusEngine.mp4"};
+				string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "Audios/BusEngine.mp3", "Videos/BusEngine.mp4"};
 				//new BusEngine.Video("https://buslikdrev.by/video/Unity.mp4");
 				/* new BusEngine.Video("Videos/BusEngine.mp4").Play();
 				new BusEngine.Video("Videos/BusEngine.mp4").Play();
@@ -173,6 +173,7 @@ namespace BusEngine.Game {
 				new BusEngine.Video("Videos/BusEngine.mp4").Play();
 				new BusEngine.Video("Videos/BusEngine.mp4").Play(); */
 				BusEngine.Video video = new BusEngine.Video().Play();
+				BusEngine.Log.Info("video OnPlayAudio: {0}", video.GetType().GetMethod("Stop"));
 				/** событие запуска видео */
 				video.OnPlay += (BusEngine.Video v, string url) => {
 					#if VIDEO_LOG
@@ -203,7 +204,6 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Видео OnStopVideo: {0}", url);
 					BusEngine.Log.Info("Видео OnStopVideo: {0}", v.Url);
 					#endif
-					v.Dispose();
 
 					if (videos.Length > 0) {
 						System.Array.Reverse(videos);
@@ -214,7 +214,7 @@ namespace BusEngine.Game {
 					if (videos.Length > 0) {
 						v.Play(videos[0]);
 					} else {
-						//Browser();
+						Browser();
 					}
 				};
 				/** событие ручной остановки видео */
@@ -225,11 +225,6 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Видео OnEndVideo: {0}", v.Url);
 					#endif
 
-					//video.Pause();
-					v.Dispose();
-					//v.Dispose();
-					//v.Stop();
-
 					if (videos.Length > 0) {
 						System.Array.Reverse(videos);
 						System.Array.Resize(ref videos, videos.Length - 1);
@@ -239,7 +234,7 @@ namespace BusEngine.Game {
 					if (videos.Length > 0) {
 						v.Play(videos[0]);
 					} else {
-						//Browser();
+						Browser();
 					}
 				};
 				/** событие автоматической остановки видео */
@@ -257,6 +252,18 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Видео OnNotFoundVideo: {0}", url);
 					BusEngine.Log.Info("Видео OnNotFoundVideo: {0}", v.Url);
 					#endif
+
+					if (videos.Length > 0) {
+						System.Array.Reverse(videos);
+						System.Array.Resize(ref videos, videos.Length - 1);
+						System.Array.Reverse(videos);
+					}
+
+					if (videos.Length > 0) {
+						v.Play(videos[0]);
+					} else {
+						Browser();
+					}
 				};
 				/** событие отсутствия видео */
 				video.Position = 0;
@@ -280,20 +287,21 @@ namespace BusEngine.Game {
 			}
 
 			// запускаем браузер WinForm только в одном потоке =(
-			Browser();
+			//Browser();
+
 		}
 
 		private void Browser() {
 			//new System.Threading.Thread(new System.Threading.ThreadStart(delegate {
 			//System.Threading.Tasks.Task.Run(() => {
 				// запускаем браузер
-				if (BusEngine.Engine.Platform == "WindowsEditor") {
+				/* if (BusEngine.Engine.Platform == "WindowsEditor") {
 					BusEngine.Browser.Initialize("https://threejs.org/editor/");
 					BusEngine.Browser.Initialize("https://buslikdrev.by/");
 				} else if (1 == 1 && BusEngine.Engine.Platform == "WindowsLauncher") {
 					BusEngine.Browser.Initialize("index.html");
 					BusEngine.Browser.OnPostMessageStatic += OnPostMessage;
-				}
+				} */
 			//});
 			//})).Start();
 		}
