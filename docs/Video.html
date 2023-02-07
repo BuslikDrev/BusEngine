@@ -47,9 +47,9 @@
     <link href="Icons/apple-180x180.png" type="image/png" rel="apple-touch-icon" sizes="180x180">
     <link href="Icons/mask-700x700.svg" rel="mask-icon" color="#ffffff">
     <link href="Styles/FontAwesome/css/all.css" type="text/css" rel="stylesheet preload" as="style" media="screen">
-    <link href="Styles/BusEngine/BusEngine.css?v=0.4" type="text/css" rel="stylesheet preload" as="style" media="screen">
-    <link href="Scripts/BusEngine/BusEngine.js?v=0.4" rel="preload" as="script">
-    <script src="Scripts/BusEngine/BusEngine.js?v=0.4"></script>
+    <link href="Styles/BusEngine/BusEngine.css?v=0.5" type="text/css" rel="stylesheet preload" as="style" media="screen">
+    <link href="Scripts/BusEngine/BusEngine.js?v=0.5" rel="preload" as="script">
+    <script src="Scripts/BusEngine/BusEngine.js?v=0.5"></script>
     <script src="Scripts/BusEngine/bus_app.js" async></script>
   </head>
   <body class="languagefix">
@@ -143,24 +143,39 @@
           <table>
             <tbody>
               <tr id="BusEngine.Video">
-                <td><a href="#BusEngine.Video">var _video = (BusEngine.Video)new BusEngine.Video(null|string|string[])</a></td>
+                <td><p><a href="#BusEngine.Video">var _video = (BusEngine.Video)new BusEngine.Video(null|string|string[])</a></p></td>
                 <td>Метод конструктор (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания после вызова "<a href="#BusEngine.Video.Play" title="BusEngine.Video.Play">_video.Play()</a>". Также можно указать string[] массив строк, тогда каждое видео будет проигривать по порядку, вызов "<a href="#BusEngine.Video.Dispose" title="BusEngine.Video.Dispose">_video.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Video.Stop" title="BusEngine.Video.Stop">_video.Stop()</a>" текущее. Поддерживаемые форматы: mp4, wmv, ogv.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Play">
-                <td><a href="#BusEngine.Video.Play">(BusEngine.Video)_video.Play(null|string|string[])</a></td>
+                <td><p><a href="#BusEngine.Video.Play">(BusEngine.Video)_video.Play(null|string|string[])</a></p></td>
                 <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания сначала. Также можно указать string[] массив строк, тогда каждое видео будет проигривать по порядку, вызов "<a href="#BusEngine.Video.Dispose" title="BusEngine.Video.Dispose">_video.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Video.Stop" title="BusEngine.Video.Stop">_video.Stop()</a>" текущее. Поддерживаемые форматы: mp4, wmv, ogv.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Pause">
-                <td><a href="#BusEngine.Video.Pause">(void)_video.Pause(string)</a></td>
+                <td><p><a href="#BusEngine.Video.Pause">(void)_video.Pause(string)</a></p></td>
                 <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для Временной остановки в определённом месте и воспроизведения с определённого места Видео файла.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Stop">
-                <td><a href="#BusEngine.Video.Stop">(void)_video.Stop(string)</a></td>
+                <td><p><a href="#BusEngine.Video.Stop">(void)_video.Stop(string)</a></p></td>
                 <td>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Видео файла для Остановки Видео файла.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Dispose">
-                <td><a href="#BusEngine.Video.Dispose">(void)_video.Dispose()</a></td>
+                <td><p><a href="#BusEngine.Video.Dispose">(void)_video.Dispose()</a></p></td>
                 <td>Метод (нестатический) уровня класса для Остановки Видео файла и уничтожения объекта Видео для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии остановки Видео "<a href="#BusEngine.Video.Stop" title="BusEngine.Video.Stop">_video.Stop()</a>".</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
             </tbody>
           </table>
@@ -181,24 +196,39 @@
           <table>
             <tbody>
               <tr id="BusEngine.Video.Urls">
-                <td><a href="#BusEngine.Video.Url">(string[])_video.Urls = string[]</a></td>
+                <td><p><a href="#BusEngine.Video.Url">(string[])_video.Urls = string[]</a></p></td>
                 <td>Поле (нестатическое) уровня класса принимает или возвращает string[] массив строк полного или относительного пути до Видео файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp4, wmv, ogv.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Url">
-                <td><a href="#BusEngine.Video.Url">(string)_video.Url = string</a></td>
+                <td><p><a href="#BusEngine.Video.Url">(string)_video.Url = string</a></p></td>
                 <td>Поле (нестатическое) уровня класса принимает string строку полного или относительного пути до Видео файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp4, wmv, ogv.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Loop">
-                <td><a href="#BusEngine.Video.Loop">(bool)_video.Loop = bool</a></td>
+                <td><p><a href="#BusEngine.Video.Loop">(bool)_video.Loop = bool</a></p></td>
                 <td>Поле (нестатическое) уровня класса принимает bool значение. True - проигривать текущее видео или текущий список видео повторно. По умолчанию False.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Volume">
-                <td><a href="#BusEngine.Video.Volume">(byte)_video.Volume = byte</a></td>
+                <td><p><a href="#BusEngine.Video.Volume">(byte)_video.Volume = byte</a></p></td>
                 <td>Поле (нестатическое) уровня класса принимает byte строку от 0 до 100 для установки громкости звука. По умолчанию 100.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.Mute">
-                <td><a href="#BusEngine.Video.Mute">(bool)_video.Mute = bool</a></td>
+                <td><p><a href="#BusEngine.Video.Mute">(bool)_video.Mute = bool</a></p></td>
                 <td>Поле (нестатическое) уровня класса принимает bool значение. True - звук отключён. По умолчанию False.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
             </tbody>
           </table>
@@ -207,32 +237,53 @@
           <table>
             <tbody>
               <tr id="BusEngine.Video.Duration">
-                <td><a href="#BusEngine.Video.Duration">(double)_video.Duration</a></td>
-                <td>Свойство (нестатическое) уровня класса возвращает double значение. Текущая позиция проигривания файла в секундах.</td>
+                <td><p><a href="#BusEngine.Video.Duration">(double)_video.Duration</a></p></td>
+                <td>Свойство (нестатическое) уровня класса возвращает double значение, текущая позиция проигривания файла в секундах.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
               <tr id="BusEngine.Video.Position">
-                <td><a href="#BusEngine.Video.Position">(double)_video.Position = double</a></td>
+                <td><p><a href="#BusEngine.Video.Position">(double)_video.Position = double</a></p></td>
                 <td>Свойство (нестатическое) уровня класса принимает или возвращает double значение. Установка позиции проигривания файла в секундах. По умолчанию 0.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.IsPlay">
-                <td><a href="#BusEngine.Video.IsPlay">(bool)_video.IsPlay</a></td>
-                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - видео файл проигривается.</td>
+                <td><p><a href="#BusEngine.Video.IsPlay">(bool)_video.IsPlay</a></p></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - видео файл проигривается.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
               <tr id="BusEngine.Video.IsPause">
-                <td><a href="#BusEngine.Video.IsPause">(bool)_video.IsPause</a></td>
-                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - видео файл на паузе.</td>
+                <td><p><a href="#BusEngine.Video.IsPause">(bool)_video.IsPause</a></p></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - видео файл на паузе.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
               <tr id="BusEngine.Video.IsStop">
-                <td><a href="#BusEngine.Video.IsStop">(bool)_video.IsStop</a></td>
-                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - видео файл остановлен вручную.</td>
+                <td><p><a href="#BusEngine.Video.IsStop">(bool)_video.IsStop</a></p></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - видео файл остановлен вручную.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
               <tr id="BusEngine.Video.IsEnd">
-                <td><a href="#BusEngine.Video.IsEnd">(bool)_video.IsEnd</a></td>
-                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - видео файл остановлен самостоятельно.</td>
+                <td><p><a href="#BusEngine.Video.IsEnd">(bool)_video.IsEnd</a></p></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - видео файл остановлен самостоятельно.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
               <tr id="BusEngine.Video.IsDispose">
-                <td><a href="#BusEngine.Video.IsDispose">(bool)_video.IsDispose</a></td>
-                <td>Свойство (нестатическое) уровня класса возвращает bool значение. Текущее состояние файла. True - объект видео удаляется или удалено.</td>
+                <td><p><a href="#BusEngine.Video.IsDispose">(bool)_video.IsDispose</a></p></td>
+                <td>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - объект видео удаляется или удалено.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
             </tbody>
           </table>
@@ -241,38 +292,59 @@
           <table>
             <tbody>
               <tr id="BusEngine.Video.OnPlay">
-                <td><a href="#BusEngine.Video.OnPlay">(void)_video.OnPlay</a></td>
+                <td><p><a href="#BusEngine.Video.OnPlay">(void)_video.OnPlay</a></p></td>
                 <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Video, string). Событие "_video.OnPlay" будет вызывать ваш метод, когда запустился указанный файл и передавать объект "BusEngine.Video()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.OnLoop">
-                <td><a href="#BusEngine.Video.OnLoop">(void)_video.OnLoop</a></td>
+                <td><p><a href="#BusEngine.Video.OnLoop">(void)_video.OnLoop</a></p></td>
                 <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Video, string). Событие "_video.OnLoop" будет вызывать ваш метод, когда повторно запустился указанный файл и передавать объект "BusEngine.Video()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.OnPause">
-                <td><a href="#BusEngine.Video.OnPause">(void)_video.OnPause</a></td>
+                <td><p><a href="#BusEngine.Video.OnPause">(void)_video.OnPause</a></p></td>
                 <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Video, string). Событие "_video.OnPause" будет вызывать ваш метод, когда остановился или начал воспроизведение с момента остановки указанный файл и передавать объект "BusEngine.Video()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.OnStop">
-                <td><a href="#BusEngine.Video.OnStop">(void)_video.OnStop</a></td>
+                <td><p><a href="#BusEngine.Video.OnStop">(void)_video.OnStop</a></p></td>
                 <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Video, string). Событие "_video.OnStop" будет вызывать ваш метод, когда файл остановился вручную при вызове метода "_video.Stop()" и передавать объект "BusEngine.Video()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.OnEnd">
-                <td><a href="#BusEngine.Video.OnEnd">(void)_video.OnEnd</a></td>
+                <td><p><a href="#BusEngine.Video.OnEnd">(void)_video.OnEnd</a></p></td>
                 <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Video, string). Событие "_video.OnEnd" будет вызывать ваш метод, когда файл остановился самостоятельно по достижению конца и передавать объект "BusEngine.Video()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.OnDispose">
-                <td><a href="#BusEngine.Video.OnDispose">(void)_video.OnDispose</a></td>
+                <td><p><a href="#BusEngine.Video.OnDispose">(void)_video.OnDispose</a></p></td>
                 <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Video, string). Событие "_video.OnDispose" будет вызывать ваш метод, когда объект "BusEngine.Video()" уничтожен и передавать объект "BusEngine.Video()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
               </tr>
+              <tr>
+                <td><p></p></td>
+              </tr>
               <tr id="BusEngine.Video.OnNotFound">
-                <td><a href="#BusEngine.Video.OnNotFound">(void)_video.OnNotFound</a></td>
+                <td><p><a href="#BusEngine.Video.OnNotFound">(void)_video.OnNotFound</a></p></td>
                 <td>Событие (нестатическое) уровня класса принимает метод с двумя параметрами (BusEngine.Video, string). Событие "_video.OnNotFound" будет вызывать ваш метод, если нет указанного файла и передавать объект "BusEngine.Video()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</td>
+              </tr>
+              <tr>
+                <td><p></p></td>
               </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
           <h2 id="Example" class="h2">Пример файла Program.cs</h2>
-          <p>В коде отражено воспроизведение видео файлов расположенных относительно папки игровых файлов при старте своего плагина с названием "MyPlugin", с возможностью пропуска по нажатию клавиши "Пробела".</p>
+          <p>В коде отражено воспроизведение видео файлов расположенных относительно папки игровых файлов при старте своего плагина с названием "MyPlugin", с возможностью пропуска по нажатию клавиши "Пробел".</p>
           <div class="csharp">
 <ol>
 <li class="li1"><div class="de1"><span class="coMULTI">/** API BusEngine.Game - пользовательский код */</span></div></li>
