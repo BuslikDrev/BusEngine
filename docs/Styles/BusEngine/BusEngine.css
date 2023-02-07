@@ -552,6 +552,9 @@ html, .footer{
 }
 
 @media  (max-width: 640px) {
+    a {
+        word-break: break-all;
+    }
     .page_start .top_menu{
         display: block;
     }  
