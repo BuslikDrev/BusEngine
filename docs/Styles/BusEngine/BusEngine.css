@@ -184,11 +184,6 @@ html, .footer{
     width: max-content;
 }
 
-
-
-
-
-
 .soc-links-footer li{
     margin-left: 3px;
     list-style: none;
@@ -1545,7 +1540,7 @@ li .ptype{
 /*big screen*/
 @media only screen and (min-width : 1224px) {
     .content{
-        width:95%; 
+        width:100%; 
         margin:auto;
     }
     .page_start .header{
