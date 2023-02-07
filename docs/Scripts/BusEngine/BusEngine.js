@@ -202,11 +202,14 @@ BusEngine.language = {
 		domain: document.domain
 	},
 	'status': false,
-	'start': function(setting) {
-		if (BusEngine.language.status) {
+	'initialize': function(setting) {
+		if (setting == null && BusEngine.language.status) {
 			return false;
 		}
 		BusEngine.language.status = true;
+		BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+	},
+	'start': function(setting) {
 		if (typeof setting !== 'undefined' && typeof setting === 'object' && !('composedPath' in setting) && !('bubbles' in setting)) {
 			for (var i in setting) {
 				BusEngine.language.setting[i] = setting[i];
@@ -221,14 +224,25 @@ BusEngine.language = {
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
+		var element;
 		var id = "language_vertical";
 		if ('matchMedia' in window) {
 			if (window.matchMedia('(max-width: 991px)').matches) {
 				id = "language_content";
+				element = document.querySelector('#' + id + ' button');
+
+				if (element) {
+					element.parentNode.removeChild(element);
+				}
 			}
 		} else {
 			if (window.innerWidth <= 991) {
 				id = "language_content";
+				element = document.querySelector('#' + id + ' button');
+
+				if (element) {
+					element.parentNode.removeChild(element);
+				}
 			}
 		}
 
@@ -237,8 +251,6 @@ BusEngine.language = {
 			//includedLanguages: 'be,en,ru,uk',
 			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
 		}, id);
-
-		var element;
 
 		/* window.addEventListener('DOMNodeInserted', function(e) {
 			console.log(e);
@@ -387,17 +399,17 @@ document.addEventListener('busAppBefore', function() {
 });
 
 window.addEventListener('pagehide', function() {
-	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+	BusEngine.language.initialize();
 }, {once: true});
 
 window.addEventListener('scroll', function() {
-	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+	BusEngine.language.initialize();
 }, {once: true});
 
 window.addEventListener('mouseover', function() {
-	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+	BusEngine.language.initialize();
 }, {once: true});
 
 window.addEventListener('touchstart', function() {
-	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+	BusEngine.language.initialize();
 }, {once: true});

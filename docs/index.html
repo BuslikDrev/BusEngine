@@ -60,7 +60,7 @@
           <a href="index.html" style="color:white">BusEngine Документация</a>
           <div class="top_menu">
             <span id="bus-app" hidden>
-              <button type="button" data-button="install" title="Установить сайт" rel="noreferrer noopener nofollow" target="_blank">Установить сайт</button>
+              <button type="button" data-button="install" title="Установить сайт" aria-label="Установить сайт" rel="noreferrer noopener nofollow" target="_blank">Установить сайт</button>
             </span>
             <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
             <a href="https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz" rel="noreferrer noopener nofollow" target="_blank">YouTube</a>
@@ -143,21 +143,22 @@
           </div>
         </div>
         <div id="doc_content" class="doc col-lg-9 col-md-9">
+          <div id="language_content"><button type="button" title="Загрузить переводчик" aria-label="Загрузить переводчик" style="padding:5px;margin-bottom:20px;width:100%;">Загрузить переводчик</button></div>
           <h1>API Reference</h1>
           <h2 id="start" class="h2">Начало работы</h2>
           <table>
             <tbody>
-              <tr>
+              <tr id="BusEngine.Possibilities">
                 <td><i class="fa-solid fa-sliders"></i></td>
                 <td><a href="Possibilities.html">Возможности движка</a></td>
                 <td></td>
               </tr>
-              <tr>
+              <tr id="BusEngine.Environment">
                 <td><i class="fa-solid fa-street-view"></i></td>
                 <td><a href="Environment.html">Настройка окружения</a></td>
                 <td>Настройка необходимых программ.</td>
               </tr>
-              <tr>
+              <tr id="BusEngine.Examples">
                 <td><i class="fa-solid fa-book"></i></td>
                 <td><a href="Examples.html">Готовые примеры</a></td>
                 <td>Подборка готовых примеров.</td>

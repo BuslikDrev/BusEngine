@@ -1820,6 +1820,9 @@ select {
     -o-transform: translate(0, 0);
     -ms-transform: translate(0, 0);
 }
+table tr:not([id*="BusEngine"]):nth-child(even) td {
+    border-bottom: 2px dashed #1179bb;
+}
 table td {
     min-width: 1px;
 }
@@ -1852,6 +1855,11 @@ table td i {
 #language_vertical .skiptranslate.goog-te-gadget select,
 #language_content .skiptranslate.goog-te-gadget select {
     margin: 0;
+}
+@media  (min-width: 992px) {
+    #language_content button {
+        display: none;
+    }
 }
 
 /* column */
