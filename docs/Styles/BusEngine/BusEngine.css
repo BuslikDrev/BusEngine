@@ -811,7 +811,11 @@ html, body{
     color:#fff;
     text-decoration: none;
 }
-.top_menu button{
+.top_menu #bus-app{
+    padding:0px 15px;
+}
+.top_menu #bus-app button{
+    padding:5px;
     cursor:pointer;
 }
 .top_menu a:hover{
