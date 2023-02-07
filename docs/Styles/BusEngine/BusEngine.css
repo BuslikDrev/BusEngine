@@ -783,6 +783,7 @@ html, body{
     -webkit-flex: 1;
     flex: 1;
     overflow: hidden;
+	padding: 16px 20px 0px 0px;
 }
 
 /*logos*/
@@ -867,8 +868,7 @@ html, body{
 
 /*breadcrumb*/
 .breadcrumb { 
-    overflow: hidden; 
-    margin-top:15px;
+    overflow: hidden;
     white-space: nowrap;
 }
 
@@ -1560,7 +1560,7 @@ li .ptype{
 }
 
 /*big screen*/
-@media only screen and (max-width : 992px) {
+@media only screen and (max-width : 991px) {
     .top_logo, .navigation{
         display: none;
     }
@@ -1580,9 +1580,6 @@ li .ptype{
         position: static;
         transform:none;
     }
-}
-
-@media only screen and (max-width : 992px) {
     .inside-hot{
         width: auto;
     }
@@ -1662,6 +1659,8 @@ select {
 }
 
 #language select,
+#language_vertical select,
+#language_content select,
 #version select {
     width:100%;
     height:29px;
@@ -1843,11 +1842,15 @@ table td i {
 #goog-gt- {
     display: none !important;
 }
-#language .skiptranslate.goog-te-gadget {
+#language .skiptranslate.goog-te-gadget,
+#language_vertical .skiptranslate.goog-te-gadget,
+#language_content .skiptranslate.goog-te-gadget {
     display: block !important;
     margin-bottom: 20px;
 }
-#language .skiptranslate.goog-te-gadget select {
+#language .skiptranslate.goog-te-gadget select,
+#language_vertical .skiptranslate.goog-te-gadget select,
+#language_content .skiptranslate.goog-te-gadget select {
     margin: 0;
 }
 

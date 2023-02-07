@@ -201,7 +201,12 @@ BusEngine.language = {
 		lang: (window.navigator.language || window.navigator.userLanguage),
 		domain: document.domain
 	},
+	'status': false,
 	'start': function(setting) {
+		if (BusEngine.language.status) {
+			return false;
+		}
+		BusEngine.language.status = true;
 		if (typeof setting !== 'undefined' && typeof setting === 'object' && !('composedPath' in setting) && !('bubbles' in setting)) {
 			for (var i in setting) {
 				BusEngine.language.setting[i] = setting[i];
@@ -216,11 +221,22 @@ BusEngine.language = {
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
+		var id = "language_vertical";
+		if ('matchMedia' in window) {
+			if (window.matchMedia('(max-width: 991px)').matches) {
+				id = "language_content";
+			}
+		} else {
+			if (window.innerWidth <= 991) {
+				id = "language_content";
+			}
+		}
+
 		var x = new google.translate.TranslateElement({
 			pageLanguage: BusEngine.language.setting.langDefault,
 			//includedLanguages: 'be,en,ru,uk',
 			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-		}, 'language');
+		}, id);
 
 		var element;
 
@@ -370,6 +386,18 @@ document.addEventListener('busAppBefore', function() {
 	busApp.setting['beforeinstallprompt'] = busAppbeforeinstallprompt;
 });
 
-//window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('pagehide', function() {
 	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
-//});
+}, {once: true});
+
+window.addEventListener('scroll', function() {
+	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+}, {once: true});
+
+window.addEventListener('mouseover', function() {
+	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+}, {once: true});
+
+window.addEventListener('touchstart', function() {
+	BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
+}, {once: true});
