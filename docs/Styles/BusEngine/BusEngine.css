@@ -804,10 +804,15 @@ html, body{
     padding-right: 20px;
 }
 .top_menu a{
-    float:left;display: block;
+    float:left;
+    display: block;
     padding:0px 15px;
-    cursor:pointer; color:#fff;
+    cursor:pointer;
+    color:#fff;
     text-decoration: none;
+}
+.top_menu button{
+    cursor:pointer;
 }
 .top_menu a:hover{
     background: rgba(255,255,255,0.2);
