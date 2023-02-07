@@ -351,7 +351,7 @@ document.addEventListener('busAppBefore', function() {
 		"cache_resources":[],
 		"cache_resources_exception":"https://translate.google.com/,https://www.gstatic.com/",
 		"cache_max_ages":604800,
-		"cache_token":4,
+		"cache_token":5,
 		"notification":"Для возможности подписаться на уведомления, разблокируйте эту функцию в настройках браузера.",
 		"notification_status":false,
 		"notification_audio":"Audio/bus_app/notification.mp3",
