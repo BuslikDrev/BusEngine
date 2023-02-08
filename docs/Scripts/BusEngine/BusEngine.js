@@ -216,14 +216,6 @@ BusEngine.language = {
 			}
 		}
 
-		if (BusEngine.cookie.has('BusEngineLang')) {
-			BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
-		}
-
-		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
-
 		var element;
 		var id = "language_vertical";
 		if ('matchMedia' in window) {
@@ -263,6 +255,14 @@ BusEngine.language = {
 				element = document.querySelector('iframe[id*=".container"]');
 
 				if (element) {
+					if (BusEngine.cookie.has('BusEngineLang')) {
+						BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
+					}
+
+					//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+					BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+					BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
+
 					//clearTimeout(timerId);
 					document.body.classList.remove('languagefix');
 					element.style['display'] = 'block';
