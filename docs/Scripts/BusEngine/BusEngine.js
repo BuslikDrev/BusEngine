@@ -299,7 +299,7 @@ BusEngine.language = {
 				select.value = BusEngine.language.setting.lang;
 				select.addEventListener('change', function(e) {
 					if (typeof e == 'object' && 'target' in e && 'value' in e.target) {
-						//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
+						BusEngine.cookie.set('BusEngineLang', e.target.value, '.' + BusEngine.language.setting.domain, null, 365);
 						BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
 						//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
 					}
