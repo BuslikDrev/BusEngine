@@ -32,7 +32,7 @@ var busApp = {
 		notification_error:true,
 		push_status:false,
 		sync_status:false,
-		start_url:'/BusEngine',
+		start_url:'/',
 		debug:false
 	},
 	'browser':function() {
