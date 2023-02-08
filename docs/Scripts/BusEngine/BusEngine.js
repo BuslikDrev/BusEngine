@@ -241,14 +241,12 @@ BusEngine.language = {
 			}
 		}
 
+		// устанавливаем язык из нашей долгой куки
 		if (BusEngine.cookie.has('BusEngineLang')) {
 			BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
+			BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+			BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 		}
-
-		//BusEngine.cookie.remove('googtrans');
-		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
-		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
-		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
 		// запускаем переводчик
 		x = new google.translate.TranslateElement({
@@ -266,19 +264,19 @@ BusEngine.language = {
 		// отслеживаем появление тегов переводчика универсально
 		timerId = setTimeout(function tick() {
 			timertick++;
-			element = document.querySelector('iframe[id*=".container"]');
-			select = document.querySelector('#' + id + ' select');
 
-			if (element && select) {
-				//clearTimeout(timerId);
-				
-		//BusEngine.cookie.remove('googtrans');
-		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
+			select = document.querySelector('#' + id + ' select');
+			if (select) {
+				// устанавливаем язык перевода в долгую куку
+				select.addEventListener('change', function(e) {
+					if (typeof e == 'object' && 'target' in e && 'value' in e.target && e.target.value != BusEngine.language.setting.lang) {
+						BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
+					}
+				}, false);
 
 				// скрываем верхнее меню в зависимости от куки
-				if (!BusEngine.cookie.has('BusEngineLangHorizontal')) {
+				element = document.querySelector('iframe[id*=".container"]');
+				if (element && !BusEngine.cookie.has('BusEngineLangHorizontal')) {
 					document.body.classList.remove('languagefix');
 					element.style['display'] = 'block';
 					element.parentNode.style['display'] = 'block';
@@ -300,18 +298,8 @@ BusEngine.language = {
 						});
 					}
 				}
-
-				// устанавливаем язык перевода в зависимости от куки и выбора select
-				select.value = BusEngine.language.setting.lang;
-				select.addEventListener('change', function(e) {
-					if (typeof e == 'object' && 'target' in e && 'value' in e.target) {
-						//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
-						BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
-						//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
-					}
-				}, false);
 			} else {
-				if (timertick < 20) {
+				if (timertick < 10) {
 					timerId = setTimeout(tick, 200);
 				}
 			}
