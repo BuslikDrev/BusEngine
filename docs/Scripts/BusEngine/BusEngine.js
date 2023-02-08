@@ -197,8 +197,8 @@ BusEngine.loadScript = function(url, callback) {
 // language
 BusEngine.language = {
 	'setting': {
-		langDefault: 'ru',
-		lang: (window.navigator.language || window.navigator.userLanguage),
+		langDefault: (window.navigator.language || window.navigator.userLanguage),
+		lang: (window.navigator.language || window.navigator.userLanguage), //'be',
 		domain: document.domain
 	},
 	'status': false,
@@ -241,6 +241,14 @@ BusEngine.language = {
 			}
 		}
 
+		if (BusEngine.cookie.has('BusEngineLang')) {
+			BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
+		}
+
+		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
+
 		// запускаем переводчик
 		x = new google.translate.TranslateElement({
 			pageLanguage: BusEngine.language.setting.langDefault,
@@ -262,14 +270,6 @@ BusEngine.language = {
 
 			if (element && select) {
 				//clearTimeout(timerId);
-
-				if (BusEngine.cookie.has('BusEngineLang')) {
-					BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
-				}
-
-				//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
-				BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
-				BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
 				// скрываем верхнее меню в зависимости от куки
 				if (!BusEngine.cookie.has('BusEngineLangHorizontal')) {
