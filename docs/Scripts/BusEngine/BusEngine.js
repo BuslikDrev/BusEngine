@@ -248,22 +248,23 @@ BusEngine.language = {
 			console.log(e);
 		}, false); */
 
-		if (!BusEngine.cookie.has('BusEngineLangHorizontal')) {
-			var timertick = 0;
-			var timerId = setTimeout(function tick() {
-				timertick++;
-				element = document.querySelector('iframe[id*=".container"]');
+		var timertick = 0;
+		var timerId = setTimeout(function tick() {
+			timertick++;
+			element = document.querySelector('iframe[id*=".container"]');
 
-				if (element) {
-					if (BusEngine.cookie.has('BusEngineLang')) {
-						BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
-					}
+			if (element) {
+				//clearTimeout(timerId);
 
-					//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
-					BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
-					BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
+				if (BusEngine.cookie.has('BusEngineLang')) {
+					BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
+				}
 
-					//clearTimeout(timerId);
+				//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+				BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+				BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
+
+				if (!BusEngine.cookie.has('BusEngineLangHorizontal')) {
 					document.body.classList.remove('languagefix');
 					element.style['display'] = 'block';
 					element.parentNode.style['display'] = 'block';
@@ -284,27 +285,26 @@ BusEngine.language = {
 							BusEngine.cookie.set('BusEngineLangHorizontal', 'none', BusEngine.language.setting.domain);
 						});
 					}
-				} else {
-					if (timertick < 20) {
-						timerId = setTimeout(tick, 100);
-					}
 				}
-			}, 100);
-		}
 
-		element = document.querySelector('#language select');
+				element = document.querySelector('#language select');
 
-		if (element) {
-			element.value = BusEngine.language.setting.lang;
-
-			element.addEventListener('change', function(e) {
-				if (typeof e == 'object' && e != null && 'target' in e && 'value' in e.target) {
-					//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
-					BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
-					//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
+				if (element) {
+					element.value = BusEngine.language.setting.lang;
+					element.addEventListener('change', function(e) {
+						if (typeof e == 'object' && e != null && 'target' in e && 'value' in e.target) {
+							//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
+							BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
+							//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
+						}
+					}, false);
 				}
-			}, false);
-		}
+			} else {
+				if (timertick < 20) {
+					timerId = setTimeout(tick, 100);
+				}
+			}
+		}, 100);
 	},
 	'set': function (setting) {
 		if (typeof setting == 'object' && setting != null) {

@@ -1828,7 +1828,7 @@ table td {
 }
 @media  (min-width: 320px) {
     table td + td {
-        min-width: 150px;
+        min-width: 180px;
     }
 }
 table td + td + td {
