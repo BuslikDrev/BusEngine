@@ -245,10 +245,10 @@ BusEngine.language = {
 			BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
 		}
 
-		BusEngine.cookie.remove('googtrans');
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
+		//BusEngine.cookie.remove('googtrans');
+		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
 		// запускаем переводчик
 		x = new google.translate.TranslateElement({
@@ -272,8 +272,8 @@ BusEngine.language = {
 			if (element && select) {
 				//clearTimeout(timerId);
 				
-		BusEngine.cookie.remove('googtrans');
-		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+		//BusEngine.cookie.remove('googtrans');
+		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
