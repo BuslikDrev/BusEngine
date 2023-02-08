@@ -834,6 +834,9 @@ html, body{
 .top_menu #bus-app button i.fa-windows{
     color: #00bcf3;
 }
+.top_menu #bus-app button i.fa-eraser{
+    color: #ffffff;
+}
 .top_menu a:hover{
     background: rgba(255,255,255,0.2);
     border-radius: 6px;
