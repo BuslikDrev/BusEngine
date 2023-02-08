@@ -729,9 +729,6 @@ body{
     overflow: hidden;
     padding: 15px 0px;
 }
-.header span{
-    float:left;
-}
 html, body{
     background: #ffffff; height:100%;
 }
@@ -813,6 +810,7 @@ html, body{
 .top_menu #bus-app{
     padding:0px 15px;
     height: 40px;
+    float: left;
 }
 .top_menu #bus-app button{
     padding:9px;
