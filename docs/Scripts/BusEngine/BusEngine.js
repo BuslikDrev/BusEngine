@@ -415,8 +415,7 @@ if (window.navigator.onLine) {
 		BusEngine.language.initialize();
 	}, {once: true});
 } else {
-	var element = document.querySelector('#language_content');
-	if (element) {
-		element.parentNode.removeChild(element);
-	}
+	window.addEventListener('DOMContentLoaded', function() {
+		document.body.classList.add('offline');
+	});
 }

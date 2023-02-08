@@ -1884,6 +1884,9 @@ table td i {
 #language_content .skiptranslate.goog-te-gadget select {
     margin: 0;
 }
+.offline #language_content button {
+        display: none;
+}
 @media  (min-width: 992px) {
     #language_content button {
         display: none;
