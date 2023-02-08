@@ -244,8 +244,9 @@ BusEngine.language = {
 		// запускаем переводчик
 		x = new google.translate.TranslateElement({
 			pageLanguage: BusEngine.language.setting.langDefault,
-			//includedLanguages: 'be,en,ru,uk',
-			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+			includedLanguages: 'be,en,it,kk,lv,lt,de,ru,fr,uk,et',
+			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+			//autoDisplay: true
 		}, id);
 
 		// отслеживаем появление тегов переводчика
@@ -383,7 +384,7 @@ document.addEventListener('busAppBefore', function() {
 		"cache_resources":[],
 		"cache_resources_exception":"https://translate.googleapis.com/,https://translate.google.com/,https://www.gstatic.com/",
 		"cache_max_ages":604800,
-		"cache_token":5,
+		"cache_token":6,
 		"notification":"Для возможности подписаться на уведомления, разблокируйте эту функцию в настройках браузера.",
 		"notification_status":false,
 		"notification_audio":"Audio/bus_app/notification.mp3",
