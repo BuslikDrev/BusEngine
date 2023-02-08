@@ -804,7 +804,7 @@ html, body{
 }
 .top_menu a{
     float:left;
-    display: block;
+    display:block;
     padding:0px 15px;
     cursor:pointer;
     color:#fff;
@@ -812,10 +812,27 @@ html, body{
 }
 .top_menu #bus-app{
     padding:0px 15px;
+    height: 40px;
 }
 .top_menu #bus-app button{
-    padding:5px;
+    padding:9px;
     cursor:pointer;
+    background:#111;
+}
+.top_menu #bus-app button:hover{
+    background: rgba(255,255,255,0.2);
+}
+.top_menu #bus-app button i{
+    font-size: 21px;
+}
+.top_menu #bus-app button i.fa-android{
+    color: #99cc00;
+}
+.top_menu #bus-app button i.fa-apple{
+    color: #f9f9f9;
+}
+.top_menu #bus-app button i.fa-windows{
+    color: #00bcf3;
 }
 .top_menu a:hover{
     background: rgba(255,255,255,0.2);
