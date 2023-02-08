@@ -146,20 +146,29 @@
           <table>
             <tbody>
               <tr id="BusEngine.Browser.Initialize">
-                <td><a href="#BusEngine.Browser.Initialize">(void)BusEngine.Browser.Initialize(string, string)</a></td>
-                <td>Метод (статический) уровня класса принимает первым параметром string строку веб адреса или полного пути файла, или относительного пути файла от "BusEngine.Engine.DataDirectory" до HTML страницы для запуска браузера и загрузки указанной страницы. Второй параметр string строка корневого пути каталога расположения index.html относительного пути от "BusEngine.Engine.DataDirectory" до index.html или полный путь каталога.</td>
+                <td><p><a href="#BusEngine.Browser.Initialize" title="BusEngine.Browser.Initialize">(void)BusEngine.Browser.Initialize(string, string)</a></p></td>
+              </tr>
+              <tr>
+                <td><p>Метод (статический) уровня класса принимает первым параметром string строку веб адреса или полного пути файла, или относительного пути файла от "BusEngine.Engine.DataDirectory" до HTML страницы для запуска браузера и загрузки указанной страницы. Второй параметр string строка корневого пути каталога расположения index.html относительного пути от "BusEngine.Engine.DataDirectory" до index.html или полный путь каталога.</p></td>
               </tr>
               <tr id="BusEngine.Browser.ExecuteJS">
-                <td><a href="#BusEngine.Browser.ExecuteJS">(void)BusEngine.Browser.ExecuteJSStatic(string)</a></td>
-                <td>Метод (статический) уровня класса принимает string строку JavaScript кода для его выполнения в текущей вкладки браузера. Это полезно для передачи данных из СSharp кода.</td>
+                <td><p><a href="#BusEngine.Browser.ExecuteJS" title="BusEngine.Browser.ExecuteJS">(void)BusEngine.Browser.ExecuteJSStatic(string)</a></p></td>
+              </tr>
+              <tr>
+                <td><p>Метод (статический) уровня класса принимает string строку JavaScript кода для его выполнения в текущей вкладки браузера. Это полезно для передачи данных из СSharp кода.</p></td>
               </tr>
               <tr id="BusEngine.Browser.Shutdown">
-                <td><a href="#BusEngine.Browser.Shutdown">(void)BusEngine.Browser.Shutdown()</a></td>
-                <td>Метод (статический) уровня класса для закрытия "BusEngine.Browser".</td>
+                <td><p><a href="#BusEngine.Browser.Shutdown" title="BusEngine.Browser.Shutdown">(void)BusEngine.Browser.Shutdown()</a></p></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><p>Метод (статический) уровня класса для закрытия "BusEngine.Browser".</p></td>
               </tr>
               <tr id="BusEngine.Browser.Dispose">
-                <td><a href="#BusEngine.Browser.Dispose">(void)BusEngine.Browser.Dispose()</a></td>
-                <td>Метод (статический) уровня класса для закрытия "BusEngine.Browser" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Browser.Shutdown()".</td>
+                <td><p><a href="#BusEngine.Browser.Dispose" title="BusEngine.Browser.Dispose">(void)BusEngine.Browser.Dispose()</a></p></td>
+              </tr>
+              <tr>
+                <td><p>Метод (статический) уровня класса для закрытия "BusEngine.Browser" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Browser.Shutdown()".</p></td>
               </tr>
             </tbody>
           </table>
@@ -191,9 +200,11 @@
           <h2 id="Events" class="h2">События</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.Browser.PostMessage">
-                <td><a href="#BusEngine.Browser.PostMessage">(void)BusEngine.Browser.PostMessageStatic</a></td>
-                <td>Событие (статическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "BusEngine.Browser.PostMessage" будет вызывать ваш метод, когда вы вызываете в JavaScript коде функцию "BusEngine.PostMessage(string)" и передавать строку во второй параметр вашего метода, а в первый параметр будет приходить объект "BusEngine.Browser()".</td>
+              <tr id="BusEngine.Browser.PostMessageStatic">
+                <td><p><a href="#BusEngine.Browser.PostMessageStatic">(void)BusEngine.Browser.PostMessageStatic</a></p></td>
+              </tr>
+              <tr>
+                <td><p>Событие (статическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "BusEngine.Browser.PostMessage" будет вызывать ваш метод, когда вы вызываете в JavaScript коде функцию "BusEngine.PostMessage(string)" и передавать строку во второй параметр вашего метода, а в первый параметр будет приходить объект "BusEngine.Browser()".</p></td>
               </tr>
             </tbody>
           </table>
