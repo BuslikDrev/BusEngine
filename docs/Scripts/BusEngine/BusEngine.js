@@ -398,18 +398,25 @@ document.addEventListener('busAppBefore', function() {
 });
 
 // запускаем модуль перевода отложено для PageSpeed
-window.addEventListener('pagehide', function() {
-	BusEngine.language.initialize();
-}, {once: true});
+if (window.navigator.onLine) {
+	window.addEventListener('pagehide', function() {
+		BusEngine.language.initialize();
+	}, {once: true});
 
-window.addEventListener('scroll', function() {
-	BusEngine.language.initialize();
-}, {once: true});
+	window.addEventListener('scroll', function() {
+		BusEngine.language.initialize();
+	}, {once: true});
 
-window.addEventListener('mouseover', function() {
-	BusEngine.language.initialize();
-}, {once: true});
+	window.addEventListener('mouseover', function() {
+		BusEngine.language.initialize();
+	}, {once: true});
 
-window.addEventListener('touchstart', function() {
-	BusEngine.language.initialize();
-}, {once: true});
+	window.addEventListener('touchstart', function() {
+		BusEngine.language.initialize();
+	}, {once: true});
+} else {
+	var element = document.querySelector('#language_content');
+	if (element) {
+		element.parentNode.removeChild(element);
+	}
+}
