@@ -1840,6 +1840,9 @@ select {
     -o-transform: translate(0, 0);
     -ms-transform: translate(0, 0);
 }
+table{
+    width: 100%;
+}
 table tr:not([id*="BusEngine"]):nth-child(even) td {
     border-bottom: 2px dashed #1179bb;
 }
