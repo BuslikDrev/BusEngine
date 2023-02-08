@@ -245,7 +245,8 @@ BusEngine.language = {
 			BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
 		}
 
-		//BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+		BusEngine.cookie.remove('googtrans');
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
 		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
@@ -270,6 +271,11 @@ BusEngine.language = {
 
 			if (element && select) {
 				//clearTimeout(timerId);
+				
+		BusEngine.cookie.remove('googtrans');
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, "." + BusEngine.language.setting.domain);
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
 				// скрываем верхнее меню в зависимости от куки
 				if (!BusEngine.cookie.has('BusEngineLangHorizontal')) {
@@ -299,7 +305,7 @@ BusEngine.language = {
 				select.value = BusEngine.language.setting.lang;
 				select.addEventListener('change', function(e) {
 					if (typeof e == 'object' && 'target' in e && 'value' in e.target) {
-						BusEngine.cookie.set('BusEngineLang', e.target.value, '.' + BusEngine.language.setting.domain, null, 365);
+						//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
 						BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
 						//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
 					}
