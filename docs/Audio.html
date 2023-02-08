@@ -57,7 +57,7 @@
       <div class="header">
         <div class="content">
           <a href="index.html" class="top_logo"><img src="Icons/BusEngine.png" width="48" height="48" alt="API"></a>
-          <a href="index.html" style="color:white">BusEngine Документация</a>
+          <a href="index.html" style="color:white" class="notranslate">BusEngine Документация</a>
           <div class="top_menu">
             <span id="bus-app">
               <button type="button" data-button="install" hidden title="Установить сайт" aria-label="Установить сайт" rel="noreferrer noopener nofollow" target="_blank"><i class="fab fa-android"></i> <i class="fab fa-apple"></i> <i class="fab fa-windows"></i></button>
@@ -142,16 +142,16 @@
           </div>
           <p>BusEngine.dll</p>
           <h1 class="notranslate">BusEngine.Audio (Class)</h1>
-          <p>Класс отвечающий за работу с Аудио файлами (mp3, wav, ogg). Это Аудио плеер движка. С помощью этого класса можно будет управлять всеми Аудио (фоновая музыка, разговоры, шумы и т.д.).<br>В основе BusEngine.Audio лежит библиотека <a href="https://github.com/videolan" title="VideoLAN | libvlcsharp" rel="noreferrer noopener nofollow" target="_blank">VideoLAN | libvlcsharp</a>.</p>
+          <p>Класс отвечающий за работу с Аудио файлами (mp3, wav, ogg). Это Аудио плеер движка. С помощью этого класса можно будет управлять всеми Аудио (фоновая музыка, разговоры, шумы и т.д.).<br>В основе BusEngine.Audio лежит библиотека <a href="https://github.com/videolan" title="VideoLAN | libvlcsharp" rel="noreferrer noopener nofollow" target="_blank" class="notranslate">VideoLAN | libvlcsharp</a>.</p>
           <p><b>Класс тестируется</b>, библиотека VideoLAN | libvlcsharp имеет косяк с уничтожением объекта (5-10 Мб библиотека требует на постоянной основе). Тажже некоторые функции ещё не работают (повтор аудио и массив ссылок).</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
               <tr id="BusEngine.Audio">
-                <td><p><a href="#BusEngine.Audio" title="BusEngine.Audio">var _audio = (BusEngine.Audio)new BusEngine.Audio(null|string|string[])</a></p></td>
+                <td><p><a href="#BusEngine.Audio" title="BusEngine.Audio" class="notranslate">var _audio = (BusEngine.Audio)new BusEngine.Audio(null|string|string[])</a></p></td>
               </tr>
               <tr>
-                <td><p>Метод конструктор (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания после вызова "<a href="#BusEngine.Audio.Play" title="BusEngine.Audio.Play">_audio.Play()</a>". Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов "<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose">_audio.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop">_audio.Stop()</a>" текущее. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
+                <td><p>Метод конструктор (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания после вызова "<a href="#BusEngine.Audio.Play" title="BusEngine.Audio.Play" class="notranslate">_audio.Play()</a>". Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов "<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose" class="notranslate">_audio.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>" текущее. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Play">
                 <td><p><a href="#BusEngine.Audio.Play" title="BusEngine.Audio.Play" class="notranslate">(BusEngine.Audio)_audio.Play(null|string|string[])</a></p></td>
