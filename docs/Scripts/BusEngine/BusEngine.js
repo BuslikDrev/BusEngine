@@ -287,7 +287,7 @@ BusEngine.language = {
 					}
 				}
 
-				element = document.querySelector('#language select');
+				element = document.querySelector('#' + id + ' select');
 
 				if (element) {
 					element.value = BusEngine.language.setting.lang;
