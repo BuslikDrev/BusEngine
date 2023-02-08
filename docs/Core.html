@@ -47,9 +47,9 @@
     <link href="Icons/apple-180x180.png" type="image/png" rel="apple-touch-icon" sizes="180x180">
     <link href="Icons/mask-700x700.svg" rel="mask-icon" color="#ffffff">
     <link href="Styles/FontAwesome/css/all.css" type="text/css" rel="stylesheet preload" as="style" media="screen">
-    <link href="Styles/BusEngine/BusEngine.css?v=0.6" type="text/css" rel="stylesheet preload" as="style" media="screen">
-    <link href="Scripts/BusEngine/BusEngine.js?v=0.6" rel="preload" as="script">
-    <script src="Scripts/BusEngine/BusEngine.js?v=0.6"></script>
+    <link href="Styles/BusEngine/BusEngine.css?v=0.7" type="text/css" rel="stylesheet preload" as="style" media="screen">
+    <link href="Scripts/BusEngine/BusEngine.js?v=0.7" rel="preload" as="script">
+    <script src="Scripts/BusEngine/BusEngine.js?v=0.7"></script>
     <script src="Scripts/BusEngine/bus_app.js" async></script>
   </head>
   <body class="languagefix">
@@ -59,8 +59,9 @@
           <a href="index.html" class="top_logo"><img src="Icons/BusEngine.png" width="48" height="48" alt="API"></a>
           <a href="index.html" style="color:white">BusEngine Документация</a>
           <div class="top_menu">
-            <span id="bus-app" hidden>
-              <button type="button" data-button="install" title="Установить сайт" aria-label="Установить сайт" rel="noreferrer noopener nofollow" target="_blank">Установить сайт</button>
+            <span id="bus-app">
+              <button type="button" data-button="install" hidden title="Установить сайт" aria-label="Установить сайт" rel="noreferrer noopener nofollow" target="_blank"><i class="fab fa-android"></i> <i class="fab fa-apple"></i> <i class="fab fa-windows"></i></button>
+              <button type="button" onclick="(!self.navigator.onLine ? confirm('Вы уверены?') : false); window.caches.keys().then(function(keys) {for (var i in keys) {window.caches.delete(keys[i]);}}); window.localStorage.clear(); window.location.reload();" title="Очистить кэш" aria-label="Очистить кэш" rel="noreferrer noopener nofollow" target="_blank"><i class="fa fa-eraser"></i></button>
             </span>
             <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
             <a href="https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz" rel="noreferrer noopener nofollow" target="_blank">YouTube</a>
