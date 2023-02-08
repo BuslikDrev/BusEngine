@@ -210,14 +210,17 @@ BusEngine.language = {
 		BusEngine.loadScript('https://translate.google.com/translate_a/element.js?cb=BusEngine.language.start');
 	},
 	'start': function(setting) {
-		if (typeof setting !== 'undefined' && typeof setting === 'object' && !('composedPath' in setting) && !('bubbles' in setting)) {
+		// устанавливаем настройки если есть
+		if (typeof setting === 'object' && !('composedPath' in setting) && !('bubbles' in setting)) {
 			for (var i in setting) {
 				BusEngine.language.setting[i] = setting[i];
 			}
 		}
 
-		var element;
-		var id = "language_vertical";
+		// объявляем рабочие переменные
+		var element, select, x, timertick = 0, timerId, id = "language_vertical";
+
+		// устанавливаем выбор тега в зависимости от ширины экрана
 		if ('matchMedia' in window) {
 			if (window.matchMedia('(max-width: 991px)').matches) {
 				id = "language_content";
@@ -238,22 +241,25 @@ BusEngine.language = {
 			}
 		}
 
-		var x = new google.translate.TranslateElement({
+		// запускаем переводчик
+		x = new google.translate.TranslateElement({
 			pageLanguage: BusEngine.language.setting.langDefault,
 			//includedLanguages: 'be,en,ru,uk',
 			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE
 		}, id);
 
+		// отслеживаем появление тегов переводчика
 		/* window.addEventListener('DOMNodeInserted', function(e) {
 			console.log(e);
 		}, false); */
 
-		var timertick = 0;
-		var timerId = setTimeout(function tick() {
+		// отслеживаем появление тегов переводчика универсально
+		timerId = setTimeout(function tick() {
 			timertick++;
 			element = document.querySelector('iframe[id*=".container"]');
+			select = document.querySelector('#' + id + ' select');
 
-			if (element) {
+			if (element && select) {
 				//clearTimeout(timerId);
 
 				if (BusEngine.cookie.has('BusEngineLang')) {
@@ -264,6 +270,7 @@ BusEngine.language = {
 				BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
 				BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
+				// скрываем верхнее меню в зависимости от куки
 				if (!BusEngine.cookie.has('BusEngineLangHorizontal')) {
 					document.body.classList.remove('languagefix');
 					element.style['display'] = 'block';
@@ -287,24 +294,21 @@ BusEngine.language = {
 					}
 				}
 
-				element = document.querySelector('#' + id + ' select');
-
-				if (element) {
-					element.value = BusEngine.language.setting.lang;
-					element.addEventListener('change', function(e) {
-						if (typeof e == 'object' && e != null && 'target' in e && 'value' in e.target) {
-							//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
-							BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
-							//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
-						}
-					}, false);
-				}
+				// устанавливаем язык перевода в зависимости от куки и выбора select
+				select.value = BusEngine.language.setting.lang;
+				select.addEventListener('change', function(e) {
+					if (typeof e == 'object' && 'target' in e && 'value' in e.target) {
+						//BusEngine.cookie.set('BusEngineLang', e.target.value, "." + BusEngine.language.setting.domain, null, 365);
+						BusEngine.cookie.set('BusEngineLang', e.target.value, BusEngine.language.setting.domain, null, 365);
+						//BusEngine.cookie.set('BusEngineLang', e.target.value, '', null, 365);
+					}
+				}, false);
 			} else {
 				if (timertick < 20) {
-					timerId = setTimeout(tick, 100);
+					timerId = setTimeout(tick, 200);
 				}
 			}
-		}, 100);
+		}, 200);
 	},
 	'set': function (setting) {
 		if (typeof setting == 'object' && setting != null) {
@@ -398,6 +402,7 @@ document.addEventListener('busAppBefore', function() {
 	busApp.setting['beforeinstallprompt'] = busAppbeforeinstallprompt;
 });
 
+// запускаем модуль перевода отложено для PageSpeed
 window.addEventListener('pagehide', function() {
 	BusEngine.language.initialize();
 }, {once: true});
