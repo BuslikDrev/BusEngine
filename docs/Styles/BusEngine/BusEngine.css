@@ -1934,7 +1934,12 @@ table td i {
         display: none;
 }
 @media  (min-width: 992px) {
-    #language_content button {
+    #language_content {
+        display: none;
+    }
+}
+@media  (max-width: 991px) {
+    #language_vertical {
         display: none;
     }
 }
