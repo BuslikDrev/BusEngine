@@ -133,6 +133,7 @@ BusEngine.cookie = {
 			path = '/';
 		}
 
+		document.cookie = name + '=' + v + '; expires=01 Jan 0000 00:00:00 GMT';
 		document.cookie = name + '=' + v + '; expires=01 Jan 0000 00:00:00 GMT; path=' + path + '; domain=';
 		document.cookie = name + '=' + v + '; expires=01 Jan 0000 00:00:00 GMT; path=' + path + '; domain=' + domain;
 
@@ -158,6 +159,22 @@ BusEngine.cookie = {
 		}
 
 		return false;
+	},
+	'clear': function() {
+		var cookies = document.cookie.split(';');
+		var i, ii = cookies.length, pos;
+		for (i = 0; i < ii; ++i) {
+			pos = cookies[i].indexOf('=');
+			if (pos > -1) {
+				BusEngine.cookie.remove(cookies[i].substr(0, pos));
+			}
+		}
+
+		if (!document.cookie) {
+			return true;
+		} else {
+			return false;
+		}
 	},
 	'test': function() {
 		// добавить
