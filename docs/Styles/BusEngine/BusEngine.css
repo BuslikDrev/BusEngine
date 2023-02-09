@@ -1,9 +1,54 @@
 html {scrollbar-color:#606060 transparent;scroll-behavior:smooth;}
+/* @media  (min-width: 1367px) {
+    html{
+        zoom:110%;
+    }
+}
+@media  (min-width: 1512px) {
+    html{
+        zoom:120%;
+    }
+}
+@media  (min-width: 1701px) {
+    html{
+        zoom:125%;
+    }
+}
+@media  (min-width: 1837px) {
+    html{
+        zoom:133%;
+    }
+} */
+@media  (min-width: 2041px) {
+    html{
+        zoom:150%;
+    }
+}
+@media  (min-width: 2381px) {
+    html{
+        zoom:175%;
+    }
+}
+@media  (min-width: 2700px) {
+    html{
+        zoom:200%;
+    }
+}
+@media  (min-width: 4050px) {
+    html{
+        zoom:300%;
+    }
+}
+@media  (min-width: 5400px) {
+    html{
+        zoom:400%;
+    }
+}
 body {
-  width: 100%;
-  height: auto;
-  margin: 0;
-  overflow: hidden;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    overflow: hidden;
 }
 body::-webkit-scrollbar {
     width: 16px;
