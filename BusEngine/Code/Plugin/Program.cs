@@ -147,13 +147,13 @@ namespace BusEngine.Game {
 				//audio.Stop();
 				BusEngine.UI.Canvas.WinForm.KeyDown += (o, e) => {
 					// выкл аудио
-					if (e.KeyCode == System.Windows.Forms.Keys.Space) {
+					if (e.KeyCode == System.Windows.Forms.Keys.Enter) {
 						if (audio != null) {
 							if (audios.Length == 0) {
 								//audio.Dispose();
 								audio = null;
 							} else {
-								//audio.Stop();
+								audio.Stop();
 								//audio.Dispose();
 							}
 						}
@@ -172,8 +172,7 @@ namespace BusEngine.Game {
 				new BusEngine.Video("Videos/BusEngine.mp4").Play();
 				new BusEngine.Video("Videos/BusEngine.mp4").Play();
 				new BusEngine.Video("Videos/BusEngine.mp4").Play(); */
-				BusEngine.Video video = new BusEngine.Video().Play();
-				BusEngine.Log.Info("video OnPlayAudio: {0}", video.GetType().GetMethod("Stop"));
+				BusEngine.Video video = new BusEngine.Video();
 				/** событие запуска видео */
 				video.OnPlay += (BusEngine.Video v, string url) => {
 					#if VIDEO_LOG
@@ -214,7 +213,7 @@ namespace BusEngine.Game {
 					if (videos.Length > 0) {
 						v.Play(videos[0]);
 					} else {
-						Browser();
+						//Browser();
 					}
 				};
 				/** событие ручной остановки видео */
@@ -234,7 +233,7 @@ namespace BusEngine.Game {
 					if (videos.Length > 0) {
 						v.Play(videos[0]);
 					} else {
-						Browser();
+						//Browser();
 					}
 				};
 				/** событие автоматической остановки видео */
@@ -244,6 +243,8 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Видео OnDisposeVideo: {0}", url);
 					BusEngine.Log.Info("Видео OnDisposeVideo: {0}", v.Url);
 					#endif
+
+					Browser();
 				};
 				/** событие удаления видео */
 				/** событие отсутствия видео */
@@ -262,7 +263,7 @@ namespace BusEngine.Game {
 					if (videos.Length > 0) {
 						v.Play(videos[0]);
 					} else {
-						Browser();
+						//Browser();
 					}
 				};
 				/** событие отсутствия видео */
@@ -288,22 +289,17 @@ namespace BusEngine.Game {
 
 			// запускаем браузер WinForm только в одном потоке =(
 			//Browser();
-
 		}
 
+		// запускаем браузер
 		private void Browser() {
-			//new System.Threading.Thread(new System.Threading.ThreadStart(delegate {
-			//System.Threading.Tasks.Task.Run(() => {
-				// запускаем браузер
-				/* if (BusEngine.Engine.Platform == "WindowsEditor") {
-					BusEngine.Browser.Initialize("https://threejs.org/editor/");
-					BusEngine.Browser.Initialize("https://buslikdrev.by/");
-				} else if (1 == 1 && BusEngine.Engine.Platform == "WindowsLauncher") {
-					BusEngine.Browser.Initialize("index.html");
-					BusEngine.Browser.OnPostMessageStatic += OnPostMessage;
-				} */
-			//});
-			//})).Start();
+			if (BusEngine.Engine.Platform == "WindowsEditor") {
+				BusEngine.Browser.Initialize("https://threejs.org/editor/");
+				BusEngine.Browser.Initialize("https://buslikdrev.by/");
+			} else if (BusEngine.Engine.Platform == "WindowsLauncher") {
+				BusEngine.Browser.Initialize("index.html");
+				BusEngine.Browser.OnPostMessageStatic += OnPostMessage;
+			}
 		}
 
 		/** событие нажатия любой кнопки */
