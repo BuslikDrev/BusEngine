@@ -593,6 +593,8 @@ BusEngine.Log
 			#if AUDIO_LOG
 			BusEngine.Log.Info("Аудио ========== Finalize()");
 			#endif
+
+			//Dispose(false);
 		}
 		/** функция уничтожения объекта aудио */
 	}
@@ -814,6 +816,7 @@ namespace BusEngine {
 		} */
 	
 	/** API BusEngine.Array */
+	// https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/keywords/this
 	public interface IArray<TKey, TValue> {
 		/* public Array(TKey key, TKey value) {
 			BusEngine.Log.Info("Array {0}");
@@ -1211,7 +1214,7 @@ namespace BusEngine {
 			return false;
 		}
 
-		public void Initialize() {
+		public Localization Initialize() {
 			if (Language == null || Language == "") {
 				Language = LanguageDefault.ToString();
 			}
@@ -1222,6 +1225,8 @@ namespace BusEngine {
 			if (OnLoadStatic != null) {
 				OnLoadStatic.Invoke(this, Language);
 			}
+
+			return this;
 		}
 
 		public void Load(string Language = null) {
@@ -1367,6 +1372,7 @@ namespace BusEngine {
 			if (CallbackStart != null) {
 				CallbackStart();
 			}
+			this.Dispose();
 		}
 
 		public static void Shutdown() {}
@@ -1940,6 +1946,7 @@ namespace BusEngine {
 			}
 
 			BusEngine.Log.Info( "============================ System Plugins Stop  ============================" );
+			this.Dispose();
 		}
 
 		public void Dispose() {}
