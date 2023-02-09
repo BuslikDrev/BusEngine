@@ -224,21 +224,17 @@ BusEngine.language = {
 		if ('matchMedia' in window) {
 			if (window.matchMedia('(max-width: 991px)').matches) {
 				id = "language_content";
-				element = document.querySelector('#' + id + ' button');
-
-				if (element) {
-					element.parentNode.removeChild(element);
-				}
 			}
 		} else {
 			if (window.innerWidth <= 991) {
 				id = "language_content";
-				element = document.querySelector('#' + id + ' button');
-
-				if (element) {
-					element.parentNode.removeChild(element);
-				}
 			}
+		}
+
+		// удаляем кнопку запуска переводчика
+		element = document.querySelector('#' + id + ' button');
+		if (element) {
+			element.parentNode.removeChild(element);
 		}
 
 		// устанавливаем язык из нашей долгой куки
@@ -399,25 +395,9 @@ document.addEventListener('busAppBefore', function() {
 
 // запускаем модули когда есть интернет
 if (window.navigator.onLine) {
+	// запускаем модуль переводчика когда его активировали
 	if (BusEngine.cookie.has('BusEngineLang')) {
 		BusEngine.language.initialize();
-	} else {
-		// запускаем модуль перевода отложено для PageSpeed
-		window.addEventListener('pagehide', function() {
-			BusEngine.language.initialize();
-		}, {once: true});
-
-		window.addEventListener('scroll', function() {
-			BusEngine.language.initialize();
-		}, {once: true});
-
-		window.addEventListener('mouseover', function() {
-			BusEngine.language.initialize();
-		}, {once: true});
-
-		window.addEventListener('touchstart', function() {
-			BusEngine.language.initialize();
-		}, {once: true});
 	}
 } else {
 	window.addEventListener('DOMContentLoaded', function() {
