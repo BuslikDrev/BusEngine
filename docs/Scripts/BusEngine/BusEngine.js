@@ -397,23 +397,28 @@ document.addEventListener('busAppBefore', function() {
 	busApp.setting['beforeinstallprompt'] = busAppbeforeinstallprompt;
 });
 
-// запускаем модуль перевода отложено для PageSpeed
+// запускаем модули когда есть интернет
 if (window.navigator.onLine) {
-	window.addEventListener('pagehide', function() {
+	if (BusEngine.cookie.has('BusEngineLang')) {
 		BusEngine.language.initialize();
-	}, {once: true});
+	} else {
+		// запускаем модуль перевода отложено для PageSpeed
+		window.addEventListener('pagehide', function() {
+			BusEngine.language.initialize();
+		}, {once: true});
 
-	window.addEventListener('scroll', function() {
-		BusEngine.language.initialize();
-	}, {once: true});
+		window.addEventListener('scroll', function() {
+			BusEngine.language.initialize();
+		}, {once: true});
 
-	window.addEventListener('mouseover', function() {
-		BusEngine.language.initialize();
-	}, {once: true});
+		window.addEventListener('mouseover', function() {
+			BusEngine.language.initialize();
+		}, {once: true});
 
-	window.addEventListener('touchstart', function() {
-		BusEngine.language.initialize();
-	}, {once: true});
+		window.addEventListener('touchstart', function() {
+			BusEngine.language.initialize();
+		}, {once: true});
+	}
 } else {
 	window.addEventListener('DOMContentLoaded', function() {
 		document.body.classList.add('offline');
