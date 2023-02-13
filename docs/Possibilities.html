@@ -14,9 +14,9 @@
     <meta property="og:type" content="website">
     <!-- <meta property="og:image" content="Icons/BusEngine.png"> -->
     <meta property="og:image" content="https://opengraph.githubassets.com/407a55b9b48e4056fbd78e3bc81d145859a60475f09583bea08dc3c350be72c7/BuslikDrev/BusEngine" />
-    <meta property="og:image:alt" content="API игрового движка BusEngine." />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="600" />
+    <meta property="og:image:alt" content="API игрового движка BusEngine.">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="600">
     <meta property="og:site_name" content="API BusEngine">
     <meta name="robots" content="nocache,noarchive">
     <meta name="description" content="API документация по игровому движку BusEngine.">
@@ -60,8 +60,8 @@
           <a href="index.html" style="color:white"><span class="notranslate">BusEngine </span>Документация</a>
           <div class="top_menu">
             <span id="bus-app">
-              <button type="button" data-button="install" hidden title="Установить сайт" aria-label="Установить сайт" rel="noreferrer noopener nofollow" target="_blank"><i class="fab fa-android"></i> <i class="fab fa-apple"></i> <i class="fab fa-windows"></i></button>
-              <button type="button" onclick="if (!window.navigator.onLine ? !confirm('Вы уверены? Интернета то, нет!') : false) {return;}  window.localStorage.clear(); BusEngine.cookie.clear(); window.caches.keys().then(function(keys) {for (var i in keys) {window.caches.delete(keys[i]);}}); window.location.reload();" title="Очистить кэш" aria-label="Очистить кэш" rel="noreferrer noopener nofollow" target="_blank"><i class="fa fa-eraser"></i></button>
+              <button type="button" data-button="install" hidden title="Установить сайт" aria-label="Установить сайт"><i class="fab fa-android"></i> <i class="fab fa-apple"></i> <i class="fab fa-windows"></i></button>
+              <button type="button" onclick="if (!window.navigator.onLine ? !confirm('Вы уверены? Интернета то, нет!') : false) {return;}  window.localStorage.clear(); BusEngine.cookie.clear(); window.caches.keys().then(function(keys) {for (var i in keys) {window.caches.delete(keys[i]);}}); window.location.reload();" title="Очистить кэш" aria-label="Очистить кэш"><i class="fa fa-eraser"></i></button>
             </span>
             <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
             <a href="https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz" rel="noreferrer noopener nofollow" target="_blank">YouTube</a>
@@ -87,18 +87,18 @@
               <li class="lioff lastfix blue"> - тестируется</li>
               <li class="lioff lastfix gray"> - есть но недокументированно</li>
               <li class="lioff lastfix black"> - в мечтах</li>
-              <li class="lioff"><input type="checkbox" id="menu-1" checked="checked"><label for="menu-1" position="2"><a href="index.html#start">НАЧАЛО РАБОТЫ</a></label>
-                <div class="menu-1" position="2">
+              <li class="lioff"><input type="checkbox" id="menu-1" checked="checked"><label for="menu-1" data-position="2"><a href="index.html#start">НАЧАЛО РАБОТЫ</a></label>
+                <div class="menu-1" data-position="2">
                   <a href="https://github.com/BuslikDrev/BusEngine/releases/tag/v0.3.0" class="lastfix blue" rel="noreferrer noopener nofollow" target="_blank">Скачать движок</a>
                   <a href="Possibilities.html" class="lastfix blue active">Возможности движка</a>
                   <a href="Environment.html" class="lastfix blue">Настройка окружения</a>
                   <a href="Examples.html" class="lastfix blue">Готовые примеры</a>
                 </div>
               </li>
-              <li class="lioff notranslate"><input type="checkbox" id="menu-5"><label for="menu-5" position="2"><a href="index.html#api">API BusEngine</a></label>
-                <div class="menu-5" position="2">
-                  <input type="checkbox" id="menu-5-1"><label for="menu-5-1" position="2"><span>BusEngine (Namespace)</span></label>
-                  <div class="menu-5-1" position="2">
+              <li class="lioff notranslate"><input type="checkbox" id="menu-5"><label for="menu-5" data-position="2"><a href="index.html#api">API BusEngine</a></label>
+                <div class="menu-5" data-position="2">
+                  <input type="checkbox" id="menu-5-1"><label for="menu-5-1" data-position="2"><span>BusEngine (Namespace)</span></label>
+                  <div class="menu-5-1" data-position="2">
                     <a href="Audio.html" class="lastfix blue">BusEngine.Audio (Class)</a>
                     <a href="Browser.html" class="lastfix blue">BusEngine.Browser (Class)</a>
                     <a href="Camera.html" class="lastfix black">BusEngine.Camera (Class)</a>
@@ -117,17 +117,17 @@
                     <a href="Vector.html" class="lastfix black">BusEngine.Vector (Class)</a>
                     <a href="Video.html" class="lastfix blue">BusEngine.Video (Class)</a>
                   </div>
-                  <input type="checkbox" id="menu-5-2"><label for="menu-5-2" position="2"><span>BusEngine.Game (Namespace)</span></label>
-                  <div class="menu-5-2" position="2">
+                  <input type="checkbox" id="menu-5-2"><label for="menu-5-2" data-position="2"><span>BusEngine.Game (Namespace)</span></label>
+                  <div class="menu-5-2" data-position="2">
                     <a href="Game.MyPlugin.html" class="lastfix blue">BusEngine.Game.MyPlugin (Class)</a>
                   </div>
-                  <input type="checkbox" id="menu-5-3"><label for="menu-5-3" position="2"><span>BusEngine.Tools (Namespace)</span></label>
-                  <div class="menu-5-3" position="2">
+                  <input type="checkbox" id="menu-5-3"><label for="menu-5-3" data-position="2"><span>BusEngine.Tools (Namespace)</span></label>
+                  <div class="menu-5-3" data-position="2">
                     <a href="Tools.Ajax.html" class="lastfix blue">BusEngine.Tools.Ajax (Class)</a>
                     <a href="Tools.Json.html" class="lastfix blue">BusEngine.Tools.Json (Class)</a>
                   </div>
-                  <input type="checkbox" id="menu-5-10"><label for="menu-5-10" position="2"><span>BusEngine.UI (Namespace)</span></label>
-                  <div class="menu-5-10" position="2">
+                  <input type="checkbox" id="menu-5-10"><label for="menu-5-10" data-position="2"><span>BusEngine.UI (Namespace)</span></label>
+                  <div class="menu-5-10" data-position="2">
                     <a href="UI.Canvas.html" class="lastfix red">BusEngine.UI.Canvas (Class)</a>
                   </div>
                 </div>

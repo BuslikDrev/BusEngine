@@ -1841,10 +1841,10 @@ select {
     -o-transition-property: -o-transform;
     -ms-transition-property: -ms-transform;
 }
-#menu_vertical [id^="menu-"] + label[for^="menu-"][position="2"] {
+#menu_vertical [id^="menu-"] + label[for^="menu-"][data-position="2"] {
     display: block;
 }
-#menu_vertical [id^="menu-"] + label[for^="menu-"][position="2"]:before {
+#menu_vertical [id^="menu-"] + label[for^="menu-"][data-position="2"]:before {
     content: '+';
     position: relative;
     padding: 0px 1px;
@@ -1872,11 +1872,11 @@ select {
     display: block;
 }
 
-#menu_vertical [id^="menu-"]:checked + label[for^="menu-"][position="2"]:before {
+#menu_vertical [id^="menu-"]:checked + label[for^="menu-"][data-position="2"]:before {
     content: '-';
     padding: 0px 3px;
 }
-#menu_vertical [id*="menu-"] + label[for*="menu-"][position="2"] + div[class*="menu-"][position="2"] {
+#menu_vertical [id*="menu-"] + label[for*="menu-"][data-position="2"] + div[class*="menu-"][data-position="2"] {
     display: none;
     transform: translate(0, -20px);
     -webkit-transform: translate(0, -20px);
@@ -1884,7 +1884,7 @@ select {
     -o-transform: translate(0, -20px);
     -ms-transform: translate(0, -20px);
 }
-#menu_vertical [id^="menu-"]:checked + label[for^="menu-"][position="2"] + div[class^="menu-"][position="2"] {
+#menu_vertical [id^="menu-"]:checked + label[for^="menu-"][data-position="2"] + div[class^="menu-"][data-position="2"] {
     display: block;
     transform: translate(0, 0);
     -webkit-transform: translate(0, 0px);
