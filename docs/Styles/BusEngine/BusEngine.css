@@ -71,6 +71,15 @@ body.languagefix .goog-te-banner-frame.skiptranslate,
 body.languagefix iframe[id*=".container"] {
     display: none !important;
 }
+@media  (max-width: 700px) {
+	body .goog-te-banner-frame.skiptranslate,
+	body iframe[id*=".container"] {
+		display: none !important;
+	}
+	body {
+		top: 0 !important;
+	}
+}
 
 .page_start .body{
     position: relative;
