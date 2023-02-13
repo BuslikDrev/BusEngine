@@ -158,8 +158,8 @@
               <tr>
                 <td><p>Метод (статический) уровня класса принимает string строку JavaScript кода для его выполнения в текущей вкладки браузера. Это полезно для передачи данных из СSharp кода.</p></td>
               </tr>
-              <tr id="BusEngine.Browser.Shutdown">
-                <td><p><a href="#BusEngine.Browser.Shutdown" title="BusEngine.Browser.Shutdown">(void)BusEngine.Browser.Shutdown()</a></p></td>
+              <tr id="BusEngine.Browser.ShutdownStatic">
+                <td><p><a href="#BusEngine.Browser.ShutdownStatic" title="BusEngine.Browser.ShutdownStatic">(void)BusEngine.Browser.ShutdownStatic()</a></p></td>
               </tr>
               <tr>
                 <td><p>Метод (статический) уровня класса для закрытия "BusEngine.Browser".</p></td>
@@ -168,7 +168,7 @@
                 <td><p><a href="#BusEngine.Browser.Dispose" title="BusEngine.Browser.Dispose">(void)BusEngine.Browser.Dispose()</a></p></td>
               </tr>
               <tr>
-                <td><p>Метод (статический) уровня класса для закрытия "BusEngine.Browser" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Browser.Shutdown()".</p></td>
+                <td><p>Метод (статический) уровня класса для закрытия "BusEngine.Browser" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Browser.ShutdownStatic()".</p></td>
               </tr>
             </tbody>
           </table>
@@ -218,8 +218,21 @@
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI translate">/** API BusEngine.Plugin */</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw4">class</span> MyPlugin <span class="sy0">:</span> BusEngine<span class="sy0">.</span><span class="me1">Plugin</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1 translate">// при запуске BusEngine после создания формы Canvas</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> InitializeCanvas<span class="br0">()</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Browser</span><span class="sy0">.</span><span class="me1">Initialize</span><span class="br0">(</span><span class="st0">"index.html"</span>)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> InitializeСanvas<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Browser</span><span class="sy0">.</span><span class="me1">Initialize</span><span class="br0">(</span><span class="st0">"index.html"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Browser</span><span class="sy0">.</span><span class="me1">OnPostMessageStatic</span> <span class="sy0">+=</span> <span class="br0">(</span><span class="kw4">string</span> message<span class="br0">)</span> <span class="sy0">=&gt;</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">if</span> <span class="br0">(</span>message <span class="sy0">==</span> <span class="st0">"Exit"</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Engine</span><span class="sy0">.</span><span class="me1">Shutdown</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">(</span>message <span class="sy0">==</span> <span class="st0">"Debug"</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"JavaScript: Привет CSharp!"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"На команду: "</span> <span class="sy0">+</span> message<span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Browser</span><span class="sy0">.</span><span class="me1">ExecuteJSStatic</span><span class="br0">(</span><span class="st0">"document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: "</span> <span class="sy0">+</span> message <span class="sy0">+</span> <span class="st0">"'}}));"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span> <span class="kw1">else</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">if</span> <span class="br0">(</span>message<span class="sy0">.</span><span class="me1">Substring</span><span class="br0">(</span><span class="nu0">0</span>, <span class="nu0">8</span><span class="br0">)</span> <span class="sy0">==</span> <span class="st0">"console|"</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span>message<span class="sy0">.</span><span class="me1">Substring</span><span class="br0">(</span><span class="nu0">8</span><span class="br0">)</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI translate">/** API BusEngine.Plugin */</span></div></li>
