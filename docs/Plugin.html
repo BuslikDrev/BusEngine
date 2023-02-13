@@ -142,56 +142,56 @@
           </div>
           <p>BusEngine.dll</p>
           <h1 class="notranslate">BusEngine.Plugin (Abstract Class)</h1>
-          <p>Класс отвечающий за работу плагинов для BusEngine. Плагины подключаются в файле настроек проекта "*.busproject" или настрок редактора "busengine.busengine".</p>
+          <p>Класс отвечающий за работу плагинов для BusEngine. Плагины подключаются в файле настроек проекта <span class="notranslate">"*.busproject"</span> или настрок редактора <span class="notranslate">"busengine.busengine"</span>.</p><p>Ваш код можно выаолнить ассинхронно (в новом потоке), если в конце названия метода добавить <span class="notranslate">"Async"</span> или модификатор <span class="notranslate">"async"</span>.</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
               <tr id="BusEngine.Plugin.Initialize">
-                <td><p><a href="#BusEngine.Plugin.Initialize">(void)BusEngine.Plugin.Initialize()</a></p></td>
-                <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>".</p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.Initialize" title="BusEngine.Plugin.Initialize">(void)BusEngine.Plugin.Initialize()</a></span></p></td>
+                <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения <span class="notranslate">"<a href="Engine.html#BusEngine.Engine.Initialize" title="BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>"</span>.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.Initialize_1">
-                <td><p><a href="#BusEngine.Plugin.Initialize_1">(void)BusEngine.Plugin.Initialize(string)</a></p></td>
-                <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения "<a href="Engine.html#BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>" столько раз, сколько плагинов подключено. Первый параметр string строка выводит название файла плагина который сейчас был загружен.</p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.Initialize_1" title="BusEngine.Plugin.Initialize(string)">(void)BusEngine.Plugin.Initialize(string)</a></span></p></td>
+                <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения <span class="notranslate">"<a href="Engine.html#BusEngine.Engine.Initialize" title="BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>"</span> столько раз, сколько плагинов подключено. Первый параметр string строка выводит название файла плагина который сейчас был загружен.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.InitializeCanvas">
-                <td><p><a href="#BusEngine.Plugin.InitializeCanvas">(void)BusEngine.Plugin.InitializeCanvas()</a></p></td>
-                <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения "<a href="UI.Canvas.html#BusEngine.UI.Canvas.Initialize" target="_blank">BusEngine.UI.Canvas.Initialize()</a>".</p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.InitializeCanvas" title="BusEngine.Plugin.InitializeCanvas">(void)BusEngine.Plugin.InitializeCanvas()</a></span></p></td>
+                <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения <span class="notranslate">"<a href="UI.Canvas.html#BusEngine.UI.Canvas.Initialize" title="BusEngine.Plugin.Initialize" target="_blank">BusEngine.UI.Canvas.Initialize()</a>"</span>.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.Shutdown">
-                <td><p><a href="#BusEngine.Plugin.Shutdown">(void)BusEngine.Plugin.Shutdown()</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.Shutdown" title="BusEngine.Plugin.Shutdown">(void)BusEngine.Plugin.Shutdown()</a></span></p></td>
                 <td><p>Метод (виртуальный) уровня класса останавливает плагин для уничтожения объектов плагина и освобождения оперативной памяти при остановки BusEngine.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnLevelLoading">
-                <td><p><a href="#BusEngine.Plugin.OnLevelLoading">(void)BusEngine.Plugin.OnLevelLoading(string)</a></p></td>
-                <td><p>Метод (виртуальный) уровня класса запускает плагин во время начала загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас начал загружаться.</p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnLevelLoading" title="BusEngine.Plugin.OnLevelLoading">(void)BusEngine.Plugin.OnLevelLoading(string)</a></span></p></td>
+                <td><p>Метод (виртуальный) уровня класса запускает плагин во время начала загрузки игрового уровня <span class="notranslate">"BusEngine.Level"</span>. Первый параметр string строка выводит название игрового уровня который сейчас начал загружаться.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnLevelLoaded">
-                <td><p><a href="#BusEngine.Plugin.OnLevelLoaded">(void)BusEngine.Plugin.OnLevelLoaded(string)</a></p></td>
-                <td><p>Метод (виртуальный) уровня класса запускает плагин во время завершения загрузки игрового уровня "BusEngine.Level". Первый параметр string строка выводит название игрового уровня который сейчас окончил загружаться.</p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnLevelLoaded" title="BusEngine.Plugin.OnLevelLoaded">(void)BusEngine.Plugin.OnLevelLoaded(string)</a></span></p></td>
+                <td><p>Метод (виртуальный) уровня класса запускает плагин во время завершения загрузки игрового уровня <span class="notranslate">"BusEngine.Level"</span>. Первый параметр string строка выводит название игрового уровня который сейчас окончил загружаться.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnGameStart">
-                <td><p><a href="#BusEngine.Plugin.OnGameStart">(void)BusEngine.Plugin.OnGameStart()</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnGameStart" title="BusEngine.Plugin.OnGameStart">(void)BusEngine.Plugin.OnGameStart()</a></span></p></td>
                 <td><p>Метод (виртуальный) уровня класса запускает плагин во время начала управления игровым персонажем или начала отсчёта времени игры.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnGameStop">
-                <td><p><a href="#BusEngine.Plugin.OnGameStop">(void)BusEngine.Plugin.OnGameStop()</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnGameStop" title="BusEngine.Plugin.OnGameStop">(void)BusEngine.Plugin.OnGameStop()</a></span></p></td>
                 <td><p>Метод (виртуальный) уровня класса запускает плагин во время окончании управления игровым персонажем или окончании отсчёта времени игры.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnGameUpdate">
-                <td><p><a href="#BusEngine.Plugin.OnGameUpdate">(void)BusEngine.Plugin.OnGameUpdate()</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnGameUpdate" title="BusEngine.Plugin.OnGameUpdate">(void)BusEngine.Plugin.OnGameUpdate()</a></span></p></td>
                 <td><p>Метод (виртуальный) уровня класса запускает плагин во время отрисовки каждого кадра.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnClientConnectionReceived">
-                <td><p><a href="#BusEngine.Plugin.OnClientConnectionReceived">(void)BusEngine.Plugin.OnClientConnectionReceived(int)</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnClientConnectionReceived" title="BusEngine.Plugin.OnClientConnectionReceived">(void)BusEngine.Plugin.OnClientConnectionReceived(int)</a></span></p></td>
                 <td><p>Метод (виртуальный) уровня класса запускает плагин во время начала подключения к игровому серверу. Первый параметр int строка выводит числовой id игрока который начал подключаться к серверу.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnClientReadyForGameplay">
-                <td><p><a href="#BusEngine.Plugin.OnClientReadyForGameplay">(void)BusEngine.Plugin.OnClientReadyForGameplay(int)</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnClientReadyForGameplay" title="BusEngine.Plugin.OnClientReadyForGameplay">(void)BusEngine.Plugin.OnClientReadyForGameplay(int)</a></span></p></td>
                 <td><p>Метод (виртуальный) уровня класса останавливает плагин во время окончания подключения к игровому серверу. Первый параметр int строка выводит числовой id игрока который окончил подключаться к серверу.</p></td>
               </tr>
               <tr id="BusEngine.Plugin.OnClientDisconnected">
-                <td><p><a href="#BusEngine.Plugin.OnClientDisconnected">(void)BusEngine.Plugin.OnClientDisconnected(int)</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.OnClientDisconnected" title="BusEngine.Plugin.OnClientDisconnected">(void)BusEngine.Plugin.OnClientDisconnected(int)</a></span></p></td>
                 <td><p>Метод (виртуальный) уровня класса останавливает плагин во время окончания игры в игровом сервере. Первый параметр int строка выводит числовой id игрока который начал отключаться от сервера.</p></td>
               </tr>
             </tbody>
