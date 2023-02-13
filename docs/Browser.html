@@ -147,28 +147,28 @@
           <table>
             <tbody>
               <tr id="BusEngine.Browser.Initialize">
-                <td><p><a href="#BusEngine.Browser.Initialize" title="BusEngine.Browser.Initialize">(void)BusEngine.Browser.Initialize(string, string)</a></p></td>
+                <td><p><a href="#BusEngine.Browser.Initialize" title="BusEngine.Browser.Initialize"><span class="notranslate">(void)BusEngine.Browser.Initialize(string, string)</span></a></p></td>
               </tr>
               <tr>
-                <td><p>Метод (статический) уровня класса принимает первым параметром string строку веб адреса или полного пути файла, или относительного пути файла от "BusEngine.Engine.DataDirectory" до HTML страницы для запуска браузера и загрузки указанной страницы. Второй параметр string строка корневого пути каталога расположения index.html относительного пути от "BusEngine.Engine.DataDirectory" до index.html или полный путь каталога.</p></td>
+                <td><p>Метод (статический) уровня класса принимает первым параметром string строку веб адреса или полного пути файла, или относительного пути файла от <span class="notranslate">"BusEngine.Engine.DataDirectory"</span> до HTML страницы для запуска браузера и загрузки указанной страницы. Второй параметр string строка корневого пути каталога расположения index.html относительного пути от <span class="notranslate">"BusEngine.Engine.DataDirectory"</span> до index.html или полный путь каталога.</p></td>
               </tr>
               <tr id="BusEngine.Browser.ExecuteJS">
-                <td><p><a href="#BusEngine.Browser.ExecuteJS" title="BusEngine.Browser.ExecuteJS">(void)BusEngine.Browser.ExecuteJSStatic(string)</a></p></td>
+                <td><p><a href="#BusEngine.Browser.ExecuteJS" title="BusEngine.Browser.ExecuteJS"><span class="notranslate">(void)BusEngine.Browser.ExecuteJSStatic(string)</span></a></p></td>
               </tr>
               <tr>
                 <td><p>Метод (статический) уровня класса принимает string строку JavaScript кода для его выполнения в текущей вкладки браузера. Это полезно для передачи данных из СSharp кода.</p></td>
               </tr>
               <tr id="BusEngine.Browser.ShutdownStatic">
-                <td><p><a href="#BusEngine.Browser.ShutdownStatic" title="BusEngine.Browser.ShutdownStatic">(void)BusEngine.Browser.ShutdownStatic()</a></p></td>
+                <td><p><a href="#BusEngine.Browser.ShutdownStatic" title="BusEngine.Browser.ShutdownStatic"><span class="notranslate">(void)BusEngine.Browser.ShutdownStatic()</span></a></p></td>
               </tr>
               <tr>
-                <td><p>Метод (статический) уровня класса для закрытия "BusEngine.Browser".</p></td>
+                <td><p>Метод (статический) уровня класса для закрытия <span class="notranslate">"BusEngine.Browser"</span>.</p></td>
               </tr>
               <tr id="BusEngine.Browser.Dispose">
-                <td><p><a href="#BusEngine.Browser.Dispose" title="BusEngine.Browser.Dispose">(void)BusEngine.Browser.Dispose()</a></p></td>
+                <td><p><a href="#BusEngine.Browser.Dispose" title="BusEngine.Browser.Dispose"><span class="notranslate">(void)BusEngine.Browser.Dispose()</span></a></p></td>
               </tr>
               <tr>
-                <td><p>Метод (статический) уровня класса для закрытия "BusEngine.Browser" и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера "BusEngine.Browser.ShutdownStatic()".</p></td>
+                <td><p>Метод (статический) уровня класса для закрытия <span class="notranslate">"BusEngine.Browser"</span> и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера <span class="notranslate">"<a href="#BusEngine.Browser.ShutdownStatic" title="BusEngine.Browser.ShutdownStatic">BusEngine.Browser.ShutdownStatic()</a>"</span>.</p></td>
               </tr>
             </tbody>
           </table>
@@ -201,16 +201,16 @@
           <table>
             <tbody>
               <tr id="BusEngine.Browser.PostMessageStatic">
-                <td><p><a href="#BusEngine.Browser.PostMessageStatic">(void)BusEngine.Browser.PostMessageStatic</a></p></td>
+                <td><p><a href="#BusEngine.Browser.PostMessageStatic"><span class="notranslate">(void)BusEngine.Browser.PostMessageStatic</span></a></p></td>
               </tr>
               <tr>
-                <td><p>Событие (статическое) уровня класса принимает метод с двумя параметрами (object, string). Событие "BusEngine.Browser.PostMessage" будет вызывать ваш метод, когда вы вызываете в JavaScript коде функцию "BusEngine.PostMessage(string)" и передавать строку во второй параметр вашего метода, а в первый параметр будет приходить объект "BusEngine.Browser()".</p></td>
+                <td><p>Событие (статическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(object, string)</span>. Событие <span class="notranslate">"BusEngine.Browser.PostMessageStatic"</span> будет вызывать ваш метод, когда вы вызываете в JavaScript коде функцию <span class="notranslate">"BusEngine.PostMessage(string)"</span> и передавать строку во второй параметр вашего метода, а в первый параметр будет приходить объект <span class="notranslate">"BusEngine.Browser()"</span>.</p></td>
               </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
           <h2 id="Example" class="h2">Пример файла Program.cs</h2>
-          <p>В коде отражён запуск браузера и страницы расположенной относительно папки игровых файлов при старте своего плагина с названием MyPlugin.</p>
+          <p>В коде отражён запуск браузера и страницы расположенной относительно папки игровых файлов <span class="notranslate">"<a href="Engine.html#BusEngine.Engine.DataDirectory" title="BusEngine.Engine.DataDirectory" target="_blank">BusEngine.Engine.DataDirectory</a>"</span> при старте своего плагина с названием <span class="notranslate">"MyPlugin"</span>.</p>
           <div class="csharp notranslate">
 <ol>
 <li class="li1"><div class="de1"><span class="coMULTI translate">/** API BusEngine.Game - пользовательский код */</span></div></li>

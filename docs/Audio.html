@@ -142,40 +142,40 @@
           </div>
           <p>BusEngine.dll</p>
           <h1 class="notranslate">BusEngine.Audio (Class)</h1>
-          <p>Класс отвечающий за работу с Аудио файлами (mp3, wav, ogg). Это Аудио плеер движка. С помощью этого класса можно будет управлять всеми Аудио (фоновая музыка, разговоры, шумы и т.д.).<br>В основе BusEngine.Audio лежит библиотека <a href="https://github.com/videolan" title="VideoLAN | libvlcsharp" rel="noreferrer noopener nofollow" target="_blank" class="notranslate">VideoLAN | libvlcsharp</a>.</p>
-          <p><b>Класс тестируется</b>, библиотека VideoLAN | libvlcsharp имеет косяк с уничтожением объекта (5-10 Мб библиотека требует на постоянной основе). Тажже некоторые функции ещё не работают (повтор аудио и массив ссылок).</p>
+          <p>Класс отвечающий за работу с Аудио файлами (mp3, wav, ogg). Это Аудио плеер движка. С помощью этого класса можно будет управлять всеми Аудио (фоновая музыка, разговоры, шумы и т.д.).<br>В основе BusEngine.Audio лежит библиотека <span class="notranslate"><a href="https://github.com/videolan" title="VideoLAN | libvlcsharp" rel="noreferrer noopener nofollow" target="_blank">VideoLAN | libvlcsharp</a></span>.</p>
+          <p><b>Класс тестируется</b>, библиотека <span class="notranslate">VideoLAN | libvlcsharp</span> имеет косяк с уничтожением объекта (5-10 Мб библиотека требует на постоянной основе). Тажже некоторые функции ещё не работают (повтор аудио и массив ссылок).</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
               <tr id="BusEngine.Audio">
-                <td><p><a href="#BusEngine.Audio" title="BusEngine.Audio" class="notranslate">var _audio = (BusEngine.Audio)new BusEngine.Audio(null|string|string[])</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio" title="BusEngine.Audio">var _audio = (BusEngine.Audio)new BusEngine.Audio(null|string|string[])</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод конструктор (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания после вызова "<a href="#BusEngine.Audio.Play" title="BusEngine.Audio.Play" class="notranslate">_audio.Play()</a>". Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов "<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose" class="notranslate">_audio.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>" текущее. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
+                <td><p>Метод конструктор (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания после вызова <span class="notranslate">"<a href="#BusEngine.Audio.Play" title="BusEngine.Audio.Play">_audio.Play()</a>"</span>. Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов <span class="notranslate">"<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose">_audio.Dispose()</a>"</span> остановит весь список, а вызов <span class="notranslate">"<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop">_audio.Stop()</a>"</span> текущее. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Play">
-                <td><p><a href="#BusEngine.Audio.Play" title="BusEngine.Audio.Play" class="notranslate">(BusEngine.Audio)_audio.Play(null|string|string[])</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Play" title="BusEngine.Audio.Play">(BusEngine.Audio)_audio.Play(null|string|string[])</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания сначала. Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов "<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose" class="notranslate">_audio.Dispose()</a>" остановит весь список, а вызов "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>" текущее. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
+                <td><p>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для его проигрывания сначала. Также можно указать string[] массив строк, тогда каждое аудио будет проигривать по порядку, вызов <span class="notranslate">"<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose" class="notranslate">_audio.Dispose()</a>"</span> остановит весь список, а вызов <span class="notranslate">"<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>"</span> текущее. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Pause">
-                <td><p><a href="#BusEngine.Audio.Pause" title="BusEngine.Audio.Pause" class="notranslate">(void)_audio.Pause(string)</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Pause" title="BusEngine.Audio.Pause">(void)_audio.Pause(string)</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для Временной остановки в определённом месте и воспроизведения с определённого места Аудио файла.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Stop">
-                <td><p><a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">(void)_audio.Stop(string)</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop">(void)_audio.Stop(string)</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Метод (нестатический) уровня класса принимает string строку полного или относительного пути до Аудио файла для Остановки Аудио файла.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Dispose">
-                <td><p><a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose" class="notranslate">(void)_audio.Dispose()</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose">(void)_audio.Dispose()</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (нестатический) уровня класса для Остановки Аудио файла и уничтожения объекта Аудио для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии остановки Аудио "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>".</p></td>
+                <td><p>Метод (нестатический) уровня класса для Остановки Аудио файла и уничтожения объекта Аудио для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии остановки Аудио <span class="notranslate">"<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>"</span>.</p></td>
               </tr>
             </tbody>
           </table>
@@ -196,37 +196,37 @@
           <table>
             <tbody>
               <tr id="BusEngine.Audio.Urls">
-                <td><p><a href="#BusEngine.Audio.Urls" title="BusEngine.Audio.Urls" class="notranslate">(string[])_audio.Urls = string[]</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Urls" title="BusEngine.Audio.Urls">(string[])_audio.Urls = string[]</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Поле (нестатическое) уровня класса принимает или возвращает string[] массив строк полного или относительного пути до Аудио файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Url">
-                <td><p><a href="#BusEngine.Audio.Url" title="BusEngine.Audio.Url" class="notranslate">(string)_audio.Url = string</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Url" title="BusEngine.Audio.Url">(string)_audio.Url = string</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Поле (нестатическое) уровня класса принимает или возвращает string строку полного или относительного пути до Аудио файла для его проигрывания сначала или момента паузы. Поддерживаемые форматы: mp3, wav, ogg.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Loop">
-                <td><p><a href="#BusEngine.Audio.Loop" title="BusEngine.Audio.Loop" class="notranslate">(bool)_audio.Loop = bool</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Loop" title="BusEngine.Audio.Loop">(bool)_audio.Loop = bool</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Поле (нестатическое) уровня класса принимает или возвращает bool значение. True - проигривать текущее аудио или текущий список аудио повторно. По умолчанию False.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Volume">
-                <td><p><a href="#BusEngine.Audio.Volume" title="BusEngine.Audio.Volume" class="notranslate">(byte)_audio.Volume = byte</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Volume" title="BusEngine.Audio.Volume">(byte)_audio.Volume = byte</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Поле (нестатическое) уровня класса принимает или возвращает byte строку от 0 до 100 для установки громкости звука. По умолчанию 100.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Balance">
-                <td><p><a href="#BusEngine.Audio.Balance" title="BusEngine.Audio.Balance" class="notranslate">(sbyte)_audio.Balance = sbyte</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Balance" title="BusEngine.Audio.Balance">(sbyte)_audio.Balance = sbyte</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Поле (нестатическое) уровня класса принимает или возвращает sbyte строку от -100 до 100 для установки баланса звука между дорожками. По умолчанию 0 - равномерное распределение по дорожкам.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Mute">
-                <td><p><a href="#BusEngine.Audio.Mute" title="BusEngine.Audio.Mute" class="notranslate">(bool)_audio.Mute = bool</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Mute" title="BusEngine.Audio.Mute">(bool)_audio.Mute = bool</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Поле (нестатическое) уровня класса принимает или возвращает bool значение. True - звук отключён. По умолчанию False.</p></td>
@@ -238,43 +238,43 @@
           <table>
             <tbody>
               <tr id="BusEngine.Audio.Duration">
-                <td><p><a href="#BusEngine.Audio.Duration" title="BusEngine.Audio.Duration" class="notranslate">(double)_audio.Duration</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Duration" title="BusEngine.Audio.Duration">(double)_audio.Duration</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Свойство (нестатическое) уровня класса возвращает double значение, текущая позиция проигривания файла в секундах.</p></td>
               </tr>
               <tr id="BusEngine.Audio.Position">
-                <td><p><a href="#BusEngine.Audio.Position" title="BusEngine.Audio.Position" class="notranslate">(double)_audio.Position = double</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.Position" title="BusEngine.Audio.Position">(double)_audio.Position = double</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Свойство (нестатическое) уровня класса принимает или возвращает double значение. Установка позиции проигривания файла в секундах. По умолчанию 0.</p></td>
               </tr>
               <tr id="BusEngine.Audio.IsPlay">
-                <td><p><a href="#BusEngine.Audio.IsPlay" title="BusEngine.Audio.IsPlay" class="notranslate">(bool)_audio.IsPlay</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.IsPlay" title="BusEngine.Audio.IsPlay">(bool)_audio.IsPlay</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - аудио файл проигривается.</p></td>
               </tr>
               <tr id="BusEngine.Audio.IsPause">
-                <td><p><a href="#BusEngine.Audio.IsPause" title="BusEngine.Audio.IsPause" class="notranslate">(bool)_audio.IsPause</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.IsPause" title="BusEngine.Audio.IsPause">(bool)_audio.IsPause</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - аудио файл на паузе.</p></td>
               </tr>
               <tr id="BusEngine.Audio.IsStop">
-                <td><p><a href="#BusEngine.Audio.IsStop" title="BusEngine.Audio.IsStop" class="notranslate">(bool)_audio.IsStop</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.IsStop" title="BusEngine.Audio.IsStop">(bool)_audio.IsStop</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - аудио файл остановлен вручную.</p></td>
               </tr>
               <tr id="BusEngine.Audio.IsEnd">
-                <td><p><a href="#BusEngine.Audio.IsEnd" title="BusEngine.Audio.IsEnd" class="notranslate">(bool)_audio.IsEnd</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.IsEnd" title="BusEngine.Audio.IsEnd">(bool)_audio.IsEnd</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - аудио файл остановлен самостоятельно.</p></td>
               </tr>
               <tr id="BusEngine.Audio.IsDispose">
-                <td><p><a href="#BusEngine.Audio.IsDispose" title="BusEngine.Audio.IsDispose" class="notranslate">(bool)_audio.IsDispose</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.IsDispose" title="BusEngine.Audio.IsDispose">(bool)_audio.IsDispose</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Свойство (нестатическое) уровня класса возвращает bool значение, текущее состояние файла. True - объект аудио удаляется или удалён.</p></td>
@@ -286,52 +286,52 @@
           <table>
             <tbody>
               <tr id="BusEngine.Audio.OnPlay">
-                <td><p><a href="#BusEngine.Audio.OnPlay" title="BusEngine.Audio.OnPlay" class="notranslate">(void)_audio.OnPlay</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.OnPlay" title="BusEngine.Audio.OnPlay">(void)_audio.OnPlay</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие "<a href="#BusEngine.Audio.OnPlay" title="BusEngine.Audio.OnPlay" class="notranslate">_audio.OnPlay</a>" будет вызывать ваш метод, когда запустился указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
+                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие <span class="notranslate">"<a href="#BusEngine.Audio.OnPlay" title="BusEngine.Audio.OnPlay">_audio.OnPlay</a>"</span> будет вызывать ваш метод, когда запустился указанный файл и передавать объект <span class="notranslate">"BusEngine.Audio()"</span> в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
               </tr>
               <tr id="BusEngine.Audio.OnLoop">
-                <td><p><a href="#BusEngine.Audio.OnLoop" title="BusEngine.Audio.OnLoop" class="notranslate">(void)_audio.OnLoop</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.OnLoop" title="BusEngine.Audio.OnLoop">(void)_audio.OnLoop</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие "<a href="#BusEngine.Audio.OnLoop" title="BusEngine.Audio.OnLoop" class="notranslate">_audio.OnLoop</a>" будет вызывать ваш метод, когда повторно запустился указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
+                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие <span class="notranslate">"<a href="#BusEngine.Audio.OnLoop" title="BusEngine.Audio.OnLoop">_audio.OnLoop</a>"</span> будет вызывать ваш метод, когда повторно запустился указанный файл и передавать объект <span class="notranslate">"BusEngine.Audio()"</span> в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
               </tr>
               <tr id="BusEngine.Audio.OnPause">
-                <td><p><a href="#BusEngine.Audio.OnPause" title="BusEngine.Audio.OnPause" class="notranslate">(void)_audio.OnPause</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.OnPause" title="BusEngine.Audio.OnPause">(void)_audio.OnPause</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие "<a href="#BusEngine.Audio.OnPause" title="BusEngine.Audio.OnPause" class="notranslate">_audio.OnPause</a>" будет вызывать ваш метод, когда остановился или начал воспроизведение с момента остановки указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
+                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие <span class="notranslate">"<a href="#BusEngine.Audio.OnPause" title="BusEngine.Audio.OnPause">_audio.OnPause</a>"</span> будет вызывать ваш метод, когда остановился или начал воспроизведение с момента остановки указанный файл и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
               </tr>
               <tr id="BusEngine.Audio.OnStop">
-                <td><p><a href="#BusEngine.Audio.OnStop" title="BusEngine.Audio.OnStop" class="notranslate">(void)_audio.OnStop</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.OnStop" title="BusEngine.Audio.OnStop">(void)_audio.OnStop</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие "<a href="#BusEngine.Audio.OnStop" title="BusEngine.Audio.OnStop" class="notranslate">_audio.OnStop</a>" будет вызывать ваш метод, когда файл остановился вручную при вызове метода "<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>" и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
+                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие <span class="notranslate">"<a href="#BusEngine.Audio.OnStop" title="BusEngine.Audio.OnStop">_audio.OnStop</a>"</span> будет вызывать ваш метод, когда файл остановился вручную при вызове метода <span class="notranslate">"<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop">_audio.Stop()</a>"</span> и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
               </tr>
               <tr id="BusEngine.Audio.OnEnd">
-                <td><p><a href="#BusEngine.Audio.OnEnd" title="BusEngine.Audio.OnEnd" class="notranslate">(void)_audio.OnEnd</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.OnEnd" title="BusEngine.Audio.OnEnd">(void)_audio.OnEnd</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие "<a href="#BusEngine.Audio.OnEnd" title="BusEngine.Audio.OnEnd" class="notranslate">_audio.OnEnd</a>" будет вызывать ваш метод, когда файл остановился самостоятельно по достижению конца и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
+                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие <span class="notranslate">"<a href="#BusEngine.Audio.OnEnd" title="BusEngine.Audio.OnEnd">_audio.OnEnd</a>"</span> будет вызывать ваш метод, когда файл остановился самостоятельно по достижению конца и передавать объект <span class="notranslate">"BusEngine.Audio()"</span> в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
               </tr>
               <tr id="BusEngine.Audio.OnDispose">
-                <td><p><a href="#BusEngine.Audio.OnDispose" title="BusEngine.Audio.OnDispose" class="notranslate">(void)_audio.OnDispose</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.OnDispose" title="BusEngine.Audio.OnDispose">(void)_audio.OnDispose</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие "<a href="#BusEngine.Audio.OnDispose" title="BusEngine.Audio.OnDispose" class="notranslate">_audio.OnDispose</a>" будет вызывать ваш метод, когда объект "BusEngine.Audio()" уничтожени и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
+                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие <span class="notranslate">"<a href="#BusEngine.Audio.OnDispose" title="BusEngine.Audio.OnDispose">_audio.OnDispose</a>"</span> будет вызывать ваш метод, когда объект "BusEngine.Audio()" уничтожени и передавать объект <span class="notranslate">"BusEngine.Audio()"</span> в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
               </tr>
               <tr id="BusEngine.Audio.OnNotFound">
-                <td><p><a href="#BusEngine.Audio.OnNotFound" title="BusEngine.Audio.OnNotFound" class="notranslate">(void)_audio.OnNotFound</a></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.OnNotFound" title="BusEngine.Audio.OnNotFound">(void)_audio.OnNotFound</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие "<a href="#BusEngine.Audio.OnNotFound" title="BusEngine.Audio.OnNotFound" class="notranslate">_audio.OnNotFound</a>" будет вызывать ваш метод, если нет указанного файла и передавать объект "BusEngine.Audio()" в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
+                <td><p>Событие (нестатическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(BusEngine.Audio, string)</span>. Событие <span class="notranslate">"<a href="#BusEngine.Audio.OnNotFound" title="BusEngine.Audio.OnNotFound">_audio.OnNotFound</a>"</span> будет вызывать ваш метод, если нет указанного файла и передавать объект <span class="notranslate">"BusEngine.Audio()"</span> в первый параметр, а строку содержащую путь к файлу во второй параметр вашего метода.</p></td>
               </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
           <h2 id="Example" class="h2">Пример файла Program.cs</h2>
-          <p>В коде отражено воспроизведение аудио файлов расположенных относительно папки игровых файлов "<a href="Engine.html#BusEngine.Engine.DataDirectory" title="BusEngine.Engine.DataDirectory" target="_blank" class="notranslate">BusEngine.Engine.DataDirectory</a>" при старте своего плагина с названием "MyPlugin", с возможностью пропуска по нажатию клавиши "Пробел".</p>
+          <p>В коде отражено воспроизведение аудио файлов расположенных относительно папки игровых файлов <span class="notranslate">"<a href="Engine.html#BusEngine.Engine.DataDirectory" title="BusEngine.Engine.DataDirectory" target="_blank">BusEngine.Engine.DataDirectory</a>"</span> при старте своего плагина с названием <span class="notranslate">"MyPlugin"</span>, с возможностью пропуска по нажатию клавиши "Пробел".</p>
           <div class="csharp notranslate">
 <ol>
 <li class="li1"><div class="de1"><span class="coMULTI translate">/** API BusEngine.Game - пользовательский код */</span></div></li>
