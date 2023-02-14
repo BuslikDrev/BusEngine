@@ -1550,12 +1550,12 @@ namespace BusEngine {
 			System.Console.WriteLine("string");
 			#endif
 		}
-		public static void Info(string[] args1) {
+		/* public static void Info(string[] args1) {
 			System.Console.WriteLine(args1.ToString());
 			#if LOG_TYPE
 			System.Console.WriteLine("string[]");
 			#endif
-		}
+		} */
 		public static void Info(ulong args1) {
 			System.Console.WriteLine(args1);
 			#if LOG_TYPE
@@ -1592,6 +1592,12 @@ namespace BusEngine {
 			System.Console.WriteLine("int");
 			#endif
 		}
+		/* public static void Info(int[] args1) {
+			System.Console.WriteLine(args1);
+			#if LOG_TYPE
+			System.Console.WriteLine("int[]");
+			#endif
+		} */
 		public static void Info(double args1) {
 			System.Console.WriteLine(args1);
 			#if LOG_TYPE
@@ -1628,12 +1634,12 @@ namespace BusEngine {
 			System.Console.WriteLine("object");
 			#endif
 		}
-		public static void Info(object[] args1) {
+		/* public static void Info(object[] args1) {
 			System.Console.WriteLine(args1.ToString());
 			#if LOG_TYPE
 			System.Console.WriteLine("object[]");
 			#endif
-		}
+		} */
 		public static void Info(string args1, string args2) {
 			System.Console.WriteLine(args1, args2);
 			#if LOG_TYPE
@@ -1667,13 +1673,13 @@ namespace BusEngine {
 		}
 		public static void Info<A, B, C>(A a, B b, C c) {
 			System.Console.WriteLine(a, b, c);
-		}
-		public static void Info(int arg) {
+		} */
+		/* public static void Info(int arg) {
 			System.Console.WriteLine(arg);
-		}
-		public static void Info(params System.Type[] arg) {
+		} */
+		/* public static void Info(params System.Type[] arg) {
 			System.Console.WriteLine(arg);
-		}
+		} */
 		public static void Info(params object[] args) {
 			int i, ii = args.Length;
 			for (i = 0; i < ii; ++i) {
@@ -1695,7 +1701,7 @@ namespace BusEngine {
 			}
 			System.Console.WriteLine();
 		}
-		public static void Info(string arg, params object[] args) {
+		/* public static void Info(string arg, params object[] args) {
 			int i, ii = args.Length;
 			for (i = 0; i < ii; ++i) {
 				System.Console.Write(args[i] + " ");
