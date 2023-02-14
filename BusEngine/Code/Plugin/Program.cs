@@ -58,7 +58,7 @@ namespace BusEngine.Game {
 		}
 
 		public override void Initialize(string plugin, string state) {
-			BusEngine.Log.Info("plugin.dll Initialize state {0}, {1}", plugin, state);
+			BusEngine.Log.Info("plugin.dll Initialize state {0} {1}", plugin, state);
 		}
 
 		// при запуске BusEngine после создания формы Canvas
