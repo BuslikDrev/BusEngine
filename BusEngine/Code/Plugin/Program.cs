@@ -54,11 +54,11 @@ namespace BusEngine.Game {
 		}
 
 		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("plugin.dll Initialize {0}", plugin);
+			BusEngine.Log.Info("plugin.dll Initialize {0}", System.IO.Path.GetFileName(plugin));
 		}
 
 		public override void Initialize(string plugin, string state) {
-			BusEngine.Log.Info("plugin.dll Initialize state {0}", plugin + " " + state);
+			BusEngine.Log.Info("plugin.dll Initialize state {0}, {1}", plugin, state);
 		}
 
 		// при запуске BusEngine после создания формы Canvas
@@ -296,14 +296,15 @@ namespace BusEngine.Game {
 			}
 
 			// запускаем браузер WinForm только в одном потоке =(
-			//Browser();
+			if (BusEngine.Engine.Platform == "WindowsEditor") {
+				Browser();
+			}
 		}
 
 		// запускаем браузер
 		private void Browser() {
 			if (BusEngine.Engine.Platform == "WindowsEditor") {
 				BusEngine.Browser.Initialize("https://threejs.org/editor/");
-				BusEngine.Browser.Initialize("https://buslikdrev.by/");
 			} else if (BusEngine.Engine.Platform == "WindowsLauncher") {
 				BusEngine.Browser.Initialize("index.html");
 				BusEngine.Browser.OnPostMessageStatic += OnPostMessage;
