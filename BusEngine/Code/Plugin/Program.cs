@@ -53,6 +53,14 @@ namespace BusEngine.Game {
 			}
 		}
 
+		public override void Initialize(string plugin) {
+			BusEngine.Log.Info("plugin.dll Initialize {0}", plugin);
+		}
+
+		public override void Initialize(string plugin, string state) {
+			BusEngine.Log.Info("plugin.dll Initialize state {0}", plugin + " " + state);
+		}
+
 		// при запуске BusEngine после создания формы Canvas
 		public override void InitializeСanvas() {
 			// убираем стартовую обложку
