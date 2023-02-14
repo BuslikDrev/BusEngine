@@ -174,7 +174,7 @@ h3.search{border-bottom:none;padding-bottom:2px}
 h4{font-size:14px;margin-bottom:0}
 p,td{line-height:1.8em;margin:1em 0 .5em}
 td{min-width:150px;padding:2px 10px}
-tr:nth-child(even){background-color:#ea0000}
+tr:nth-child(even){background-color:rgb(234 245 255)}
 .body li{line-height:2em}
 a{color:#0067d1;text-decoration:none}
 body{height:auto;-webkit-tap-highlight-color:rgba(0,0,0,0)!important;margin:0;padding:0;font-size:14px;color:#222;overflow-y:scroll;font-family:"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif}
