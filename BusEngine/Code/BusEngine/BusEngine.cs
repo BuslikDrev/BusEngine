@@ -1701,7 +1701,7 @@ namespace BusEngine {
 			}
 			System.Console.WriteLine();
 		}
-		/* public static void Info(string arg, params object[] args) {
+		public static void Info(string arg, params object[] args) {
 			int i, ii = args.Length;
 			for (i = 0; i < ii; ++i) {
 				System.Console.Write(args[i] + " ");
@@ -1721,7 +1721,7 @@ namespace BusEngine {
 				System.Console.Write(args[i] + " ");
 			}
 			System.Console.WriteLine();
-		} */
+		}
 
 		public static void Debug() {
 			//System.Type myType = System.Type.GetType("System.Windows.Forms.MyMethod");
@@ -1903,7 +1903,6 @@ namespace BusEngine {
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					foreach (System.Type type in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]).GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
-BusEngine.Log.Info("sssssssssssssssssssssssss");
 							// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
 							// чтобы получить public методы без базовых(наследованных от object)
 							/* System.Reflection.MethodInfo method = type.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly, null, type.GetGenericArguments(), null);
@@ -1939,13 +1938,13 @@ BusEngine.Log.Info("sssssssssssssssssssssssss");
 																System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
 																if (md != null) {
 																	object[] x = new object[1];
-																	x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																	x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
 																	md.Invoke(System.Activator.CreateInstance(tp), x);
 																}
 																md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 																if (md != null) {
 																	object[] x = new object[2];
-																	x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																	x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
 																	x[1] = stage;
 																	md.Invoke(System.Activator.CreateInstance(tp), x);
 																}
@@ -1961,7 +1960,7 @@ BusEngine.Log.Info("sssssssssssssssssssssssss");
 															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 															if (md != null) {
 																object[] x = new object[2];
-																x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
 																x[1] = stage;
 																md.Invoke(System.Activator.CreateInstance(tp), x);
 															}
@@ -1985,13 +1984,13 @@ BusEngine.Log.Info("sssssssssssssssssssssssss");
 															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
 															if (md != null) {
 																object[] x = new object[1];
-																x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
 																md.Invoke(System.Activator.CreateInstance(tp), x);
 															}
 															md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 															if (md != null) {
 																object[] x = new object[2];
-																x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
 																x[1] = stage;
 																md.Invoke(System.Activator.CreateInstance(tp), x);
 															}
@@ -2007,7 +2006,7 @@ BusEngine.Log.Info("sssssssssssssssssssssssss");
 														System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 														if (md != null) {
 															object[] x = new object[2];
-															x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+															x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
 															x[1] = stage;
 															md.Invoke(System.Activator.CreateInstance(tp), x);
 														}
