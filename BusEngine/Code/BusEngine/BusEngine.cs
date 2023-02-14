@@ -715,11 +715,11 @@ BusEngine.UI.Canvas
 
 				//CefSharp.BrowserSubprocess.SelfHost.Main(args);
 
-				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
-				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
-
 				// включаем поддержку экранов с высоким разрешением
 				CefSharp.Cef.EnableHighDPISupport();
+
+				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
+				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
 
 				// устанавливаем свой юзер агент
 				settings.UserAgent = BusEngine.Engine.Device.UserAgent;
@@ -741,6 +741,7 @@ BusEngine.UI.Canvas
 
 				// применяем наши настройки до запуска браузера
 				CefSharp.Cef.Initialize(settings);
+				settings.Dispose();
 
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
@@ -779,11 +780,34 @@ BusEngine.UI.Canvas
 		/** функция запуска браузера */
 
 		public static void ShutdownStatic() {
-			// одключаем браузер от нашей программы
-			BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
+			if (browser != null && !browser.IsDisposed) {
+				browser.JavascriptMessageReceived -= OnCefPostMessage;
+				browser.FrameLoadEnd -= OnCefSharpReplace;
+				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
+				browser.Dispose();
+				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
+			}
+			/* System.Threading.Tasks.Task.Run(() => {
+				CefSharp.Cef.Shutdown();
+			}); */
 		}
 
-		public void Dispose() {browser = null;}
+		public void Shutdown() {
+			Dispose();
+			/* System.Threading.Tasks.Task.Run(() => {
+				CefSharp.Cef.Shutdown();
+			}); */
+		}
+
+		public void Dispose() {
+			if (browser != null && !browser.IsDisposed) {
+				browser.JavascriptMessageReceived -= OnCefPostMessage;
+				browser.FrameLoadEnd -= OnCefSharpReplace;
+				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
+				browser.Dispose();
+				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
+			}
+		}
 	}
 	/** API BusEngine.Browser */
 }
@@ -1341,7 +1365,7 @@ namespace BusEngine {
 			} else {
 				if (System.IO.File.Exists(path + Language + File + "." + Format)) {
 					files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
-					//files = System.Text.Encoding.UTF8.GetString(File.ReadAllBytes(path + Language + file + "." + Format));
+					//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + File + "." + Format));
 				} else {
 					Language = LanguageDefault;
 					if (System.IO.File.Exists(path + Language + File + "." + Format)) {
@@ -1357,8 +1381,6 @@ namespace BusEngine {
 
 				lines = files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
 				ii = lines.Length;
-				files = null;
-				System.GC.Collect();
 
 				for (i = 0; i < ii; ++i) {
 					pairs = lines[i].Split(new char[] {'='}, 2);
@@ -1377,7 +1399,9 @@ namespace BusEngine {
 
 		public static void Shutdown() {}
 
-		public void Dispose() {}
+		public void Dispose() {
+			System.GC.Collect();
+		}
 	}
 }
 /** API BusEngine */
@@ -1432,6 +1456,7 @@ namespace BusEngine {
 				BusEngine.Log.AttachConsole(-1);
 				BusEngine.Log.AllocConsole();
 				BusEngine.Log.StatusConsole = true;
+
 				System.Console.Title = BusEngine.Localization.GetLanguageStatic("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
@@ -1464,6 +1489,7 @@ namespace BusEngine {
 				//BusEngine.Log.Info(new System.IO.StreamReader(System.Console.OpenStandardInput(), System.Console.InputEncoding));
 				BusEngine.Log.FreeConsole();
 				BusEngine.Log.StatusConsole = false;
+				//System.Console.OutputEncoding = new System.Text.UTF8Encoding();
 				System.Console.SetOut(new System.IO.StreamWriter(System.Console.OpenStandardOutput(), System.Console.OutputEncoding) { AutoFlush = true });
 				System.Console.SetError(new System.IO.StreamWriter(System.Console.OpenStandardError(), System.Console.OutputEncoding) { AutoFlush = true });
 				System.Console.SetIn(new System.IO.StreamReader(System.Console.OpenStandardInput(), System.Console.InputEncoding));
@@ -1797,6 +1823,8 @@ namespace BusEngine {
 		// после загрузки определённого плагина
 		public virtual void Initialize(string plugin) {}
 		public virtual void InitializeAsync(string plugin) {}
+		public virtual void Initialize(string plugin, string state) {}
+		public virtual void InitializeAsync(string plugin, string state) {}
 
 		// при запуске BusEngine после создания формы Canvas
 		public virtual void InitializeСanvas() {}
@@ -1843,6 +1871,7 @@ namespace BusEngine {
 	/** API BusEngine.IPlugin */
 	internal class IPlugin : System.IDisposable {
 		private static int Count = 0;
+		private static string[] Plugins = new string[0];
 		private bool IsAsync(System.Reflection.MethodInfo method) {
 			foreach (object o in method.GetCustomAttributes(false)) {
 				if (o.GetType() == typeof(System.Runtime.CompilerServices.AsyncStateMachineAttribute)) {
@@ -1863,9 +1892,12 @@ namespace BusEngine {
 
 			for (i = 0; i < ii; ++i) {
 				if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
+					System.Array.Resize(ref Plugins, ii);
+					Plugins.SetValue(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"], i);
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					foreach (System.Type type in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]).GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
+BusEngine.Log.Info("sssssssssssssssssssssssss");
 							// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
 							// чтобы получить public методы без базовых(наследованных от object)
 							/* System.Reflection.MethodInfo method = type.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly, null, type.GetGenericArguments(), null);
@@ -1880,18 +1912,6 @@ namespace BusEngine {
 							foreach (System.Reflection.MethodInfo method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
 								m = method.Name.ToLower();
 								if (m == stage || m == stage + "async") {
-									/* BusEngine.Log.Info( "ggggggg {0}", method.ToString());
-									BusEngine.Log.Info( "ggggggg {0}", method.ReturnParameter);
-									BusEngine.Log.Info( "ggggggg {0}", method.ReturnType);
-									BusEngine.Log.Info( "ggggggg {0}", method.ReturnTypeCustomAttributes);
-									BusEngine.Log.Info( "ggggggg {0}", method.Module);
-									BusEngine.Log.Info( "ggggggg {0}", method.MethodImplementationFlags);
-									BusEngine.Log.Info( "ggggggg {0}", method.MethodHandle.GetFunctionPointer());
-									BusEngine.Log.Info( "ggggggg {0}", method.MetadataToken);
-									BusEngine.Log.Info( "ggggggg {0}", method.Attributes);
-									BusEngine.Log.Info( "ggggggg {0}", method.CallingConvention);
-									BusEngine.Log.Info( "ggggggg {0}", method.ContainsGenericParameters); */
-									//BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
 									Count++;
 									BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
 									BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_class") + ": {0}", type.FullName);
@@ -1906,13 +1926,39 @@ namespace BusEngine {
 											i2 = method.GetParameters().Length;
 											if (i2 == 0) {
 												method.Invoke(System.Activator.CreateInstance(type), null);
-											} else {
 												if (stage == "initialize") {
 													for (i3 = 0; i3 < ii; ++i3) {
-														if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"] != "") {
-															object[] x = new object[i2];
-															x[0] = System.IO.Path.GetFileName(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"]);
-															method.Invoke(System.Activator.CreateInstance(type), x);
+														foreach (System.Type tp in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]).GetTypes()) {
+															if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
+																System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
+																if (md != null) {
+																	object[] x = new object[1];
+																	x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																	md.Invoke(System.Activator.CreateInstance(tp), x);
+																}
+																md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+																if (md != null) {
+																	object[] x = new object[2];
+																	x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																	x[1] = stage;
+																	md.Invoke(System.Activator.CreateInstance(tp), x);
+																}
+															}
+														}
+													}
+												}
+											}
+											if (stage != "initialize") {
+												for (i3 = 0; i3 < ii; ++i3) {
+													foreach (System.Type tp in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]).GetTypes()) {
+														if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
+															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+															if (md != null) {
+																object[] x = new object[2];
+																x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																x[1] = stage;
+																md.Invoke(System.Activator.CreateInstance(tp), x);
+															}
 														}
 													}
 												}
@@ -1926,13 +1972,39 @@ namespace BusEngine {
 										i2 = method.GetParameters().Length;
 										if (i2 == 0) {
 											method.Invoke(System.Activator.CreateInstance(type), null);
-										} else {
 											if (stage == "initialize") {
 												for (i3 = 0; i3 < ii; ++i3) {
-													if (BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"] != "") {
-														object[] x = new object[i2];
-														x[0] = System.IO.Path.GetFileName(BusEngine.ProjectDefault.Setting2["require"]["plugins"][i3]["path"]);
-														method.Invoke(System.Activator.CreateInstance(type), x);
+													foreach (System.Type tp in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]).GetTypes()) {
+														if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
+															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
+															if (md != null) {
+																object[] x = new object[1];
+																x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																md.Invoke(System.Activator.CreateInstance(tp), x);
+															}
+															md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+															if (md != null) {
+																object[] x = new object[2];
+																x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+																x[1] = stage;
+																md.Invoke(System.Activator.CreateInstance(tp), x);
+															}
+														}
+													}
+												}
+											}
+										}
+										if (stage != "initialize") {
+											for (i3 = 0; i3 < ii; ++i3) {
+												foreach (System.Type tp in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]).GetTypes()) {
+													if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
+														System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+														if (md != null) {
+															object[] x = new object[2];
+															x[0] = System.IO.Path.GetFileName(BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"]);
+															x[1] = stage;
+															md.Invoke(System.Activator.CreateInstance(tp), x);
+														}
 													}
 												}
 											}
