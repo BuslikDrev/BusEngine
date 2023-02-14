@@ -158,6 +158,12 @@
               <tr>
                 <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения <span class="notranslate">"<a href="Engine.html#BusEngine.Engine.Initialize" title="BusEngine.Engine.Initialize" target="_blank">BusEngine.Engine.Initialize()</a>"</span> столько раз, сколько плагинов подключено. Первый параметр string строка выводит название файла плагина который сейчас был загружен.</p></td>
               </tr>
+              <tr id="BusEngine.Plugin.Initialize_2">
+                <td><p><span class="notranslate"><a href="#BusEngine.Plugin.Initialize_2" title="BusEngine.Plugin.Initialize(string, string)">(void)BusEngine.Plugin.Initialize(string, string)</a></span></p></td>
+              </tr>
+              <tr>
+                <td><p>Метод (виртуальный) уровня класса запускает плагин во время выполнения всех существующих методов во всех подключённых плагинах. Первый параметр string строка выводит название файла плагина который сейчас был загружен, а второй параметр название метода который был запущен в плагине из первого параметра.</p></td>
+              </tr>
               <tr id="BusEngine.Plugin.InitializeCanvas">
                 <td><p><span class="notranslate"><a href="#BusEngine.Plugin.InitializeCanvas" title="BusEngine.Plugin.InitializeCanvas">(void)BusEngine.Plugin.InitializeCanvas()</a></span></p></td>
               </tr>
@@ -267,6 +273,11 @@
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1 translate">// после загрузки определённого плагина</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Initialize<span class="br0">(</span><span class="kw4">string</span> plugin<span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin Initialize: {0}"</span>, plugin<span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1"></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1 translate">// после загрузки определённого плагина и метода</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Initialize<span class="br0">(</span><span class="kw4">string</span> plugin, </span><span class="kw4">string</span> state<span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"MyPlugin Initialize: {0}, {1}"</span>, plugin, state<span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
 <li class="li1"><div class="de1"></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1 translate">// при запуске BusEngine после создания формы Canvas</span></div></li>
