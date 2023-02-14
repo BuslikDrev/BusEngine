@@ -1704,23 +1704,23 @@ namespace BusEngine {
 		public static void Info(string arg, params object[] args) {
 			int i, ii = args.Length;
 			for (i = 0; i < ii; ++i) {
-				System.Console.Write(args[i] + " ");
+				arg = arg.Replace("{" + i + "}", args[i].ToString());
 			}
-			System.Console.WriteLine();
+			System.Console.WriteLine(arg);
 		}
 		public static void Info(string arg, params int[] args) {
 			int i, ii = args.Length;
 			for (i = 0; i < ii; ++i) {
-				System.Console.Write(args[i] + " ");
+				arg = arg.Replace("{" + i + "}", args[i].ToString());
 			}
-			System.Console.WriteLine();
+			System.Console.WriteLine(arg);
 		}
 		public static void Info(string arg, params string[] args) {
 			int i, ii = args.Length;
 			for (i = 0; i < ii; ++i) {
-				System.Console.Write(args[i] + " ");
+				arg = arg.Replace("{" + i + "}", args[i]);
 			}
-			System.Console.WriteLine();
+			System.Console.WriteLine(arg);
 		}
 
 		public static void Debug() {
