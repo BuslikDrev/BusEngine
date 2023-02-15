@@ -377,7 +377,7 @@ var busApp = {
 						busApp.cache.add('bus-app-' + busApp.setting['cache_token'], window.location.href, true);
 					} else {
 						window.caches.open('bus-app-' + busApp.setting['cache_token']).then(function(cache) {
-							console.log(cache.match(busApp.setting['offline_link']));
+							console.log(cache);
 							if (cache.match(busApp.setting['offline_link'])) {
 								//busApp.cache.add('bus-app-' + busApp.setting['cache_token'], busApp.setting['offline_link']);
 								busApp.ajax(busApp.setting['offline_link'], {
