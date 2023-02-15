@@ -301,8 +301,8 @@ var busApp = {
 			// кэшируем при первом посещении
 			if (busApp.setting['cache_status'] && 'CacheStorage' in window && window.navigator.onLine) {
 				// статика дополнительно
-				window.caches.has('bus-app-' + busApp.setting['cache_token']).then(function(has) {
-					if (!has) {
+				window.caches.has('bus-app-' + busApp.setting['cache_token']).then(function(cache) {
+					if (!cache || cache.match(busApp.setting['offline_link'])) {
 						var i;
 						// стили
 						var stylesheets = document.getElementsByTagName('link');
