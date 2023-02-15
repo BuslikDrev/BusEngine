@@ -54,11 +54,11 @@ namespace BusEngine.Game {
 		}
 
 		public override void Initialize(string plugin) {
-			BusEngine.Log.Info("plugin.dll Initialize {0}", System.IO.Path.GetFileName(plugin));
+			BusEngine.Log.Info("Plugin.dll Initialize {0}", System.IO.Path.GetFileName(plugin));
 		}
 
 		public override void Initialize(string plugin, string state) {
-			BusEngine.Log.Info("plugin.dll Initialize state {0} {1}", plugin, state);
+			BusEngine.Log.Info("Plugin.dll Initialize state {0} {1}", plugin, state);
 		}
 
 		// при запуске BusEngine после создания формы Canvas
@@ -70,7 +70,7 @@ namespace BusEngine.Game {
 
 			// запускаем аудио
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
-				string[] audios = {"Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3"};
+				string[] audios = {"Audios/BusEngine.mp3"};
 				BusEngine.Audio audio = new BusEngine.Audio();
 				/** событие запуска аудио */
 				audio.OnPlay += (BusEngine.Audio a, string url) => {
@@ -151,7 +151,7 @@ namespace BusEngine.Game {
 				};
 				/** событие отсутствия аудио */
 				audio.Position = 0;
-				//audio.Play(audios[0]);
+				audio.Play(audios[0]);
 				//audio.Stop();
 				BusEngine.UI.Canvas.WinForm.KeyDown += (o, e) => {
 					// выкл аудио
@@ -172,7 +172,7 @@ namespace BusEngine.Game {
 			// запускаем видео
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
 				//string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4", "https://buslikdrev.by/video/Unity.mp4"};
-				string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "Audios/BusEngine.mp3", "Videos/BusEngine.mp4"};
+				string[] videos = {"https://buslikdrev.by/video/Unity.mp4", "Videos/BusEngine.mp4"};
 				//new BusEngine.Video("https://buslikdrev.by/video/Unity.mp4");
 				/* new BusEngine.Video("Videos/BusEngine.mp4").Play();
 				new BusEngine.Video("Videos/BusEngine.mp4").Play();
