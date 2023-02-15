@@ -1938,13 +1938,13 @@ namespace BusEngine {
 																System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
 																if (md != null) {
 																	object[] x = new object[1];
-																	x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
+																	x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"];
 																	md.Invoke(System.Activator.CreateInstance(tp), x);
 																}
 																md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 																if (md != null) {
 																	object[] x = new object[2];
-																	x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
+																	x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"];
 																	x[1] = stage;
 																	md.Invoke(System.Activator.CreateInstance(tp), x);
 																}
@@ -1960,7 +1960,7 @@ namespace BusEngine {
 															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 															if (md != null) {
 																object[] x = new object[2];
-																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
+																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"];
 																x[1] = stage;
 																md.Invoke(System.Activator.CreateInstance(tp), x);
 															}
@@ -1984,13 +1984,13 @@ namespace BusEngine {
 															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
 															if (md != null) {
 																object[] x = new object[1];
-																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
+																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"];
 																md.Invoke(System.Activator.CreateInstance(tp), x);
 															}
 															md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 															if (md != null) {
 																object[] x = new object[2];
-																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
+																x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"];
 																x[1] = stage;
 																md.Invoke(System.Activator.CreateInstance(tp), x);
 															}
@@ -2006,7 +2006,7 @@ namespace BusEngine {
 														System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
 														if (md != null) {
 															object[] x = new object[2];
-															x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i3]["path"];
+															x[0] = BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"];
 															x[1] = stage;
 															md.Invoke(System.Activator.CreateInstance(tp), x);
 														}
