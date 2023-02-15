@@ -6,9 +6,9 @@ var busApp = {
 			"version":"1.0.13.3",
 			"api":"module/bus_app",
 			"lang":1,
-			"offline_link":"offline.html",
+			"offline_link":"/BusEngine/offline.html",
 			"offline_links":{
-				"1":"offline.html"
+				"1":"/BusEngine/offline.html"
 			},
 			"cache_status":true,
 			"cache_resources":[],

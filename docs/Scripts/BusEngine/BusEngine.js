@@ -383,7 +383,7 @@ document.addEventListener('busAppBefore', function() {
 		"description_bookmarks_key":"Чтобы добавить в закладки нажмите CTRL + D на клавиатуре.","description_notification":"Чтобы быть вкурсе всех новинок, нажмите на \"Подписаться на уведомления\".",
 		"appinstalled":"Всё, ты домашний!",
 		"offline":"Отсутствует интернет!",
-		"offline_link":"offline.html",
+		"offline_link":"/BusEngine/offline.html",
 		"online":"Интернет появился! Ура товарищи!",
 		"delay":0,
 		"closeTime":0,
