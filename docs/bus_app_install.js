@@ -6,9 +6,9 @@ var busApp = {
 			"version":"1.0.13.3",
 			"api":"module/bus_app",
 			"lang":1,
-			"offline_link":"/BusEngine/offline.html",
+			"offline_link":"offline.html",
 			"offline_links":{
-				"1":"/BusEngine/offline.html"
+				"1":"offline.html"
 			},
 			"cache_status":true,
 			"cache_resources":[],
@@ -270,6 +270,37 @@ self.addEventListener('install', function(event) {
 			})
 		)
 		// статика
+		busApp.cache.add('bus-app-' + busApp.setting['cache_token'], busApp.setting['offline_link'], true);
+		busApp.ajax(busApp.setting['offline_link'], {
+			'responseType': 'document',
+			'success': function(doc, xhr) {
+				// стили
+				var i, stylesheets = doc.getElementsByTagName('link');
+				if (stylesheets) {
+					for (i in stylesheets) {
+						if (stylesheets[i].href && stylesheets[i].href != self.location.href) {
+							busApp.cache.add('bus-app-' + busApp.setting['cache_token'], stylesheets[i].href);
+						}
+					}
+				}
+
+				// скрипты
+				for (i in doc.scripts) {
+					if (doc.scripts[i].src) {
+						busApp.cache.add('bus-app-' + busApp.setting['cache_token'], doc.scripts[i].src);
+					}
+				}
+
+				// изображения
+				for (i in doc.images) {
+					if (doc.images[i].src) {
+						busApp.cache.add('bus-app-' + busApp.setting['cache_token'], doc.images[i].src);
+					}
+				}
+
+				//busApp.cache.add('bus-app-' + busApp.setting['cache_token'], xhr.responseURL);
+			}
+		});
 		for (var i in busApp.setting['cache_resources']) {
 			busApp.cache.add('bus-app-' + busApp.setting['cache_token'], busApp.setting['cache_resources'][i], true);
 		}
