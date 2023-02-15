@@ -377,40 +377,43 @@ var busApp = {
 						busApp.cache.add('bus-app-' + busApp.setting['cache_token'], window.location.href, true);
 					} else {
 						window.caches.open('bus-app-' + busApp.setting['cache_token']).then(function(cache) {
-							console.log(cache);
-							if (cache.match(busApp.setting['offline_link'])) {
-								//busApp.cache.add('bus-app-' + busApp.setting['cache_token'], busApp.setting['offline_link']);
-								busApp.ajax(busApp.setting['offline_link'], {
-									'responseType': 'document',
-									'success': function(doc, xhr) {
-										// стили
-										var i, stylesheets = doc.getElementsByTagName('link');
-										if (stylesheets) {
-											for (i in stylesheets) {
-												if (stylesheets[i].href && stylesheets[i].href != window.location.href) {
-													busApp.cache.add('bus-app-' + busApp.setting['cache_token'], stylesheets[i].href);
+							console.log(cache.keys(busApp.setting['offline_link']));
+							cache.match(busApp.setting['offline_link']).then(function(key) {
+								console.log(key);
+								if (!key) {
+									//busApp.cache.add('bus-app-' + busApp.setting['cache_token'], busApp.setting['offline_link']);
+									busApp.ajax(busApp.setting['offline_link'], {
+										'responseType': 'document',
+										'success': function(doc, xhr) {
+											// стили
+											var i, stylesheets = doc.getElementsByTagName('link');
+											if (stylesheets) {
+												for (i in stylesheets) {
+													if (stylesheets[i].href && stylesheets[i].href != window.location.href) {
+														busApp.cache.add('bus-app-' + busApp.setting['cache_token'], stylesheets[i].href);
+													}
 												}
 											}
-										}
 
-										// скрипты
-										for (i in doc.scripts) {
-											if (doc.scripts[i].src) {
-												busApp.cache.add('bus-app-' + busApp.setting['cache_token'], doc.scripts[i].src);
+											// скрипты
+											for (i in doc.scripts) {
+												if (doc.scripts[i].src) {
+													busApp.cache.add('bus-app-' + busApp.setting['cache_token'], doc.scripts[i].src);
+												}
 											}
-										}
 
-										// изображения
-										for (i in doc.images) {
-											if (doc.images[i].src) {
-												busApp.cache.add('bus-app-' + busApp.setting['cache_token'], doc.images[i].src);
+											// изображения
+											for (i in doc.images) {
+												if (doc.images[i].src) {
+													busApp.cache.add('bus-app-' + busApp.setting['cache_token'], doc.images[i].src);
+												}
 											}
-										}
 
-										//busApp.cache.add('bus-app-' + busApp.setting['cache_token'], xhr.responseURL);
-									}
-								});
-							}
+											//busApp.cache.add('bus-app-' + busApp.setting['cache_token'], xhr.responseURL);
+										}
+									});
+								}
+							});
 						});
 					}
 				});
