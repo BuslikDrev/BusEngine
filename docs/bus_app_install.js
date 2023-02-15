@@ -307,6 +307,7 @@ self.addEventListener('activate', function(event) {
 			})
 		)
 		// статика
+		busApp.cache.add('bus-app-' + busApp.setting['cache_token'], busApp.setting['offline_link'], true);
 		for (var i in busApp.setting['cache_resources']) {
 			busApp.cache.add('bus-app-' + busApp.setting['cache_token'], busApp.setting['cache_resources'][i], true);
 		}
