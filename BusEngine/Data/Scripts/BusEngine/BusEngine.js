@@ -41,19 +41,38 @@ if (!window.console) {
 }
 
 // contextmenu off Internet Explorer 8+
-document.oncontextmenu = function () {
+/* document.oncontextmenu = function () {
    return false;
-};
+}; */
 
 if (!('BusEngine' in window)) {
 	window.BusEngine = {};
 }
+if (!('PostMessage' in window.BusEngine)) {
+	window.BusEngine.PostMessage = function(m) {};
+}
 
 BusEngine.logs = console.log;
 BusEngine.log = console.log = function(...args) {
-	BusEngine.PostMessage('console|' + args);
 	BusEngine.logs.apply(this, args);
+	BusEngine.PostMessage('console|' + JSON.stringify(args));
 };
+BusEngine.infos = console.info;
+BusEngine.info = console.info = function(...args) {
+	BusEngine.infos.apply(this, args);
+	BusEngine.PostMessage('console|' + JSON.stringify(args));
+};
+BusEngine.errors = console.error;
+BusEngine.error = console.error = function(...args) {
+	BusEngine.errors.apply(this, args);
+	BusEngine.PostMessage('console|' + JSON.stringify(args));
+};
+window.addEventListener('error', function(e) {
+	BusEngine.log(e.type, e.message);
+});
+/* window.addEventListener('messageerror', function(e) {
+	BusEngine.log(e);
+}); */
 
 BusEngine.cookie = {
 	'set': function(name, value, domain, path, day) {
