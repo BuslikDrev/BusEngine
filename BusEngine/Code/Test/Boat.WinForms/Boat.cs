@@ -133,6 +133,7 @@ BusEngine.UI
 			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
 			//BusEngine.UI.Canvas.WinForm.Refresh();
 			BusEngine.UI.Canvas.WinForm.Invalidate();
+			//BusEngine.UI.Canvas.WinForm.InvokePaint();
 		}
 
 		// событие FPS
