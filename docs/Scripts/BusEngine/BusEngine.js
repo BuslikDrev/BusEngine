@@ -307,7 +307,7 @@ BusEngine.language = {
 						e.parentNode.appendChild(s);
 						s.addEventListener('click', function(e) {
 							document.body.classList.add('languagefix');
-							BusEngine.cookie.set('BusEngineLangHorizontal', 'none', BusEngine.language.setting.domain);
+							BusEngine.cookie.set('BusEngineLangHorizontal', 'none', BusEngine.language.setting.domain, null, 365);
 						});
 					}
 				}
