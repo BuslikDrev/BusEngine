@@ -342,7 +342,7 @@ if (window.navigator.onLine == false) {
 	}, false);
 }
 
-if ('CacheStorage' in window && window.navigator.onLine) {
+/* if ('CacheStorage' in window && window.navigator.onLine) {
 	window.caches.has('bus-app-get-1').then(function(has) {
 		if (!has) {
 			var XMLHttpRequestOriginal = {
@@ -359,7 +359,7 @@ if ('CacheStorage' in window && window.navigator.onLine) {
 			};
 		}
 	});
-}
+} */
 
 window.addEventListener('beforeinstallprompt', function(event) {
 	busAppbeforeinstallprompt = event;
