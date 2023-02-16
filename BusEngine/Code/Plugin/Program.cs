@@ -332,8 +332,8 @@ namespace BusEngine.Game {
 		/** событие загрузки языка */
 		private void OnLoadLanguage(BusEngine.Localization l, string language) {
 			#if LOCALIZATION_LOG
-			BusEngine.Log.Info("Язык именился: {0}", language);
-			BusEngine.Log.Info("Язык именился: {0}", l.GetLanguage("error"));
+			BusEngine.Log.Info("Язык изменился: {0}", language);
+			BusEngine.Log.Info("Язык изменился: {0}", l.GetLanguage("error"));
 			#endif
 		}
 		/** событие загрузки языка */
