@@ -19,6 +19,11 @@ namespace BusEngine.Game {
 			BusEngine.Log.Info("MyPlugin Initialize: {0}", plugin);
 		}
 
+		// после загрузки определённого плагина и метода
+		public override void Initialize(string plugin, string state) {
+			BusEngine.Log.Info("MyPlugin Initialize: {0}, {1}", plugin, state);
+		}
+
 		// при запуске BusEngine после создания формы Canvas
 		public override void InitializeСanvas() {
 			BusEngine.Log.Info("MyPlugin InitializeСanvas");
