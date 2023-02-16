@@ -16,7 +16,7 @@
  последние плагины index.php?route=api/busengine/product&order=DESC&limit=4&type=["plugin"])
 */
 
-#define RUN_LOG
+//#define RUN_LOG
 /** API BusEngine */
 namespace BusEngine {
 /*
