@@ -52,7 +52,7 @@
   https://www.nuget.org/packages/Newtonsoft.Json/13.0.2 (из "lib/net40/" в "Code/BusEngine/BusContent/Win_x*/Newtonsoft.Json/" и в "Code/BusEngine/BusPlugins/Newtonsoft.Json/")
 - в файлe "Code/BusEngine/Build.cmd" и "Code/Game/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
 - запустить "Code/BusEngine/Build.cmd" потом "Code/Game/Build.cmd";
-- потом можно копировать папки Bin и Data в любую папку разработки игры и изменять всё, что в папке Data.
+- потом можно копировать папки Bin,  Data и Localization в любую папку разработки игры и изменять всё, что в папке Data.
 
 ## Лицензии
 
