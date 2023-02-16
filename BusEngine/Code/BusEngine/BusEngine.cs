@@ -751,26 +751,26 @@ BusEngine.UI.Canvas
 				browser.JavascriptMessageReceived += OnCefPostMessage;
 				// подключаем событие загрузки страницы
 				/* browser.ConsoleMessage += (object s, CefSharp.ConsoleMessageEventArgs e) => {
-					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 					#if BROWSER_LOG
 					BusEngine.Log.Info("ConsoleMessage! {0}", e.Message);
 					#endif
 				}; */
 				/* browser.LoadingStateChanged += (object s, CefSharp.LoadingStateChangedEventArgs e) => {
-					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 					#if BROWSER_LOG
 					BusEngine.Log.Info("LoadingStateChanged! {0}", e);
 					#endif
 				}; */
 				/* browser.IsBrowserInitializedChanged += (object s, System.EventArgs e) => {
-					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, "BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 					#if BROWSER_LOG
 					BusEngine.Log.Info("IsBrowserInitializedChanged! {0}", e);
 					#endif
 				}; */
 				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_StatusMessageEventArgs.htm
 				/* browser.StatusMessage += (object s, CefSharp.StatusMessageEventArgs e) => {
-					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 					#if BROWSER_LOG
 					BusEngine.Log.Info("StatusMessage! {0}", e.Value);
 					#endif
@@ -779,7 +779,7 @@ BusEngine.UI.Canvas
 				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
 				browser.FrameLoadStart += (object s, CefSharp.FrameLoadStartEventArgs e) => {
 					if (e.Frame.IsMain) {
-						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
 						#endif
@@ -788,7 +788,7 @@ BusEngine.UI.Canvas
 				};
 				/* browser.FrameLoadEnd += (object s, CefSharp.FrameLoadEndEventArgs e) => {
 					if (e.Frame.IsMain) {
-						//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+						//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadEnd {0}", e.Frame);
 						#endif
