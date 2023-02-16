@@ -264,7 +264,7 @@ BusEngine.language = {
 		// запускаем переводчик
 		x = new google.translate.TranslateElement({
 			pageLanguage: BusEngine.language.setting.langDefault,
-			includedLanguages: 'be,en,it,kk,lv,lt,de,ru,fr,uk,et',
+			includedLanguages: 'be,en,it,kk,lv,lt,de,ru,uk,fr,cs,et',
 			//layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
 			//autoDisplay: true
 		}, id);
