@@ -12,7 +12,7 @@
     СделатьНаВесьЭкран=1, 
     СделатьНаВесьЭкранСРамкой=2
     ) */
-    "r_Fullscreen": "0",
+    "r_Fullscreen": "-2",
     // r_Width работает
     "r_Width": "800",
     // r_Height работает
@@ -41,6 +41,9 @@
     "code": [
       "Code"
     ],
+    "Localization": [
+      "Localization"
+    ],
     "libs": {
       "name": "BusEngine",
       "shared": {
@@ -56,14 +59,14 @@
     "engine": "0.3.0.0",
     // plugins работает
     "plugins": [
-      {
+      /* {
         "guid": "",
         "type": "EType::Managed",
         "path": "Bin/Android/Game.dll",
         "platforms": [
           "Android"
         ]
-      },
+      }, */
       {
         "guid": "",
         "type": "EType::Managed",
@@ -72,7 +75,7 @@
           "Win_x86"
         ]
       },
-      {
+      /* {
         "guid": "",
         "type": "EType::Managed",
         "path": "Bin/Win_x86/Game.dll",
@@ -87,7 +90,7 @@
         "platforms": [
           "Win_x64"
         ]
-      },
+      }, */
       {
         "guid": "",
         "type": "EType::Managed",
