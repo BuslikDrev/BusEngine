@@ -1494,6 +1494,7 @@ namespace BusEngine {
 				BusEngine.Log.StatusConsole = true;
 
 				System.Console.Title = BusEngine.Localization.GetLanguageStatic("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+				BusEngine.Localization.OnLoadStatic += OnLoadLanguage;
 				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
 				//System.Console.Clear();
@@ -1525,6 +1526,8 @@ namespace BusEngine {
 				//BusEngine.Log.Info(new System.IO.StreamReader(System.Console.OpenStandardInput(), System.Console.InputEncoding));
 				BusEngine.Log.FreeConsole();
 				BusEngine.Log.StatusConsole = false;
+				BusEngine.Localization.OnLoadStatic -= OnLoadLanguage;
+				System.Console.CancelKeyPress -= new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 				//System.Console.OutputEncoding = new System.Text.UTF8Encoding();
 				System.Console.SetOut(new System.IO.StreamWriter(System.Console.OpenStandardOutput(), System.Console.OutputEncoding) { AutoFlush = true });
 				System.Console.SetError(new System.IO.StreamWriter(System.Console.OpenStandardError(), System.Console.OutputEncoding) { AutoFlush = true });
@@ -1540,6 +1543,12 @@ namespace BusEngine {
 				BusEngine.Log.ConsoleHide();
 			}
 		}
+
+		/** событие загрузки языка */
+		private static void OnLoadLanguage(BusEngine.Localization l, string language) {
+			System.Console.Title = l.GetLanguage("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+		}
+		/** событие загрузки языка */
 
 		protected static void MyHandler(object sender, System.ConsoleCancelEventArgs args) {
 			/* System.Console.WriteLine("\nThe read operation has been interrupted.");
