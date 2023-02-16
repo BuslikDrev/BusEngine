@@ -617,23 +617,13 @@ BusEngine.UI.Canvas
 		public static event OnLoadHandler OnLoadStatic;
 		public Browser() {}
 
-		/** событие клика из браузера */
-		/* private static void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e) {
-			//KeyDown -= new System.Windows.Forms.KeyEventHandler(OnKeyDown);
-			//BusEngine.Browser.Dispose();
-			BusEngine.Log.Info("браузер клик тест 2");
-		}
-
-		private static void OnMouseClick(object o, System.Windows.Forms.MouseEventArgs e) {
-			BusEngine.Log.Info("браузер Mouse клик тест 2");
-		} */
-		/** событие клика из браузера */
-
 		/** все события из PostMessage js браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
 			if (OnPostMessageStatic != null) {
+				#if BROWSER_LOG
 				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnPostMessageStatic");
+				#endif
 				OnPostMessageStatic.Invoke((string)e.Message);
 			}
 		}
@@ -643,20 +633,14 @@ BusEngine.UI.Canvas
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
 			if (e.Frame.IsMain && OnLoadStatic != null) {
+				#if BROWSER_LOG
 				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnLoadStatic");
+				#endif
 				OnLoadStatic.Invoke();
+				//e.Frame.Dispose();
 			}
 		}
 		/** событие загрузки страницы браузера */
-
-		/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
-		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
-		private static void OnCefSharpReplace(object sender, CefSharp.FrameLoadEndEventArgs e) {
-			if (e.Frame.IsMain) {
-				ExecuteJSStatic("if ('CefSharp' in window) {BusEngine.PostMessage = CefSharp.PostMessage;} else {BusEngine.PostMessage = function(m) {};}");
-			}
-		}
-		/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
 
 		/** функция выполнения js кода в браузере */
 		public static void ExecuteJSStatic(string js = "") {
@@ -739,6 +723,8 @@ BusEngine.UI.Canvas
 					)
 				});
 
+				//settings.MultiThreadedMessageLoop = false;
+
 				// применяем наши настройки до запуска браузера
 				CefSharp.Cef.Initialize(settings);
 				settings.Dispose();
@@ -758,15 +744,67 @@ BusEngine.UI.Canvas
 					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
 				}
 
-				// просто подключаем левое событие - можно удалить, оно не работает =) только через PostMessage
-				/* browser.KeyDown += OnKeyDown;
-				browser.MouseClick += OnMouseClick; */
+				//ExecuteJSStatic("BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
 
 				// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 				// подключаем событие сообщения из javascript
 				browser.JavascriptMessageReceived += OnCefPostMessage;
 				// подключаем событие загрузки страницы
-				browser.FrameLoadEnd += OnCefSharpReplace;
+				/* browser.ConsoleMessage += (object s, CefSharp.ConsoleMessageEventArgs e) => {
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					#if BROWSER_LOG
+					BusEngine.Log.Info("ConsoleMessage! {0}", e.Message);
+					#endif
+				}; */
+				/* browser.LoadingStateChanged += (object s, CefSharp.LoadingStateChangedEventArgs e) => {
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					#if BROWSER_LOG
+					BusEngine.Log.Info("LoadingStateChanged! {0}", e);
+					#endif
+				}; */
+				/* browser.IsBrowserInitializedChanged += (object s, System.EventArgs e) => {
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, "BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					#if BROWSER_LOG
+					BusEngine.Log.Info("IsBrowserInitializedChanged! {0}", e);
+					#endif
+				}; */
+				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_StatusMessageEventArgs.htm
+				/* browser.StatusMessage += (object s, CefSharp.StatusMessageEventArgs e) => {
+					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+					#if BROWSER_LOG
+					BusEngine.Log.Info("StatusMessage! {0}", e.Value);
+					#endif
+				}; */
+				/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
+				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
+				browser.FrameLoadStart += (object s, CefSharp.FrameLoadStartEventArgs e) => {
+					if (e.Frame.IsMain) {
+						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+						#if BROWSER_LOG
+						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
+						#endif
+						e.Frame.Dispose();
+					}
+				};
+				/* browser.FrameLoadEnd += (object s, CefSharp.FrameLoadEndEventArgs e) => {
+					if (e.Frame.IsMain) {
+						//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
+						#if BROWSER_LOG
+						BusEngine.Log.Info("FrameLoadEnd {0}", e.Frame);
+						#endif
+						//e.Frame.Dispose();
+					}
+				}; */
+				/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
+				/** событие клика из браузера */
+				/* browser.KeyDown += (object o, System.Windows.Forms.KeyEventArgs e) => {
+					BusEngine.Log.Info("Browser KeyDown");
+				};
+				browser.MouseClick += (object o, System.Windows.Forms.MouseEventArgs e) => {
+					BusEngine.Log.Info("Browser MouseClick");
+				}; */
+				/** событие клика из браузера */
+
 				browser.FrameLoadEnd += OnCefFrameLoadEnd;
 
 				// устанавливаем размер окана браузера, как в нашей программе
@@ -782,7 +820,6 @@ BusEngine.UI.Canvas
 		public static void ShutdownStatic() {
 			if (browser != null && !browser.IsDisposed) {
 				browser.JavascriptMessageReceived -= OnCefPostMessage;
-				browser.FrameLoadEnd -= OnCefSharpReplace;
 				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
 				browser.Dispose();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
@@ -802,7 +839,6 @@ BusEngine.UI.Canvas
 		public void Dispose() {
 			if (browser != null && !browser.IsDisposed) {
 				browser.JavascriptMessageReceived -= OnCefPostMessage;
-				browser.FrameLoadEnd -= OnCefSharpReplace;
 				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
 				browser.Dispose();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
