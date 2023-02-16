@@ -84,7 +84,7 @@ var busApp = {
 			return true;
 		}
 
-		if (typeof busAppSetting !== 'undefined' && typeof busAppSetting === 'object' && !('composedPath' in busAppSetting) && !('bubbles' in busAppSetting)) {
+		if (typeof busAppSetting === 'object' && !('composedPath' in busAppSetting) && !('bubbles' in busAppSetting)) {
 			for (var i in busAppSetting) {
 				busApp.setting[i] = busAppSetting[i];
 			}
