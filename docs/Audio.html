@@ -175,7 +175,7 @@
                 <td><p><span class="notranslate"><a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose">(void)_audio.Dispose()</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (нестатический) уровня класса для Остановки Аудио файла и уничтожения объекта Аудио для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии остановки Аудио <span class="notranslate">"<a href="#BusEngine.Audio.Stop" title="BusEngine.Audio.Stop" class="notranslate">_audio.Stop()</a>"</span>.</p></td>
+                <td><p>Метод (нестатический) уровня класса для Остановки Аудио файла и уничтожения объекта Аудио для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии остановки Аудио, если в <span class="notranslate">"<a href="#BusEngine.Audio.DisposeAuto" title="BusEngine.Audio.DisposeAuto">_audio.DisposeAuto</a>"</span> не установлено значение 0.</p></td>
               </tr>
             </tbody>
           </table>
@@ -230,6 +230,12 @@
               </tr>
               <tr>
                 <td><p>Поле (нестатическое) уровня класса принимает или возвращает bool значение. True - звук отключён. По умолчанию False.</p></td>
+              </tr>
+              <tr id="BusEngine.Audio.DisposeAuto">
+                <td><p><span class="notranslate"><a href="#BusEngine.Audio.DisposeAuto" title="BusEngine.Audio.DisposeAuto">(double)_audio.DisposeAuto = double</a></span></p></td>
+              </tr>
+              <tr>
+                <td><p>Поле (нестатическое) уровня класса принимает или возвращает double строку от 100 и выше для установки времени в миллисекундах после которого будет произведено уничтожение объектов (освобождение операционной памяти устройства). 0 - автоматическое уничтожение отключено и вам решать, когда вызвать <span class="notranslate">"<a href="#BusEngine.Audio.Dispose" title="BusEngine.Audio.Dispose">_audio.Dispose()</a>"</span>. По умолчанию 500.</p></td>
               </tr>
             </tbody>
           </table>
