@@ -847,6 +847,7 @@ BusEngine.UI.Canvas
 
 				// подключаем браузер к нашей программе
 				BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
+				browser.BringToFront();
 			}
 		}
 		/** функция запуска браузера */
@@ -2328,6 +2329,7 @@ BusEngine.UI.Canvas
 				BusEngine.Log.Info("_winForm eeeeeeeeeeeeee {0}", _winForm.GetHashCode());
 				#endif
 				BusEngine.UI.Canvas.WinForm.Controls.Add(_winForm);
+				_winForm.BringToFront();
 				//BusEngine.UI.Canvas.WinForm.Controls.AddRange(new System.Windows.Forms.Control[]{_winForm});
 			}
 
@@ -2706,7 +2708,7 @@ BusEngine.UI.Canvas
 			if (!this.IsPlay && (this.IsStop || this.IsEnd) && this.IsDispose) {
 				((System.ComponentModel.ISupportInitialize)(_winForm)).BeginInit();
 				BusEngine.UI.Canvas.WinForm.SuspendLayout();
-				BusEngine.UI.Canvas.WinForm.Controls.Remove(_winForm);
+				//BusEngine.UI.Canvas.WinForm.Controls.Remove(_winForm);
 				((System.ComponentModel.ISupportInitialize)(_winForm)).EndInit();
 				BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
 
