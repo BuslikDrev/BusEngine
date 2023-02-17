@@ -155,16 +155,16 @@ var init = function() {
 		e.target.style['height'] = (e.target.offsetWidth / 16 * 9) + 'px';
 	};
 };
-window.addEventListener('pagehide', init, {once:true, passive:true});
-window.addEventListener('scroll', init, {once:true, passive:true});
-window.addEventListener('mouseover', init, {once:true, passive:true});
-window.addEventListener('touchstart', init, {once:true, passive:true});
 document.addEventListener('DOMContentLoaded', function() {
+	window.addEventListener('pagehide', init, {once:true, passive:true});
+	window.addEventListener('scroll', init, {once:true, passive:true});
+	window.addEventListener('mouseover', init, {once:true, passive:true});
+	window.addEventListener('touchstart', init, {once:true, passive:true});
 	var element = document.querySelector('iframe');
 	element.style['height'] = (element.offsetWidth / 16 * 9) + 'px';
-});
-window.addEventListener('resize', function() {
-	document.querySelector('iframe').style['height'] = (document.querySelector('iframe').offsetWidth / 16 * 9) + 'px';
+	window.addEventListener('resize', function() {
+		document.querySelector('iframe').style['height'] = (document.querySelector('iframe').offsetWidth / 16 * 9) + 'px';
+	});
 });
 </script>
           </p>
