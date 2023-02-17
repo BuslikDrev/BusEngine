@@ -93,6 +93,10 @@
       <HintPath>BusPlugins\CefSharp\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <!-- <Reference Include="FbxSharp">
+      <HintPath>BusPlugins\izrik\FbxSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
     <Reference Include="LibVLCSharp">
       <HintPath>BusPlugins\LibVLC\LibVLCSharp.dll</HintPath>
       <Private>False</Private>
@@ -109,10 +113,6 @@
       <HintPath>BusPlugins\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <!-- <Reference Include="FbxSharp">
-      <HintPath>BusPlugins\izrik\FbxSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference> -->
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
