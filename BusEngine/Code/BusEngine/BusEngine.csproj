@@ -119,19 +119,19 @@
     <None Include="*.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
+    <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' And (!Exists('..\..\Bin\Win_x64\CefSharp') Or !Exists('..\..\Bin\Win_x64\LibVLC') Or !Exists('..\..\Bin\Win_x64\Newtonsoft.Json')) ">
       <Link>..\..\Bin\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' ">
+    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' And (!Exists('..\..\Bin\Win_x86\CefSharp') Or !Exists('..\..\Bin\Win_x86\LibVLC') Or !Exists('..\..\Bin\Win_x86\Newtonsoft.Json')) ">
       <Link>..\..\Bin\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="BusContent\Android\**\*.*" Condition=" '$(Platform)' == 'Android' ">
+    <Content Include="BusContent\Android\**\*.*" Condition=" '$(Platform)' == 'Android' And (!Exists('..\..\Bin\Android\CefSharp') Or !Exists('..\..\Bin\Android\LibVLC') Or !Exists('..\..\Bin\Android\Newtonsoft.Json')) ">
       <Link>..\..\Bin\Android\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="BusContent\Win\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
+    <Content Include="BusContent\Win\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' And (!Exists('..\..\Bin\Win\CefSharp') Or !Exists('..\..\Bin\Win\LibVLC') Or !Exists('..\..\Bin\Win\Newtonsoft.Json')) ">
       <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
