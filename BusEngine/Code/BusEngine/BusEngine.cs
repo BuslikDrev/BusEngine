@@ -200,10 +200,14 @@ namespace BusEngine {
 	// https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/creating-custom-attributes
 	[System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Property | System.AttributeTargets.Field | System.AttributeTargets.Assembly)]
 	public class TooltipAttribute : System.Attribute {
-		private string name;
+		private string Name;
+		private string Language;
 
 		public TooltipAttribute(string name) {
 			BusEngine.Log.Info("TooltipAttribute: {0}", name);  
+		}
+		public TooltipAttribute(string name, string language) {
+			BusEngine.Log.Info("TooltipAttribute: {0} {1}", name, language);  
 		}
 	}
 	/** API BusEngine.TooltipAttribute */
@@ -1244,17 +1248,17 @@ BusEngine.Tools
 /** API BusEngine */
 namespace BusEngine {
 	public class Localization : System.IDisposable {
-		//[Tooltip("Loading a language if the desired one is not available.")]
+		//[BusEngine.Tooltip("Loading a language if the desired one is not available.", "English")]
 		public string LanguageDefault = "Belarusian";
-		//[Tooltip("Forced language loading")]
+		//[BusEngine.Tooltip("Forced language loading", "English")]
 		public string Language = "";
-		//[Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.")]
+		//[BusEngine.Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.", "English")]
 		public string File = "";
-		//[Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt")]
+		//[BusEngine.Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt", "English")]
 		public string Format = "cfg";
-		//[Tooltip("Translate components located in inactive objects?")]
+		//[BusEngine.Tooltip("Translate components located in inactive objects?", "English")]
 		private bool IncludeInactive = false;
-		//[Tooltip("Replace Resources.load with Bundle.load?")]
+		//[BusEngine.Tooltip("Replace Resources.load with Bundle.load?", "English")]
 		private bool BundleStatus = false;
 
 		public delegate void LocalizationHandler(Localization sender, string language);
