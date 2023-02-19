@@ -1987,17 +1987,6 @@ namespace BusEngine {
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					foreach (System.Type type in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]).GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
-							// https://learn.microsoft.com/ru-ru/dotnet/api/system.reflection.methodinfo?view=netframework-1.1
-							// чтобы получить public методы без базовых(наследованных от object)
-							/* System.Reflection.MethodInfo method = type.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly, null, type.GetGenericArguments(), null);
-							BusEngine.Log.Info("Название метода {0}", method);
-							i2 = method.GetParameters().Length;
-							if (i2 == 0) {
-								method.Invoke(System.Activator.CreateInstance(type), null);
-							} else {
-								method.Invoke(System.Activator.CreateInstance(type), new object[i2]);
-							} */
-
 							foreach (System.Reflection.MethodInfo method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
 								m = method.Name.ToLower();
 								if (m == stage || m == stage + "async") {
