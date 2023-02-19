@@ -20,11 +20,19 @@ BusEngine.UI
 */
 	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
+
 		private static void Run() {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "WindowsEditor";
+			BusEngine.Engine.OnInitialize += BusEngine.Initialize.OnRun;
+			BusEngine.Engine.OnShutdown += BusEngine.Initialize.OnExit;
 			BusEngine.Engine.Initialize();
+		}
 
+		private static void OnRun() {
+			#if RUN_LOG
+			BusEngine.Log.Info("OnRun");
+			#endif
 			// допускаем только один запуск
 			bool createdNew;
 			Mutex = new System.Threading.Mutex(true, "28cb03ec-5416-439d-81a7-b530e7a54c2a", out createdNew);
@@ -32,74 +40,67 @@ BusEngine.UI
 				string title;
 				string desc;
 
-				if (BusEngine.Localization.GetLanguageStatic("error_warning_busasd") != "error_warning_busasd") {
-					title = BusEngine.Localization.GetLanguageStatic("error_warning_busasd");
+				if (BusEngine.Localization.GetLanguageStatic("error_warning") != "error_warning") {
+					title = BusEngine.Localization.GetLanguageStatic("error_warning");
 				} else {
-					title = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine ужо запушчаны";
+					title = "Увага!";
 				}
-				if (BusEngine.Localization.GetLanguageStatic("error_warning_is_already_running_Yes") != "error_warning_is_already_running_Yes") {
-					desc = BusEngine.Localization.GetLanguageStatic("error_warning_is_already_running_Yes");
+				if (BusEngine.Localization.GetLanguageStatic("error_is_already_running") != "error_is_already_running") {
+					desc = BusEngine.Localization.GetLanguageStatic("error_is_already_running");
 				} else {
-					desc = "Праграма ўжо запушчана. Працягнуць запуск копіі?";
+					desc = "Праграма ўжо запушчана.";
 				}
 
-				if (System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No) {
-					System.Windows.Forms.Application.Exit();
+				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
-					return;
-				}
-			}
+				//System.Windows.Forms.Application.Exit();
 
-			// создаём форму System.Windows.Forms
-			BusEngine.Form form = new BusEngine.Form();
-			System.IntPtr hWnd = form.Handle;
-
-			// устанавливаем нашу иконку
-			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
-				form.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
-			}
-
-			// устанавливаем размеры окна
-			string r_Width;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
-				form.Width = System.Convert.ToInt32(r_Width);
-			}
-			string r_Height;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
-				form.Height = System.Convert.ToInt32(r_Height);
-			}
-
-			string r_Fullscreen;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
-				// открываем окно на весь экран
-				if (System.Convert.ToInt32(r_Fullscreen) > 0) {
-					form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-				}
-
-				// убираем линии, чтобы окно было полностью на весь экран
-				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
-					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-				} else if (System.Convert.ToInt32(r_Fullscreen) == -2) {
-					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-					form.MaximizeBox = true;
-				}
+				return;
 			}
 
 			// подключаем API BusEngine.UI.Canvas
-			BusEngine.UI.Canvas.WinForm = form;
+			BusEngine.UI.Canvas.WinForm = new BusEngine.Form();
 
 			// инициализируем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(form);
+			System.Windows.Forms.Application.Run(BusEngine.UI.Canvas.WinForm);
+		}
+
+		private static void OnExit() {
+			#if RUN_LOG
+			BusEngine.Log.Info("OnExit");
+			#endif
+
+			//System.Windows.Forms.Application.EnableVisualStyles();
+			//System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+			// закрываем приложение System.Windows.Forms
+			System.Windows.Forms.Application.Exit();
 		}
 
 		/** функция запуска приложения */
 		// https://www.cyberforum.ru/cmd-bat/thread940960.html
 		// https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.start?view=net-7.0
 		//[System.STAThread] // если однопоточное приложение
+		[System.Runtime.ExceptionServices.HandleProcessCorruptedStateExceptions]
 		private static void Main(string[] args) {
+			/** моя мечта
+			if (WINXP) {
+				System.Windows.Forms.Form form = new System.Windows.Forms.Form();
+				BusEngine.UI.Canvas(form);
+				Android.App.LoadApplication(form);
+			} else if (ANDROID) {
+				Xamarin.Forms.Application form = new Xamarin.Forms.Application();
+				BusEngine.UI.Canvas(form);
+				Xamarin.Forms.LoadApplication(form);
+			} else {
+				System.Windows.Application form = new System.Windows.Application();
+				BusEngine.UI.Canvas(form);
+				System.Windows.Application.Run(form);
+			}
+			*/
+
 			// проверяем целостность библиотек движка
 			if (!System.IO.File.Exists(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\BusEngine.dll")) {
 				string title;
@@ -121,11 +122,21 @@ BusEngine.UI
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
-				System.Windows.Forms.Application.Exit();
+				//System.Windows.Forms.Application.Exit();
 
 				return;
 			} else {
-				Run();
+				#if RUN_LOG
+				try {
+				#endif
+					Run();
+				#if RUN_LOG
+				} catch (System.AccessViolationException e) {
+					BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_audio_format") + ": {0}", e.Message);
+					System.Console.Beep();
+					System.Console.ReadLine();
+				}
+				#endif
 			}
 		}
 		/** функция запуска приложения */
@@ -135,52 +146,86 @@ BusEngine.UI
 	internal class Form : System.Windows.Forms.Form {
 		/** функция запуска окна приложения */
 		public Form() {
+			// поверх всех окон
+			this.TopMost = true;
+
 			// название окна
 			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-			// системная иконка
-			this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
+			// иконка
+			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
+				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
+			} else {
+				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
+			}
 
-			// устанавливаем размеры окна
+			// размеры окна
 			this.Width = 800;
 			this.Height = 480;
 
-			// центрируем окно
+			string r_Width;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
+				this.Width = System.Convert.ToInt32(r_Width);
+			}
+			string r_Height;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
+				this.Height = System.Convert.ToInt32(r_Height);
+			}
+
+			// цинтровка окна
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 
-			// открываем окно на весь экран
-			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-
-			// устанавливаем стиль границ окна
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-
-			// убираем кнопку развернуть
+			// кнопка развернуть
 			this.MaximizeBox = false;
 
-			// убираем кнопку свернуть
+			// кнопка свернуть
 			//this.MinimizeBox = false;
 
-			// устанавливаем чёрный цвет фона окна
+			string r_Fullscreen;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
+				// убираем линии, чтобы окно было полностью на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
+					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				} else if (System.Convert.ToInt32(r_Fullscreen) < -2 || System.Convert.ToInt32(r_Fullscreen) == 0 || System.Convert.ToInt32(r_Fullscreen) == 2) {
+					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+				} else {
+					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+				}
+
+				// открываем окно на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) > 0) {
+					this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+				} else {
+					this.WindowState = System.Windows.Forms.FormWindowState.Normal;
+					if (System.Convert.ToInt32(r_Fullscreen) < 0) {
+						this.MaximizeBox = true;
+					}
+				}
+			} else {
+				this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+				this.WindowState = System.Windows.Forms.FormWindowState.Normal;
+			}
+
+			// цвет фона окна
 			this.BackColor = System.Drawing.Color.Black;
 
-			// устанавливаем событие нажатий клавиш
+			// cобытие нажатий клавиш
 			this.KeyPreview = true;
 			//this.KeyDown += OnKeyDown;
 
-			// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.controlstyles?view=netframework-4.6.2#system-windows-forms-controlstyles-userpaint
-			// убираем мерцание и доступна настройка только в этом месте.
-			/* this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.FixedHeight, false);
-			this.SetStyle(System.Windows.Forms.ControlStyles.FixedWidth, false); */
+			// скрытие иконки в системном меню
+			//this.ShowInTaskbar = false;
 
-			// устанавливаем событие закрытия окна
+			// событие закрытия окна
 			//this.FormClosed += OnClosed;
 			//this.Disposed += new System.EventHandler(OnDisposed);
 			//ClientSize = this.ClientSize;
 
 			// показываем форму\включаем\запускаем\стартуем показ окна
 			//this.ShowDialog();
+
+			// фикс создания дескриптора раньше плагинов
+			System.IntPtr hWnd = this.Handle;
 		}
 		/** функция запуска окна приложения */
 	}

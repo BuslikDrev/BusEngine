@@ -13,6 +13,7 @@
 https://www.cyberforum.ru/blogs/529033/blog5215.html
 */
 
+//#define RUN_LOG
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -22,19 +23,24 @@ BusEngine.Engine
 BusEngine.Log
 BusEngine.UI
 */
-	// https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/preprocessor-directives
-	// https://learn.microsoft.com/ru-ru/dotnet/csharp/programming-guide/classes-and-structs/constants
 	internal class Initialize {
-        //private static System.Threading.Mutex Mutex;
+		private static System.Threading.Mutex Mutex;
+
 		private static void Run() {
-			//BusEngine.WinApi.TimeEndPeriod(16);
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Windows";
+			BusEngine.Engine.OnInitialize += BusEngine.Initialize.OnRun;
+			BusEngine.Engine.OnShutdown += BusEngine.Initialize.OnExit;
 			BusEngine.Engine.Initialize();
+		}
 
+		private static void OnRun() {
+			#if RUN_LOG
+			BusEngine.Log.Info("OnRun");
+			#endif
 			// допускаем только один запуск
-			/* bool createdNew;
-			Mutex = new System.Threading.Mutex(true, "2b3001ad-2d9b-43a9-82cd-8a6465e1cc5d", out createdNew);
+			bool createdNew;
+			Mutex = new System.Threading.Mutex(true, "0968cb8e-b0e3-46c7-96a9-2efb99223941", out createdNew);
 			if (!createdNew) {
 				string title;
 				string desc;
@@ -52,125 +58,37 @@ BusEngine.UI
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
-				System.Windows.Forms.Application.Exit();
+				//System.Windows.Forms.Application.Exit();
 
 				return;
-			} */
-
-			// создаём форму System.Windows.Forms
-			BusEngine.Form form = new BusEngine.Form();
-			System.IntPtr hWnd = form.Handle;
-
-			// устанавливаем нашу иконку
-			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
-				form.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
-			}
-
-			// устанавливаем размеры окна
-			string r_Width;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
-				form.Width = System.Convert.ToInt32(r_Width);
-			}
-			string r_Height;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
-				form.Height = System.Convert.ToInt32(r_Height);
-			}
-
-			string r_Fullscreen;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
-				// открываем окно на весь экран
-				if (System.Convert.ToInt32(r_Fullscreen) > 0) {
-					form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-				}
-
-				// убираем линии, чтобы окно было полностью на весь экран
-				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
-					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-				} else if (System.Convert.ToInt32(r_Fullscreen) == -2) {
-					form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-					form.MaximizeBox = true;
-				}
 			}
 
 			// подключаем API BusEngine.UI.Canvas
-			BusEngine.UI.Canvas.WinForm = form;
+			BusEngine.UI.Canvas.WinForm = new BusEngine.Form();
 
 			// инициализируем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.Initialize();
 
-			/* System.Windows.Forms.Application.EnableVisualStyles();
-			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false); */
-
-			// тест графики
-			// https://rsdn.org/article/gdi/gdiplus2mag.xml
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
-
-			/* BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
-
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
-
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8);
-
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint2);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint3);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint4);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint5);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint6);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint7);
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint8); */
-			BusEngine.UI.Canvas.WinForm.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
-
-			// зависимость от времени
-			System.Timers.Timer aTimer = new System.Timers.Timer(1000/FPSSetting);
-			// Hook up the Elapsed event for the timer. 
-			aTimer.Elapsed += OnTimedEvent;
-			aTimer.AutoReset = true;
-			aTimer.Enabled = true;
-
-			// FPS
-			System.Timers.Timer fpsTimer = new System.Timers.Timer(1000);
-			// Hook up the Elapsed event for the timer. 
-			fpsTimer.Elapsed += OnFPSTimer;
-			fpsTimer.AutoReset = true;
-			fpsTimer.Enabled = true;
-
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.Run(form);
+			System.Windows.Forms.Application.Run(BusEngine.UI.Canvas.WinForm);
+		}
+
+		private static void OnExit() {
+			#if RUN_LOG
+			BusEngine.Log.Info("OnExit");
+			#endif
+
+			//System.Windows.Forms.Application.EnableVisualStyles();
+			//System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+			// закрываем приложение System.Windows.Forms
+			System.Windows.Forms.Application.Exit();
 		}
 
 		/** функция запуска приложения */
 		// https://www.cyberforum.ru/cmd-bat/thread940960.html
 		// https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.start?view=net-7.0
 		//[System.STAThread] // если однопоточное приложение
+		[System.Runtime.ExceptionServices.HandleProcessCorruptedStateExceptions]
 		private static void Main(string[] args) {
 			/** моя мечта
 			if (WINXP) {
@@ -209,267 +127,112 @@ BusEngine.UI
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
-				System.Windows.Forms.Application.Exit();
+				//System.Windows.Forms.Application.Exit();
 
 				return;
 			} else {
-				Run();
+				#if RUN_LOG
+				try {
+				#endif
+					Run();
+				#if RUN_LOG
+				} catch (System.AccessViolationException e) {
+					BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_audio_format") + ": {0}", e.Message);
+					System.Console.Beep();
+					System.Console.ReadLine();
+				}
+				#endif
 			}
 		}
 		/** функция запуска приложения */
-
-		/* private static void OnPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
-			BusEngine.Log.Info("браузер клик");
-			string windowSelection = (string)e.Message;
-			if (windowSelection == "Log") {
-				BusEngine.Log.Info("============== Log");
-			}
-		} */
-
-		// Настройки
-		private static float count = 0;
-		private static float speed = 5;
-		private static bool nap = true;
-		private static int count2 = 0;
-		private static int FPS = 0;
-		private static int FPSSetting = 300;
-		private static int FPSInfo = 0;
-
-		// Создаем объекты-кисти для закрашивания фигур
-		private static System.Drawing.SolidBrush myTrub = new System.Drawing.SolidBrush(System.Drawing.Color.DeepPink);
-		private static System.Drawing.SolidBrush myCorp = new System.Drawing.SolidBrush(System.Drawing.Color.DarkMagenta);
-		private static System.Drawing.SolidBrush myTrum = new System.Drawing.SolidBrush(System.Drawing.Color.DarkOrchid);
-		private static System.Drawing.SolidBrush mySeа = new System.Drawing.SolidBrush(System.Drawing.Color.Blue);
-		//Выбираем перо myPen желтого цвета толщиной в 2 пикселя:
-		private static System.Drawing.Pen myWind = new System.Drawing.Pen(System.Drawing.Color.Yellow, 1);
-
-		private static void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
-			//BusEngine.UI.Canvas.WinForm.Refresh();
-			BusEngine.UI.Canvas.WinForm.Invalidate();
-		}
-
-		private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
-			//BusEngine.Log.Info("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
-			BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
-			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
-			BusEngine.UI.Canvas.WinForm.Invalidate();
-		}
-
-		private static void OnFPSTimer(object source, System.Timers.ElapsedEventArgs e) {
-			FPSInfo = FPS;
-			FPS = 0;
-		}
-
-		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
-			FPS++;
-
-			if (count < 10 || count < 300 && nap == true) {
-				nap = true;
-			} else {
-				nap = false;
-			}
-
-			if (nap == true) {
-				count += speed;
-			} else {
-				count -= speed;
-			}
-
-			if (count/3 == System.Convert.ToInt32(count/3)) {
-				count2++;
-			}
-
-			BusEngine.Log.Info("Paint ============== Paint " + count + " " + count2);
-
-			// фон
-			//e.Graphics.Clear(System.Drawing.Color.Turquoise);
-		}
-
-		private static void Paint2(object sender, System.Windows.Forms.PaintEventArgs e) {
-			// https://learn.microsoft.com/ru-ru/dotnet/desktop/winforms/advanced/antialiasing-with-lines-and-curves?view=netframeworkdesktop-4.8
-			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			// труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub, 300 + count, 125, 75, 75);
-		}
-
-		private static void Paint3(object sender, System.Windows.Forms.PaintEventArgs e) {
-			// труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub, 480 + count, 125, 75, 75);
-		}
-
-		private static void Paint4(object sender, System.Windows.Forms.PaintEventArgs e) {
-			// палуба (прямоугольник)
-			e.Graphics.FillRectangle(myTrum, 250 + count, 200, 350, 100);
-		}
-
-		private static void Paint5(object sender, System.Windows.Forms.PaintEventArgs e) {
-			// Иллюминаторы
-			// 6 окружностей
-			e.Graphics.DrawEllipse(myWind, 300 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 350 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 400 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 450 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 500 + count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 550 + count, 240, 20, 20);
-		}
-
-		private static void Paint6(object sender, System.Windows.Forms.PaintEventArgs e) {
-			// корпус (трапеция)
-			e.Graphics.FillPolygon(
-				myCorp, 
-				new System.Drawing.Point[] {
-					new System.Drawing.Point(100 + (int)count, 300),
-					new System.Drawing.Point(700 + (int)count, 300),
-					new System.Drawing.Point(700 + (int)count, 300),
-					new System.Drawing.Point(600 + (int)count, 400),
-					new System.Drawing.Point(600 + (int)count, 400),
-					new System.Drawing.Point(200 + (int)count, 400),
-					new System.Drawing.Point(200 + (int)count, 400),
-					new System.Drawing.Point(100 + (int)count, 300)
-				}
-			);
-		}
-
-		private static void Paint7(object sender, System.Windows.Forms.PaintEventArgs e) {
-			// Море - 12 секторов-полуокружностей
-			int xx = 50;
-			int Radius = 50;
-			while (xx <= BusEngine.UI.Canvas.WinForm.Width - Radius) {
-				e.Graphics.FillPie(mySeа, 0 + xx, 375, 50, 50, 0, -180); 
-				xx += 50;
-			}
-		}
-
-		private static void Paint8(object sender, System.Windows.Forms.PaintEventArgs e) {
-			// Translate transformation matrix.
-			e.Graphics.TranslateTransform(0, 0);
-
-			// Save translated graphics state.
-			//System.Drawing.Drawing2D.GraphicsState transState = e.Graphics.Save();
-
-			// Reset transformation matrix to identity and fill rectangle.
-			e.Graphics.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.Red), 0, 0, 100, 100);
-
-			// Restore graphics state to translated state and fill second
-			//e.Graphics.Restore(transState);
-			e.Graphics.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 100, 0, 100, 100);
-			e.Graphics.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.Blue), 200, 0, 100, 100);
-
-			// rectangle.
-			//if (count/3 == System.Convert.ToInt32(count/3)) {
-				//ScaleTransformFloat(e);
-			//}
-		}
-
-		private static void ScaleTransformFloat(System.Windows.Forms.PaintEventArgs e) {
-			// Set world transform of graphics object to rotate.
-			e.Graphics.RotateTransform(30.0F);
-
-			// Then to scale, prepending to world transform.
-			e.Graphics.ScaleTransform(3.0F, 1.0F);
-
-			// Draw scaled, rotated rectangle to screen.
-			e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.Blue, 3), 50, 0, 100, 40);
-		}
 	}
 
 	// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
 	internal class Form : System.Windows.Forms.Form {
 		/** функция запуска окна приложения */
 		public Form() {
+			// поверх всех окон
+			this.TopMost = true;
+
 			// название окна
 			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-			// системная иконка
-			this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
+			// иконка
+			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
+				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
+			} else {
+				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
+			}
 
-			// устанавливаем размеры окна
+			// размеры окна
 			this.Width = 800;
 			this.Height = 480;
 
-			// центрируем окно
+			string r_Width;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
+				this.Width = System.Convert.ToInt32(r_Width);
+			}
+			string r_Height;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
+				this.Height = System.Convert.ToInt32(r_Height);
+			}
+
+			// цинтровка окна
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 
-			// открываем окно на весь экран
-			//this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-
-			// устанавливаем стиль границ окна
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-
-			// убираем кнопку развернуть
+			// кнопка развернуть
 			this.MaximizeBox = false;
 
-			// убираем кнопку свернуть
+			// кнопка свернуть
 			//this.MinimizeBox = false;
 
-			// устанавливаем чёрный цвет фона окна
+			string r_Fullscreen;
+			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
+				// убираем линии, чтобы окно было полностью на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
+					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+				} else if (System.Convert.ToInt32(r_Fullscreen) < -2 || System.Convert.ToInt32(r_Fullscreen) == 0 || System.Convert.ToInt32(r_Fullscreen) == 2) {
+					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+				} else {
+					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+				}
+
+				// открываем окно на весь экран
+				if (System.Convert.ToInt32(r_Fullscreen) > 0) {
+					this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+				} else {
+					this.WindowState = System.Windows.Forms.FormWindowState.Normal;
+					if (System.Convert.ToInt32(r_Fullscreen) < 0) {
+						this.MaximizeBox = true;
+					}
+				}
+			} else {
+				this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+				this.WindowState = System.Windows.Forms.FormWindowState.Normal;
+			}
+
+			// цвет фона окна
 			this.BackColor = System.Drawing.Color.Black;
 
-			// устанавливаем событие нажатий клавиш
+			// cобытие нажатий клавиш
 			this.KeyPreview = true;
 			//this.KeyDown += OnKeyDown;
 
-			// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.controlstyles?view=netframework-4.6.2#system-windows-forms-controlstyles-userpaint
-			// убираем мерцание и доступна настройка только в этом месте.
-			this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.FixedHeight, false);
-			this.SetStyle(System.Windows.Forms.ControlStyles.FixedWidth, false);
+			// скрытие иконки в системном меню
+			//this.ShowInTaskbar = false;
 
-			// устанавливаем событие закрытия окна
+			// событие закрытия окна
 			//this.FormClosed += OnClosed;
 			//this.Disposed += new System.EventHandler(OnDisposed);
 			//ClientSize = this.ClientSize;
 
 			// показываем форму\включаем\запускаем\стартуем показ окна
 			//this.ShowDialog();
+
+			// фикс создания дескриптора раньше плагинов
+			System.IntPtr hWnd = this.Handle;
 		}
-
-		//private const int WM_ACTIVATEAPP = 0x001C;
-		//private bool appActive = true;
-
-		/* protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
-			if (appActive) {
-				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.ActiveCaption, 20, 20, 260, 50);
-				e.Graphics.DrawString("Application is active", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20, 20);
-			} else {
-				e.Graphics.FillRectangle(System.Drawing.SystemBrushes.InactiveCaption, 20, 20, 260, 50);
-				e.Graphics.DrawString("Application is Inactive", Font, System.Drawing.SystemBrushes.ActiveCaptionText, 20, 20);
-			}
-		} */
-
-		/* protected override void WndProc(ref System.Windows.Forms.Message m) {
-			switch (m.Msg) {
-				case WM_ACTIVATEAPP:
-					appActive = (((int)m.WParam != 0));
-					Invalidate();
-
-					break;
-			}
-			base.WndProc(ref m);
-		} */
-
-		/* protected override void Callback(System.IntPtr hWnd, System.Int32 msg, System.IntPtr wparam, System.IntPtr lparam) {
-			switch (m.Msg) {
-				case WM_ACTIVATEAPP:
-					appActive = (((int)m.WParam != 0));
-					Invalidate();
-
-					break;
-			}
-			base.WndProc(ref m);
-		} */
 		/** функция запуска окна приложения */
-	}
-
-	internal static class WinApi {
-		//[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage"), SuppressUnmanagedCodeSecurity]
-		[System.Runtime.InteropServices.DllImport("winmm.dll", EntryPoint="timeBeginPeriod", SetLastError=true)]
-		public static extern uint TimeBeginPeriod(uint uMilliseconds);
-
-		//[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage"), SuppressUnmanagedCodeSecurity]
-		[System.Runtime.InteropServices.DllImport("winmm.dll", EntryPoint="timeEndPeriod", SetLastError=true)]
-		public static extern uint TimeEndPeriod(uint uMilliseconds);
 	}
 }
 /** API BusEngine */
