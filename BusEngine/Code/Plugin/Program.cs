@@ -30,11 +30,27 @@ namespace BusEngine.Game {
 			SplashScreen.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			SplashScreen.Width = 640;
 			SplashScreen.Height = 360;
+			SplashScreen.TopMost = true;
 			SplashScreen.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png"))) {
 				SplashScreen.BackgroundImage = System.Drawing.Image.FromFile(BusEngine.Engine.DataDirectory + "Textures/UI/splashscreen.png");
 			}
 			SplashScreen.Show();
+
+			// устанавливаем настройки
+			if (BusEngine.Engine.Platform == "WindowsEditor") {
+				BusEngine.Engine.SettingEngine["console_commands"]["r_Fullscreen"] = "-2";
+			}
+
+			if (BusEngine.Engine.Platform == "Windows") {
+				BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width + "";
+				BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height + "";
+			}
+
+			if (BusEngine.Engine.Platform == "WindowsLauncher") {
+				BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] = "960";
+				BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] = "540";
+			}
 
 			// запускаем аудио
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
@@ -88,7 +104,7 @@ namespace BusEngine.Game {
 			}
 
 			// запускаем видео
-			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
+			if (BusEngine.Engine.Platform == "Windows") {
 				// создаём массив ссылок или путей
 				string[] videos = {"Videos/BusEngine.mp4", "Videos/BusEngine.mp4", "Videos/BusEngine.mp4"};
 				// создаём новый объект видео
@@ -112,9 +128,7 @@ namespace BusEngine.Game {
 					// удаляем событие клавиш
 					BusEngine.UI.Canvas.WinForm.KeyDown -= KeyDownVideo;
 					// запускаем браузер
-					if (BusEngine.Engine.Platform == "WindowsLauncher") {
-						Browser("index.html");
-					}
+					Browser("index.html");
 				};
 				// добавляем событие клавиш
 				BusEngine.UI.Canvas.WinForm.KeyDown += KeyDownVideo;
@@ -123,6 +137,8 @@ namespace BusEngine.Game {
 			// запускаем браузер
 			if (BusEngine.Engine.Platform == "WindowsEditor") {
 				Browser("https://threejs.org/editor/"); 
+			} else if (BusEngine.Engine.Platform == "WindowsLauncher") {
+				Browser("launcher.html");
 			}
 		}
 
