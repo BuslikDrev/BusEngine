@@ -1,4 +1,4 @@
-# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.3.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) [![YouTube](https://img.shields.io/youtube/views/2he4vAn6ZkQ?style=social)](https://www.youtube.com/watch?v=2he4vAn6ZkQ)
+# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.4.0-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) [![YouTube](https://img.shields.io/youtube/views/2he4vAn6ZkQ?style=social)](https://www.youtube.com/watch?v=2he4vAn6ZkQ)
 
 ### BusEngine Editor и Launcher
 ![Platform](https://img.shields.io/badge/Platform-Win7+--x64%20|%20Win7+--x86-purple.svg?cacheSeconds=31536000)
@@ -24,35 +24,13 @@
 
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/image_1.jpg)
 
-## Инструкция по сборке
+## Инструкция по установке
 
-- установить [MicroSoft Build Tools 2013 v12.0](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760) (возможно новее версия тоже подойдёт);
-- скачать библиотеки и положить в папку "Code/BusEngine/BusContent/Win_*/":
-
-  https://www.nuget.org/packages/cef.redist.x64/107.1.9 (из "CEF/" в "Code/BusEngine/BusContent/Win_x64/CefSharp/")
-
-  https://www.nuget.org/packages/cef.redist.x86/107.1.9 (из "CEF/" в "Code/BusEngine/BusContent/Win_x86/CefSharp/")
-
-  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "CefSharp/x*/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/")
-
-  https://www.nuget.org/packages/CefSharp.Common/107.1.90 (из "lib/net452/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/" и в "Code/BusEngine/BusPlugins/CefSharp/")
-
-  https://www.nuget.org/packages/CefSharp.WinForms/107.1.90 (из "lib/net452/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/" и в "Code/BusEngine/BusPlugins/CefSharp/")
-
-  https://www.nuget.org/packages/CefSharp.Wpf/107.1.90 (из "lib/net452/" в "Code/BusEngine/BusContent/Win_x*/CefSharp/" и в "Code/BusEngine/BusPlugins/CefSharp/")
-
-  https://www.nuget.org/packages/VideoLAN.LibVLC.Windows/3.0.18 (из "build/x*/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/Win-x*/")
-
-  https://www.nuget.org/packages/LibVLCSharp/3.6.7 (из "lib/net40/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
-
-  https://www.nuget.org/packages/LibVLCSharp.WinForms/3.6.7 (из "lib/net40/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
-
-  https://www.nuget.org/packages/LibVLCSharp.WPF/3.6.7 (из "lib/net461/" в "Code/BusEngine/BusContent/Win_x*/LibVLC/" и в "Code/BusEngine/BusPlugins/LibVLC/")
-  
-  https://www.nuget.org/packages/Newtonsoft.Json/13.0.2 (из "lib/net40/" в "Code/BusEngine/BusContent/Win_x*/Newtonsoft.Json/" и в "Code/BusEngine/BusPlugins/Newtonsoft.Json/")
-- в файлe "Code/BusEngine/Build.cmd" и "Code/Game/Build.cmd" заменить все пути на свои и указать цифру переменной "Platform" в зависимости от нужной разрядности системы;
-- запустить "Code/BusEngine/Build.cmd" потом "Code/Game/Build.cmd";
-- потом можно копировать папки Bin,  Data и Localization в любую папку разработки игры и изменять всё, что в папке Data.
+- скачать установщик лаунчера из официального сайта: https://busengine.buslikdrev.by/download.html  и установить его;
+- зарегистрировать аккаунт;
+- следовать инструкциям лаунчера по скачиванию движка и других необходимых программ к нему;
+- создать новый проект, далее можно изменять всё, что в папке нового проекта;
+- собирать и компилировать проект из меню лаунчера.
 
 ## Лицензии
 
