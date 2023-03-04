@@ -50,7 +50,7 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [Drawflow](https://github.com/jerosoler/Drawflow) 0.0.59
 
-[three.js](https://github.com/mrdoob/three.js) r149
+[three.js](https://github.com/mrdoob/three.js) r150
 
 ## Полезные ссылки
 
