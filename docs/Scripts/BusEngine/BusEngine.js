@@ -401,7 +401,7 @@ document.addEventListener('busAppBefore', function() {
 		"push_service":0,
 		"push_public_key":"",
 		"sync_status":false,
-		"start_url":"/BusEngine",
+		"start_url":"/BusEngine/index.html",
 		"route":"common/home",
 		"debug":"0",
 		"debug_php":false
