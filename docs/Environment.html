@@ -152,7 +152,7 @@ var init = function() {
 	window.removeEventListener('touchstart', init);
 	var i, elements = document.querySelectorAll('iframe[loading="lazy"]');
 
-	for (i = 0; i < elements.lenght; ++i) {
+	for (i = 0; i < elements.length; ++i) {
 		elements[i].setAttribute('src', elements[i].getAttribute('data-src'));
 		elements[i].onload = function(e) {
 			e.target.style['height'] = (e.target.offsetWidth / 16 * 9) + 'px';
@@ -166,14 +166,14 @@ window.addEventListener('touchstart', init, {once:true, passive:true});
 document.addEventListener('DOMContentLoaded', function() {
 	var i, elements = document.querySelectorAll('iframe[loading="lazy"]');
 
-	for (i = 0; i < elements.lenght; ++i) {
+	for (i = 0; i < elements.length; ++i) {
 		elements[i].style['height'] = (elements[i].offsetWidth / 16 * 9) + 'px';
 	}
 });
 window.addEventListener('resize', function() {
 	var i, elements = document.querySelectorAll('iframe[loading="lazy"]');
 
-	for (i = 0; i < elements.lenght; ++i) {
+	for (i = 0; i < elements.length; ++i) {
 		elements[i].style['height'] = (elements[i].offsetWidth / 16 * 9) + 'px';
 	}
 });
