@@ -73,6 +73,8 @@ BusEngine.UI
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем приложение System.Windows.Forms
+			//System.Windows.Forms.Application.EnableVisualStyles();
+			//System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 			System.Windows.Forms.Application.Run(BusEngine.UI.Canvas.WinForm);
 		}
 
@@ -180,6 +182,13 @@ BusEngine.UI
 				this.Height = System.Convert.ToInt32(r_Height);
 			}
 
+			// учёт Dpi
+			// https://learn.microsoft.com/ru-ru/windows/win32/learnwin32/dpi-and-device-independent-pixels#converting-physical-pixels-to-dips
+			this.Width = this.Width * this.DeviceDpi / 96;
+			this.Height = this.Height * this.DeviceDpi / 96;
+
+			this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
+
 			// цинтровка окна
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 
@@ -188,6 +197,9 @@ BusEngine.UI
 
 			// кнопка свернуть
 			//this.MinimizeBox = false;
+
+			// панель управления
+			//this.ControlBox = false;
 
 			string r_Fullscreen;
 			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
