@@ -76,7 +76,7 @@ namespace BusEngine.Game {
 			// запускаем аудио
 			if (BusEngine.Engine.Platform == "Windows" || BusEngine.Engine.Platform == "WindowsLauncher") {
 				// создаём массив ссылок или путей
-				string[] audios = {"Audios/BusEngine.mp3", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3"};
+				string[] audios = {"Audios/BusEngine.ogg", "Audios/BusEngine.mp3", "Audios/BusEngine.mp3"};
 				// создаём новый объект аудио
 				BusEngine.Audio _audio = new BusEngine.Audio(audios).Play();
 				// создаём событие клавиатуры внутри метода
@@ -106,7 +106,7 @@ namespace BusEngine.Game {
 			// запускаем видео
 			if (BusEngine.Engine.Platform == "Windows") {
 				// создаём массив ссылок или путей
-				string[] videos = {"Videos/BusEngine.mp4", "Videos/BusEngine.mp4", "Videos/BusEngine.mp4"};
+				string[] videos = {"Videos/BusEngine.mp4", "Videos/BusEngine.webm", "Videos/BusEngine.ogv"};
 				// создаём новый объект видео
 				BusEngine.Video _video = new BusEngine.Video(videos).Play();
 				// создаём событие клавиатуры внутри метода
