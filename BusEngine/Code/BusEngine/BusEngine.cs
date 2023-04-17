@@ -745,7 +745,7 @@ BusEngine.UI.Canvas
 
 				settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
 				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
-				settings.CefCommandLineArgs.Add("disable-gpu");
+				//settings.CefCommandLineArgs.Add("disable-gpu");
 				//settings.BrowserSubprocessPath = "CefSharp.BrowserSubprocess.exe";
 				//settings.CachePath = "";
 
