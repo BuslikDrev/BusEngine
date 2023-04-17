@@ -106,7 +106,7 @@ namespace BusEngine.Game {
 			// запускаем видео
 			if (BusEngine.Engine.Platform == "Windows") {
 				// создаём массив ссылок или путей
-				string[] videos = {"Videos/BusEngine.mp4", "Videos/BusEngine.webm", "Videos/BusEngine.ogv"};
+				string[] videos = {"Videos/BusEngine.mp4", "Videos/BusEngine.webm", "Videos/BusEngine.webm"};
 				// создаём новый объект видео
 				BusEngine.Video _video = new BusEngine.Video(videos).Play();
 				// создаём событие клавиатуры внутри метода
