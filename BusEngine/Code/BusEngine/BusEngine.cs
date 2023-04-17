@@ -743,6 +743,12 @@ BusEngine.UI.Canvas
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
 
+				settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
+				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
+				settings.CefCommandLineArgs.Add("disable-gpu");
+				//settings.BrowserSubprocessPath = "CefSharp.BrowserSubprocess.exe";
+				//settings.CachePath = "";
+
 				// устанавливаем свой юзер агент
 				settings.UserAgent = BusEngine.Engine.Device.UserAgent;
 
