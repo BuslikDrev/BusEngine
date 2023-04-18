@@ -36,7 +36,7 @@ BusEngine.UI
 			#endif
 			// допускаем только один запуск
 			bool createdNew;
-			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
+			Mutex = new System.Threading.Mutex(true, "28cb03ec-5416-439d-81a7-b530e7a54c2a", out createdNew);
 			if (!createdNew) {
 				string title;
 				string desc;
