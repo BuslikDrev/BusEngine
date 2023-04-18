@@ -187,6 +187,8 @@ BusEngine.UI
 			this.Width = this.Width * this.DeviceDpi / 96;
 			this.Height = this.Height * this.DeviceDpi / 96;
 
+			BusEngine.Log.Info(this.Width);
+
 			this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
 
 			// цинтровка окна
@@ -206,6 +208,7 @@ BusEngine.UI
 				// убираем линии, чтобы окно было полностью на весь экран
 				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
 					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+					//this.ControlBox = false;
 				} else if (System.Convert.ToInt32(r_Fullscreen) < -2 || System.Convert.ToInt32(r_Fullscreen) == 0 || System.Convert.ToInt32(r_Fullscreen) == 2) {
 					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 				} else {
@@ -241,6 +244,12 @@ BusEngine.UI
 			//this.Disposed += new System.EventHandler(OnDisposed);
 			//ClientSize = this.ClientSize;
 
+			/* System.Windows.Forms.Panel panel1 = new System.Windows.Forms.Panel();
+			panel1.Location = this.Location;
+			panel1.Size = this.Size;
+			panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.Controls.Add(panel1); */
+
 			// показываем форму\включаем\запускаем\стартуем показ окна
 			//this.ShowDialog();
 
@@ -248,6 +257,28 @@ BusEngine.UI
 			System.IntPtr hWnd = this.Handle;
 		}
 		/** функция запуска окна приложения */
+
+		// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.createparams?view=netframework-4.8
+		// Style https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
+		// ClassStyle https://learn.microsoft.com/ru-ru/windows/win32/winmsg/window-class-styles
+		protected override System.Windows.Forms.CreateParams CreateParams {
+			get {
+				System.Windows.Forms.CreateParams cp = base.CreateParams;
+
+				if (this.FormBorderStyle == System.Windows.Forms.FormBorderStyle.None) {
+					// рамка
+					//cp.Style |= 0x40000;
+					// тень рамки
+					//cp.ClassStyle |= 0x20000;
+					// Update the button Style.
+					//cp.Style |= 0x00000040;
+					// Double-buffering
+					//cp.ExStyle |= 0x02000000;
+				}
+
+				return cp;
+			}
+		}
 	}
 }
 /** API BusEngine */

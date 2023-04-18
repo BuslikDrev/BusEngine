@@ -9,6 +9,7 @@
 - написать редактор BusEngine
 */
 
+//#define RUN_LOG
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -35,7 +36,7 @@ BusEngine.UI
 			#endif
 			// допускаем только один запуск
 			bool createdNew;
-			Mutex = new System.Threading.Mutex(true, "28cb03ec-5416-439d-81a7-b530e7a54c2a", out createdNew);
+			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
 			if (!createdNew) {
 				string title;
 				string desc;
@@ -65,6 +66,8 @@ BusEngine.UI
 			BusEngine.UI.Canvas.Initialize();
 
 			// запускаем приложение System.Windows.Forms
+			//System.Windows.Forms.Application.EnableVisualStyles();
+			//System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 			System.Windows.Forms.Application.Run(BusEngine.UI.Canvas.WinForm);
 		}
 
@@ -172,6 +175,15 @@ BusEngine.UI
 				this.Height = System.Convert.ToInt32(r_Height);
 			}
 
+			// учёт Dpi
+			// https://learn.microsoft.com/ru-ru/windows/win32/learnwin32/dpi-and-device-independent-pixels#converting-physical-pixels-to-dips
+			this.Width = this.Width * this.DeviceDpi / 96;
+			this.Height = this.Height * this.DeviceDpi / 96;
+
+			BusEngine.Log.Info(this.Width);
+
+			this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
+
 			// цинтровка окна
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 
@@ -181,11 +193,15 @@ BusEngine.UI
 			// кнопка свернуть
 			//this.MinimizeBox = false;
 
+			// панель управления
+			//this.ControlBox = false;
+
 			string r_Fullscreen;
 			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Fullscreen", out r_Fullscreen)) {
 				// убираем линии, чтобы окно было полностью на весь экран
 				if (System.Convert.ToInt32(r_Fullscreen) == -1 || System.Convert.ToInt32(r_Fullscreen) == 1) {
 					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+					//this.ControlBox = false;
 				} else if (System.Convert.ToInt32(r_Fullscreen) < -2 || System.Convert.ToInt32(r_Fullscreen) == 0 || System.Convert.ToInt32(r_Fullscreen) == 2) {
 					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 				} else {
@@ -221,6 +237,12 @@ BusEngine.UI
 			//this.Disposed += new System.EventHandler(OnDisposed);
 			//ClientSize = this.ClientSize;
 
+			/* System.Windows.Forms.Panel panel1 = new System.Windows.Forms.Panel();
+			panel1.Location = this.Location;
+			panel1.Size = this.Size;
+			panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.Controls.Add(panel1); */
+
 			// показываем форму\включаем\запускаем\стартуем показ окна
 			//this.ShowDialog();
 
@@ -228,6 +250,28 @@ BusEngine.UI
 			System.IntPtr hWnd = this.Handle;
 		}
 		/** функция запуска окна приложения */
+
+		// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.createparams?view=netframework-4.8
+		// Style https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
+		// ClassStyle https://learn.microsoft.com/ru-ru/windows/win32/winmsg/window-class-styles
+		protected override System.Windows.Forms.CreateParams CreateParams {
+			get {
+				System.Windows.Forms.CreateParams cp = base.CreateParams;
+
+				if (this.FormBorderStyle == System.Windows.Forms.FormBorderStyle.None) {
+					// рамка
+					//cp.Style |= 0x40000;
+					// тень рамки
+					//cp.ClassStyle |= 0x20000;
+					// Update the button Style.
+					//cp.Style |= 0x00000040;
+					// Double-buffering
+					//cp.ExStyle |= 0x02000000;
+				}
+
+				return cp;
+			}
+		}
 	}
 }
 /** API BusEngine */

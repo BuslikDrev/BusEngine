@@ -136,7 +136,7 @@ namespace BusEngine.Game {
 
 			// запускаем браузер
 			if (BusEngine.Engine.Platform == "WindowsEditor") {
-				Browser("https://threejs.org/editor/"); 
+				Browser("<iframe width=\"" + BusEngine.UI.Canvas.WinForm.Width + "\" weight=\"" + BusEngine.UI.Canvas.WinForm.Height + "\" src=\"https://threejs.org/editor/\"></iframe>"); 
 			} else if (BusEngine.Engine.Platform == "WindowsLauncher") {
 				Browser("launcher.html");
 			}
