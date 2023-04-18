@@ -180,8 +180,6 @@ BusEngine.UI
 			this.Width = this.Width * this.DeviceDpi / 96;
 			this.Height = this.Height * this.DeviceDpi / 96;
 
-			BusEngine.Log.Info(this.Width);
-
 			this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
 
 			// цинтровка окна
