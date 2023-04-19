@@ -40,9 +40,9 @@ BusEngine выпускается под лицензией [MIT](https://github.
 #### Список ссылок на файлы других авторов на которые, не распространяется данная лицензия, так как у них имеется своя лицензия
 [MicroSoft dotNET](https://github.com/dotnet)
 
-[CefSharp](https://github.com/cefsharp/CefSharp) 107.1.90
+[CefSharp](https://github.com/cefsharp/CefSharp) 109.1.110
 
-[Chromium](https://github.com/chromium/chromium) 107.1.9
+[Chromium](https://github.com/chromium/chromium) 109.1.11 (109.0.5414.87)
 
 [VideoLAN | libvlcsharp](https://github.com/videolan) 3.0.18 | 3.7.0
 
