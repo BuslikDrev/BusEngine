@@ -46,7 +46,7 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [VideoLAN | libvlcsharp](https://github.com/videolan) 3.0.18 | 3.6.7
 
-[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 13.0.2
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 13.0.3
 
 [Drawflow](https://github.com/jerosoler/Drawflow) 0.0.59
 
