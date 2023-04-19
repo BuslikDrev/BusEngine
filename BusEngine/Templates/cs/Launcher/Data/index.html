@@ -1,21 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- <base href="https://BusEngine/"> -->
     <link href="Styles/BusEngine/BusEngine.css" type="text/css" rel="stylesheet">
-    <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,300,700&display=swap" type="text/css" rel="stylesheet"> -->
     <style>
 html {
     font-family: sans-serif;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
+    user-select: none;
 }
 body {
     background-color: #000000;
-    background-image: url(Textures/background_login.png);
     background-repeat: no-repeat;
     background-size: cover;
+}
+body video {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: auto;
+    z-index: -1;
+}
+@media screen and (max-device-width: 1280px) {
+    body {
+        background-image: url(Textures/background_login_1280x720.png);
+    }
+}
+@media screen and (min-device-width:1281px) and (max-device-width:1920px) {
+    body {
+        background-image: url(Textures/background_login_1920x1080.png);
+    }
+}
+@media screen and (min-device-width:1921px) and (max-device-width:2560px) {
+    body {
+        background-image: url(Textures/background_login_2560x1440.png);
+    }
+}
+@media screen and (min-device-width:2561px) {
+    body {
+        background-image: url(Textures/background_login_3840x2160.png);
+    }
+}
+body header {
+    position: relative;
+    z-index: 1000;
 }
 body a {
     font-size: 13px;
@@ -43,6 +74,7 @@ body #top {
     width: 100%;
     height: 40px;
     position: relative;
+    cursor: grab;
 }
 body #top .left {
     float: left;
@@ -98,17 +130,10 @@ body #top button.close svg {
 body button {
     cursor: pointer;
 }
-body video {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: auto;
-    z-index: -1;
-}
 body .login {
     background-color: #22272A;
     color: #666666;
-    width: 480px;
+    width: 400px;
     height: auto;
     opacity: 0.9;
     position: absolute;
@@ -233,34 +258,6 @@ body hr {
     </style>
     <script src="Scripts/BusEngine/BusEngine.js"></script>
     <script>
-	window.addEventListener('DOMContentLoaded', function() {
-		var element = document.querySelector('#exit');
-
-		if (element) {
-			element.addEventListener('click', function() {
-				element = document.querySelector('#message');
-
-				if (element) {
-					element.innerText = 'Выход произошёл! ' + window.location.href;
-					setTimeout(function() {
-						element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
-						BusEngine.PostMessage('Exit');
-					}, 2000);
-				}
-			});
-		}
-
-		var element = document.querySelector('#debug');
-
-		if (element) {
-			element.addEventListener('click', function() {
-				BusEngine.PostMessage('Debug');
-				console.log('Debug js console.log');
-				BusEngine.log('Debug js BusEngine.log');
-			});
-		}
-	});
-
 	window.addEventListener('BusEngineMessage', function(e) {
 		element = document.querySelector('#message');
 
@@ -298,6 +295,123 @@ body hr {
 			}
 		}
 	}
+
+	window.addEventListener('DOMContentLoaded', function() {
+		var element = document.querySelector('#exit');
+
+		if (element) {
+			element.addEventListener('click', function() {
+				element = document.querySelector('#message');
+
+				if (element) {
+					element.innerText = 'Выход произошёл! ' + window.location.href;
+					setTimeout(function() {
+						element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
+						BusEngine.PostMessage('Exit');
+					}, 2000);
+				}
+			});
+		}
+
+		var element = document.querySelector('#debug');
+
+		if (element) {
+			element.addEventListener('click', function() {
+				BusEngine.PostMessage('Debug');
+				console.log('Debug js console.log');
+				BusEngine.log('Debug js BusEngine.log');
+			});
+		}
+
+		// изменение размера окна мышкой
+		var x, y, my_bstatus, my_status, my_w, my_h, my_x = document.querySelector('.x'), my_y = document.querySelector('.y');
+
+		document.addEventListener('mousedown', function(e) {
+				x = e.clientX;
+				y = e.clientY;
+			if (e.which == 1 && my_status) {
+				my_bstatus = true;
+			}
+		});
+
+		document.addEventListener('mousemove', function(e) {
+			/* console.log('координаты ', [e.clientX, e.clientY]);
+			console.log('координаты2 ', e); */
+
+			// https://habr.com/ru/articles/509258/
+			/* console.log('экран All', [window.screen.width, window.screen.height]);
+			console.log('экран ', [window.screen.availWidth, window.screen.availHeight]);
+			console.log('окно приложения All ', [window.outerWidth, window.outerHeight]);
+			console.log('окно приложения ', [window.innerWidth, window.innerHeight]); */
+
+			// https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
+			//document.body.style['cursor'] = 'ns-resize'; // снизу вверх
+			//document.body.style['cursor'] = 'nesw-resize'; // левый-нижний угол и правый-вверхий
+			//document.body.style['cursor'] = 'nwse-resize'; // правый-нижний угол и левый-вверхий
+			//document.body.style['cursor'] = 'ew-resize'; // слева на право
+
+			my_w = window.innerWidth - 10;
+			my_h = window.innerHeight - 10;
+			my_status = false;
+	//console.log('=============');
+			if (e.clientX <= 10 || e.clientX >= my_w) {
+				document.body.style['cursor'] = 'ew-resize'; // снизу вверх
+				my_status = true;
+				//console.log(1);
+			} else if (e.clientY <= 10 || e.clientY >= my_h) {
+				document.body.style['cursor'] = 'ns-resize'; // слева на право
+				my_status = true;
+				//console.log(2);
+			}
+
+			if (e.clientX <= 10 && e.clientY >= my_h || e.clientX >= my_w && e.clientY <= 10) {
+				document.body.style['cursor'] = 'nesw-resize'; // левый-нижний угол и правый-вверхий
+				my_status = true;
+				//console.log(3);
+			} else if (e.clientX <= 10 && e.clientY <= 10 || e.clientX >= my_w && e.clientY >= my_h) {
+				document.body.style['cursor'] = 'nwse-resize';// правый-нижний угол и левый-вверхий
+				my_status = true;
+				//console.log(4);
+			}
+
+			if (e.which == 1 && my_bstatus) {
+				//BusEngine.PostMessage('_resize|' + (e.clientX - x) + ' ' + (e.clientY - y));
+
+				my_x.innerHTML = e.offsetX + ' ' + my_w;
+				my_y.innerHTML = e.offsetY + ' ' + my_h;
+			}
+
+			if (e.which != 1 && !my_status) {
+				document.body.style['cursor'] = 'default';
+				my_bstatus = false;
+			}
+		});
+
+		// перемещение окна приложения
+		var top = document.querySelector('#top .point');
+
+		if (top) {
+			var x, y, point = function(e) {
+				if (e.which == 1) {
+					BusEngine.log((e.clientX - x), (e.clientY - y));
+					BusEngine.PostMessage('__point|' + (e.clientX - x) + ' ' + (e.clientY - y));
+				}
+			};
+
+			top.addEventListener('mousedown', function(e) {
+				x = e.clientX;
+				y = e.clientY;
+				BusEngine.log(x, y);
+				e.target.style['cursor'] = 'grabbing';
+				document.addEventListener('mousemove', point);
+			});
+
+			top.addEventListener('mouseup', function(e) {
+				document.removeEventListener('mousemove', point);
+				e.target.style['cursor'] = '';
+			});
+		}
+	});
     </script>
   </head>
   <body>
@@ -306,6 +420,7 @@ body hr {
         <div class="left">
           <span class="name">BUSENGINE Лаунчер 0.4.0</span>
         </div>
+        <div class="point" style="position: absolute; width: 100%; height: 100%;"></div>
         <div class="right">
           <button onclick="BusEngine.PostMessage('Collapse');" class="collapse">▬</button>
           <button onclick="BusEngine.PostMessage('Expand'); svgToggle(this);" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-square-outline"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-square-outline-x2"></use></svg></button>
@@ -314,41 +429,76 @@ body hr {
       </nav>
     </header>
     <main>
-      <video src="Videos/background_login.webm" autoplay="autoplay" preload="auto" muted="false" loop="true"></video>
-        <div class="login">
-          <form>
-            <span class="logo"><img src="Icons/BusEngine_36x36.png"> BUSENGINE</span>
-            <span class="input">
-              Email
-              <input type="email" name="login" placeholder="example@site.com" value="">
-            </span>
-            <span class="input">
-              Password
-              <input type="password" name="password" value="">
-              <span onclick="svgToggle(this, 'password');">
-                <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" style="display: none"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye-off"></use></svg>
-              </span>
-            </span>
-            <span class="input">
-              <a href="https://busengine.buslikdrev.by/">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
-            </span>
-            <span class="input" style="height: 90px;">
-              <button class="send">Авторизоваться</button>
-            </span>
-          </form>
-          <hr>
-          <span>
-          Новый пользователь? <a href="https://busengine.buslikdrev.by/">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+      <video autoplay="autoplay" preload="none" muted="false" loop="true">
+        <source src="Videos/background_login_1280x720.mp4" type="video/mp4" media="screen and (max-device-width:1280px)">
+        <source src="Videos/background_login_1280x720.webm" type="video/webm" media="screen and (max-device-width:1280px)">
+        <source src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px)">
+        <source src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px)">
+        <!-- <source src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source src="Videos/background_login_2560x1440.mp4" type="video/mp4" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source src="Videos/background_login_2560x1440.webm" type="video/webm" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source src="Videos/background_login_3840x2160.mp4" type="video/mp4" media="screen and (min-device-width:2561px) and (max-device-width:3840px)">
+        <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
+      </video>
+      <div class="login">
+        <form>
+          <span class="logo"><img src="Icons/BusEngine_36x36.png"> BUSENGINE</span>
+          <span class="input">
+            Email
+            <input type="email" name="login" value="" placeholder="example@site.com" required oninvalid="this.setCustomValidity('Почта кривая, проверьте на ошибки!');">
           </span>
-        </div>
+          <span class="input">
+            Password
+            <input type="password" name="password" value="">
+            <span onclick="svgToggle(this, 'password');">
+              <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" style="display: none"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye-off"></use></svg>
+            </span>
+          </span>
+          <span class="input">
+            <a href="https://busengine.buslikdrev.by/">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+          </span>
+          <span class="input" style="height: 90px;">
+            <button class="send">Авторизоваться</button>
+ <div class="block">
+    move the mouse
+</div>
+<div class="coords">
+    X: <div class="x"></div><br>
+    Y: <div class="y"></div>
+</div>
+          </span>
+        </form>
+        <hr>
+        <span>
+        Новый пользователь? <a href="https://busengine.buslikdrev.by/">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        </span>
+      </div>
       <button class="mode">Offline mode</button>
     </main>
-    <!-- <div style="position: absolute;">
-      <span><b>Я программист!</b></span><br>
-      <span id="message"></span><br>
-      <button id="debug">ТЕСТ ОБЩЕНИЯ МЕЖДУ JS И C#</button><br>
-      <button id="exit">ВЫЙТИ ИЗ ИГРЫ</button><br>
-    </div> -->
+<script>
+if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome)\/(\d+\.)/)) {
+'use strict';
+'use asm';
+	(function() {
+		var i, v = document.querySelectorAll('video source[media]');
+
+		for (i = 0; i < v.length; ++i) {
+			if (window.matchMedia(v[i].media).matches) {
+				if (v[i].getAttribute('data-src')) {
+					v[i].setAttribute('src', v[i].getAttribute('data-src'));
+					v[i].removeAttribute('data-src');
+				}
+			} else {
+				if (v[i].getAttribute('src')) {
+					v[i].setAttribute('data-src', v[i].getAttribute('src'));
+					v[i].removeAttribute('src');
+				}
+			}
+		}
+	})();
+}
+</script>
   </body>
 </html>
