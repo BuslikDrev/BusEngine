@@ -746,14 +746,21 @@ BusEngine.UI.Canvas
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
 
+				// консольные команды хромиум
 				settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
 				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
 				//settings.CefCommandLineArgs.Add("disable-gpu");
+
+				// настройка имён файлов
 				//settings.BrowserSubprocessPath = "CefSharp.BrowserSubprocess.exe";
 				//settings.CachePath = "";
 
 				// устанавливаем свой юзер агент
 				settings.UserAgent = BusEngine.Engine.Device.UserAgent;
+
+				// установка языка
+				//settings.AcceptLanguageList = new BusEngine.Localization().Language.Substring(0, 2).ToLower();
+				settings.Locale = BusEngine.Localization.LanguageStatic.Substring(0, 2).ToLower();
 
 				// отключаем создание файла лога
 				settings.LogSeverity = CefSharp.LogSeverity.Disable;
@@ -1261,6 +1268,7 @@ namespace BusEngine {
 		public string LanguageDefault = "Belarusian";
 		//[BusEngine.Tooltip("Forced language loading", "English")]
 		public string Language = "";
+		public static string LanguageStatic { get; private set; }
 		//[BusEngine.Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.", "English")]
 		public string File = "";
 		//[BusEngine.Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt", "English")]
@@ -1458,6 +1466,8 @@ namespace BusEngine {
 					}
 				}
 			}
+
+			LanguageStatic = Language;
 
 			if (files != "") {
 				string[] lines, pairs;
