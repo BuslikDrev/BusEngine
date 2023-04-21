@@ -818,13 +818,16 @@ BusEngine.UI.Canvas
 					System.ConsoleColor cc = System.Console.ForegroundColor;
 					if (level == "error") {
 						System.Console.ForegroundColor = System.ConsoleColor.Red;
-						BusEngine.Log.Info("Console Browser {0}: \"{1}\"", level, e.Message, e.Source, e.Line);
+						BusEngine.Log.Info("Console Browser {0}: \"{1}\" {2}:{3}", level, e.Message, e.Source, e.Line);
 					} else if (level == "warning") {
 						System.Console.ForegroundColor = System.ConsoleColor.Yellow;
+						BusEngine.Log.Info("Console Browser {0}: \"{1}\" {2}:{3}", level, e.Message, e.Source, e.Line);
+					} else if (level == "info") {
+						System.Console.ForegroundColor = System.ConsoleColor.Cyan;
 						BusEngine.Log.Info("Console Browser {0}: \"{1}\"", level, e.Message, e.Source, e.Line);
 					} else {
 						System.Console.ForegroundColor = System.ConsoleColor.Cyan;
-						BusEngine.Log.Info("Console Browser {0}: \"{1}\"", level, e.Message, e.Source, e.Line);
+						BusEngine.Log.Info("Console Browser {0}: \"{1}\" {2}:{3}", level, e.Message, e.Source, e.Line);
 					}
 					System.Console.ForegroundColor = cc;
 				};
