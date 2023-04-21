@@ -154,9 +154,10 @@ namespace BusEngine.Game {
 					BusEngine.Browser.ExecuteJSStatic("document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: " + message + "'}}));");
 				} else {
 					if (message.Substring(0, 8) == "console|") {
+						System.ConsoleColor cc = System.Console.ForegroundColor;
 						System.Console.ForegroundColor = System.ConsoleColor.Cyan;
 						BusEngine.Log.Info("Console: {0}", message.Substring(8));
-						System.Console.ResetColor();
+						System.Console.ForegroundColor = cc;
 					}
 				}
 			};
