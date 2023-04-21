@@ -52,27 +52,17 @@ if (!('PostMessage' in window.BusEngine)) {
 	window.BusEngine.PostMessage = function(m) {};
 }
 
-BusEngine.logs = console.log;
-BusEngine.log = console.log = function(...args) {
-	BusEngine.logs.apply(this, args);
-	BusEngine.PostMessage('console|' + JSON.stringify(args));
+window.console.logs = window.console.log;
+BusEngine.log = window.console.log = function(...args) {
+	var l = new Error().stack.split('\n');
+	if ('length' in l && l.length > 0) {
+		l = l[l.length-1].match(/(?<=\().*?(?=\))/);
+		if (l) {
+			args.push(l[0]);
+		}
+	}
+	window.console.logs.apply(this, args);
 };
-BusEngine.infos = console.info;
-BusEngine.info = console.info = function(...args) {
-	BusEngine.infos.apply(this, args);
-	BusEngine.PostMessage('console|' + JSON.stringify(args));
-};
-BusEngine.errors = console.error;
-BusEngine.error = console.error = function(...args) {
-	BusEngine.errors.apply(this, args);
-	BusEngine.PostMessage('console|' + JSON.stringify(args));
-};
-window.addEventListener('error', function(e) {
-	BusEngine.log(e.type, e.message);
-});
-/* window.addEventListener('messageerror', function(e) {
-	BusEngine.log(e);
-}); */
 
 BusEngine.cookie = {
 	'set': function(name, value, domain, path, day) {
