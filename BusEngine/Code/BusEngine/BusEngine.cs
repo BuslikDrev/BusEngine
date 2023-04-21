@@ -777,7 +777,16 @@ BusEngine.UI.Canvas
 					)
 				});
 
-				//settings.MultiThreadedMessageLoop = false;
+				// в одном потоке (отключить асинхронность)
+				/* settings.MultiThreadedMessageLoop = true;
+				//settings.ExternalMessagePump = true;
+				System.Timers.Timer timer = new System.Timers.Timer();
+				timer.Interval = 1000 / 30;
+				timer.Elapsed += (o, e) => {
+					BusEngine.Log.Info(1);
+					CefSharp.Cef.DoMessageLoopWork();
+				};
+				timer.Start(); */
 
 				// применяем наши настройки до запуска браузера
 				CefSharp.Cef.Initialize(settings);
@@ -803,13 +812,23 @@ BusEngine.UI.Canvas
 				// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 				// подключаем событие сообщения из javascript
 				browser.JavascriptMessageReceived += OnCefPostMessage;
+				// подключаем событие консоли
+				browser.ConsoleMessage += (object s, CefSharp.ConsoleMessageEventArgs e) => {
+					string level = e.Level.ToString().ToLower();
+					System.ConsoleColor cc = System.Console.ForegroundColor;
+					if (level == "error") {
+						System.Console.ForegroundColor = System.ConsoleColor.Red;
+						BusEngine.Log.Info("Console Browser {0}: \"{1}\"", level, e.Message, e.Source, e.Line);
+					} else if (level == "warning") {
+						System.Console.ForegroundColor = System.ConsoleColor.Yellow;
+						BusEngine.Log.Info("Console Browser {0}: \"{1}\"", level, e.Message, e.Source, e.Line);
+					} else {
+						System.Console.ForegroundColor = System.ConsoleColor.Cyan;
+						BusEngine.Log.Info("Console Browser {0}: \"{1}\"", level, e.Message, e.Source, e.Line);
+					}
+					System.Console.ForegroundColor = cc;
+				};
 				// подключаем событие загрузки страницы
-				/* browser.ConsoleMessage += (object s, CefSharp.ConsoleMessageEventArgs e) => {
-					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
-					#if BROWSER_LOG
-					BusEngine.Log.Info("ConsoleMessage! {0}", e.Message);
-					#endif
-				}; */
 				/* browser.LoadingStateChanged += (object s, CefSharp.LoadingStateChangedEventArgs e) => {
 					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 					#if BROWSER_LOG
@@ -860,6 +879,7 @@ BusEngine.UI.Canvas
 				/** событие клика из браузера */
 
 				browser.FrameLoadEnd += OnCefFrameLoadEnd;
+				browser.UseParentFormMessageInterceptor = false;
 
 				// устанавливаем размер окана браузера, как в нашей программе
 				//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
