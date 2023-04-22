@@ -103,7 +103,7 @@ namespace BusEngine.Game {
 			x = BusEngine.UI.Canvas.WinForm.DesktopLocation.X,
 			y = BusEngine.UI.Canvas.WinForm.DesktopLocation.Y;
 
-			BusEngine.Browser.Initialize(url);		
+			BusEngine.Browser.Initialize(url);
 			BusEngine.Browser.OnPostMessageStatic += (string message) => {
 				string t = message.ToLower();
 
