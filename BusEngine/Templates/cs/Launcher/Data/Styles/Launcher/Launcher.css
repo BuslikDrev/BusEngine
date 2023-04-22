@@ -1,0 +1,277 @@
+/* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
+/* © 2016-2023; BuslikDrev - Усе правы захаваны. */
+html {
+    font-family: sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    user-select: none;
+}
+body {
+    background-color: #000000;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+body header {
+    position: relative;
+    z-index: 1000;
+}
+body .hidden {
+    display: none !important;
+}
+body a {
+    font-size: 13px;
+    color: #00AEEF;
+    text-decoration: none;
+	cursor: pointer;
+}
+body a:hover {
+    color: #23BCF8;
+}
+body a svg,
+body button svg {
+    width: 13px;
+    height: 13px;
+    fill: #00AEEF;
+}
+body a:hover svg,
+body button:hover svg {
+    fill: #23BCF8;
+}
+body .resize {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+body #top {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #000000;
+    border-bottom: solid 2px #22272a;
+    width: 100%;
+    height: 40px;
+    position: relative;
+}
+body #top .point {
+    position: absolute;
+    width: calc(100% - 20px);
+    height: 100%;
+    cursor: grab;
+    margin: 10px 10px 0px 10px;
+}
+body #top .left {
+    float: left;
+    top: 6px;
+    left: 6px;
+    position: relative;
+}
+body #top .name {
+    cursor: default;
+    user-select: none;
+    font-size: 14px;
+    font-weight: 600;
+    top: 6px;
+    left: 6px;
+    position: relative;
+    color: #4F5B63;
+}
+body #top .right {
+    float: right;
+    top: 6px;
+    right: 6px;
+    position: relative;
+}
+body #top button {
+    display: block;
+    width: 22px;
+    height: 22px;
+    padding: 0px;
+    margin: 0px 0px;
+    margin-right: 5px;
+    font-size: 13px;
+    font-weight: 900;
+    border: unset;
+    background-color: unset;
+    float: left;
+    top: 6px;
+    position: relative;
+    color: #4F5B63;
+}
+body #top button:hover {
+    color: #ffffff;
+}
+body #top button.collapse {
+    color: #00AEEF;
+}
+body #top button.collapse:hover {
+    color: #23BCF8;
+}
+body #top button.close svg {
+    width: 16px;
+    height: 16px;
+}
+body button {
+    cursor: pointer;
+}
+body .login {
+    background-color: #22272A;
+    color: #666666;
+    width: 400px;
+    height: auto;
+    opacity: 0.9;
+    position: absolute;
+    transform: translate(-50%, -48%);
+    top: 50%;
+    left: 50%;
+}
+body .login form {
+    padding: 0 24px;
+    display: grid;
+    color: #ffffff;
+}
+body .login form a {
+    color: #999999;
+}
+body .login form a svg {
+    fill: #999999;
+}
+body .login form a:hover {
+    color: #ffffff;
+}
+body .login form a:hover svg {
+    fill: #ffffff;
+}
+body .login .logo {
+    font-size: 26px;
+    margin-top: 20px;
+    color: #ffffff;
+    text-align: center;
+    height: 50px;
+}
+body .login .logo img {
+    margin-bottom: -9px;
+}
+body .login .input {
+    font-size: 14px;
+    height: 100px;
+    position: relative;
+}
+body .login .input input {
+    width: -webkit-fill-available;
+    height: 46px;
+    display: block;
+    position: relative;
+    top: 10px;
+    padding: 0 20px;
+    margin: 0;
+    left: 0;
+    border: solid 1px #666666;
+    background-color: #22272A;
+    color: #ffffff;
+    box-shadow: unset;
+    outline: 1px solid #666666;
+}
+body .login .input input:focus-visible,
+body .login .input input:active {
+    outline: 1px solid #00AEEF;
+}
+body .login .input input:hove {
+    outline: 1px solid #999999;
+}
+body .login .input input::-moz-placeholder{color:#999;opacity:1}
+body .login .input input:-ms-input-placeholder{color:#999}
+body .login .input input::-webkit-input-placeholder{color:#999}
+body .login .input input+span svg {
+    width: 20px;
+    height: 20px;
+    fill: #00AEEF;
+    cursor: pointer;
+}
+body .login .input span {
+    position: absolute;
+    right: 15px;
+    bottom: 38px;
+}
+body .login hr+span {
+    text-align: center;
+    margin-bottom: 15px;
+    display: block;
+}
+body button.send {
+    background-color: #00AEEF;
+    color: #ffffff;
+    display: block;
+    right: 38px;
+    bottom: 26px;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 5px;
+    float: right;
+}
+body button.send:hover {
+    background-color: #23BCF8;
+}
+body button.mode {
+    border: solid 1px #384147;
+    background-color: transparent;
+    color: #ffffff;
+    position: absolute;
+    display: block;
+    right: 38px;
+    bottom: 26px;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 10px;
+}
+body button.mode:hover {
+    border: solid 1px #4F5B63;
+}
+body hr {
+    width: inherit;
+    height: 0;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid #2B3136;
+}
+body .preload {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-align-items: center;
+    align-items: center;
+    background-color: rgba(25,28,31,.95);
+    bottom: 0;
+    /* display: none; */
+    height: 100%;
+    -webkit-justify-content: center;
+    justify-content: center;
+    left: 0;
+    min-width: 32rem;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+body .preload-loading {
+    position: absolute;
+    transform: translate(-50%, -48%);
+    top: 50%;
+    left: 50%;
+    text-align: center;
+}
+body .preload-text {
+    color: #999;
+    display: block;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}

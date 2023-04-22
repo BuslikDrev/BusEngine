@@ -4,507 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- <base href="https://BusEngine/"> -->
-    <link href="Styles/BusEngine/BusEngine.css" type="text/css" rel="stylesheet">
-    <style>
-html {
-    font-family: sans-serif;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    user-select: none;
-}
-body {
-    background-color: #000000;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-body header {
-    position: relative;
-    z-index: 1000;
-}
-body .hidden {
-    display: none !important;
-}
-body a {
-    font-size: 13px;
-    color: #00AEEF;
-    text-decoration: none;
-}
-body a:hover {
-    color: #23BCF8;
-}
-body a svg,
-body button svg {
-    width: 13px;
-    height: 13px;
-    fill: #00AEEF;
-}
-body a:hover svg,
-body button:hover svg {
-    fill: #23BCF8;
-}
-body .resize {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-}
-body #top {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-color: #000000;
-    border-bottom: solid 2px #22272a;
-    width: 100%;
-    height: 40px;
-    position: relative;
-}
-body #top .point {
-    position: absolute;
-    width: calc(100% - 20px);
-    height: 100%;
-    cursor: grab;
-    margin: 10px 10px 0px 10px;
-}
-body #top .left {
-    float: left;
-    top: 6px;
-    left: 6px;
-    position: relative;
-}
-body #top .name {
-    cursor: default;
-    user-select: none;
-    font-size: 14px;
-    font-weight: 600;
-    top: 6px;
-    left: 6px;
-    position: relative;
-    color: #4F5B63;
-}
-body #top .right {
-    float: right;
-    top: 6px;
-    right: 6px;
-    position: relative;
-}
-body #top button {
-    display: block;
-    width: 22px;
-    height: 22px;
-    padding: 0px;
-    margin: 0px 0px;
-    margin-right: 5px;
-    font-size: 13px;
-    font-weight: 900;
-    border: unset;
-    background-color: unset;
-    float: left;
-    top: 6px;
-    position: relative;
-    color: #4F5B63;
-}
-body #top button:hover {
-    color: #ffffff;
-}
-body #top button.collapse {
-    color: #00AEEF;
-}
-body #top button.collapse:hover {
-    color: #23BCF8;
-}
-body #top button.close svg {
-    width: 16px;
-    height: 16px;
-}
-body button {
-    cursor: pointer;
-}
-body .login {
-    background-color: #22272A;
-    color: #666666;
-    width: 400px;
-    height: auto;
-    opacity: 0.9;
-    position: absolute;
-    transform: translate(-50%, -48%);
-    top: 50%;
-    left: 50%;
-}
-body .login form {
-    padding: 0 24px;
-    display: grid;
-    color: #ffffff;
-}
-body .login form a {
-    color: #999999;
-}
-body .login form a svg {
-    fill: #999999;
-}
-body .login form a:hover {
-    color: #ffffff;
-}
-body .login form a:hover svg {
-    fill: #ffffff;
-}
-body .login .logo {
-    font-size: 26px;
-    margin-top: 20px;
-    color: #ffffff;
-    text-align: center;
-    height: 50px;
-}
-body .login .logo img {
-    margin-bottom: -9px;
-}
-body .login .input {
-    font-size: 14px;
-    height: 100px;
-    position: relative;
-}
-body .login .input input {
-    width: -webkit-fill-available;
-    height: 46px;
-    display: block;
-    position: relative;
-    top: 10px;
-    padding: 0 20px;
-    margin: 0;
-    left: 0;
-    border: solid 1px #666666;
-    background-color: #22272A;
-    color: #ffffff;
-    box-shadow: unset;
-    outline: 1px solid #666666;
-}
-body .login .input input:focus-visible,
-body .login .input input:active {
-    outline: 1px solid #00AEEF;
-}
-body .login .input input:hove {
-    outline: 1px solid #999999;
-}
-body .login .input input::-moz-placeholder{color:#999;opacity:1}
-body .login .input input:-ms-input-placeholder{color:#999}
-body .login .input input::-webkit-input-placeholder{color:#999}
-body .login .input input+span svg {
-    width: 20px;
-    height: 20px;
-    fill: #00AEEF;
-    cursor: pointer;
-}
-body .login .input span {
-    position: absolute;
-    right: 15px;
-    bottom: 38px;
-}
-body .login hr+span {
-    text-align: center;
-    margin-bottom: 15px;
-    display: block;
-}
-body button.send {
-    background-color: #00AEEF;
-    color: #ffffff;
-    display: block;
-    right: 38px;
-    bottom: 26px;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 14px;
-    border-radius: 5px;
-    float: right;
-}
-body button.send:hover {
-    background-color: #23BCF8;
-}
-body button.mode {
-    border: solid 1px #384147;
-    background-color: transparent;
-    color: #ffffff;
-    position: absolute;
-    display: block;
-    right: 38px;
-    bottom: 26px;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 8px 10px;
-}
-body button.mode:hover {
-    border: solid 1px #4F5B63;
-}
-body hr {
-    width: inherit;
-    height: 0;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 0;
-    border-top: 1px solid #2B3136;
-}
-body .preload {
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    -webkit-align-items: center;
-    align-items: center;
-    background-color: rgba(25,28,31,.95);
-    bottom: 0;
-    /* display: none; */
-    height: 100%;
-    -webkit-justify-content: center;
-    justify-content: center;
-    left: 0;
-    min-width: 32rem;
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-body .preload-loading {
-    position: absolute;
-    transform: translate(-50%, -48%);
-    top: 50%;
-    left: 50%;
-    text-align: center;
-}
-body .preload-text {
-    color: #999;
-    display: block;
-    font-size: 1.6rem;
-    line-height: 2.4rem;
-    text-align: center;
-    width: 100%;
-    margin-top: 20px;
-}
+    <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
+    <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
+    <style type="text/css">
+
     </style>
-    <script src="Scripts/BusEngine/BusEngine.js"></script>
-    <script>
-	window.addEventListener('BusEngineMessage', function(e) {
-		element = document.querySelector('#message');
-
-		if (element) {
-			element.innerText = e.detail.hi + ' ' + e.detail.data;
-		}
-	});
-
-	function svgToggle(e, type) {
-		if (typeof type == 'undefined') {
-			type = '';
-		}
-
-		if (type == 'password') {
-			var p = e.parentNode.querySelector('input');
-			
-			if (p) {
-				if (p.getAttribute('type') == 'password') {
-					p.setAttribute('type', 'text');
-				} else {
-					p.setAttribute('type', 'password');
-				}
-			}
-		}
-
-		var i, elements = e.querySelectorAll('svg');
-
-		if (elements) {
-			for (i = 0; i < elements.length; ++i) {
-				if (elements[i].style['display'] == 'none') {
-					elements[i].style['display'] = '';
-				} else {
-					elements[i].style['display'] = 'none';
-				}
-			}
-		}
-	}
-
-	window.addEventListener('DOMContentLoaded', function() {
-		var element = document.querySelector('#exit');
-
-		if (element) {
-			element.addEventListener('click', function() {
-				element = document.querySelector('#message');
-
-				if (element) {
-					element.innerText = 'Выход произошёл! ' + window.location.href;
-					setTimeout(function() {
-						element.innerText = window.navigator.userAgent + ' ' + window.navigator.appName + ' ' + window.navigator.platform;
-						BusEngine.PostMessage('Exit');
-					}, 2000);
-				}
-			});
-		}
-
-		var element = document.querySelector('#debug');
-
-		if (element) {
-			element.addEventListener('click', function() {
-				BusEngine.PostMessage('Debug');
-				console.log('Debug js console.log');
-				BusEngine.log('Debug js BusEngine.log');
-			});
-		}
-
-		// изменение размера окна мышкой
-		var fix, nx, ny, cursor, x, y, my_bstatus, my_status, w, h, my_x = document.querySelector('.x'), my_y = document.querySelector('.y');
-
-		document.addEventListener('mousedown', function(e) {
-			cursor = 0;
-			x = e.clientX;
-			y = e.clientY;
-			fix = 0;
-			if (e.which == 1 && my_status) {
-				my_bstatus = true;
-			}
-		});
-
-		document.addEventListener('mouseout', function(e) {
-			if (e.which != 1) {
-				document.body.style['cursor'] = 'default';
-				my_bstatus = false;
-				cursor = 0;
-			}
-		});
- 
-		document.addEventListener('mousemove', function(e) {
-			// https://habr.com/ru/articles/509258/
-			/* console.log('экран All', [window.screen.width, window.screen.height]);
-			console.log('экран ', [window.screen.availWidth, window.screen.availHeight]);
-			console.log('окно приложения All ', [window.outerWidth, window.outerHeight]);
-			console.log('окно приложения ', [window.innerWidth, window.innerHeight]); */
-			w = window.innerWidth - 10;
-			h = window.innerHeight - 10;
-			my_status = false;
-
-			if (e.clientX <= 10) {
-				// https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
-				if (cursor == 0) {
-					document.body.style['cursor'] = 'ew-resize'; // влево
-					cursor = 1;
-				}
-				my_status = true;
-			}
-
-			if (e.clientY <= 10) {
-				if (cursor == 0) {
-					document.body.style['cursor'] = 'ns-resize'; // вверх
-					cursor = 3;
-				}
-				my_status = true;
-			}
-			if (e.clientX >= w) {
-				if (cursor == 0) {
-					document.body.style['cursor'] = 'ew-resize'; // вправо
-					cursor = 5;
-				}
-				my_status = true;
-			}
-			if (e.clientY >= h) {
-				if (cursor == 0) {
-					document.body.style['cursor'] = 'ns-resize'; // вниз
-					cursor = 7;
-				}
-				my_status = true;
-			}
-			if (e.clientX <= 10 && e.clientY <= 10) {
-				if (cursor == 0 || cursor == 1 || cursor == 3) {
-					document.body.style['cursor'] = 'nwse-resize'; // левый-верхний
-					cursor = 2;
-				}
-				my_status = true;
-			}
-			if (e.clientX >= w && e.clientY <= 10) {
-				if (cursor == 0 || cursor == 5 || cursor == 3) {
-					document.body.style['cursor'] = 'nesw-resize'; // правый-верхний
-					cursor = 4;
-				}
-				my_status = true;
-			}
-			if (e.clientX >= w && e.clientY >= h) {
-				if (cursor == 0 || cursor == 5 || cursor == 7) {
-					document.body.style['cursor'] = 'nwse-resize'; // правый-нижний
-					cursor = 6;
-				}
-				my_status = true;
-			}
-			if (e.clientX <= 10 && e.clientY >= h) {
-				if (cursor == 0 || cursor == 1 || cursor == 7) {
-					document.body.style['cursor'] = 'nesw-resize'; // левый-нижний
-					cursor = 8;
-				}
-				my_status = true;
-			}
-
-			if (e.which == 1 && my_bstatus) {
-				if (cursor == 1) {
-					nx = (e.clientX - x);
-					ny = 0;
-				} else if (cursor == 2) {
-					nx = (e.clientX - x);
-					ny = (e.clientY - y);
-				} else if (cursor == 3) {
-					nx = 0;
-					ny = (e.clientY - y);
-				} else if (cursor == 4) {
-					nx = (e.clientX - window.innerWidth+1);
-					ny = (e.clientY - y);
-				} else if (cursor == 5) {
-					nx = (e.clientX - window.innerWidth+1);
-					ny = 0;
-				} else if (cursor == 6) {
-					nx = (e.clientX - window.innerWidth+1);
-					ny = (e.clientY - window.innerHeight+1);
-				} else if (cursor == 7) {
-					nx = 0;
-					ny = (e.clientY - window.innerHeight+1);
-				} else if (cursor == 8) {
-					nx = (e.clientX - x);
-					ny = (e.clientY - window.innerHeight+1);
-				}
-				fix++;
-				BusEngine.PostMessage('_resize|' + nx + ' ' + ny + ' ' + cursor + ' ' + fix);
-
-				//BusEngine.log(nx, ny, cursor, fix);
-				my_x.innerHTML = e.offsetX + ' ' + w;
-				my_y.innerHTML = e.offsetY + ' ' + h;
-			}
-
-			if (e.which != 1 && !my_status) {
-				document.body.style['cursor'] = 'default';
-				my_bstatus = false;
-				cursor = 0;
-			}
-		});
-
-		// перемещение окна приложения
-		var point = document.querySelector('#top .point');
-
-		if (point) {
-			var x, y, p = function(e) {
-				if (e.which == 1) {
-					//BusEngine.log((e.clientX - x), (e.clientY - y));
-					BusEngine.PostMessage('__point|' + (e.clientX - x) + ' ' + (e.clientY - y));
-				}
-			};
-
-			point.addEventListener('mousedown', function(e) {
-				x = e.clientX;
-				y = e.clientY;
-				//BusEngine.log(x, y);
-				e.target.style['cursor'] = 'grabbing';
-				document.addEventListener('mousemove', p);
-			});
-
-			point.addEventListener('mouseup', function(e) {
-				document.removeEventListener('mousemove', p);
-				e.target.style['cursor'] = '';
-			});
-		}
-	});
-    </script>
+    <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
+    <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
   </head>
   <body>
     <div class="resize"></div>
@@ -522,7 +28,8 @@ body .preload-text {
       </nav>
     </header>
     <main>
-<style>
+<style type="text/css">
+body picture img,
 body video {
     position: absolute;
     top: 0;
@@ -538,6 +45,8 @@ body video {
 	background-position-x: center;
 	background-position-y: center;
 }
+</style>
+<!-- <style type="text/css">
 @media screen and (max-device-width: 1280px) {
     body video {
         background-image: url(Textures/background_login_1280x720.png);
@@ -558,12 +67,39 @@ body video {
         background-image: url(Textures/background_login_3840x2160.png);
     }
 }
-</style>
+</style> -->
+<!-- <style type="text/css">
+@media screen and (max-device-width: 1280px) {
+    body picture img {
+        background-image: url(Textures/background_login_1280x720.png);
+    }
+}
+@media screen and (min-device-width:1281px) and (max-device-width:1920px) {
+    body picture img {
+        background-image: url(Textures/background_login_1920x1080.png);
+    }
+}
+@media screen and (min-device-width:1921px) and (max-device-width:2560px) {
+    body picture img {
+        background-image: url(Textures/background_login_2560x1440.png);
+    }
+}
+@media screen and (min-device-width:2561px) {
+    body picture img {
+        background-image: url(Textures/background_login_3840x2160.png);
+    }
+}
+</style> -->
+      <picture>
+        <!-- <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-device-width:1281px)"> -->
+		<img loading="eager" decoding="sync" srcset="Textures/background_login_1280x720.png" alt="background_login" sizes="(max-device-width:1280px) 100px" style="display:none;">
+      </picture>
       <video autoplay="autoplay" preload="none" muted="false" loop="true">
-        <source src="Videos/background_login_1280x720.mp4" type="video/mp4" media="screen and (max-device-width:1280px)">
-        <source src="Videos/background_login_1280x720.webm" type="video/webm" media="screen and (max-device-width:1280px)">
-        <source src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px)">
-        <source src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px)">
+        <!-- <source data-src="Videos/background_login_1280x720.mp4" type="video/mp4" media="screen and (max-device-width:1280px)">
+        <source data-src="Videos/background_login_1280x720.webm" type="video/webm" media="screen and (max-device-width:1280px)">
+        <source data-src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px)">
+        <source data-src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px)"> -->
         <!-- <source src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
         <source src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
         <source src="Videos/background_login_2560x1440.mp4" type="video/mp4" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
@@ -571,11 +107,12 @@ body video {
         <source src="Videos/background_login_3840x2160.mp4" type="video/mp4" media="screen and (min-device-width:2561px) and (max-device-width:3840px)">
         <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
       </video>
-<script>
+<script type="text/javascript">
+// https://developer.mozilla.org/ru/docs/Web/API/HTMLMediaElement
 if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome)\/(\d+\.)/)) {
 'use strict';
 'use asm';
-	(function() {
+	window.addEventListener('load', function() {
 		var i, v = document.querySelectorAll('video source[media]');
 
 		for (i = 0; i < v.length; ++i) {
@@ -583,6 +120,17 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
 				if (v[i].getAttribute('data-src')) {
 					v[i].setAttribute('src', v[i].getAttribute('data-src'));
 					v[i].removeAttribute('data-src');
+					
+					
+					v[i].parentNode.addEventListener('ended', function() {
+						console.log('xxxxxxxxxxxxx');
+					});
+					v[i].parentNode.addEventListener('loadeddata', function() {
+						console.log('xxxxxxxxxxxxx');
+					});
+					console.log([v[i].parentNode]);
+
+					v[i].parentNode.src = v[i].getAttribute('src');
 				}
 			} else {
 				if (v[i].getAttribute('src')) {
@@ -591,7 +139,7 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
 				}
 			}
 		}
-	})();
+	});
 }
 </script>
       <div class="login">
@@ -610,7 +158,7 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
             </span>
           </span>
           <span class="input">
-            <a href="https://busengine.buslikdrev.by/">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.PostMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
           </span>
           <span class="input" style="height: 90px;">
             <button class="send">Авторизоваться</button>
@@ -625,10 +173,10 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
         </form>
         <hr>
         <span>
-        Новый пользователь? <a href="https://busengine.buslikdrev.by/">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        Новый пользователь? <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.PostMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
         </span>
       </div>
-      <button class="mode">Offline mode</button>
+      <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html';" class="mode">Offline mode</button>
     </main>
     <div class="preload hidden">
       <div class="preload-loading">
