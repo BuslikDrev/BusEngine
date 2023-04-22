@@ -103,7 +103,7 @@ namespace BusEngine.Game {
 			x = BusEngine.UI.Canvas.WinForm.DesktopLocation.X,
 			y = BusEngine.UI.Canvas.WinForm.DesktopLocation.Y;
 
-			BusEngine.Browser.Initialize(url);                                                   
+			BusEngine.Browser.Initialize(url);		
 			BusEngine.Browser.OnPostMessageStatic += (string message) => {
 				string t = message.ToLower();
 
@@ -125,6 +125,9 @@ namespace BusEngine.Game {
 					t = t.Substring(0, 8);
 					if (t == "console|") {
 						BusEngine.Log.Info("Console: {0}", message.Substring(8));
+					} else if (t == "_linkgo|") {
+						BusEngine.Log.Info("_linkGo: {0}", message.Substring(8));
+						System.Diagnostics.Process.Start(message.Substring(8));
 					} else if (t == "_resize|") {
 						string[] xy = message.Substring(8).Split(' ');
 						if (xy.Length > 0) {
