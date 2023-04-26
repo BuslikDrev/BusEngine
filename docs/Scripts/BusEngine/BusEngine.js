@@ -214,7 +214,7 @@ BusEngine.loadScript = function(url, callback) {
 // language
 BusEngine.language = {
 	'setting': {
-		langDefault: (window.navigator.language || window.navigator.userLanguage),
+		langDefault: (document.documentElement.lang || window.navigator.language || window.navigator.userLanguage),
 		lang: (window.navigator.language || window.navigator.userLanguage), //'be',
 		domain: document.domain
 	},
