@@ -15,9 +15,9 @@
     ) */
     "r_Fullscreen": "-1",
     // r_Width работает
-    "r_Width": "1280",
+    "r_Width": "840",
     // r_Height работает
-    "r_Height": "720"
+    "r_Height": "480"
   },
   "console_variables": {
     "sys_spec": "1",
@@ -26,10 +26,10 @@
     "r_VolumetricClouds": "1",
     "r_Displayinfo": "0",
     "r_Fullscreen": "0",
-    "r_Width": "1280",
-    "r_Height": "720"
+    "r_Width": "960",
+    "r_Height": "540"
   },
-  "version": "0.3.0.0",
+  "version": "0.4.0.0",
   "type": "",
   "info": {
     "name": "Game",
@@ -37,7 +37,7 @@
   },
   "content": {
     "assets": [
-      "GameData"
+      "Data"
     ],
     "code": [
       "Code"
@@ -57,7 +57,7 @@
     }
   },
   "require": {
-    "engine": "0.3.0.0",
+    "engine": "0.4.0.0",
     // plugins работает
     "plugins": [
       /* {
