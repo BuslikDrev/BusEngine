@@ -9,20 +9,21 @@
 
 		if (type == 'password') {
 			var p = e.parentNode.querySelector('input');
-			
+
 			if (p) {
-				if (p.getAttribute('type') == 'password') {
-					p.setAttribute('type', 'text');
+				if (p.type == 'password') {
+					p.type = 'text';
 				} else {
-					p.setAttribute('type', 'password');
+					p.type = 'password';
 				}
 			}
 		}
 
-		var i, elements = e.querySelectorAll('svg');
+		var i, l, elements = e.querySelectorAll('svg');
+		l = elements.length;
 
 		if (elements) {
-			for (i = 0; i < elements.length; ++i) {
+			for (i = 0; i < l; ++i) {
 				if (elements[i].style['display'] == 'none') {
 					elements[i].style['display'] = '';
 				} else {
@@ -34,13 +35,13 @@
 
 	window.addEventListener('DOMContentLoaded', function() {
 		// изменение размера окна мышкой
-		var fix, nx, ny, cursor, x, y, my_bstatus, my_status, w, h, my_x = document.querySelector('.x'), my_y = document.querySelector('.y');
+		var nx, ny, cursor, x, y, w, h, my_bstatus, my_status, my_x = document.querySelector('.x'), my_y = document.querySelector('.y');
 
 		document.addEventListener('mousedown', function(e) {
-			cursor = 0;
 			x = e.clientX;
 			y = e.clientY;
-			fix = 0;
+			cursor = 0;
+
 			if (e.which == 1 && my_status) {
 				my_bstatus = true;
 			}
@@ -149,10 +150,10 @@
 					nx = (e.clientX - x);
 					ny = (e.clientY - window.innerHeight+1);
 				}
-				fix++;
-				BusEngine.PostMessage('_resize|' + nx + ' ' + ny + ' ' + cursor + ' ' + fix);
 
-				//BusEngine.log(nx, ny, cursor, fix);
+				BusEngine.PostMessage('_resize|' + nx + ' ' + ny + ' ' + cursor);
+
+				//BusEngine.log(nx, ny, cursor);
 				my_x.innerHTML = e.offsetX + ' ' + w;
 				my_y.innerHTML = e.offsetY + ' ' + h;
 			}
@@ -170,8 +171,8 @@
 		if (point) {
 			var x, y, p = function(e) {
 				if (e.which == 1) {
-					//BusEngine.log((e.clientX - x), (e.clientY - y));
 					BusEngine.PostMessage('__point|' + (e.clientX - x) + ' ' + (e.clientY - y));
+					//BusEngine.PostMessage('__point|' + e.clientX + ' ' + e.clientY);
 				}
 			};
 
@@ -186,6 +187,10 @@
 			point.addEventListener('mouseup', function(e) {
 				document.removeEventListener('mousemove', p);
 				e.target.style['cursor'] = '';
+			});
+
+			point.addEventListener('dblclick', function(e) {
+				BusEngine.PostMessage('Expand');
 			});
 		}
 	});
