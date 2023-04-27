@@ -131,10 +131,16 @@ namespace BusEngine.Game {
 					} else if (t == "_resize|") {
 						string[] xy = message.Substring(8).Split(' ');
 						if (xy.Length > 0) {
-							int nx = System.Convert.ToInt32(xy[0]);
-							int ny = 0;
-							int cursor = 0;
-							int fix = 0;
+							int nx, ny, cursor, jl, jx, jt, jy;
+
+							nx = System.Convert.ToInt32(xy[0]);
+							ny = 0;
+							cursor = 0;
+							jl = BusEngine.UI.Canvas.WinForm.Left;
+							jx = BusEngine.UI.Canvas.WinForm.Width;
+
+							jt = BusEngine.UI.Canvas.WinForm.Top;
+							jy = BusEngine.UI.Canvas.WinForm.Height;
 
 							if (xy.Length > 1) {
 								ny = System.Convert.ToInt32(xy[1]);
@@ -144,93 +150,72 @@ namespace BusEngine.Game {
 								cursor = System.Convert.ToInt32(xy[2]);
 							}
 
-							if (xy.Length > 3) {
-								fix = System.Convert.ToInt32(xy[3]);
-							}
-
 							// влево
 							if (cursor == 1) {
-								if (w <= BusEngine.UI.Canvas.WinForm.Width && nx != 0) {
-									if (BusEngine.UI.Canvas.WinForm.Width + (nx * -1) < w) {
-										nx -= w - (BusEngine.UI.Canvas.WinForm.Width + (nx * -1));
-									}
-									BusEngine.UI.Canvas.WinForm.DesktopLocation = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y);
-									BusEngine.UI.Canvas.WinForm.Width += (nx * -1);
+								if (w <= (BusEngine.UI.Canvas.WinForm.Width + (nx * -1))) {
+									jl = BusEngine.UI.Canvas.WinForm.Left + nx;
+									jx = BusEngine.UI.Canvas.WinForm.Width + (nx * -1);
 								}
-							}
 							// левый-верхний
-							if (1 == 0 && cursor == 2) {
-								if (w <= BusEngine.UI.Canvas.WinForm.Width && nx != 0 || h <= BusEngine.UI.Canvas.WinForm.Height && ny != 0) {
-									if (BusEngine.UI.Canvas.WinForm.Width + (nx * -1) < w) {
-										nx -= w - (BusEngine.UI.Canvas.WinForm.Width + (nx * -1));
-									}
-									if (BusEngine.UI.Canvas.WinForm.Height + (ny * -1) < h) {
-										ny -= h - (BusEngine.UI.Canvas.WinForm.Height + (ny * -1));
-									}
-									BusEngine.UI.Canvas.WinForm.DesktopLocation = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
-									BusEngine.UI.Canvas.WinForm.Height += (ny * -1);
-									BusEngine.UI.Canvas.WinForm.Width += (nx * -1);
+							} else if (cursor == 2) {
+								if (w <= (BusEngine.UI.Canvas.WinForm.Width + (nx * -1))) {
+									jl = BusEngine.UI.Canvas.WinForm.Left + nx;
+									jx = BusEngine.UI.Canvas.WinForm.Width + (nx * -1);
 								}
-							}
+
+								if (h <= (BusEngine.UI.Canvas.WinForm.Height + (ny * -1))) {
+									jt = BusEngine.UI.Canvas.WinForm.Top + ny;
+									jy = BusEngine.UI.Canvas.WinForm.Height + (ny * -1);
+								}
 							// вверх
-							if (cursor == 3) {
-								if (h <= BusEngine.UI.Canvas.WinForm.Height && ny != 0) {
-									if (BusEngine.UI.Canvas.WinForm.Height + (ny * -1) < h) {
-										ny -= h - (BusEngine.UI.Canvas.WinForm.Height + (ny * -1));
-									}
-									BusEngine.UI.Canvas.WinForm.DesktopLocation = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
-									BusEngine.UI.Canvas.WinForm.Height += (ny * -1);
+							} else if (cursor == 3) {
+								if (h <= (BusEngine.UI.Canvas.WinForm.Height + (ny * -1))) {
+									jt = BusEngine.UI.Canvas.WinForm.Top + ny;
+									jy = BusEngine.UI.Canvas.WinForm.Height + (ny * -1);
 								}
-							}
 							// правый-верхний
-							if (1 == 0 && cursor == 4) {
-								if (w <= BusEngine.UI.Canvas.WinForm.Width && nx != 0) {
-									BusEngine.UI.Canvas.WinForm.Width += nx;
-								}
-								if (h <= BusEngine.UI.Canvas.WinForm.Height && ny != 0) {
-									BusEngine.UI.Canvas.WinForm.DesktopLocation = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
-									if (BusEngine.UI.Canvas.WinForm.Height + (ny * -1) < h) {
-										ny -= h - (BusEngine.UI.Canvas.WinForm.Height + (ny * -1));
-									}
-
-									BusEngine.UI.Canvas.WinForm.Height += (ny * -1);
+							} else if (cursor == 4) {
+								if (w <= (BusEngine.UI.Canvas.WinForm.Width + nx)) {
+									jx = BusEngine.UI.Canvas.WinForm.Width + nx;
 								}
 
-								BusEngine.Log.Info("Console: {0}x{1} {2}", BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height, fix);
-							}
+								if (h <= (BusEngine.UI.Canvas.WinForm.Height + (ny * -1))) {
+									jt = BusEngine.UI.Canvas.WinForm.Top + ny;
+									jy = BusEngine.UI.Canvas.WinForm.Height + (ny * -1);
+								}
 							// вправо
-							if (cursor == 5) {
-								if (w <= BusEngine.UI.Canvas.WinForm.Width && nx != 0) {
-									BusEngine.UI.Canvas.WinForm.Width += nx;
+							} else if (cursor == 5) {
+								if (w <= (BusEngine.UI.Canvas.WinForm.Width + nx)) {
+									jx = BusEngine.UI.Canvas.WinForm.Width + nx;
 								}
-							}
 							// правый-нижний
-							if (1 == 0 && cursor == 6) {
-								if (w <= BusEngine.UI.Canvas.WinForm.Width && nx != 0) {
-									BusEngine.UI.Canvas.WinForm.Width += nx;
+							} else if (cursor == 6) {
+								if (w <= (BusEngine.UI.Canvas.WinForm.Width + nx)) {
+									jx = BusEngine.UI.Canvas.WinForm.Width + nx;
 								}
-								if (h <= BusEngine.UI.Canvas.WinForm.Height && ny != 0) {
-									BusEngine.UI.Canvas.WinForm.Height += ny;
+
+								if (h <= (BusEngine.UI.Canvas.WinForm.Height + ny)) {
+									jy = BusEngine.UI.Canvas.WinForm.Height + ny;
 								}
-							}
 							// вниз
-							if (cursor == 7) {
-								if (h <= BusEngine.UI.Canvas.WinForm.Height && ny != 0) {
-									BusEngine.UI.Canvas.WinForm.Height += ny;
+							} else if (cursor == 7) {
+								if (h <= (BusEngine.UI.Canvas.WinForm.Height + ny)) {
+									jy = BusEngine.UI.Canvas.WinForm.Height + ny;
+								}
+							// левый-нижний
+							} else if (cursor == 8) {
+								if (w <= (BusEngine.UI.Canvas.WinForm.Width + (nx * -1))) {
+									jl = BusEngine.UI.Canvas.WinForm.Left + nx;
+									jx = BusEngine.UI.Canvas.WinForm.Width + (nx * -1);
+								}
+
+								if (h <= (BusEngine.UI.Canvas.WinForm.Height + ny)) {
+									jy = BusEngine.UI.Canvas.WinForm.Height + ny;
 								}
 							}
-							// левый-нижний
-							if (1 == 0 && cursor == 8) {
-								if (w <= BusEngine.UI.Canvas.WinForm.Width && nx != 0) {
-									if (BusEngine.UI.Canvas.WinForm.Width + (nx * -1) < w) {
-										nx -= w - (BusEngine.UI.Canvas.WinForm.Width + (nx * -1));
-									}
-									BusEngine.UI.Canvas.WinForm.DesktopLocation = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y);
-									BusEngine.UI.Canvas.WinForm.Width += (nx * -1);
-								}
-								if (h <= BusEngine.UI.Canvas.WinForm.Height && ny != 0) {
-									BusEngine.UI.Canvas.WinForm.Height += ny;
-								}
+
+							if (cursor > 0) {
+								BusEngine.UI.Canvas.WinForm.Bounds = new System.Drawing.Rectangle(jl, jt, jx, jy);
 							}
 						}
 					} else if (t == "__point|") {
@@ -244,7 +229,25 @@ namespace BusEngine.Game {
 								ny = System.Convert.ToInt32(xy[1]);
 							}
 
-							BusEngine.UI.Canvas.WinForm.DesktopLocation = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
+
+							if (BusEngine.UI.Canvas.WinForm.WindowState == System.Windows.Forms.FormWindowState.Maximized) {
+BusEngine.Log.Info("Top {0}", BusEngine.UI.Canvas.WinForm.Top);
+BusEngine.Log.Info("Left {0}", BusEngine.UI.Canvas.WinForm.Left);
+BusEngine.Log.Info("Right {0}", BusEngine.UI.Canvas.WinForm.Right);
+BusEngine.Log.Info("Bottom {0}", BusEngine.UI.Canvas.WinForm.Bottom);
+BusEngine.Log.Info("Console11111111 {0} {1}", BusEngine.UI.Canvas.WinForm.DesktopBounds, BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx);
+
+								BusEngine.UI.Canvas.WinForm.WindowState = System.Windows.Forms.FormWindowState.Normal;
+								
+BusEngine.Log.Info("Top {0}", BusEngine.UI.Canvas.WinForm.Top);
+BusEngine.Log.Info("Left {0}", BusEngine.UI.Canvas.WinForm.Left);
+BusEngine.Log.Info("Right {0}", BusEngine.UI.Canvas.WinForm.Right);
+BusEngine.Log.Info("Bottom {0}", BusEngine.UI.Canvas.WinForm.Bottom);
+BusEngine.Log.Info("Console2222222222 {0} {1}", BusEngine.UI.Canvas.WinForm.DesktopBounds, BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx);
+								BusEngine.UI.Canvas.WinForm.Location = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx + (), BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
+							} else {
+								BusEngine.UI.Canvas.WinForm.Location = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
+							}
 						}
 					}
 				}
