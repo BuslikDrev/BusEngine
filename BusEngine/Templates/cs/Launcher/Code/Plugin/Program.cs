@@ -101,7 +101,8 @@ namespace BusEngine.Game {
 			int w = BusEngine.UI.Canvas.WinForm.Width,
 			h = BusEngine.UI.Canvas.WinForm.Height,
 			x = BusEngine.UI.Canvas.WinForm.DesktopLocation.X,
-			y = BusEngine.UI.Canvas.WinForm.DesktopLocation.Y;
+			y = BusEngine.UI.Canvas.WinForm.DesktopLocation.Y,
+			kk = 0;
 
 			BusEngine.Browser.Initialize(url);
 			BusEngine.Browser.OnPostMessageStatic += (string message) => {
@@ -222,32 +223,24 @@ namespace BusEngine.Game {
 						string[] xy = message.Substring(8).Split(' ');
 
 						if (xy.Length > 0) {
-							int nx = System.Convert.ToInt32(xy[0]);
-							int ny = 0;
+							int nx, ny;
+
+							nx = System.Convert.ToInt32(xy[0]);
+							ny = 0;
 
 							if (xy.Length > 1) {
 								ny = System.Convert.ToInt32(xy[1]);
 							}
 
+							if (xy.Length > 2) {
+								cursor = System.Convert.ToInt32(xy[2]);
+							}
 
 							if (BusEngine.UI.Canvas.WinForm.WindowState == System.Windows.Forms.FormWindowState.Maximized) {
-BusEngine.Log.Info("Top {0}", BusEngine.UI.Canvas.WinForm.Top);
-BusEngine.Log.Info("Left {0}", BusEngine.UI.Canvas.WinForm.Left);
-BusEngine.Log.Info("Right {0}", BusEngine.UI.Canvas.WinForm.Right);
-BusEngine.Log.Info("Bottom {0}", BusEngine.UI.Canvas.WinForm.Bottom);
-BusEngine.Log.Info("Console11111111 {0} {1}", BusEngine.UI.Canvas.WinForm.DesktopBounds, BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx);
-
 								BusEngine.UI.Canvas.WinForm.WindowState = System.Windows.Forms.FormWindowState.Normal;
-								
-BusEngine.Log.Info("Top {0}", BusEngine.UI.Canvas.WinForm.Top);
-BusEngine.Log.Info("Left {0}", BusEngine.UI.Canvas.WinForm.Left);
-BusEngine.Log.Info("Right {0}", BusEngine.UI.Canvas.WinForm.Right);
-BusEngine.Log.Info("Bottom {0}", BusEngine.UI.Canvas.WinForm.Bottom);
-BusEngine.Log.Info("Console2222222222 {0} {1}", BusEngine.UI.Canvas.WinForm.DesktopBounds, BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx);
-								BusEngine.UI.Canvas.WinForm.Location = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx + (), BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
-							} else {
-								BusEngine.UI.Canvas.WinForm.Location = new System.Drawing.Point(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + nx, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + ny);
 							}
+
+							BusEngine.UI.Canvas.WinForm.Bounds = new System.Drawing.Rectangle(BusEngine.UI.Canvas.WinForm.Location.X + nx, BusEngine.UI.Canvas.WinForm.Location.Y + ny, BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height);
 						}
 					}
 				}
