@@ -25,6 +25,9 @@ BusEngine.Browser
 		private static void Run() {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Android";
+			// размер экрана
+			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
+			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
 			BusEngine.Engine.OnInitialize += BusEngine.Initialize.OnRun;
 			BusEngine.Engine.OnShutdown += BusEngine.Initialize.OnExit;
 			BusEngine.Engine.Initialize();
