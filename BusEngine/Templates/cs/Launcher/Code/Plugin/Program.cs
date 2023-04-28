@@ -101,8 +101,7 @@ namespace BusEngine.Game {
 			int w = BusEngine.UI.Canvas.WinForm.Width,
 			h = BusEngine.UI.Canvas.WinForm.Height,
 			x = BusEngine.UI.Canvas.WinForm.DesktopLocation.X,
-			y = BusEngine.UI.Canvas.WinForm.DesktopLocation.Y,
-			kk = 0;
+			y = BusEngine.UI.Canvas.WinForm.DesktopLocation.Y;
 
 			BusEngine.Browser.Initialize(url);
 			BusEngine.Browser.OnPostMessageStatic += (string message) => {
@@ -230,10 +229,6 @@ namespace BusEngine.Game {
 
 							if (xy.Length > 1) {
 								ny = System.Convert.ToInt32(xy[1]);
-							}
-
-							if (xy.Length > 2) {
-								cursor = System.Convert.ToInt32(xy[2]);
 							}
 
 							if (BusEngine.UI.Canvas.WinForm.WindowState == System.Windows.Forms.FormWindowState.Maximized) {
