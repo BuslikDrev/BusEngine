@@ -861,12 +861,18 @@ BusEngine.Tools.Json
 	if (!('BusEngine' in window)) {
 		window.BusEngine = {};
 	}
-	window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});
-	CefSharp = null;
-	if (!('Localization' in window.BusEngine)) {
-		BusEngine.Localization = {};
+	if ('CefSharp' in window && 'PostMessage' in window.CefSharp) {
+		window.BusEngine.postMessage = CefSharp.PostMessage;
+	} else if ('CefSharp' in window && 'postMessage' in window.CefSharp) {
+		window.BusEngine.postMessage = CefSharp.postMessage;
+	} else {
+		window.BusEngine.postMessage = function(m) {};
 	}
-	BusEngine.Localization.GetLanguages = " + BusEngine.Tools.Json.Encode(BusEngine.Localization.GetLanguages) + @";
+	CefSharp = null;
+	if (!('localization' in window.BusEngine)) {
+		BusEngine.localization = {};
+	}
+	BusEngine.localization.getLanguages = " + BusEngine.Tools.Json.Encode(BusEngine.Localization.GetLanguages) + @";
 ");
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
@@ -876,7 +882,6 @@ BusEngine.Tools.Json
 				};
 				/* browser.FrameLoadEnd += (object s, CefSharp.FrameLoadEndEventArgs e) => {
 					if (e.Frame.IsMain) {
-						//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadEnd {0}", e.Frame);
 						#endif
