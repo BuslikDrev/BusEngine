@@ -496,26 +496,6 @@ table td i{font-size:30px}
 .css .ln-xtra,.css li.ln-xtra,.css div.ln-xtra{background-color:#FDFDE3}
 .css span.xtra{display:block}
 
-.html .de1,.html .de2{margin:0;padding:0;background:none;vertical-align:top}
-.html .imp{font-weight:700;color:red}
-.html li,.html .li1{font-weight:400;vertical-align:top}
-.html .ln{width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top}
-.html .li2{font-weight:700;vertical-align:top}
-.html .kw2{color:#000;font-weight:700}
-.html .kw3{color:#006}
-.html .es0{color:#009;font-weight:700}
-.html .br0{color:#6c6}
-.html .sy0{color:#6c6}
-.html .st0{color:red}
-.html .nu0{color:#c6c}
-.html .sc-2{color:#404040}
-.html .sc-1{color:gray;font-style:italic}
-.html .sc0{color:#0bd}
-.html .sc1{color:#db0}
-.html .sc2{color:#090}
-.html .ln-xtra,.html li.ln-xtra,.html div.ln-xtra{background-color:#FDFDE3}
-.html span.xtra{display:block}
-
 .js .de1,.js .de2{margin:0;padding:0;background:none;vertical-align:top}
 .js .imp{font-weight:700;color:red}
 .js li,.js .li1{font-weight:400;vertical-align:top}
@@ -637,3 +617,47 @@ table td i{font-size:30px}
 .csharp .me1{color:#00F}
 .csharp .me2{color:#00F}
 .csharp span.xtra{display:block}
+
+.html .de1,.html .de2{margin:0;padding:0;background:none;vertical-align:top}
+.html .imp{font-weight:700;color:red}
+.html li,.html .li1{font-weight:400;vertical-align:top}
+.html .ln{width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top}
+.html .li2{font-weight:700;vertical-align:top}
+.html .kw2{color:#000;font-weight:700}
+.html .kw3{color:#006}
+.html .es0{color:#009;font-weight:700}
+.html .br0{color:#6c6}
+.html .sy0{color:#6c6}
+.html .st0{color:red}
+.html .nu0{color:#c6c}
+.html .sc-2{color:#404040}
+.html .sc-1{color:gray;font-style:italic}
+.html .sc0{color:#0bd}
+.html .sc1{color:#db0}
+.html .sc2{color:#090}
+.html .ln-xtra,.html li.ln-xtra,.html div.ln-xtra{background-color:#FDFDE3}
+.html span.xtra{display:block}
+
+.html5 .de1, .html5 .de2 {color: #000060; font-weight: normal;}
+.html5  {white-space: nowrap;border: 1px dotted #a0a0a0; font-family: 'Courier New', Courier, monospace; font-size: 110%; background-color: #f0f0f0; margin: 0; line-height: 110%; padding: 0;color: #000;}
+.html5 a:link {color: #006;}
+.html5 a:hover {background-color: #d6d6e6;}
+.html5 .head {font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 70%; font-weight: bold; background-color: #f0f0ff; border-bottom: 1px solid #d0d0d0; padding: 2px;}
+.html5 .foot {font-family: Verdana, Arial, sans-serif; color: #808080; font-size: 70%; font-weight: bold; background-color: #f0f0ff; border-top: 1px solid #d0d0d0; padding: 2px;}
+.html5 .imp {font-weight: bold; color: red;}
+.html5 li, .html5 .li1 {font-family: 'Courier New', Courier, monospace; color: #000060; background-color: #e0e0e0; padding-bottom: 2px;}
+.html5 .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.html5 .kw2 {color: #000000; font-weight: bold;}
+.html5 .kw3 {color: #000066;}
+.html5 .es0 {color: #000099; font-weight: bold;font-weight: normal;}
+.html5 .br0 {color: #66cc66;}
+.html5 .sy0 {color: #66cc66;}
+.html5 .st0 {color: #ff0000;}
+.html5 .nu0 {color: #cc66cc;}
+.html5 .me {1}
+.html5 .sc-2 {color: #404040;}
+.html5 .sc-1 {color: #808080; font-style: italic;}
+.html5 .sc0 {color: #00bbdd;}
+.html5 .sc1 {color: #ddbb00;}
+.html5 .sc2 {color: #009900;}
+.html5 span.xtra { display:block; }
