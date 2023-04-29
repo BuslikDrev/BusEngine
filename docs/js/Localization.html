@@ -132,6 +132,15 @@
                   </div>
                 </div>
               </li>
+              <li class="lioff notranslate"><input type="checkbox" id="menu-5" checked="checked"><label for="menu-5" data-position="2"><a href="index.html#api-js">API BusEngine (JS)</a></label>
+                <div class="menu-5" data-position="2">
+                  <input type="checkbox" id="menu-5-1"><label for="menu-5-1" data-position="2"><span>BusEngine (Namespace)</span></label>
+                  <div class="menu-5-1" data-position="2">
+                    <a href="js/Localization.html" class="lastfix blue">BusEngine.Localization (Class)</a>
+                    <a href="js/PolyfillTagSource.html" class="lastfix blue">BusEngine.PolyfillTagSource (Class)</a>
+                  </div>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -141,13 +150,13 @@
             <a class="n1" href="index.html">Главная</a>
           </div>
           <p>BusEngine.dll</p>
-          <h1 class="notranslate">BusEngine.Localization (Class)</h1>
-          <p>Класс отвечающий за работу с Языковыми файлами. Это мультиязычность движка. В данной версии BusEngine включена поддержка Белорусского, Русского и Украинского языка.</p>
+          <h1 class="notranslate">BusEngine.Localization (Object)</h1>
+          <p>Объект отвечающий за работу с Языковыми файлами. Это мультиязычность движка. В данной версии BusEngine включена поддержка Белорусского, Русского и Украинского языка.</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
               <tr id="BusEngine.Localization">
-                <td><p><span class="notranslate"><a href="#BusEngine.Localization">var _localization = (BusEngine.Localization)new BusEngine.Localization()</a></span></p></td>
+                <td><p><span class="notranslate"><a href="#BusEngine.Localization">var _localization = BusEngine.Localization</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Метод конструктор (нестатический) уровня класса не принимает никаких параметров.</p></td>
@@ -182,30 +191,6 @@
               <tr>
                 <td><p>Метод (нестатический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"_localization.Set("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
               </tr>
-              <tr id="BusEngine.Localization.GetLanguageStatic">
-                <td><p><span class="notranslate"><a href="#BusEngine.Localization.GetLanguageStatic">(string)BusEngine.Localization.GetLanguageStatic(string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = BusEngine.Localization.GetLanguage("text_start_game");"</span> Если переменной нет в файле, то вернёт название переменной. Не реакомендуется использовать, если хотите получить переменную не из языкового файла по умолчанию.</p></td>
-              </tr>
-              <tr id="BusEngine.Localization.GetLanguageStatic_2">
-                <td><p><span class="notranslate"><a href="#BusEngine.Localization.GetLanguageStatic_2">(string)BusEngine.Localization.GetLanguageStatic(string, string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку в первый параметр для указания названия языкового файла и string строку во второй параметр для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = BusEngine.Localization.GetLanguage("myplugin", "text_start_game");"</span> Если переменной нет в файле, то вернёт название переменной. Реакомендуется использовать этот метод для быстрого доступа к переменной и когда не создавали объект <span class="notranslate">"<a href="#BusEngine.Localization" title="BusEngine.Localization">BusEngine.Localization</a>"</span>.</p></td>
-              </tr>
-              <tr id="BusEngine.Localization.SetLanguageStatic">
-                <td><p><span class="notranslate"><a href="#BusEngine.Localization.SetLanguageStatic">(void)BusEngine.Localization.SetLanguageStatic(string, string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"BusEngine.Localization.SetLanguage("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
-              </tr>
-              <tr id="BusEngine.Localization.SetLanguageStatic_2">
-                <td><p><span class="notranslate"><a href="#BusEngine.Localization.SetLanguageStatic_2">(void)BusEngine.Localization.SetLanguageStatic(string, string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"BusEngine.Localization.SetLanguage("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
-              </tr>
             </tbody>
           </table>
           <a href="#top" class="top_link">Наверх</a>
@@ -221,7 +206,7 @@
               <tr>Констант нет</tr>
             </tbody>
           </table>
-          <h2 id="Fields" class="h2">Поля</h2>
+          <!-- <h2 id="Fields" class="h2">Поля</h2>
           <table>
             <tbody>
               <tr id="BusEngine.Localization.LanguageDefault">
@@ -250,19 +235,14 @@
               </tr>
             </tbody>
           </table>
-          <a href="#top" class="top_link">Наверх</a>
+          <a href="#top" class="top_link">Наверх</a> -->
           <h2 id="Properties" class="h2">Свойства</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.Localization.LanguageStatic">
-                <td><p><span class="notranslate"><a href="#BusEngine.Localization.LanguageStatic">(string)BusEngine.Localization.LanguageStatic</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Свойство (статическое) уровня класса выводит string строку для получения названия файла языковых перемен, который загружен сейчас. По умолчанию загружается <span class="notranslate">"BusEngine.Localization.LanguageDefault"</span>.</p></td>
-              </tr>
+              <tr>Свойств нет</tr>
             </tbody>
           </table>
-          <h2 id="Events" class="h2">События</h2>
+          <!-- <h2 id="Events" class="h2">События</h2>
           <table>
             <tbody>
               <tr id="BusEngine.Localization.OnLoad">
@@ -279,6 +259,7 @@
               </tr>
             </tbody>
           </table>
+          <a href="#top" class="top_link">Наверх</a> -->
           <h2 id="api" class="h2">Пример файла Program.cs</h2>
           <p>В коде отражён запуск перевода при старте своего плагина с названием <span class="notranslate">"MyPlugin"</span>.</p>
           <div class="csharp notranslate">
