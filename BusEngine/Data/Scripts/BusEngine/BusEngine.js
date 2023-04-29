@@ -48,8 +48,8 @@ if (!window.console) {
 if (!('BusEngine' in window)) {
 	window.BusEngine = {};
 }
-if (!('postMessage' in window.BusEngine)) {
-	window.BusEngine.postMessage = function(m) {};
+if (!('PostMessage' in window.BusEngine)) {
+	window.BusEngine.PostMessage = function(m) {};
 }
 
 window.console.logs = window.console.log;
@@ -62,62 +62,6 @@ BusEngine.log = window.console.log = function(...args) {
 		}
 	}
 	window.console.logs.apply(this, args);
-};
-
-if (!('localization' in window.BusEngine)) {
-	BusEngine.localization = {};
-}
-
-BusEngine.localization.initialize = function() {
-	var i, l, localization = document.querySelectorAll('[data-localization]');
-	l = localization.length;
-
-	for (i = 0; i < l; ++i) {
-		localization[i];
-	}
-};
-if (!('getLanguages' in window.BusEngine.localization)) {
-	BusEngine.localization.getLanguages = {};
-}
-BusEngine.localization.getLanguage = function(key) {
-	if (Object.hasOwn(BusEngine.localization.getLanguages, key)) {
-		return BusEngine.localization.getLanguages[key];
-	} else {
-		return key;
-	}
-};
-BusEngine.localization.setLanguage = function(key, value) {
-	BusEngine.localization.getLanguages[key] = value;
-};
-
-// https://developer.mozilla.org/ru/docs/Web/API/HTMLMediaElement
-BusEngine.polyfillTagSource = function(ex) {
-	if (typeof ex == 'undefined') {
-		ex = [];
-	}
-	var i, l, v = document.querySelectorAll('video source[media]:not([data-error])');
-	l = v.length;
-
-	for (i = 0; i < l; ++i) {
-		if (window.matchMedia(v[i].media).matches) {
-			if (v[i].getAttribute('data-src') && ex.indexOf(v[i].getAttribute('data-src')) == -1) {
-				v[i].setAttribute('src', v[i].getAttribute('data-src'));
-				v[i].removeAttribute('data-src');
-				v[i].parentNode.addEventListener('error', function(e) {
-					e.target.setAttribute('data-error', e.target.src);
-					ex.push(e.target.src);
-					BusEngine.polyfillTagSource(ex);
-				});
-				v[i].parentNode.src = v[i].getAttribute('src');
-				break;
-			}
-		} else {
-			if (v[i].getAttribute('src')) {
-				v[i].setAttribute('data-src', v[i].getAttribute('src'));
-				v[i].removeAttribute('src');
-			}
-		}
-	}
 };
 
 BusEngine.cookie = {
@@ -271,14 +215,3 @@ BusEngine.loadScript = function(url, callback) {
 		ss.appendChild(s);
 	}
 };
-
-// делаем код под стиль c#
-BusEngine.PostMessage = BusEngine.postMessage;
-BusEngine.Log = BusEngine.log;
-BusEngine.Localization.Initialize = BusEngine.localization.initialize;
-BusEngine.Localization.GetLanguages = BusEngine.localization.getLanguages;
-BusEngine.Localization.GetLanguage = BusEngine.localization.getLanguage;
-BusEngine.Localization.SetLanguage = BusEngine.localization.setLanguage;
-BusEngine.PolyfillTagSource = BusEngine.polyfillTagSource;
-BusEngine.Cookie = BusEngine.cookie;
-BusEngine.LoadScript = BusEngine.loadScript;
