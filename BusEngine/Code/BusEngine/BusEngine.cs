@@ -876,8 +876,8 @@ BusEngine.Tools.Json
 	if (!('engine' in window.BusEngine)) {
 		BusEngine.engine = {};
 	}
-	//BusEngine.engine.settingEngine = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingEngine) + @";
-	//BusEngine.engine.SettingProject = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingProject) + @";
+	/*BusEngine.engine.settingEngine = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingEngine) + @";*/
+	/*BusEngine.engine.SettingProject = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingProject) + @";*/
 ");
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
