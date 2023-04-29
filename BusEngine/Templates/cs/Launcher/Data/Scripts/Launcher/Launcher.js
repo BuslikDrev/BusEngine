@@ -60,10 +60,6 @@
 		document.addEventListener('mousemove', function(e) {
 			if (!(window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
 				// https://habr.com/ru/articles/509258/
-				/* console.log('экран All', [window.screen.width, window.screen.height]);
-				console.log('экран ', [window.screen.availWidth, window.screen.availHeight]);
-				console.log('окно приложения All ', [window.outerWidth, window.outerHeight]);
-				console.log('окно приложения ', [window.innerWidth, window.innerHeight]); */
 				w = window.innerWidth - 10;
 				h = window.innerHeight - 10;
 				my_status = false;
@@ -174,16 +170,22 @@
 		if (point) {
 			var lx, ly, expand, p = function(e) {
 				if (e.which == 1) {
-					console.log(window.screen);
+					console.log(window.screen.left);
 					BusEngine.PostMessage('__point|' + (e.clientX - Math.round(lx * window.innerWidth)) + ' ' + (e.clientY - Math.round(ly * window.innerHeight)));
-					if (expand && !(window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
-						expand = false;
-						svgToggle(document.querySelector('#top .expand'));
+					if (!(window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
+						if (expand) {
+							expand = false;
+							svgToggle(document.querySelector('#top .expand'));
+						}
+						if (window.screen.availTop) {
+							
+						}
 					}
 				}
 			};
 
 			point.addEventListener('mousedown', function(e) {
+				console.log(window.screen.isExtended);
 				if (window.innerWidth == window.screen.width && window.innerHeight == window.screen.height) {
 					expand = true;
 				}

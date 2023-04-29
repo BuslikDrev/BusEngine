@@ -64,6 +64,36 @@ BusEngine.log = window.console.log = function(...args) {
 	window.console.logs.apply(this, args);
 };
 
+// https://developer.mozilla.org/ru/docs/Web/API/HTMLMediaElement
+BusEngine.polyfillTagSource = function(ex) {
+	if (typeof ex == 'undefined') {
+		ex = [];
+	}
+	var i, l, v = document.querySelectorAll('video source[media]:not([data-error])');
+	l = v.length;
+
+	for (i = 0; i < l; ++i) {
+		if (window.matchMedia(v[i].media).matches) {
+			if (v[i].getAttribute('data-src') && ex.indexOf(v[i].getAttribute('data-src')) == -1) {
+				v[i].setAttribute('src', v[i].getAttribute('data-src'));
+				v[i].removeAttribute('data-src');
+				v[i].parentNode.addEventListener('error', function(e) {
+					e.target.setAttribute('data-error', e.target.src);
+					ex.push(e.target.src);
+					BusEngine.polyfillTagSource(ex);
+				});
+				v[i].parentNode.src = v[i].getAttribute('src');
+				break;
+			}
+		} else {
+			if (v[i].getAttribute('src')) {
+				v[i].setAttribute('data-src', v[i].getAttribute('src'));
+				v[i].removeAttribute('src');
+			}
+		}
+	}
+};
+
 BusEngine.cookie = {
 	'set': function(name, value, domain, path, day) {
 		if (typeof name == 'undefined' || typeof name != 'string') {
