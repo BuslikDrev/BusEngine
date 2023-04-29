@@ -648,6 +648,7 @@ namespace BusEngine {
 /*
 Зависит от плагинов:
 BusEngine.UI.Canvas
+BusEngine.Tools.Json
 */
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
@@ -855,7 +856,18 @@ BusEngine.UI.Canvas
 				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
 				browser.FrameLoadStart += (object s, CefSharp.FrameLoadStartEventArgs e) => {
 					if (e.Frame.IsMain) {
-						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
+
+						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, @"
+	if (!('BusEngine' in window)) {
+		window.BusEngine = {};
+	}
+	window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});
+	CefSharp = null;
+	if (!('Localization' in window.BusEngine)) {
+		BusEngine.Localization = {};
+	}
+	BusEngine.Localization.GetLanguages = " + BusEngine.Tools.Json.Encode(BusEngine.Localization.GetLanguages) + @";
+");
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
 						#endif
@@ -1307,7 +1319,7 @@ namespace BusEngine {
 		public delegate void Call();
 		private Call CallbackStart = null;
 		// https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/how-to-add-and-remove-items
-		private static System.Collections.Concurrent.ConcurrentDictionary<string, string> GetLanguages = new System.Collections.Concurrent.ConcurrentDictionary<string, string>();
+		internal static System.Collections.Concurrent.ConcurrentDictionary<string, string> GetLanguages = new System.Collections.Concurrent.ConcurrentDictionary<string, string>();
 		private static string Value = "";
 		private Localization _Localization;
 
