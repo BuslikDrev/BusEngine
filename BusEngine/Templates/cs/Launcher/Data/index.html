@@ -6,28 +6,6 @@
     <!-- <base href="https://BusEngine/"> -->
     <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
-    <style type="text/css">
-
-    </style>
-    <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
-    <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
-  </head>
-  <body>
-    <div class="resize"></div>
-    <header>
-      <nav id="top">
-        <div class="left">
-          <span class="name">BUSENGINE Лаунчер 0.4.0</span>
-        </div>
-        <div class="point"></div>
-        <div class="right">
-          <button onclick="BusEngine.postMessage('Collapse');" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
-          <button onclick="BusEngine.postMessage('Expand'); svgToggle(this);" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
-          <button onclick="BusEngine.postMessage('Exit');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
-        </div>
-      </nav>
-    </header>
-    <main>
 <style type="text/css">
 body picture img,
 body video {
@@ -46,50 +24,35 @@ body video {
     background-position-y: center;
 }
 </style>
-<!-- <style type="text/css">
-@media screen and (max-device-width: 1280px) {
-    body video {
-        background-image: url(Textures/background_login_1280x720.png);
-    }
+    <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
+    <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
+<script type="text/javascript">
+window.addEventListener('DOMContentLoaded', function() {
+	BusEngine.localization.initialize();
+});
+if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
+	window.addEventListener('load', function() {
+		BusEngine.polyfillTagSource();
+	});
 }
-@media screen and (min-device-width:1281px) and (max-device-width:1920px) {
-    body video {
-        background-image: url(Textures/background_login_1920x1080.png);
-    }
-}
-@media screen and (min-device-width:1921px) and (max-device-width:2560px) {
-    body video {
-        background-image: url(Textures/background_login_2560x1440.png);
-    }
-}
-@media screen and (min-device-width:2561px) {
-    body video {
-        background-image: url(Textures/background_login_3840x2160.png);
-    }
-}
-</style> -->
-<!-- <style type="text/css">
-@media screen and (max-device-width: 1280px) {
-    body picture img {
-        background-image: url(Textures/background_login_1280x720.png);
-    }
-}
-@media screen and (min-device-width:1281px) and (max-device-width:1920px) {
-    body picture img {
-        background-image: url(Textures/background_login_1920x1080.png);
-    }
-}
-@media screen and (min-device-width:1921px) and (max-device-width:2560px) {
-    body picture img {
-        background-image: url(Textures/background_login_2560x1440.png);
-    }
-}
-@media screen and (min-device-width:2561px) {
-    body picture img {
-        background-image: url(Textures/background_login_3840x2160.png);
-    }
-}
-</style> -->
+</script>
+  </head>
+  <body>
+    <div class="resize"></div>
+    <header>
+      <nav id="top">
+        <div class="left">
+          <span class="name">BUSENGINE Лаунчер 0.4.0</span>
+        </div>
+        <div class="point"></div>
+        <div class="right">
+          <button onclick="BusEngine.postMessage('Collapse');" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Expand'); svgToggle(this);" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Exit');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
+        </div>
+      </nav>
+    </header>
+    <main>
       <picture>
         <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
         <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-device-width:1281px)">
@@ -107,19 +70,9 @@ body video {
         <source src="Videos/background_login_3840x2160.mp4" type="video/mp4" media="screen and (min-device-width:2561px) and (max-device-width:3840px)">
         <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
       </video>
-<script type="text/javascript">
-if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
-	window.addEventListener('load', function() {
-		BusEngine.polyfillTagSource();
-	});
-}
-window.addEventListener('DOMContentLoaded', function() {
-	BusEngine.localization.initialize();
-});
-</script>
       <div class="login">
         <form>
-          <span class="logo" xui="text_name_console" data-localization="text_name_console"><img src="Icons/BusEngine_36x36.png"><span>xxccc</span> BUSENGINE text_name_console</span>
+          <span class="logo" data-localization="text_name_engine"><img src="Icons/BusEngine_36x36.png"> text_name_engine</span>
           <span class="input">
             Email
             <input type="email" name="login" value="" placeholder="example@site.com" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('Почта кривая, проверьте на ошибки!');">
