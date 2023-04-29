@@ -42,8 +42,8 @@ body video {
     transform: translate(-50%, -50%);
     background-repeat: no-repeat;
     background-size: cover;
-	background-position-x: center;
-	background-position-y: center;
+    background-position-x: center;
+    background-position-y: center;
 }
 </style>
 <!-- <style type="text/css">
@@ -93,12 +93,12 @@ body video {
       <picture>
         <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
         <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-device-width:1281px)">
-		<img loading="eager" decoding="sync" srcset="Textures/background_login_1280x720.png" alt="background_login" sizes="(max-device-width:1280px) 100px">
+        <img loading="eager" decoding="sync" srcset="Textures/background_login_1280x720.png" alt="background_login" sizes="(max-device-width:1280px) 100px">
       </picture>
       <video autoplay="autoplay" preload="none" muted="false" loop="true">
         <source data-src="Videos/background_login_1280x720.mp4" type="video/mp4" media="screen and (max-device-width:1280px)">
         <source data-src="Videos/background_login_1280x720.webm" type="video/webm" media="screen and (max-device-width:1280px)">
-		<source data-src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px)">
+        <source data-src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px)">
         <source data-src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px)">
         <!-- <source src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
         <source src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
@@ -113,13 +113,13 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
 		BusEngine.polyfillTagSource();
 	});
 }
-
-console.log(window);
-console.log(BusEngine.localization.getLanguage('text_name_console'));
+window.addEventListener('DOMContentLoaded', function() {
+	BusEngine.localization.initialize();
+});
 </script>
       <div class="login">
         <form>
-          <span class="logo"><img src="Icons/BusEngine_36x36.png"> BUSENGINE</span>
+          <span class="logo" xui="text_name_console" data-localization="text_name_console"><img src="Icons/BusEngine_36x36.png"><span>xxccc</span> BUSENGINE text_name_console</span>
           <span class="input">
             Email
             <input type="email" name="login" value="" placeholder="example@site.com" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('Почта кривая, проверьте на ошибки!');">

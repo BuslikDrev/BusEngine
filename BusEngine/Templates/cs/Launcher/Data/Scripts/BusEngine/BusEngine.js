@@ -67,13 +67,28 @@ BusEngine.log = window.console.log = function(...args) {
 if (!('localization' in window.BusEngine)) {
 	BusEngine.localization = {};
 }
-
 BusEngine.localization.initialize = function() {
-	var i, l, localization = document.querySelectorAll('[data-localization]');
-	l = localization.length;
+	var i3, l3, langs3, i2, l2, langs2, i, l, langs = document.querySelectorAll('[data-localization]');
+	l = langs.length;
 
 	for (i = 0; i < l; ++i) {
-		localization[i];
+		if (langs[i].getAttribute('data-localization')) {
+			langs2 = langs[i].getAttribute('data-localization').split(' ');
+			l2 = langs2.length;
+
+			for (i2 = 0; i2 < l2; ++i2) {
+				langs3 = langs[i].attributes;
+				l3 = langs3.length;
+
+				for (i3 = 0; i3 < l3; ++i3) {
+					if (langs3[i3].nodeName != 'data-localization' && langs3[i3] != 'class') {
+						langs3[i3].value.replace(langs2[i2], BusEngine.localization.getLanguage(langs2[i2]));
+					}
+				}
+
+				langs[i].lastChild.data = langs[i].lastChild.data.replace(langs2[i2], BusEngine.localization.getLanguage(langs2[i2]));
+			}
+		}
 	}
 };
 if (!('getLanguages' in window.BusEngine.localization)) {
@@ -272,9 +287,16 @@ BusEngine.loadScript = function(url, callback) {
 	}
 };
 
+BusEngine.tools = {};
+BusEngine.tools.ajax = function(m) {};
+BusEngine.tools.json = {};
+BusEngine.tools.json.encode = window.JSON.stringify;
+BusEngine.tools.json.decode = window.JSON.parse;
+
 // делаем код под стиль c#
 BusEngine.PostMessage = BusEngine.postMessage;
 BusEngine.Log = BusEngine.log;
+BusEngine.Localization = BusEngine.localization;
 BusEngine.Localization.Initialize = BusEngine.localization.initialize;
 BusEngine.Localization.GetLanguages = BusEngine.localization.getLanguages;
 BusEngine.Localization.GetLanguage = BusEngine.localization.getLanguage;
@@ -282,3 +304,8 @@ BusEngine.Localization.SetLanguage = BusEngine.localization.setLanguage;
 BusEngine.PolyfillTagSource = BusEngine.polyfillTagSource;
 BusEngine.Cookie = BusEngine.cookie;
 BusEngine.LoadScript = BusEngine.loadScript;
+BusEngine.Tools = BusEngine.tools;
+BusEngine.Tools.Ajax = BusEngine.tools.ajax;
+BusEngine.Tools.Json = BusEngine.tools.json;
+BusEngine.Tools.Json.Encode = BusEngine.tools.json.encode;
+BusEngine.Tools.Json.Decode = BusEngine.tools.json.decode;

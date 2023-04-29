@@ -170,7 +170,7 @@
 		if (point) {
 			var lx, ly, expand, p = function(e) {
 				if (e.which == 1) {
-					console.log(window.screen.left);
+					//console.log(window.screen.left);
 					BusEngine.postMessage('__point|' + (e.clientX - Math.round(lx * window.innerWidth)) + ' ' + (e.clientY - Math.round(ly * window.innerHeight)));
 					if (!(window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
 						if (expand) {
@@ -185,7 +185,7 @@
 			};
 
 			point.addEventListener('mousedown', function(e) {
-				console.log(window.screen.isExtended);
+				//console.log(window.screen.isExtended);
 				if (window.innerWidth == window.screen.width && window.innerHeight == window.screen.height) {
 					expand = true;
 				}
