@@ -64,6 +64,13 @@ BusEngine.log = window.console.log = function(...args) {
 	window.console.logs.apply(this, args);
 };
 
+if (!('engine' in window.BusEngine)) {
+	BusEngine.engine = {
+		'settingEngine': {},
+		'SettingProject': {},
+	};
+}
+
 if (!('localization' in window.BusEngine)) {
 	BusEngine.localization = {};
 }
@@ -296,6 +303,9 @@ BusEngine.tools.json.decode = window.JSON.parse;
 // делаем код под стиль c#
 BusEngine.PostMessage = BusEngine.postMessage;
 BusEngine.Log = BusEngine.log;
+BusEngine.Engine = BusEngine.engine;
+BusEngine.Engine.SettingEngine = BusEngine.engine.settingEngine;
+BusEngine.Engine.SettingProject = BusEngine.engine.settingProject;
 BusEngine.Localization = BusEngine.localization;
 BusEngine.Localization.Initialize = BusEngine.localization.initialize;
 BusEngine.Localization.GetLanguages = BusEngine.localization.getLanguages;
