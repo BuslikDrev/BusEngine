@@ -48,8 +48,8 @@ if (!window.console) {
 if (!('BusEngine' in window)) {
 	window.BusEngine = {};
 }
-if (!('PostMessage' in window.BusEngine)) {
-	window.BusEngine.PostMessage = function(m) {};
+if (!('postMessage' in window.BusEngine)) {
+	window.BusEngine.postMessage = function(m) {};
 }
 
 window.console.logs = window.console.log;
@@ -64,11 +64,11 @@ BusEngine.log = window.console.log = function(...args) {
 	window.console.logs.apply(this, args);
 };
 
-if (!('Localization' in window.BusEngine)) {
-	BusEngine.Localization = {};
+if (!('localization' in window.BusEngine)) {
+	BusEngine.localization = {};
 }
 
-BusEngine.Localization.Initialize = function() {
+BusEngine.localization.initialize = function() {
 	var i, l, localization = document.querySelectorAll('[data-localization]');
 	l = localization.length;
 
@@ -76,18 +76,18 @@ BusEngine.Localization.Initialize = function() {
 		localization[i];
 	}
 };
-if (!('GetLanguages' in window.BusEngine.Localization)) {
-	BusEngine.Localization.GetLanguages = {};
+if (!('getLanguages' in window.BusEngine.localization)) {
+	BusEngine.localization.getLanguages = {};
 }
-BusEngine.Localization.get = function(key) {
-	if (Object.hasOwn(BusEngine.Localization.GetLanguages, key)) {
-		return BusEngine.Localization.GetLanguages[key];
+BusEngine.localization.getLanguage = function(key) {
+	if (Object.hasOwn(BusEngine.localization.getLanguages, key)) {
+		return BusEngine.localization.getLanguages[key];
 	} else {
 		return key;
 	}
 };
-BusEngine.Localization.set = function(key, value) {
-	BusEngine.Localization.GetLanguages[key] = value;
+BusEngine.localization.setLanguage = function(key, value) {
+	BusEngine.localization.getLanguages[key] = value;
 };
 
 // https://developer.mozilla.org/ru/docs/Web/API/HTMLMediaElement
@@ -271,3 +271,14 @@ BusEngine.loadScript = function(url, callback) {
 		ss.appendChild(s);
 	}
 };
+
+// делаем код под стиль c#
+BusEngine.PostMessage = BusEngine.postMessage;
+BusEngine.Log = BusEngine.log;
+BusEngine.Localization.Initialize = BusEngine.localization.initialize;
+BusEngine.Localization.GetLanguages = BusEngine.localization.getLanguages;
+BusEngine.Localization.GetLanguage = BusEngine.localization.getLanguage;
+BusEngine.Localization.SetLanguage = BusEngine.localization.setLanguage;
+BusEngine.PolyfillTagSource = BusEngine.polyfillTagSource;
+BusEngine.Cookie = BusEngine.cookie;
+BusEngine.LoadScript = BusEngine.loadScript;

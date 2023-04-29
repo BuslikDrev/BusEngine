@@ -21,9 +21,9 @@
         </div>
         <div class="point"></div>
         <div class="right">
-          <button onclick="BusEngine.PostMessage('Collapse');" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
-          <button onclick="BusEngine.PostMessage('Expand'); svgToggle(this);" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
-          <button onclick="BusEngine.PostMessage('Exit');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Collapse');" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Expand'); svgToggle(this);" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Exit');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
         </div>
       </nav>
     </header>
@@ -113,7 +113,9 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
 		BusEngine.polyfillTagSource();
 	});
 }
-console.log(BusEngine.Localization.get('text_name_console'));
+
+console.log(window);
+console.log(BusEngine.localization.getLanguage('text_name_console'));
 </script>
       <div class="login">
         <form>
@@ -131,7 +133,7 @@ console.log(BusEngine.Localization.get('text_name_console'));
             </span>
           </span>
           <span class="input">
-            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.PostMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
           </span>
           <span class="input" style="height: 90px;">
             <button class="send">Авторизоваться</button>
@@ -146,7 +148,7 @@ console.log(BusEngine.Localization.get('text_name_console'));
         </form>
         <hr>
         <span>
-        Новый пользователь? <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.PostMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        Новый пользователь? <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
         </span>
       </div>
       <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html';" class="mode">Offline mode</button>

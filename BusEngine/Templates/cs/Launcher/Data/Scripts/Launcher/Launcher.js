@@ -149,7 +149,7 @@
 						ny = (e.clientY - window.innerHeight+1);
 					}
 
-					BusEngine.PostMessage('_resize|' + nx + ' ' + ny + ' ' + cursor);
+					BusEngine.postMessage('_resize|' + nx + ' ' + ny + ' ' + cursor);
 
 					//BusEngine.log(nx, ny, cursor);
 					my_x.innerHTML = e.offsetX + ' ' + w;
@@ -171,7 +171,7 @@
 			var lx, ly, expand, p = function(e) {
 				if (e.which == 1) {
 					console.log(window.screen.left);
-					BusEngine.PostMessage('__point|' + (e.clientX - Math.round(lx * window.innerWidth)) + ' ' + (e.clientY - Math.round(ly * window.innerHeight)));
+					BusEngine.postMessage('__point|' + (e.clientX - Math.round(lx * window.innerWidth)) + ' ' + (e.clientY - Math.round(ly * window.innerHeight)));
 					if (!(window.innerWidth == window.screen.width && window.innerHeight == window.screen.height)) {
 						if (expand) {
 							expand = false;
@@ -202,7 +202,7 @@
 			});
 
 			point.addEventListener('dblclick', function(e) {
-				BusEngine.PostMessage('Expand');
+				BusEngine.postMessage('Expand');
 				svgToggle(document.querySelector('#top .expand'));
 			});
 		}
