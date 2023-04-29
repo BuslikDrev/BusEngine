@@ -64,6 +64,32 @@ BusEngine.log = window.console.log = function(...args) {
 	window.console.logs.apply(this, args);
 };
 
+if (!('Localization' in window.BusEngine)) {
+	BusEngine.Localization = {};
+}
+
+BusEngine.Localization.Initialize = function() {
+	var i, l, localization = document.querySelectorAll('[data-localization]');
+	l = localization.length;
+
+	for (i = 0; i < l; ++i) {
+		localization[i];
+	}
+};
+if (!('GetLanguages' in window.BusEngine.Localization)) {
+	BusEngine.Localization.GetLanguages = {};
+}
+BusEngine.Localization.get = function(key) {
+	if (Object.hasOwn(BusEngine.Localization.GetLanguages, key)) {
+		return BusEngine.Localization.GetLanguages[key];
+	} else {
+		return key;
+	}
+};
+BusEngine.Localization.set = function(key, value) {
+	BusEngine.Localization.GetLanguages[key] = value;
+};
+
 // https://developer.mozilla.org/ru/docs/Web/API/HTMLMediaElement
 BusEngine.polyfillTagSource = function(ex) {
 	if (typeof ex == 'undefined') {
