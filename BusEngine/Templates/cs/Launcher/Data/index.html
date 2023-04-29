@@ -73,12 +73,12 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
       <div class="login">
         <form>
           <span class="logo" data-localization="text_name_engine"><img src="Icons/BusEngine_36x36.png"> text_name_engine</span>
-          <span class="input">
-            Email
-            <input type="email" name="login" value="" placeholder="example@site.com" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('Почта кривая, проверьте на ошибки!');">
+          <span class="input" data-localization="entry_email">
+            entry_email
+            <input type="email" name="login" value="" data-localization="entry_email_placeholder error_email" placeholder="entry_email_placeholder" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('error_email');">
           </span>
-          <span class="input">
-            Password
+          <span class="input" data-localization="entry_password">
+            entry_password
             <input type="password" name="password" value="">
             <span onclick="svgToggle(this, 'password');">
               <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
@@ -86,10 +86,10 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
             </span>
           </span>
           <span class="input">
-            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;" data-localization="text_forgotten">text_forgotten <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
           </span>
           <span class="input" style="height: 90px;">
-            <button class="send">Авторизоваться</button>
+            <button class="send" data-localization="button_login">button_login</button>
  <div class="block">
     move the mouse
 </div>
@@ -100,16 +100,16 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
           </span>
         </form>
         <hr>
-        <span>
-        Новый пользователь? <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        <span data-localization="text_new_user">
+        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" data-localization="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
         </span>
       </div>
-      <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html';" class="mode">Offline mode</button>
+      <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html';" class="mode" data-localization="button_offline_mode">button_offline_mode</button>
     </main>
-    <div class="preload hidden">
+    <div class="preload">
       <div class="preload-loading">
         <img src="Textures/loading.svg" height="100" width="100" alt="Загрузка...">
-        <div class="preload-text">Обработка запроса...</div>
+        <div class="preload-text">text_preload</div>
       </div>
     </div>
   </body>

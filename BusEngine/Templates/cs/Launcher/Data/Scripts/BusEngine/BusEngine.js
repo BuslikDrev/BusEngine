@@ -75,25 +75,34 @@ if (!('localization' in window.BusEngine)) {
 	BusEngine.localization = {};
 }
 BusEngine.localization.initialize = function() {
-	var i3, l3, langs3, i2, l2, langs2, i, l, langs = document.querySelectorAll('[data-localization]');
+	var i4, i3, l3, langs3, i2, l2, langs2, i, l, langs = document.querySelectorAll('[data-localization]');
+	l = langs.length;
+
+	langs = document.getElementsByTagName("*");
 	l = langs.length;
 
 	for (i = 0; i < l; ++i) {
-		if (langs[i].getAttribute('data-localization')) {
-			langs2 = langs[i].getAttribute('data-localization').split(' ');
-			l2 = langs2.length;
+		langs2 = langs[i].childNodes;
+		l2 = langs2.length;
 
-			for (i2 = 0; i2 < l2; ++i2) {
-				langs3 = langs[i].attributes;
-				l3 = langs3.length;
-
-				for (i3 = 0; i3 < l3; ++i3) {
-					if (langs3[i3].nodeName != 'data-localization' && langs3[i3] != 'class') {
-						langs3[i3].value.replace(langs2[i2], BusEngine.localization.getLanguage(langs2[i2]));
+		for (i2 = 0; i2 < l2; ++i2) {
+			if (langs2[i2].nodeType == Node.TEXT_NODE) {
+				for (i4 in BusEngine.localization.getLanguages) {
+					langs2[i2].data = langs2[i2].data.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '', 'gim'), BusEngine.localization.getLanguages[i4]);
+				}
+			} else if (langs2[i2].nodeType == Node.ELEMENT_NODE) {
+				for (i4 in BusEngine.localization.getLanguages) {
+					if ('attributes' in langs2[i2]) {
+						langs3 = langs2[i2].attributes;
+						l3 = langs3.length;
+	
+						for (i3 = 0; i3 < l3; ++i3) {
+							if (['type', 'src', 'href', 'class'].indexOf(langs3[i3].nodeName) == -1) {
+								langs3[i3].value = langs3[i3].value.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '$', 'i'), BusEngine.localization.getLanguages[i4]);
+							}
+						}
 					}
 				}
-
-				langs[i].lastChild.data = langs[i].lastChild.data.replace(langs2[i2], BusEngine.localization.getLanguage(langs2[i2]));
 			}
 		}
 	}
