@@ -48,8 +48,8 @@ if (!window.console) {
 if (!('BusEngine' in window)) {
 	window.BusEngine = {};
 }
-if (!('PostMessage' in window.BusEngine)) {
-	window.BusEngine.PostMessage = function(m) {};
+if (!('postMessage' in window.BusEngine)) {
+	window.BusEngine.postMessage = function(m) {};
 }
 
 window.console.logs = window.console.log;
@@ -62,6 +62,77 @@ BusEngine.log = window.console.log = function(...args) {
 		}
 	}
 	window.console.logs.apply(this, args);
+};
+
+if (!('localization' in window.BusEngine)) {
+	BusEngine.localization = {};
+}
+BusEngine.localization.initialize = function() {
+	var i3, l3, langs3, i2, l2, langs2, i, l, langs = document.querySelectorAll('[data-localization]');
+	l = langs.length;
+
+	for (i = 0; i < l; ++i) {
+		if (langs[i].getAttribute('data-localization')) {
+			langs2 = langs[i].getAttribute('data-localization').split(' ');
+			l2 = langs2.length;
+
+			for (i2 = 0; i2 < l2; ++i2) {
+				langs3 = langs[i].attributes;
+				l3 = langs3.length;
+
+				for (i3 = 0; i3 < l3; ++i3) {
+					if (langs3[i3].nodeName != 'data-localization' && langs3[i3] != 'class') {
+						langs3[i3].value.replace(langs2[i2], BusEngine.localization.getLanguage(langs2[i2]));
+					}
+				}
+
+				langs[i].lastChild.data = langs[i].lastChild.data.replace(langs2[i2], BusEngine.localization.getLanguage(langs2[i2]));
+			}
+		}
+	}
+};
+if (!('getLanguages' in window.BusEngine.localization)) {
+	BusEngine.localization.getLanguages = {};
+}
+BusEngine.localization.getLanguage = function(key) {
+	if (Object.hasOwn(BusEngine.localization.getLanguages, key)) {
+		return BusEngine.localization.getLanguages[key];
+	} else {
+		return key;
+	}
+};
+BusEngine.localization.setLanguage = function(key, value) {
+	BusEngine.localization.getLanguages[key] = value;
+};
+
+// https://developer.mozilla.org/ru/docs/Web/API/HTMLMediaElement
+BusEngine.polyfillTagSource = function(ex) {
+	if (typeof ex == 'undefined') {
+		ex = [];
+	}
+	var i, l, v = document.querySelectorAll('video source[media]:not([data-error])');
+	l = v.length;
+
+	for (i = 0; i < l; ++i) {
+		if (window.matchMedia(v[i].media).matches) {
+			if (v[i].getAttribute('data-src') && ex.indexOf(v[i].getAttribute('data-src')) == -1) {
+				v[i].setAttribute('src', v[i].getAttribute('data-src'));
+				v[i].removeAttribute('data-src');
+				v[i].parentNode.addEventListener('error', function(e) {
+					e.target.setAttribute('data-error', e.target.src);
+					ex.push(e.target.src);
+					BusEngine.polyfillTagSource(ex);
+				});
+				v[i].parentNode.src = v[i].getAttribute('src');
+				break;
+			}
+		} else {
+			if (v[i].getAttribute('src')) {
+				v[i].setAttribute('data-src', v[i].getAttribute('src'));
+				v[i].removeAttribute('src');
+			}
+		}
+	}
 };
 
 BusEngine.cookie = {
@@ -215,3 +286,26 @@ BusEngine.loadScript = function(url, callback) {
 		ss.appendChild(s);
 	}
 };
+
+BusEngine.tools = {};
+BusEngine.tools.ajax = function(m) {};
+BusEngine.tools.json = {};
+BusEngine.tools.json.encode = window.JSON.stringify;
+BusEngine.tools.json.decode = window.JSON.parse;
+
+// делаем код под стиль c#
+BusEngine.PostMessage = BusEngine.postMessage;
+BusEngine.Log = BusEngine.log;
+BusEngine.Localization = BusEngine.localization;
+BusEngine.Localization.Initialize = BusEngine.localization.initialize;
+BusEngine.Localization.GetLanguages = BusEngine.localization.getLanguages;
+BusEngine.Localization.GetLanguage = BusEngine.localization.getLanguage;
+BusEngine.Localization.SetLanguage = BusEngine.localization.setLanguage;
+BusEngine.PolyfillTagSource = BusEngine.polyfillTagSource;
+BusEngine.Cookie = BusEngine.cookie;
+BusEngine.LoadScript = BusEngine.loadScript;
+BusEngine.Tools = BusEngine.tools;
+BusEngine.Tools.Ajax = BusEngine.tools.ajax;
+BusEngine.Tools.Json = BusEngine.tools.json;
+BusEngine.Tools.Json.Encode = BusEngine.tools.json.encode;
+BusEngine.Tools.Json.Decode = BusEngine.tools.json.decode;
