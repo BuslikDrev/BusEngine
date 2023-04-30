@@ -53,15 +53,34 @@ if (!('postMessage' in window.BusEngine)) {
 }
 
 window.console.logs = window.console.log;
-BusEngine.log = window.console.log = function(...args) {
-	var l = new Error().stack.split('\n');
-	if ('length' in l && l.length > 0) {
-		l = l[l.length-1].match(/(?<=\().*?(?=\))/);
-		if (l) {
-			args.push(l[0]);
+BusEngine.log = window.console.log = function(args) {
+	args = Array.prototype.slice.call(arguments);
+	var log, i, l;
+
+	l = new Error().stack;
+
+	if (l) {
+		l = l.split('\n');
+		if ('length' in l && l.length > 0) {
+			//l = l[l.length-2].match(new RegExp('(?<=\\().*?(?=\\))'));
+			l = l[l.length-1].substring(l[l.length-1].indexOf('at ')+3);
+			if (l) {
+				args.push(l);
+			}
 		}
 	}
-	window.console.logs.apply(this, args);
+
+	log = '';
+
+	for (i = 0; i < args.length; ++i) {
+		if (typeof args[i] == 'object') {
+			log += (log ? ' ' : '') + window.JSON.stringify(args[i]);
+		} else {
+			log += (log ? ' ' : '') + args[i];
+		}
+	}
+
+	window.console.logs(log);
 };
 
 if (!('engine' in window.BusEngine)) {
@@ -304,7 +323,151 @@ BusEngine.loadScript = function(url, callback) {
 };
 
 BusEngine.tools = {};
-BusEngine.tools.ajax = function(m) {};
+BusEngine.tools.ajax = function(url, setting) {
+	if (typeof url == 'object') {
+		setting = url;
+		if (typeof setting['url'] === 'undefined') {
+			return false;
+		} else {
+			url = setting['url'];
+		}
+	}
+	if (typeof setting['type'] !== 'undefined') {
+		setting['method'] = setting['type'];
+	}
+	if (typeof setting['method'] === 'undefined') {
+		setting['method'] = 'GET';
+	}
+	if (typeof setting['responseType'] === 'undefined') {
+		setting['responseType'] = 'json';
+	}
+	if (typeof setting['dataType'] === 'undefined') {
+		setting['dataType'] = 'text';
+	}
+	if (typeof setting['data'] === 'undefined') {
+		setting['data'] = '';
+	}
+	if (typeof setting['async'] === 'undefined') {
+		setting['async'] = true;
+	}
+	if (typeof setting['user'] === 'undefined') {
+		setting['user'] = null;
+	}
+	if (typeof setting['password'] === 'undefined') {
+		setting['password'] = null;
+	}
+	if (typeof setting['beforeSend'] === 'undefined') {
+		setting['beforeSend'] = function() {};
+	}
+	if (typeof setting['success'] === 'undefined') {
+		setting['success'] = function(json) {};
+	}
+	if (typeof setting['error'] === 'undefined') {
+		setting['error'] = function(error) {};
+	}
+	if (typeof setting['complete'] === 'undefined') {
+		setting['complete'] = function(json) {};
+	}
+	if (typeof setting['debug'] === 'undefined') {
+		setting['debug'] = false;
+	}
+
+	var datanew = null, xhr = new XMLHttpRequest();
+	setting['beforeSend'](xhr, setting);
+
+	if (setting['data']) {
+		var i, i2, i3;
+		if (setting['dataType'] == 'json') {
+			datanew = JSON.stringify(setting['data']);
+		} else {
+			if (typeof setting['data'] == 'object') {
+				var arrayData, arrayDatas = function(data, gi) {
+					var i, ii, iii, array, arrayg;
+
+					array = {};
+
+					for (i in data) {
+						if (gi) {
+							ii = gi + '[' + encodeURIComponent(i) + ']';
+						} else {
+							ii = encodeURIComponent(i);
+						}
+						if (typeof data[i] == 'object') {
+							arrayg = arrayDatas(data[i], ii);
+							for (iii in arrayg) {
+								array[iii] = encodeURIComponent(arrayg[iii]);
+							}
+						} else {
+							array[ii] = encodeURIComponent(data[i]);
+						}
+					}
+
+					return array;
+				}
+
+				arrayData = arrayDatas(setting['data']);
+
+				if ('FormData' in window) {
+					datanew = new FormData();
+
+					for (i in arrayData) {
+						datanew.append(i, arrayData[i]);
+					}
+				} else {
+					datanew = [];
+
+					for (i in arrayData) {
+						datanew.push(i + '=' + arrayData[i]);
+					}
+
+					datanew = datanew.join('&').replace(/%20/g, '+');
+				}
+			} else {
+				datanew = setting['data'];
+			}
+		}
+	}
+
+	xhr.open(setting['method'], url, setting['async'], setting['user'], setting['password']);
+	xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	if (typeof FormData === 'undefined') {
+		if (setting['dataType'] == 'json') {
+			xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+		} else if (setting['dataType'] == 'text') {
+			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		}
+	}
+	if (setting['responseType']) {
+		xhr.responseType = setting['responseType']; //\"text\" – строка,\"arraybuffer\", \"blob\", \"document\", \"json\" – JSON (парсится автоматически).
+	}
+	if (setting['debug']) {
+		console.log('xhr data: ', datanew);
+	}
+	xhr.send(datanew);
+	xhr.onload = function(oEvent) {
+		if (xhr.status == 200) {
+			setting['success'](xhr.response, xhr);
+			setting['complete'](xhr, setting, xhr.response);
+		} else {
+			setting['error'](xhr, setting, false);
+			setting['complete'](xhr, setting, false);
+		}
+		return xhr;
+	};
+
+	return true;
+};
+
+/* BusEngine.tools.ajax({
+	url:'https://busengine.buslikdrev.by/',
+	method:'post',
+	data:{'один':true, 'два':{'три':false,'три':[1,1]}},
+	debug: true,
+	success: function(data) {
+		//console.log(data);
+	}
+}); */
+
 BusEngine.tools.json = {};
 BusEngine.tools.json.encode = window.JSON.stringify;
 BusEngine.tools.json.decode = window.JSON.parse;
