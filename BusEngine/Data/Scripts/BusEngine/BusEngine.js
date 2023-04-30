@@ -333,10 +333,10 @@ BusEngine.tools.ajax = function(url, setting) {
 		}
 	}
 	if (typeof setting['type'] !== 'undefined') {
-		setting['metod'] = setting['type'];
+		setting['method'] = setting['type'];
 	}
-	if (typeof setting['metod'] === 'undefined') {
-		setting['metod'] = 'GET';
+	if (typeof setting['method'] === 'undefined') {
+		setting['method'] = 'GET';
 	}
 	if (typeof setting['responseType'] === 'undefined') {
 		setting['responseType'] = 'json';
@@ -371,74 +371,64 @@ BusEngine.tools.ajax = function(url, setting) {
 	if (typeof setting['debug'] === 'undefined') {
 		setting['debug'] = false;
 	}
-	var xhr = new XMLHttpRequest();
+
+	var datanew = null, xhr = new XMLHttpRequest();
 	setting['beforeSend'](xhr, setting);
-	var datanew = null;
+
 	if (setting['data']) {
 		var i, i2, i3;
-		/* if (typeof setting['data'] == 'object' && ('val' in setting['data'] || 'values' in setting['data'])) {
-			datanew = {};
-			for (i in setting['data']) {
-				if (isNaN(i) == false) {
-					datanew[setting['data'][i]['name']] = setting['data'][i]['value'];
-				}
-			}
-			setting['data'] = datanew;
-			setting['dataType'] = 'text';
-		} */
-
 		if (setting['dataType'] == 'json') {
 			datanew = JSON.stringify(setting['data']);
 		} else {
-			if ('FormData' in window) {
-				datanew = new FormData();
-				if (typeof setting['data'] == 'object') {
-					for (i in setting['data']) {
-						if (typeof setting['data'][i] == 'object') {
-							for (i2 in setting['data'][i]) {
-								if (typeof setting['data'][i][i2] == 'object') {
-									for (i3 in setting['data'][i][i2]) {
-										datanew.append(i + '[' + i2 + ']' + '[' + i3 + ']', setting['data'][i][i2][i3]);
-									}
-								} else {
-									datanew.append(i + '[' + i2 + ']', setting['data'][i][i2]);
-								}
+			if (typeof setting['data'] == 'object') {
+				var arrayData, arrayDatas = function(data, gi) {
+					var i, ii, iii, array, arrayg;
+
+					array = {};
+
+					for (i in data) {
+						if (gi) {
+							ii = gi + '[' + encodeURIComponent(i) + ']';
+						} else {
+							ii = encodeURIComponent(i);
+						}
+						if (typeof data[i] == 'object') {
+							arrayg = arrayDatas(data[i], ii);
+							for (iii in arrayg) {
+								array[iii] = encodeURIComponent(arrayg[iii]);
 							}
 						} else {
-							datanew.append(i, setting['data'][i]);
+							array[ii] = encodeURIComponent(data[i]);
 						}
 					}
-				} else {
-					datanew = setting['data'];
-				}
-			} else {
-				datanew = [];
-				if (typeof setting['data'] == 'object') {
-					for (i in setting['data']) {
-						if (typeof setting['data'][i] == 'object') {
-							for (i2 in setting['data'][i]) {
-								if (typeof setting['data'][i][i2] == 'object') {
-									for (i3 in setting['data'][i][i2]) {
-										datanew.push(encodeURIComponent(i) + '[' + encodeURIComponent(i2) + ']' + '[' + encodeURIComponent(i3) + ']=' + encodeURIComponent(setting['data'][i][i2][i3]));
-									}
-								} else {
-									datanew.push(encodeURIComponent(i) + '[' + encodeURIComponent(i2) + ']=' + encodeURIComponent(setting['data'][i][i2]));
-								}
-							}
-						} else {
-							datanew.push(encodeURIComponent(i) + '=' + encodeURIComponent(setting['data'][i]));
-						}
-					}
-				} else {
-					datanew = setting['data'];
+
+					return array;
 				}
 
-				datanew = datanew.join('&').replace(/%20/g, '+');
+				arrayData = arrayDatas(setting['data']);
+
+				if ('FormData' in window) {
+					datanew = new FormData();
+
+					for (i in arrayData) {
+						datanew.append(i, arrayData[i]);
+					}
+				} else {
+					datanew = [];
+
+					for (i in arrayData) {
+						datanew.push(i + '=' + arrayData[i]);
+					}
+
+					datanew = datanew.join('&').replace(/%20/g, '+');
+				}
+			} else {
+				datanew = setting['data'];
 			}
 		}
 	}
 
-	xhr.open(setting['metod'], url, setting['async'], setting['user'], setting['password']);
+	xhr.open(setting['method'], url, setting['async'], setting['user'], setting['password']);
 	xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 	if (typeof FormData === 'undefined') {
 		if (setting['dataType'] == 'json') {
@@ -468,9 +458,15 @@ BusEngine.tools.ajax = function(url, setting) {
 	return true;
 };
 
-
-
-
+/* BusEngine.tools.ajax({
+	url:'https://busengine.buslikdrev.by/',
+	method:'post',
+	data:{'один':true, 'два':{'три':false,'три':[1,1]}},
+	debug: true,
+	success: function(data) {
+		//console.log(data);
+	}
+}); */
 
 BusEngine.tools.json = {};
 BusEngine.tools.json.encode = window.JSON.stringify;
