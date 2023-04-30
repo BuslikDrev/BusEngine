@@ -30,11 +30,16 @@ body video {
 window.addEventListener('DOMContentLoaded', function() {
 	BusEngine.localization.initialize();
 });
+
 if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
 	window.addEventListener('load', function() {
 		BusEngine.polyfillTagSource();
 	});
 }
+
+window.addEventListener('load', function() {
+	window.preload.classList.add('hidden');
+});
 </script>
   </head>
   <body>
@@ -52,6 +57,12 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
         </div>
       </nav>
     </header>
+    <div id="preload" class="preload">
+      <div class="preload-loading">
+        <img src="Textures/loading.svg" height="50" width="50" alt="text_loading">
+        <div class="preload-text">text_preload</div>
+      </div>
+    </div>
     <main>
       <picture>
         <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
@@ -72,12 +83,12 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
       </video>
       <div class="login">
         <form>
-          <span class="logo" data-localization="text_name_engine"><img src="Icons/BusEngine_36x36.png"> text_name_engine</span>
-          <span class="input" data-localization="entry_email">
+          <span class="logo"><img src="Icons/BusEngine_36x36.png"> text_name_engine</span>
+          <span class="input">
             entry_email
-            <input type="email" name="login" value="" data-localization="entry_email_placeholder error_email" placeholder="entry_email_placeholder" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('error_email');">
+            <input type="email" name="login" value="" placeholder="entry_email_placeholder" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('error_email');">
           </span>
-          <span class="input" data-localization="entry_password">
+          <span class="input">
             entry_password
             <input type="password" name="password" value="">
             <span onclick="svgToggle(this, 'password');">
@@ -86,31 +97,25 @@ if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(c
             </span>
           </span>
           <span class="input">
-            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;" data-localization="text_forgotten">text_forgotten <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;">text_forgotten <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
           </span>
           <span class="input" style="height: 90px;">
-            <button class="send" data-localization="button_login">button_login</button>
- <div class="block">
+            <button class="send">button_login</button>
+<!-- <div class="block">
     move the mouse
 </div>
 <div class="coords">
     X: <div class="x"></div><br>
     Y: <div class="y"></div>
-</div>
+</div> -->
           </span>
         </form>
         <hr>
-        <span data-localization="text_new_user">
-        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" data-localization="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        <span>
+        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
         </span>
       </div>
-      <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html';" class="mode" data-localization="button_offline_mode">button_offline_mode</button>
+      <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html';" class="mode">button_offline_mode</button>
     </main>
-    <div class="preload">
-      <div class="preload-loading">
-        <img src="Textures/loading.svg" height="100" width="100" alt="Загрузка...">
-        <div class="preload-text">text_preload</div>
-      </div>
-    </div>
   </body>
 </html>
