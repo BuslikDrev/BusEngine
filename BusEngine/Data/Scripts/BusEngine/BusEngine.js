@@ -53,15 +53,34 @@ if (!('postMessage' in window.BusEngine)) {
 }
 
 window.console.logs = window.console.log;
-BusEngine.log = window.console.log = function(...args) {
-	var l = new Error().stack.split('\n');
-	if ('length' in l && l.length > 0) {
-		l = l[l.length-1].match(/(?<=\().*?(?=\))/);
-		if (l) {
-			args.push(l[0]);
+BusEngine.log = window.console.log = function(args) {
+	args = Array.prototype.slice.call(arguments);
+	var log, i, l;
+
+	l = new Error().stack;
+
+	if (l) {
+		l = l.split('\n');
+		if ('length' in l && l.length > 0) {
+			//l = l[l.length-2].match(new RegExp('(?<=\\().*?(?=\\))'));
+			l = l[l.length-1].substring(l[l.length-1].indexOf('at ')+3);
+			if (l) {
+				args.push(l);
+			}
 		}
 	}
-	window.console.logs.apply(this, args);
+
+	log = '';
+
+	for (i = 0; i < args.length; ++i) {
+		if (typeof args[i] == 'object') {
+			log += (log ? ' ' : '') + window.JSON.stringify(args[i]);
+		} else {
+			log += (log ? ' ' : '') + args[i];
+		}
+	}
+
+	window.console.logs(log);
 };
 
 if (!('engine' in window.BusEngine)) {
@@ -304,7 +323,155 @@ BusEngine.loadScript = function(url, callback) {
 };
 
 BusEngine.tools = {};
-BusEngine.tools.ajax = function(m) {};
+BusEngine.tools.ajax = function(url, setting) {
+	if (typeof url == 'object') {
+		setting = url;
+		if (typeof setting['url'] === 'undefined') {
+			return false;
+		} else {
+			url = setting['url'];
+		}
+	}
+	if (typeof setting['type'] !== 'undefined') {
+		setting['metod'] = setting['type'];
+	}
+	if (typeof setting['metod'] === 'undefined') {
+		setting['metod'] = 'GET';
+	}
+	if (typeof setting['responseType'] === 'undefined') {
+		setting['responseType'] = 'json';
+	}
+	if (typeof setting['dataType'] === 'undefined') {
+		setting['dataType'] = 'text';
+	}
+	if (typeof setting['data'] === 'undefined') {
+		setting['data'] = '';
+	}
+	if (typeof setting['async'] === 'undefined') {
+		setting['async'] = true;
+	}
+	if (typeof setting['user'] === 'undefined') {
+		setting['user'] = null;
+	}
+	if (typeof setting['password'] === 'undefined') {
+		setting['password'] = null;
+	}
+	if (typeof setting['beforeSend'] === 'undefined') {
+		setting['beforeSend'] = function() {};
+	}
+	if (typeof setting['success'] === 'undefined') {
+		setting['success'] = function(json) {};
+	}
+	if (typeof setting['error'] === 'undefined') {
+		setting['error'] = function(error) {};
+	}
+	if (typeof setting['complete'] === 'undefined') {
+		setting['complete'] = function(json) {};
+	}
+	if (typeof setting['debug'] === 'undefined') {
+		setting['debug'] = false;
+	}
+	var xhr = new XMLHttpRequest();
+	setting['beforeSend'](xhr, setting);
+	var datanew = null;
+	if (setting['data']) {
+		var i, i2, i3;
+		/* if (typeof setting['data'] == 'object' && ('val' in setting['data'] || 'values' in setting['data'])) {
+			datanew = {};
+			for (i in setting['data']) {
+				if (isNaN(i) == false) {
+					datanew[setting['data'][i]['name']] = setting['data'][i]['value'];
+				}
+			}
+			setting['data'] = datanew;
+			setting['dataType'] = 'text';
+		} */
+
+		if (setting['dataType'] == 'json') {
+			datanew = JSON.stringify(setting['data']);
+		} else {
+			if ('FormData' in window) {
+				datanew = new FormData();
+				if (typeof setting['data'] == 'object') {
+					for (i in setting['data']) {
+						if (typeof setting['data'][i] == 'object') {
+							for (i2 in setting['data'][i]) {
+								if (typeof setting['data'][i][i2] == 'object') {
+									for (i3 in setting['data'][i][i2]) {
+										datanew.append(i + '[' + i2 + ']' + '[' + i3 + ']', setting['data'][i][i2][i3]);
+									}
+								} else {
+									datanew.append(i + '[' + i2 + ']', setting['data'][i][i2]);
+								}
+							}
+						} else {
+							datanew.append(i, setting['data'][i]);
+						}
+					}
+				} else {
+					datanew = setting['data'];
+				}
+			} else {
+				datanew = [];
+				if (typeof setting['data'] == 'object') {
+					for (i in setting['data']) {
+						if (typeof setting['data'][i] == 'object') {
+							for (i2 in setting['data'][i]) {
+								if (typeof setting['data'][i][i2] == 'object') {
+									for (i3 in setting['data'][i][i2]) {
+										datanew.push(encodeURIComponent(i) + '[' + encodeURIComponent(i2) + ']' + '[' + encodeURIComponent(i3) + ']=' + encodeURIComponent(setting['data'][i][i2][i3]));
+									}
+								} else {
+									datanew.push(encodeURIComponent(i) + '[' + encodeURIComponent(i2) + ']=' + encodeURIComponent(setting['data'][i][i2]));
+								}
+							}
+						} else {
+							datanew.push(encodeURIComponent(i) + '=' + encodeURIComponent(setting['data'][i]));
+						}
+					}
+				} else {
+					datanew = setting['data'];
+				}
+
+				datanew = datanew.join('&').replace(/%20/g, '+');
+			}
+		}
+	}
+
+	xhr.open(setting['metod'], url, setting['async'], setting['user'], setting['password']);
+	xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	if (typeof FormData === 'undefined') {
+		if (setting['dataType'] == 'json') {
+			xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+		} else if (setting['dataType'] == 'text') {
+			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		}
+	}
+	if (setting['responseType']) {
+		xhr.responseType = setting['responseType']; //\"text\" – строка,\"arraybuffer\", \"blob\", \"document\", \"json\" – JSON (парсится автоматически).
+	}
+	if (setting['debug']) {
+		console.log('xhr data: ', datanew);
+	}
+	xhr.send(datanew);
+	xhr.onload = function(oEvent) {
+		if (xhr.status == 200) {
+			setting['success'](xhr.response, xhr);
+			setting['complete'](xhr, setting, xhr.response);
+		} else {
+			setting['error'](xhr, setting, false);
+			setting['complete'](xhr, setting, false);
+		}
+		return xhr;
+	};
+
+	return true;
+};
+
+
+
+
+
 BusEngine.tools.json = {};
 BusEngine.tools.json.encode = window.JSON.stringify;
 BusEngine.tools.json.decode = window.JSON.parse;
