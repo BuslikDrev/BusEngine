@@ -157,7 +157,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 });
 
-BusEngine.localization.initialize = async function() {
+BusEngine.localization.initialize = function() {
 	var i4, i3, l3, langs3, i2, l2, langs2, i, l, langs;
 	langs = document.getElementsByTagName("*");
 	l = langs.length;
@@ -372,7 +372,9 @@ BusEngine.cookie = {
 	}
 };
 
-
+BusEngine.Open = function(url) {
+	
+};
 
 BusEngine.tools = {};
 BusEngine.tools.ajax = function(url, setting) {
@@ -538,6 +540,8 @@ BusEngine.Localization.SetLanguage = BusEngine.localization.setLanguage;
 BusEngine.PolyfillTagSource = BusEngine.polyfillTagSource;
 BusEngine.Cookie = BusEngine.cookie;
 BusEngine.LoadScript = BusEngine.loadScript;
+BusEngine.Loadstyle = BusEngine.loadStyle;
+BusEngine.open = BusEngine.Open;
 BusEngine.Tools = BusEngine.tools;
 BusEngine.Tools.Ajax = BusEngine.tools.ajax;
 BusEngine.Tools.Json = BusEngine.tools.json;
