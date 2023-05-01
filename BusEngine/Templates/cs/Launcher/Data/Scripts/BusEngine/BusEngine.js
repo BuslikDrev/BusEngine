@@ -90,13 +90,75 @@ if (!('engine' in window.BusEngine)) {
 	};
 }
 
+BusEngine.loadScript = function(url, callback, setting) {
+//Promise.resolve(1).then(function(d) {
+		var s = document.createElement('script');
+		s.src = url;
+		s.type = 'text/javascript';
+		if (typeof callback != 'undefined') {
+			s.onreadystatechange = callback;
+			s.onload = callback;
+		}
+		if (typeof setting == 'object') {
+			for (var ss in setting) {
+				s.setAttribute(ss, setting[ss]);
+			}
+		}
+		if ('head' in document) {
+			document.head.appendChild(s);
+			//document.head.appendChild(s);
+			//document.head.insertBefore(s, document.head.firstChild);
+			//document.write(s.innerHTML);
+			//document.head.insertAdjacentHTML('beforeend', s.innerHTML);
+		}
+//});
+
+};
+
+BusEngine.loadStyle = function(url, callback, setting) {
+	var s = document.createElement('link');
+	s.href = url;
+	s.type = 'text/css';
+	if (typeof callback != 'undefined') {
+		s.onreadystatechange = callback;
+		s.onload = callback;
+	}
+	if (typeof setting == 'object') {
+		for (var ss in setting) {
+			s.setAttribute(ss, setting[ss]);
+		}
+	}
+	if ('head' in document) {
+		document.head.appendChild(s);
+	}
+};
+
 if (!('localization' in window.BusEngine)) {
 	BusEngine.localization = {};
 }
-BusEngine.localization.initialize = function() {
-	var i4, i3, l3, langs3, i2, l2, langs2, i, l, langs = document.querySelectorAll('[data-localization]');
-	l = langs.length;
 
+if (!('getLanguages' in window.BusEngine.localization)) {
+	BusEngine.localization.getLanguages = {};
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+	if (Object.keys(BusEngine.localization.getLanguages).length == 0) {
+		import(window.location.href.substring(0, window.location.href.lastIndexOf('/', window.location.href.length)+1) + 'Localization/' + document.documentElement.lang + '.js').then(function(module) {
+			if (typeof module.default == 'object') {
+				for (var i in module.default) {
+					BusEngine.localization.getLanguages[i] = module.default[i];
+				}
+
+				BusEngine.localization.initialize();
+			}
+		});
+	} else {
+		BusEngine.localization.initialize();
+	}
+});
+
+BusEngine.localization.initialize = async function() {
+	var i4, i3, l3, langs3, i2, l2, langs2, i, l, langs;
 	langs = document.getElementsByTagName("*");
 	l = langs.length;
 
@@ -118,6 +180,12 @@ BusEngine.localization.initialize = function() {
 						for (i3 = 0; i3 < l3; ++i3) {
 							if (['type', 'src', 'href', 'class'].indexOf(langs3[i3].nodeName) == -1) {
 								langs3[i3].value = langs3[i3].value.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '$', 'i'), BusEngine.localization.getLanguages[i4]);
+								if (langs3[i3].nodeName == 'data-localization') {
+									//window.console.logs(langs3[i3]);
+									langs2[i2].value = langs3[i3].value;
+									langs2[i2].innerText = langs3[i3].value;
+									//langs3[i2].value = langs3[i3].value;
+								}
 							}
 						}
 					}
@@ -126,9 +194,6 @@ BusEngine.localization.initialize = function() {
 		}
 	}
 };
-if (!('getLanguages' in window.BusEngine.localization)) {
-	BusEngine.localization.getLanguages = {};
-}
 BusEngine.localization.getLanguage = function(key) {
 	if (Object.hasOwn(BusEngine.localization.getLanguages, key)) {
 		return BusEngine.localization.getLanguages[key];
@@ -307,20 +372,7 @@ BusEngine.cookie = {
 	}
 };
 
-BusEngine.loadScript = function(url, callback) {
-	var s, ss;
-	s = document.createElement('script');
-	s.type = 'text/javascript';
-	s.src = url;
-	if (typeof callback !== 'undefined') {
-		s.onreadystatechange = callback;
-		s.onload = callback;
-	}
-	ss = document.head;
-	if (ss) {
-		ss.appendChild(s);
-	}
-};
+
 
 BusEngine.tools = {};
 BusEngine.tools.ajax = function(url, setting) {

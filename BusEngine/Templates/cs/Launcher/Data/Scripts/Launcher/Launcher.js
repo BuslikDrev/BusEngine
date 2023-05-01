@@ -152,8 +152,8 @@
 					BusEngine.postMessage('_resize|' + nx + ' ' + ny + ' ' + cursor);
 
 					//BusEngine.log(nx, ny, cursor);
-					my_x.innerHTML = e.offsetX + ' ' + w;
-					my_y.innerHTML = e.offsetY + ' ' + h;
+					/* my_x.innerHTML = e.offsetX + ' ' + w;
+					my_y.innerHTML = e.offsetY + ' ' + h; */
 				}
 
 				if (e.which != 1 && !my_status) {

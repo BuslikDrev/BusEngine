@@ -7,6 +7,43 @@
     <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
 <style type="text/css">
+body .preload {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-align-items: center;
+    align-items: center;
+    background-color: rgba(25,28,31,.95);
+    bottom: 0;
+    /* display: none; */
+    height: 100%;
+    -webkit-justify-content: center;
+    justify-content: center;
+    left: 0;
+    min-width: 32rem;
+    position: fixed;
+    right: 0;
+    top: 42px;
+    width: 100%;
+    z-index: 1000;
+}
+body .preload-loading {
+    position: absolute;
+    transform: translate(-50%, -48%);
+    top: 50%;
+    left: 50%;
+    text-align: center;
+}
+body .preload-text {
+    color: #999;
+    display: block;
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}
 body picture img,
 body video {
     position: absolute;
@@ -27,16 +64,18 @@ body video {
     <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
     <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
 <script type="text/javascript">
-window.addEventListener('DOMContentLoaded', function() {
-	BusEngine.localization.initialize();
-});
-
 if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
 	window.addEventListener('load', function() {
 		BusEngine.polyfillTagSource();
 	});
 }
 
+window.addEventListener('beforeunload', function(e) {
+	window.preload.classList.remove('hidden');
+});
+window.addEventListener('unload', function(e) {
+	window.preload.classList.remove('hidden');
+});
 window.addEventListener('load', function() {
 	window.preload.classList.add('hidden');
 });
@@ -60,14 +99,17 @@ window.addEventListener('load', function() {
     <div id="preload" class="preload">
       <div class="preload-loading">
         <img src="Textures/loading.svg" height="50" width="50" alt="text_loading">
-        <div class="preload-text">text_preload</div>
+        <div class="preload-text" data-localization="text_preload">Загрузка...</div>
       </div>
     </div>
     <main>
       <picture>
-        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
-        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-device-width:1281px)">
-        <img loading="eager" decoding="sync" srcset="Textures/background_login_1280x720.png" alt="background_login" sizes="(max-device-width:1280px) 100px">
+        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-width:1280px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px)">
+        <!-- <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-width:1921px) and (max-width:2560px)">
+        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)"> -->
+        <img loading="eager" decoding="sync" src="Textures/background_login_1280x720.png" alt="background_login" >
       </picture>
       <video autoplay="autoplay" preload="none" muted="false" loop="true">
         <source data-src="Videos/background_login_1280x720.mp4" type="video/mp4" media="screen and (max-device-width:1280px)">
@@ -115,7 +157,7 @@ window.addEventListener('load', function() {
         text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
         </span>
       </div>
-      <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html';" class="mode">button_offline_mode</button>
+      <button onclick="window.sessionStorage.setItem('mode', true); window.location.href = 'index.html?=55';" class="mode">button_offline_mode</button>
     </main>
   </body>
 </html>
