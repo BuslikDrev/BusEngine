@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <RootNamespace>BusEngine</RootNamespace>
+    <!-- https://stackoverflow.com/questions/42138418/equivalent-to-assemblyinfo-in-dotnet-core-csproj -->
+    <!-- <GenerateAssemblyInfo>false</GenerateAssemblyInfo> -->
+    <!-- <AssemblyName>Launcher</AssemblyName> -->
+    <!-- <AssemblyTitle>BusEngine Launcher</AssemblyTitle> -->
+    <!-- <id>BusEngine Launcher</id> -->
+    <!-- <Description>The main C# interface for the BusEngine.</Description> -->
+    <!-- <Configuration></Configuration> -->
+    <!-- <Company>BuslikDrev</Company> -->
+    <!-- <Product>BusEngine</Product> -->
+    <!-- <Copyright>Copyright 2016-2023 BuslikDrev. All rights reserved.</Copyright> -->
+    <!-- <AssemblyTrademark></AssemblyTrademark> -->
+    <!-- <AssemblyCulture></AssemblyCulture> -->
+    <!-- <AssemblyVersion>0.4.0.0</AssemblyVersion> -->
+    <!-- <FileVersion>0.4.0.0</FileVersion> -->
+    <!-- <AssemblyFileVersion>0.4.0.0</AssemblyFileVersion> -->
+    <!-- <ProjectGuid>{81145500-44c6-41c1-816d-be751929b38d}</ProjectGuid> -->
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <ApplicationIcon>..\..\Data\Icons\BusEngine.ico</ApplicationIcon>
+    <FileAlignment>512</FileAlignment>
+    <!-- <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport> -->
+    <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
+    <!-- <DebugType>none</DebugType> -->
+    <!-- <Optimize>true</Optimize> -->
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <!-- https://stackoverflow.com/questions/57509951/use-windows-forms-in-a-net-core-class-library-net-core-control-library -->
+    <!-- <UseWindowsForms>true</UseWindowsForms> -->
+    <!-- <UseWPF>true</UseWPF> -->
+    <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
+    <!-- <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects> -->
+    <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
+    <!-- <BaseOutputPath>..\..\Bin\Debug\</BaseOutputPath> -->
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <!-- <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath> -->
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>..\..\Bin\Win_x64\</OutputPath>
+    <OutputRoot>..\..\Bin\Win_x64\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <OutputPath>..\..\Bin\Win_x86\</OutputPath>
+    <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
+    <DefineConstants>BUSENGINE_XAMARIN;BUSENGINE_ANDROID</DefineConstants>
+    <!-- <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit> -->
+    <OutputPath>..\..\Bin\Android\</OutputPath>
+    <OutputRoot>..\..\Bin\Android\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <OutputPath>..\..\Bin\Win\</OutputPath>
+    <OutputRoot>..\..\Bin\Win\</OutputRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- возможность использовать dynamic -->
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
+      <HintPath>..\..\Bin\Win_x64\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x86' ">
+      <HintPath>..\..\Bin\Win_x86\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'Android' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="**\*.cs" />
+    <None Include="*.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
+      <Link>..\..\Bin\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' ">
+      <Link>..\..\Bin\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Android\**\*.*" Condition=" '$(Platform)' == 'Android' ">
+      <Link>..\..\Bin\Android\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
