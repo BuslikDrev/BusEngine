@@ -70,11 +70,11 @@ namespace BusEngine {
 			version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
 			type = "",
 			info = new {
-				name = "Game",
+				name = (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyTitleAttribute), false)[0] as System.Reflection.AssemblyTitleAttribute).Title,
 				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
 			},
 			content = new {
-				assets = new string[] {"GameData"},
+				assets = new string[] {"Assets"},
 				code = new string[] {"Code"},
 				libs = new {
 					name = "BusEngine",
@@ -877,7 +877,7 @@ BusEngine.Tools.Json
 		BusEngine.engine = {};
 	}
 	/*BusEngine.engine.settingEngine = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingEngine) + @";*/
-	/*BusEngine.engine.SettingProject = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingProject) + @";*/
+	BusEngine.engine.settingProject = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingProject) + @";
 ");
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
@@ -1243,6 +1243,18 @@ BusEngine.Tools
 					//BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_variables"]));
 				}
 
+				dynamic info;
+
+				if (setting.TryGetValue("info", out info) && info.GetType().GetProperty("Type") != null && !info.GetType().IsArray) {
+					foreach (var i in info) {
+						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
+							BusEngine.ProjectDefault.Setting2["info"][i.Name] = (string)info[i.Name];
+						}
+					}
+
+					//BusEngine.Log.Info("info {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["info"]));
+				}
+
 				dynamic require;
 
 				if (setting.TryGetValue("require", out require) && require.GetType().GetProperty("Type") != null && require.ContainsKey("plugins") && require["plugins"].Type.ToString() == "Array") {
@@ -1276,6 +1288,7 @@ BusEngine.Tools
 			}
 
 			BusEngine.Engine.SettingEngine = BusEngine.ProjectDefault.Setting2;
+			BusEngine.Engine.SettingProject = BusEngine.ProjectDefault.Setting2;
 
 			// инициализируем плагины
 			new BusEngine.IPlugin("Initialize");
