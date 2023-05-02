@@ -137,6 +137,12 @@ body video {
     <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
     <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
 <script type="text/javascript">
+if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
+	BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
+} else {
+	BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
+}
+
 if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
 	window.addEventListener('mouseover', function() {
 		BusEngine.polyfillTagSource();
@@ -159,7 +165,7 @@ window.addEventListener('load', function() {
     <header>
       <nav id="top">
         <div class="left">
-          <span class="name">BUSENGINE Лаунчер 0.4.0</span>
+          <span class="name" data-localization="heading_title">BUSENGINE Лаунчер 0.4.0</span>
         </div>
         <div class="point"></div>
         <div class="right">
