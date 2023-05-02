@@ -132,8 +132,6 @@ BusEngine.UI
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
-				//System.Windows.Forms.Application.Exit();
-
 				return;
 			} else {
 				#if RUN_LOG
@@ -160,7 +158,7 @@ BusEngine.UI
 			this.TopMost = true;
 
 			// название окна
-			this.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + " BusEngine v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			this.Text = BusEngine.Engine.SettingEngine["info"]["name"] + " v" + BusEngine.Engine.SettingEngine["version"];
 
 			// иконка
 			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
@@ -170,17 +168,8 @@ BusEngine.UI
 			}
 
 			// размеры окна
-			this.Width = 800;
-			this.Height = 480;
-
-			string r_Width;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Width", out r_Width)) {
-				this.Width = System.Convert.ToInt32(r_Width);
-			}
-			string r_Height;
-			if (BusEngine.Engine.SettingEngine["console_commands"].TryGetValue("r_Height", out r_Height)) {
-				this.Height = System.Convert.ToInt32(r_Height);
-			}
+			this.Width = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Width"]);
+			this.Height = System.Convert.ToInt32(BusEngine.Engine.SettingEngine["console_commands"]["r_Height"]);
 
 			// учёт Dpi
 			// https://learn.microsoft.com/ru-ru/windows/win32/learnwin32/dpi-and-device-independent-pixels#converting-physical-pixels-to-dips

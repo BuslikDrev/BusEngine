@@ -7,7 +7,7 @@
     <RootNamespace>BusEngine</RootNamespace>
     <AssemblyName>Editor</AssemblyName>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationIcon>..\..\Data\Icons\BusEngine.ico</ApplicationIcon>
