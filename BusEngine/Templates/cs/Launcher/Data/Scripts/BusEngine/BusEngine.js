@@ -86,7 +86,7 @@ BusEngine.log = window.console.log = function(args) {
 if (!('engine' in window.BusEngine)) {
 	BusEngine.engine = {
 		'settingEngine': {},
-		'SettingProject': {},
+		'settingProject': {},
 	};
 }
 
@@ -142,7 +142,7 @@ if (!('getLanguages' in window.BusEngine.localization)) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-	if (Object.keys(BusEngine.localization.getLanguages).length == 0) {
+	if (window.location.host != 'busengine') {
 		import(window.location.href.substring(0, window.location.href.lastIndexOf('/', window.location.href.length)+1) + 'Localization/' + document.documentElement.lang + '.js').then(function(module) {
 			if (typeof module.default == 'object') {
 				for (var i in module.default) {
@@ -372,10 +372,6 @@ BusEngine.cookie = {
 	}
 };
 
-BusEngine.Open = function(url) {
-	
-};
-
 BusEngine.tools = {};
 BusEngine.tools.ajax = function(url, setting) {
 	if (typeof url == 'object') {
@@ -497,19 +493,18 @@ BusEngine.tools.ajax = function(url, setting) {
 	if (setting['debug']) {
 		console.log('xhr data: ', datanew);
 	}
-	xhr.send(datanew);
-	xhr.onload = function(oEvent) {
-		if (xhr.status == 200) {
-			setting['success'](xhr.response, xhr);
-			setting['complete'](xhr, setting, xhr.response);
+	xhr.onload = function(e) {
+		if (e.target.status == 200) {
+			setting['success'](e.target.response, e.target);
+			setting['complete'](e.target, setting, e.target.response);
 		} else {
-			setting['error'](xhr, setting, false);
-			setting['complete'](xhr, setting, false);
+			setting['error'](e.target, setting, false);
+			setting['complete'](e.target, setting, false);
 		}
-		return xhr;
 	};
+	xhr.send(datanew);
 
-	return true;
+	return xhr;
 };
 
 /* BusEngine.tools.ajax({
@@ -521,6 +516,41 @@ BusEngine.tools.ajax = function(url, setting) {
 		//console.log(data);
 	}
 }); */
+
+BusEngine.open = function(url, node1, node2) {
+	if ('href' in this && this.href) {
+		this.preventDefault();
+		if (typeof url != 'string' || !url) {
+			url = this.href;
+		}
+	}
+
+	window.preload.classList.remove('hidden');
+
+	BusEngine.tools.ajax({
+		url: url,
+		responseType: 'document',
+		success: function(data, xhr) {
+			var e, element = document.querySelector((typeof node1 == 'string' && node1 ? node1 : 'main'));
+
+			if (element) {
+				e = data.querySelector((typeof node2 == 'string' && node2 ? node2 : 'main'));
+
+				if (e) {
+					element.innerHTML = e.innerHTML;
+					window.history.pushState(null, null, xhr.responseURL);
+					BusEngine.localization.initialize();
+				}
+			}
+		},
+		error: function(data) {
+			BusEngine.log(data);
+		},
+		complete: function(data) {
+			window.preload.classList.add('hidden');
+		}
+	});
+};
 
 BusEngine.tools.json = {};
 BusEngine.tools.json.encode = window.JSON.stringify;
@@ -541,7 +571,7 @@ BusEngine.PolyfillTagSource = BusEngine.polyfillTagSource;
 BusEngine.Cookie = BusEngine.cookie;
 BusEngine.LoadScript = BusEngine.loadScript;
 BusEngine.Loadstyle = BusEngine.loadStyle;
-BusEngine.open = BusEngine.Open;
+BusEngine.Open = BusEngine.open;
 BusEngine.Tools = BusEngine.tools;
 BusEngine.Tools.Ajax = BusEngine.tools.ajax;
 BusEngine.Tools.Json = BusEngine.tools.json;
