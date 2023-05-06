@@ -29,9 +29,10 @@ BusEngine.UI
 	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
 
-		private static void Run() {
+		private static void Run(string[] args) {
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "WindowsLauncher";
+			BusEngine.Engine.Commands = args;
 			// размер экрана
 			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
 			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
@@ -140,7 +141,7 @@ BusEngine.UI
 				#if RUN_LOG
 				try {
 				#endif
-					Run();
+					Run(args);
 				#if RUN_LOG
 				} catch (System.AccessViolationException e) {
 					BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_audio_format") + ": {0}", e.Message);
