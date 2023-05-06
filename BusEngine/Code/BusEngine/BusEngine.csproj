@@ -67,11 +67,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <!-- <Reference Include="System.Text.Encoding.CodePages" /> -->
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <!-- <Reference Include="AssetsTools.NET">
+      <HintPath>BusPlugins\AssetsTools.NET\AssetsTools.NET.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
     <Reference Include="CefSharp">
       <HintPath>BusPlugins\CefSharp\CefSharp.dll</HintPath>
       <Private>False</Private>
@@ -90,6 +95,10 @@
     </Reference>
     <!-- <Reference Include="FbxSharp">
       <HintPath>BusPlugins\izrik\FbxSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
+    <!-- <Reference Include="UkooLabs.FbxSharpie">
+      <HintPath>BusPlugins\UkooLabs.FbxSharpie\UkooLabs.FbxSharpie.dll</HintPath>
       <Private>False</Private>
     </Reference> -->
     <Reference Include="LibVLCSharp">
