@@ -1046,6 +1046,7 @@ BusEngine.Tools
 		public static string EditorDirectory;
 		public static string DataDirectory;
 		public static string ToolsDirectory;
+		public static string[] Commands;
 		public static string Platform = "BusEngine";
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
 		public class Device {
