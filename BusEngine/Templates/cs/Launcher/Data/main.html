@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="follow,noarchive,nocache">
+    <meta name="description" content="BusEngine">
+    <meta name="keywords" content="BusEngine">
+    <title>heading_title</title>
+    <!-- <base href="https://BusEngine/"> -->
+    <link href="/" rel="canonical">
+    <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
+    <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
+    <link href="Scripts/BusEngine/BusEngine.js" type="text/javascript" media="all" rel="preload" as="script">
+    <link href="Scripts/Launcher/Launcher.js" type="text/javascript" media="all" rel="preload" as="script">
+    <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
+    <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
+  </head>
+  <body class="be-open">
+    <div class="resize"></div>
+    <header>
+      <nav id="top">
+        <div class="left">
+          <span class="name" data-localization="heading_title">BUSENGINE Лаунчер 0.4.0</span>
+        </div>
+        <div class="point"></div>
+        <div class="right">
+          <button onclick="BusEngine.postMessage('Collapse');" aria-label="button_collapse" title="button_collapse" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Expand'); svgToggle(this);" aria-label="button_expand" title="button_expand" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Exit');" aria-label="button_exit" title="button_exit" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
+        </div>
+      </nav>
+    </header>
+    <div id="preload" class="preload">
+      <div class="preload-loading">
+        <img src="Textures/loading.svg" height="50" width="50" alt="text_loading">
+        <div class="preload-text" data-localization="text_preload">Загрузка...</div>
+      </div>
+    </div>
+    <main>
+<style type="text/css">
+body picture img,
+body video {
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+</style>
+      <picture>
+        <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-width:1280px)">
+        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-width:1280px)">
+        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px)">
+        <!-- <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-width:1921px) and (max-width:2560px)">
+        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)"> -->
+        <img loading="eager" decoding="async" src="Textures/background_login_1280x720.png" alt="background_login" >
+      </picture>
+      <video autoplay="autoplay" preload="none" muted="false" loop="true">
+        <track default kind="captions" srclang="en">
+        <source data-src="Videos/background_login_1280x720.mp4" type="video/mp4" media="screen and (max-device-width:1280px)">
+        <source data-src="Videos/background_login_1280x720.webm" type="video/webm" media="screen and (max-device-width:1280px)">
+        <source data-src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px)">
+        <source data-src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px)">
+        <!-- <source src="Videos/background_login_1920x1080.mp4" type="video/mp4" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source src="Videos/background_login_1920x1080.webm" type="video/webm" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source src="Videos/background_login_2560x1440.mp4" type="video/mp4" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source src="Videos/background_login_2560x1440.webm" type="video/webm" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source src="Videos/background_login_3840x2160.mp4" type="video/mp4" media="screen and (min-device-width:2561px) and (max-device-width:3840px)">
+        <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
+      </video>
+      <div id="menu">
+	  <div class="top">
+          <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</span>
+	  </div>
+	  <div class="left">
+	  <ul>
+	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
+	  </li>
+	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
+	  </li>
+	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
+	  </li>
+	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
+	  </li>
+	  </ul>
+	  <hr>
+	  <ul>
+	  <li>
+	  </li>
+	  </ul>
+	  </div>
+        <hr>
+        <span>
+        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" title="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        </span>
+      </div>
+      <div class="login">
+        <form>
+          <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</span>
+          <span class="input">
+            entry_email
+            <input type="email" name="login" value="" placeholder="entry_email_placeholder" aria-label="entry_email" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('error_email');">
+          </span>
+          <span class="input">
+            entry_password
+            <input type="password" name="password" value="" aria-label="entry_password">
+            <span onclick="svgToggle(this, 'password');">
+              <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" style="display: none"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye-off"></use></svg>
+            </span>
+          </span>
+          <span class="input" style="height: 50px;">
+            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;" title="text_forgotten">text_forgotten <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+          </span>
+          <span class="input" style="height: 50px;">
+            <button class="send">button_login</button>
+          </span>
+        </form>
+        <hr>
+        <span>
+        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" title="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        </span>
+      </div>
+      <button onclick="window.sessionStorage.removeItem('mode'); BusEngine.open('login.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
+<script type="text/javascript">
+console.log('main');
+if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
+	BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
+} else {
+	BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
+}
+
+BusEngine.localization.initialize();
+
+if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
+	window.addEventListener('mouseover', function() {
+		BusEngine.polyfillTagSource();
+	});
+}
+
+window.addEventListener('beforeunload', function(e) {
+	document.body.classList.add('be-open');
+}, {once: true});
+window.addEventListener('load', function() {
+	document.body.classList.remove('be-open');
+}, {once: true});
+</script>
+    </main>
+  </body>
+</html>

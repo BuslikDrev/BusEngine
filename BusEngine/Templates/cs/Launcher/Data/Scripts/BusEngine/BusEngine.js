@@ -91,28 +91,21 @@ if (!('engine' in window.BusEngine)) {
 }
 
 BusEngine.loadScript = function(url, callback, setting) {
-//Promise.resolve(1).then(function(d) {
-		var s = document.createElement('script');
-		s.src = url;
-		s.type = 'text/javascript';
-		if (typeof callback != 'undefined') {
-			s.onreadystatechange = callback;
-			s.onload = callback;
+	var s = document.createElement('script');
+	s.src = url;
+	s.type = 'text/javascript';
+	if (typeof callback != 'undefined') {
+		s.onreadystatechange = callback;
+		s.onload = callback;
+	}
+	if (typeof setting == 'object') {
+		for (var ss in setting) {
+			s.setAttribute(ss, setting[ss]);
 		}
-		if (typeof setting == 'object') {
-			for (var ss in setting) {
-				s.setAttribute(ss, setting[ss]);
-			}
-		}
-		if ('head' in document) {
-			document.head.appendChild(s);
-			//document.head.appendChild(s);
-			//document.head.insertBefore(s, document.head.firstChild);
-			//document.write(s.innerHTML);
-			//document.head.insertAdjacentHTML('beforeend', s.innerHTML);
-		}
-//});
-
+	}
+	if ('head' in document) {
+		document.head.appendChild(s);
+	}
 };
 
 BusEngine.loadStyle = function(url, callback, setting) {
@@ -173,12 +166,13 @@ BusEngine.localization.initialize = function() {
 				}
 			} else if (langs2[i2].nodeType == Node.ELEMENT_NODE) {
 				for (i4 in BusEngine.localization.getLanguages) {
-					if ('attributes' in langs2[i2]) {
+					if ('attributes' in langs2[i2] && ['HEAD', 'LINK', 'BODY', 'HTML'].indexOf(langs2[i2].tagName) == -1) {
+						//console.logs(langs2[i2].tagName);
 						langs3 = langs2[i2].attributes;
 						l3 = langs3.length;
-	
+
 						for (i3 = 0; i3 < l3; ++i3) {
-							if (['type', 'src', 'href', 'class'].indexOf(langs3[i3].nodeName) == -1) {
+							if (['rel', 'type', 'src', 'href', 'class'].indexOf(langs3[i3].nodeName) == -1) {
 								langs3[i3].value = langs3[i3].value.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '$', 'i'), BusEngine.localization.getLanguages[i4]);
 								if (langs3[i3].nodeName == 'data-localization') {
 									//window.console.logs(langs3[i3]);
@@ -406,17 +400,17 @@ BusEngine.tools.ajax = function(url, setting) {
 	if (typeof setting['password'] === 'undefined') {
 		setting['password'] = null;
 	}
-	if (typeof setting['beforeSend'] === 'undefined') {
+	if (typeof setting['beforeSend'] !== 'function') {
 		setting['beforeSend'] = function() {};
 	}
-	if (typeof setting['success'] === 'undefined') {
-		setting['success'] = function(json) {};
+	if (typeof setting['success'] !== 'function') {
+		setting['success'] = function() {};
 	}
-	if (typeof setting['error'] === 'undefined') {
-		setting['error'] = function(error) {};
+	if (typeof setting['error'] !== 'function') {
+		setting['error'] = function() {};
 	}
-	if (typeof setting['complete'] === 'undefined') {
-		setting['complete'] = function(json) {};
+	if (typeof setting['complete'] !== 'function') {
+		setting['complete'] = function() {};
 	}
 	if (typeof setting['debug'] === 'undefined') {
 		setting['debug'] = false;
@@ -480,9 +474,9 @@ BusEngine.tools.ajax = function(url, setting) {
 
 	xhr.open(setting['method'], url, setting['async'], setting['user'], setting['password']);
 	xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-	if (typeof FormData === 'undefined') {
+	if (!('FormData' in window)) {
 		if (setting['dataType'] == 'json') {
-			xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+			xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
 		} else if (setting['dataType'] == 'text') {
 			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
 		}
@@ -494,6 +488,7 @@ BusEngine.tools.ajax = function(url, setting) {
 		console.log('xhr data: ', datanew);
 	}
 	xhr.onload = function(e) {
+		//console.logs(e);
 		if (e.target.status == 200) {
 			setting['success'](e.target.response, e.target);
 			setting['complete'](e.target, setting, e.target.response);
@@ -503,6 +498,7 @@ BusEngine.tools.ajax = function(url, setting) {
 		}
 	};
 	xhr.send(datanew);
+	xhr = null;
 
 	return xhr;
 };
@@ -517,7 +513,11 @@ BusEngine.tools.ajax = function(url, setting) {
 	}
 }); */
 
-BusEngine.open = function(url, node1, node2) {
+BusEngine.open = function(url, node1, node2, params, callback) {
+	if (!('body' in document)) {
+		return this;
+	}
+
 	if ('href' in this && this.href) {
 		this.preventDefault();
 		if (typeof url != 'string' || !url) {
@@ -525,29 +525,121 @@ BusEngine.open = function(url, node1, node2) {
 		}
 	}
 
-	window.preload.classList.remove('hidden');
+	if (typeof node1 !== 'string') {
+		node1 = 'main';
+	}
+
+	if (typeof node2 !== 'string') {
+		node2 = 'main';
+	}
+
+	var method = 'GET';
+
+	if (typeof params !== 'undefined') {
+		method = 'POST';
+	}
+
+	if (typeof params !== 'function') {
+		callback = function() {};
+	}
+
+	document.body.classList.add('be-open');
 
 	BusEngine.tools.ajax({
 		url: url,
+		ajax: true,
+		method: method,
 		responseType: 'document',
+		data: params,
 		success: function(data, xhr) {
-			var e, element = document.querySelector((typeof node1 == 'string' && node1 ? node1 : 'main'));
+			var e, element = document.querySelector(node1);
+
+			if (!element) {
+				element = document.documentElement;
+			}
 
 			if (element) {
-				e = data.querySelector((typeof node2 == 'string' && node2 ? node2 : 'main'));
+				/* var div = document.createElement('html');
+				div.innerHTML = data;
+				data = div; */
+
+				e = data.querySelector(node2);
+
+				if (!e) {
+					e = data;
+				}
 
 				if (e) {
-					element.innerHTML = e.innerHTML;
-					window.history.pushState(null, null, xhr.responseURL);
-					BusEngine.localization.initialize();
+					var i, l, m, scripts, script;
+
+					// fix memory chrome
+					m = element.querySelectorAll('video, audio');
+					l = m.length;
+					for (i = 0; i < l; ++i) {
+						m[i].src = '';
+						m[i].parentNode.removeChild(m[i]);
+					}
+
+					// замена html вариант 1
+					/* if (e.hasChildNodes()) {
+						l = e.childNodes.length-1;
+
+						for (i = l; i > 0; --i) {
+							if (e.childNodes[i].nodeType == 1) {
+								if (e.childNodes[i].tagName == 'SCRIPT') {
+									script = document.createElement('script');
+									if (e.childNodes[i].text) {
+										script.text = e.childNodes[i].text;
+									}
+									if (e.childNodes[i].src) {
+										script.src = e.childNodes[i].src;
+									}
+									document.body.appendChild(script).parentNode.removeChild(script);
+								}
+								element.prepend(e.childNodes[i]);
+							} else {
+								element.prepend(e.childNodes[i].textContent);
+							}
+						}
+					} */
+
+					// замена html вариант 2
+					//element.innerHTML = e.innerHTML;
+					element.innerHTML = '';
+					element.insertAdjacentHTML('beforeEnd', e.innerHTML);
+					scripts = e.querySelectorAll('script');
+
+					if (scripts) {
+						l = scripts.length;
+
+						for (i = 0; i < l; ++i) {
+							if (scripts[i].text || scripts[i].src) {
+								script = document.createElement('script');
+								/* if (scripts[i].type) {
+									script.type = scripts[i].type;
+								} */
+								if (scripts[i].text) {
+									script.text = scripts[i].text;
+								}
+								if (scripts[i].src) {
+									script.src = scripts[i].src;
+								}
+								document.head.appendChild(script).parentNode.removeChild(script);
+							}
+						}
+					}
+
+					//window.history.pushState(null, null, xhr.responseURL);
 				}
 			}
+
+			callback(e);
 		},
 		error: function(data) {
 			BusEngine.log(data);
 		},
 		complete: function(data) {
-			window.preload.classList.add('hidden');
+			document.body.classList.remove('be-open');
 		}
 	});
 };

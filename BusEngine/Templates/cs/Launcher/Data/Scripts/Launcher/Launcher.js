@@ -150,10 +150,6 @@
 					}
 
 					BusEngine.postMessage('_resize|' + nx + ' ' + ny + ' ' + cursor);
-
-					//BusEngine.log(nx, ny, cursor);
-					/* my_x.innerHTML = e.offsetX + ' ' + w;
-					my_y.innerHTML = e.offsetY + ' ' + h; */
 				}
 
 				if (e.which != 1 && !my_status) {
@@ -199,6 +195,7 @@
 			point.addEventListener('mouseup', function(e) {
 				document.removeEventListener('mousemove', p);
 				e.target.style['cursor'] = '';
+				console.logs('mouseup');
 			});
 
 			point.addEventListener('dblclick', function(e) {

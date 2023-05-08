@@ -1,7 +1,7 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 html {
-	    font-family: sans-serif;
+    font-family: sans-serif;
     font-family: sans-serif;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
@@ -171,4 +171,125 @@ body hr {
     margin-bottom: 20px;
     border: 0;
     border-top: 1px solid #2B3136;
+}
+body #top {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #000000;
+    border-bottom: solid 2px #22272a;
+    width: 100%;
+    height: 40px;
+    position: relative;
+}
+body #top .point {
+    position: absolute;
+    width: calc(100% - 20px);
+    height: 100%;
+    cursor: grab;
+    margin: 10px 10px 0px 10px;
+}
+body #top .left {
+    float: left;
+    top: 6px;
+    left: 6px;
+    position: relative;
+}
+body #top .name {
+    cursor: default;
+    user-select: none;
+    font-size: 14px;
+    font-weight: 600;
+    top: 6px;
+    left: 6px;
+    position: relative;
+    color: #849A9F;
+}
+body #top .right {
+    float: right;
+    top: 6px;
+    right: 6px;
+    position: relative;
+}
+body #top button {
+    display: block;
+    width: 30px;
+    height: 30px;
+    padding: 0px;
+    margin: 0px 0px;
+    font-size: 13px;
+    font-weight: 900;
+    border: unset;
+    background-color: unset;
+    float: left;
+    position: relative;
+    color: #4F5B63;
+}
+body #top button:hover {
+    color: #ffffff;
+}
+body #top button.collapse {
+    color: #00AEEF;
+}
+body #top button.collapse:hover {
+    color: #23BCF8;
+}
+body #top button.close svg {
+    width: 16px;
+    height: 16px;
+}
+body .preload {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-align-items: center;
+    align-items: center;
+    background-color: rgba(25,28,31,.95);
+    bottom: 0;
+    display: none;
+    height: 100%;
+    -webkit-justify-content: center;
+    justify-content: center;
+    left: 0;
+    min-width: 32rem;
+    position: fixed;
+    right: 0;
+    top: 42px;
+    width: 100%;
+    z-index: 1000;
+}
+body.be-open .preload {
+    display: block;
+}
+body .preload-loading {
+    position: absolute;
+    transform: translate(-50%, -48%);
+    top: 50%;
+    left: 50%;
+    text-align: center;
+}
+body .preload-text {
+    color: #999;
+    display: block;
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}
+body picture img,
+body video {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    object-fit: cover;
+    width:100%;
+    height:100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-x: center;
+    background-position-y: center;
 }
