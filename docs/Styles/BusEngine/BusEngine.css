@@ -192,7 +192,7 @@ html,body{background:#fff;height:100%}
 .body .content{padding:0 15px 20px;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex}
 .footer .column{float:left;width:16.65%;min-width:160px;padding:10px 0 0 25px;margin:0;box-sizing:border-box;-moz-box-sizing:border-box;list-style-type:none}
 .doc{-ms-flex:1;-webkit-flex:1;flex:1;overflow:hidden;padding:16px 20px 0 0}
-.top_logo{width:48px;height:48px;display:block;float:left;padding-right:40px;padding-left:20px}
+.top_logo{width:48px;height:48px;display:block;float:left;padding-right:20px;padding-left:20px}
 .top_link{float:right;margin-top:20px}
 .top_menu{font-size:16px;float:right;padding-right:20px}
 .top_menu a{float:left;display:block;padding:0 15px;cursor:pointer;color:#fff;text-decoration:none}
