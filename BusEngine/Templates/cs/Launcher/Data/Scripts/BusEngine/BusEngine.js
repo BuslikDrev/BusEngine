@@ -514,15 +514,15 @@ BusEngine.tools.ajax = function(url, setting) {
 }); */
 
 BusEngine.open = function(url, node1, node2, params, callback) {
-	if (!('body' in document)) {
-		return this;
-	}
-
 	if ('href' in this && this.href) {
 		this.preventDefault();
 		if (typeof url != 'string' || !url) {
 			url = this.href;
 		}
+	}
+
+	if (!('body' in document)) {
+		return this;
 	}
 
 	if (typeof node1 !== 'string') {

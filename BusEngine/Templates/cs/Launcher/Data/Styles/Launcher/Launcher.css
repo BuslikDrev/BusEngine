@@ -12,6 +12,13 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
 }
+ul {
+    list-style: none;
+}
+img,
+svg {
+    vertical-align: middle;
+}
 body header {
     position: relative;
     z-index: 1000;
@@ -23,7 +30,7 @@ body a {
     font-size: 13px;
     color: #00AEEF;
     text-decoration: none;
-	cursor: pointer;
+    cursor: pointer;
 }
 body a:hover {
     color: #23BCF8;
@@ -33,6 +40,46 @@ body button svg {
     width: 13px;
     height: 13px;
     fill: #00AEEF;
+}
+body a:hover svg {
+    fill: #23BCF8;
+}
+.float-left {
+  float: left !important;
+}
+.float-right {
+  float: right !important;
+}
+.float-none {
+  float: none !important;
+}
+.text-left {
+  text-align: left !important;
+}
+.text-right {
+  text-align: right !important;
+}
+.text-center {
+  text-align: center !important;
+}
+.nav-tabs {
+    border-bottom: 1px solid #2B3136;
+}
+.nav-tabs button {
+    background-color: unset;
+    font-size: 16px;
+    color: #666666;
+    border: 0;
+}
+.nav-tabs button:hover {
+    color: #999999;
+}
+.nav-tabs button.active {
+    color: #ffffff;
+    border-bottom: 3px solid #23BCF8;
+}
+.tab-pane:not(.active) {
+	display: none;
 }
 body a:hover svg,
 body button:hover svg {

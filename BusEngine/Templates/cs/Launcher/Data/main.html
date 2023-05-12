@@ -12,10 +12,13 @@
     <link href="/" rel="canonical">
     <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
+    <link href="Styles/BootStrap/bootstrap-grid.min.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Scripts/BusEngine/BusEngine.js" type="text/javascript" media="all" rel="preload" as="script">
     <link href="Scripts/Launcher/Launcher.js" type="text/javascript" media="all" rel="preload" as="script">
+    <link href="Scripts/BootStrap/bootstrap.min.js" type="text/javascript" media="all" rel="preload" as="script">
     <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
     <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
+    <script src="Scripts/BootStrap/bootstrap.min.js" type="text/javascript"></script>
   </head>
   <body class="be-open">
     <div class="resize"></div>
@@ -34,25 +37,20 @@
     </header>
     <div id="preload" class="preload">
       <div class="preload-loading">
-        <img src="Textures/loading.svg" height="50" width="50" alt="text_loading">
+         <img loading="lazy" src="Textures/loading.svg" height="50" width="50" alt="text_loading">
         <div class="preload-text" data-localization="text_preload">Загрузка...</div>
       </div>
     </div>
     <main>
-<style type="text/css">
-body picture img,
-body video {
-    transform: translate(-50%, -50%) rotate(180deg);
-}
-</style>
       <picture>
         <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-width:1280px)">
         <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px)">
-        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px)">
-        <!-- <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-width:1921px) and (max-width:2560px)">
         <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)"> -->
+        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-width:2561px)">
+        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)">
         <img loading="eager" decoding="async" src="Textures/background_login_1280x720.png" alt="background_login" >
       </picture>
       <video autoplay="autoplay" preload="none" muted="false" loop="true">
@@ -68,61 +66,700 @@ body video {
         <source src="Videos/background_login_3840x2160.mp4" type="video/mp4" media="screen and (min-device-width:2561px) and (max-device-width:3840px)">
         <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
       </video>
+<style type="text/css">
+body picture img,
+body video {
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+#menu {
+    position: fixed;
+    width: 100%;
+    display: block;
+}
+#menu .top {
+    height: 80px;
+    background-color: black;
+    z-index: 1000;
+}
+#menu .top .logo {
+    position: relative;
+    display: inline-table;
+}
+#menu .top .logo a {
+    font-size: 36px;
+    color: #ffffff;
+}
+#menu .top .setting {
+    float: right;
+    position: relative;
+}
+#menu .top .setting a {
+    margin-left: 15px;
+}
+#menu .top .setting img {
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+}
+#menu .top .setting svg {
+    width: 24px;
+    height: 24px;
+    fill: #cccccc;
+}
+#menu .left {
+    background-color: #191C1F;
+    color: #849A9F;
+    margin: 0;
+    padding: 0;
+    float: left;
+    height: 100%;
+    position: inherit;
+    border-right: 1px solid #2B3136;
+    z-index: 1000;
+}
+#menu .left a {
+    font-size: 14px;
+    color: #849A9F;
+}
+#menu .left svg {
+    width: 20px;
+    height: 20px;
+    fill: #849A9F;
+    margin-right: 10px;
+}
+#menu .left a:hover,
+#menu .left svg:hover {
+    color: #9db7bc;
+    fill: #9db7bc;
+}
+#menu .left ul {
+    margin: 0;
+    padding: 0;
+}
+#menu .left ul li {
+    padding: 15px;
+    padding-left: 30px;
+}
+#menu .left ul:first-child li:hover {
+    background-color: #00AEEF;
+    cursor: pointer;
+}
+#menu .left ul:first-child a,
+#menu .left ul:first-child svg {
+    font-size: 16px;
+    font-weight: 600;
+    fill: #cccccc;
+    color: #cccccc;
+}
+#menu .left .social {
+    bottom: 0;
+    position: inherit;
+}
+#menu .left .social a {
+    margin-left: 10px;
+}
+#menu .left .social a:hover,
+#menu .left .social svg:hover {
+    fill: #cccccc;
+    color: #cccccc;
+}
+#menu .content {
+    padding: 0;
+    position: inherit;
+    overflow-y: auto;
+    margin: 0;
+    right: 0;
+    height: 100%;
+    scrollbar-color: #292B2F #16191C;
+    scrollbar-width: thin;
+}
+#menu .content::-webkit-scrollbar{width:4px;background-color:#16191C}
+#menu .content::-webkit-scrollbar-thumb{height:56px;background-clip:content-box;background-color:#292B2F;}
+#menu .content::-webkit-scrollbar-thumb:hover{background-color:#292B2F80}
+#menu .content svg {
+    position: relative;
+    height: 30px;
+    width: 30px;
+    fill: #849A9F;
+}
+#menu .content .window {
+    height: 150px;
+    position: relative;
+}
+#menu .content .window .account {
+    margin: 40px;
+    position: absolute;
+    font-size: 24px;
+    color: #ffffff;
+    width: 50%;
+}
+#menu .content .window .account span {
+    font-size: 14px;
+}
+#menu .content .window .account img {
+    height: 48px;
+    width: 48px;
+    float: left;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+#menu .content .window .button-engine {
+    position: absolute;
+    right: 0;
+    margin: 40px;
+    display: flex;
+}
+#menu .content .window .button-engine button {
+    background-color: #00AEEF;
+    color: #ffffff;
+    padding: 7px 15px;
+}
+#menu .content .window .button-engine button svg {
+    fill: #ffffff;
+}
+#menu .content .window .button-engine button:first-child {
+    border-radius: 5px 0 0 5px;
+    margin-right: -2px;
+}
+#menu .content .window .button-engine button:last-child {
+    border-radius: 0 5px 5px 0;
+}
+#menu .content .window .button-engine button svg {
+    height: 16px;
+    width: 16px;
+}
+#menu .content .window .button-engine button:hover {
+    background-color: #23BCF8;
+}
+#menu .content .projects {
+    background-color: #191C1F;
+    color: #ffffff;
+    line-height: 1.6;
+}
+#menu .content .projects span {
+    color: #849A9F;
+}
+#menu .content .projects a {
+    font-size: 16px;
+}
+#menu .content .projects a svg {
+    height: 16px;
+    width: 16px;
+    fill: #00AEEF
+}
+#menu .content .projects span.v-engine {
+    border: 1px solid #849A9F;
+    padding: 1px 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+#menu .content .projects ul.list {
+    display: block;
+    position: relative;
+    float: left;
+    padding: 0;
+}
+#menu .content .projects ul.list li {
+    border: 1px solid #2B3136;
+    display: flow-root;
+}
+#menu .content .projects ul.list li:hover {
+    border: 1px solid #545f69;
+}
+#menu .content .projects ul.list li div {
+    float: left;
+}
+#menu .content .projects ul.list li div:last-child {
+    float: right;
+}
+#menu .content .projects ul.list li img {
+    height: 48px;
+    width: 48px;
+}
+#menu .content .projects ul.list li button {
+    background-color: #191C1F;
+    border: none;
+}
+#menu .content .projects ul.list li button:hover svg {
+    fill: #ffffff;
+}
+#menu .content .projects ul.link {
+    display: block;
+    position: relative;
+    float: left;
+    padding: 0px;
+}
+#menu .content .projects ul.link a {
+    font-size: 16px;
+    color: #849A9F;
+}
+#menu .content .projects ul.link svg {
+    width: 20px;
+    height: 20px;
+    fill: #849A9F;
+    margin-right: 10px;
+}
+#menu .content .projects ul.link a:hover,
+#menu .content .projects ul.link svg:hover {
+    color: #9db7bc;
+    fill: #9db7bc;
+}
+#menu .content .projects .news div.box {
+    -webkit-box-shadow: 0 0.2rem 1.6rem rgb(0 0 0 / 50%);
+    box-shadow: 0 0.2rem 1.6rem rgb(0 0 0 / 50%);
+    -webkit-transition: .15s cubic-bezier(.785,.135,.15,.86);
+    transition: .15s cubic-bezier(.785,.135,.15,.86);
+    cursor: pointer;
+}
+#menu .content .projects .news div.box:hover {
+    -webkit-box-shadow: 0 0.5rem 2.6rem rgb(0 0 0 / 50%);
+    box-shadow: 0 0.5rem 2.6rem rgb(0 0 0 / 50%);
+    -webkit-transform: translateY(-0.5rem);
+    transform: translateY(-0.5rem);
+}
+#menu .content .projects .news .image img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+#menu .content .projects .news .name {
+    font-size: 16px;
+    height: 56px;
+    overflow: hidden;
+}
+#menu .content .projects .news .icon svg {
+    width: 14px;
+    height: 14px;
+}
+#menu .content .projects .news .author {
+    font-size: 14px;
+    color: #23BCF8
+}
+#menu .content .projects .news .date {
+    font-size: 12px;
+    color: #666666
+}
+#menu .content .projects .assets .tab-content {
+    min-height: 640px;
+}
+@media (min-width: 1281px) {
+    #menu .content .projects .assets .tab-content {
+        min-height: 440px;
+    }
+}
+@media (min-width: 1400px) {
+    #menu .content .projects .assets .tab-content {
+        min-height: 340px;
+    }
+}
+#menu .content .projects .assets .tab-pane > div:hover {
+    box-shadow: 0 0 15px #d3d3d3;
+    transition: box-shadow 0.1s ease-in-out;
+    cursor: pointer;
+    z-index: 1;
+}
+#menu .content .projects .assets .image img {
+    width: 128px;
+    height: auto;
+    border-radius: 5px;
+}
+#menu .content .projects .assets .name {
+    font-size: 14px;
+}
+#menu .content .projects .assets .type {
+    font-size: 11px;
+    color: #23BCF8
+}
+#menu .content .projects .assets .author {
+    font-size: 11px;
+    color: #666666
+}
+#menu .content .projects .assets .rating {
+    display: flex;
+}
+#menu .content .projects .assets .rating svg {
+    width: 13px;
+    height: 13px;
+    fill: #666666;
+}
+#menu .content .projects .assets .rating.r1 svg:nth-child(1) {
+    fill: #23BCF8;
+}
+#menu .content .projects .assets .rating.r2 svg:nth-child(-1n+2) {
+    fill: #23BCF8;
+}
+#menu .content .projects .assets .rating.r3 svg:nth-child(-1n+3) {
+    fill: #23BCF8;
+}
+#menu .content .projects .assets .rating.r4 svg:nth-child(-1n+4) {
+    fill: #23BCF8;
+}
+#menu .content .projects .assets .rating.r5 svg:nth-child(-1n+5) {
+    fill: #23BCF8;
+}
+</style>
       <div id="menu">
-	  <div class="top">
-          <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</span>
-	  </div>
-	  <div class="left">
-	  <ul>
-	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
-	  </li>
-	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
-	  </li>
-	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
-	  </li>
-	  <li><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg> Проекты
-	  </li>
-	  </ul>
-	  <hr>
-	  <ul>
-	  <li>
-	  </li>
-	  </ul>
-	  </div>
-        <hr>
-        <span>
-        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" title="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
-        </span>
-      </div>
-      <div class="login">
-        <form>
-          <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</span>
-          <span class="input">
-            entry_email
-            <input type="email" name="login" value="" placeholder="entry_email_placeholder" aria-label="entry_email" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('error_email');">
+        <div class="top">
+          <span class="logo px-4 pt-3"><a href="/main.html" onclick="BusEngine.open('main.html'); return false;"> <img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</a></span>
+          <span class="setting px-4 pt-4">
+            <a href="#" title="Текущие загрузки"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-download"></use></svg></a>
+            <a href="/main.html" onclick="BusEngine.open('main.html'); return false;" title="Настройки"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-control-panel"></use></svg></a>
+            <a href="#"> <img src="Icons/BusEngine_white.png" alt="BuslikDrev"></a>
           </span>
-          <span class="input">
-            entry_password
-            <input type="password" name="password" value="" aria-label="entry_password">
-            <span onclick="svgToggle(this, 'password');">
-              <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" style="display: none"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye-off"></use></svg>
-            </span>
-          </span>
-          <span class="input" style="height: 50px;">
-            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;" title="text_forgotten">text_forgotten <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
-          </span>
-          <span class="input" style="height: 50px;">
-            <button class="send">button_login</button>
-          </span>
-        </form>
-        <hr>
-        <span>
-        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" title="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
-        </span>
+        </div>
+        <div class="left col-3">
+          <ul class="mt-4">
+            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-material-outlined"></use></svg> Проекты</a></li>
+            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#icon-sandbox"></use></svg> Движок</a></li>
+            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-cart"></use></svg> Библиотека Ассетов</a></li>
+            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-vendor"></use></svg> Мои Ассеты</a></li>
+          </ul>
+          <hr class="col-10">
+          <ul>
+            <li><a href="https://busengine.buslikdrev.by/assets/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/assets/'); return false;">База Ассетов</a></li>
+            <li><a href="https://busengine.buslikdrev.by/api/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/api/'); return false;">Документация</a></li>
+            <li><a href="https://busengine.buslikdrev.by/forum/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/forum/'); return false;">Форум</a></li>
+            <li><a href="https://busengine.buslikdrev.by/blog/news/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;">Новости</a></li>
+          </ul>
+          <div class="social m-4">
+            <a href="https://www.youtube.com/@YouTubeProger" onclick="BusEngine.postMessage('_linkGo|https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz'); return false;"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-youtube"></use></svg></a>
+          </div>
+        </div>
+        <div class="content col-9">
+          <div class="window">
+            <div class="account">
+               <img src="Icons/BusEngine_white.png" alt="BuslikDrev">
+              <span>Welcom back</span><br>BuslikDrev
+            </div>
+            <div class="button-engine">
+              <button onclick=""><span>Launch Sandbox</span><br>BusEngine 0.4</button>
+              <button onclick=""><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chevron-down"></use></svg></button>
+            </div>
+          </div>
+          <div class="projects row p-5 mb-5">
+            <div class="col-9">
+              <h2>Список проектов</h2>
+              <ul class="list col-12">
+                <li class="me-4 mb-4 p-3">
+                <div class="me-2 col-auto">
+                 <img loading="lazy" src="Icons/BusEngine_white.png" alt="BusEngine Launcher">
+                </div>
+                <div class="col-auto">
+                BusEngine Launcher <span class="v-engine">0.4</span><br><span>H:\BusEngine Launcher</span>
+                </div>
+                <div class="m-2 col-auto">
+                <button><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-more"></use></svg></button>
+                </div>
+                </li>
+              </ul>
+            </div>
+            <div class="col-3">
+              <h2>Быстрые ссылки</h2>
+              <ul class="link">
+                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-material-plus-outlined"></use></svg> Создать новый проект</a></li>
+                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-upload"></use></svg> Импортировать проект</a></li>
+                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-cart"></use></svg> Скачать ассет</a></li>
+                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-submission-guidelines"></use></svg> Поделиться ассетом</a></li>
+              </ul>
+            </div>
+            <div class="news row col-12 mb-5">
+              <h2 class="col-9">Последние новости</h2>
+              <a href="https://busengine.buslikdrev.by/blog/news/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;" class="col-3 text-right">Посмотреть ещё <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+              <div class="col-4 mb-4">
+                <div class="box">
+                  <div class="col-12">
+                    <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                  </div>
+                  <div class="col-12 p-3">
+                    <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>
+                    <div class="author">BuslikDrev</div>
+                    <div class="name">BusEngine v0.4 уже здесь!</div>
+                    <div class="date">10:10 01.01.2024</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mb-4">
+                <div class="box">
+                  <div class="col-12">
+                    <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                  </div>
+                  <div class="col-12 p-3">
+                    <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>
+                    <div class="author">BuslikDrev</div>
+                    <div class="name">BusEngine v0.4 уже здесь!</div>
+                    <div class="date">10:10 01.01.2024</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mb-4">
+                <div class="box">
+                  <div class="col-12">
+                    <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                  </div>
+                  <div class="col-12 p-3">
+                    <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>
+                    <div class="author">BuslikDrev</div>
+                    <div class="name">BusEngine v0.4 уже здесь!</div>
+                    <div class="date">10:10 01.01.2024</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="assets row col-12 mb-5">
+              <h2 class="col-9">База ассетов</h2>
+              <a href="https://busengine.buslikdrev.by/assets/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;" class="col-3 text-right">Посмотреть ещё <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+              <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                  <button class="nav-link px-0 py-3 me-4 active" id="nav-featured-tab" data-bs-toggle="tab" data-bs-target="#nav-featured" type="button" role="tab" aria-controls="nav-featured" aria-selected="true">Рекомендуемые</button>
+                  <button class="nav-link px-0 py-3 me-4" id="nav-latest-tab" data-bs-toggle="tab" data-bs-target="#nav-latest" type="button" role="tab" aria-controls="nav-latest" aria-selected="false">Новые</button>
+                  <button class="nav-link px-0 py-3 me-4" id="nav-popular-tab" data-bs-toggle="tab" data-bs-target="#nav-popular" type="button" role="tab" aria-controls="nav-popular" aria-selected="false">Популярные</button>
+                  <button class="nav-link px-0 py-3 me-4" id="nav-top-tab" data-bs-toggle="tab" data-bs-target="#nav-top" type="button" role="tab" aria-controls="nav-top" aria-selected="false">Качественные</button>
+                </div>
+              </nav>
+              <div class="tab-content px-0 py-4" id="nav-tabContent">
+                <div class="tab-pane row fade show active" id="nav-featured" role="tabpanel" aria-labelledby="nav-featured-tab">
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 1</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r1">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <div class="author ms-1">25</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 2</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r2">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <div class="author ms-1">25</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 1</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r3">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <div class="author ms-1">25</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 2</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r4">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <div class="author ms-1">25</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 1</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r5">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <div class="author ms-1">25</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 2</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r0">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 1</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r5">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 2</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r5">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 1</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r5">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 2</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r5">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 1</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r5">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
+                    <div class="col-auto">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="name">Asset 2</div>
+                      <div class="type">Бесплатное</div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="rating r5">
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="nav-latest" role="tabpanel" aria-labelledby="nav-latest-tab">
+                2
+                </div>
+                <div class="tab-pane fade" id="nav-popular" role="tabpanel" aria-labelledby="nav-popular-tab">
+                3
+                </div>
+                <div class="tab-pane fade" id="nav-top" role="tabpanel" aria-labelledby="nav-top-tab">
+                4
+                </div>
+              </div>
+            </div>
+            <div class="icons hidden col-12">
+              <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-vimeo"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-mail"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-settings"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-log-out"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-twitch"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-windows"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-xbox"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-pinterest"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-minus"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-youtube"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-sketchfab"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-circle-outline"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-vendor"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-playstation"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-reply"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-google"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#icon-sandbox"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-steam"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-instagram"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-image"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-control-panel"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-time"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-wallet"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-discord"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-substance"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-cart-outline"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-download"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-align-right"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-bookmark"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-subscript"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-getting-started"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-apple"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-plus-circled"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-info-circled"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-sort-ascending"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-roadmap"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-sort-descending"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-bars-three-of-three"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-gallery"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-upload"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-heart"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-cube-outline"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-help"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-linux"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-tip"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-linkedin"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-website"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-delete"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-submission-guidelines"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-sentiment-happy"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-credit-card"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-bold"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chevron-down"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-image-broken"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#icon-audio"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-quixel"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-arrow-down"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-locked"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-filter"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-plus"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-check-circled"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-sentiment-neutral"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-download"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-superscript"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-arrow-left"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#icon-rendering"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chatboxes"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-align-left"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-sentiment-sad"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-github"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-align-center"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-news"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-location"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-forum-archive"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-search"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-reports"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-logout"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-cart"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chevron-up"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-memberships"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star-half"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-user"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-arrow-up"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-play"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-indie-fund"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-menu"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-list-ol"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-dribbble"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-sort-default"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-play-circled"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-visual-studio"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-link"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-table"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-private-messages"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-target"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-minus-circled"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-menu-close"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-slack"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-answers"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-triangle-outline"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-education"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-close"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye-off"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chatbox"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-refresh"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chevron-right"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-images"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-press"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-strikethrough"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-github"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-certification"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-rss"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-vendor"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-careers"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-gitlab"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-more-vertical"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-html"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-arrow-right"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-support-ticket"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-support-ticket-a"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-features"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-memberships"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-bars-one-of-three"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-close-circled"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-edit"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-documentation"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-bell"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-italic"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-thumbs-up"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-enterprise"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-danger"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-nintendo-switch"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-marmoset"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-facebook"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-search"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-artstation"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-underline"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-events"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-help-circled"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-android"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-soundcloud"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-user"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-cube"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-twitter"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-ios"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-align-justify"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-filter"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chevron-left"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-bars-two-of-three"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-marketplace"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-share"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-tutorials"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-flag"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-list"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-list-ul"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-paragraph"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-check"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-cart"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#icon-physics"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#hexagon"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-check-progress"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-folder"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-diamond"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-file-check"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-assets"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-assetguide"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-forums"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-more"></use></svg><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#editor-keyboard"></use></svg>
+            </div>
+          </div>
+        </div>
       </div>
       <button onclick="window.sessionStorage.removeItem('mode'); BusEngine.open('login.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
 <script type="text/javascript">
+
+BusEngine.tools.ajax('https://busengine.buslikdrev.by/launcher/Icons/spritemap.svg', {responseType:'document',success: function(ajax) {
+	//console.logs(ajax);
+	//var svg, x = ajax.querySelectorAll('[id]');
+	//var b = document.querySelector('.content');
+	//for (var i = 0; i < x.length; ++i) {
+		//svg = document.createElement('svg');
+		//svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+		//svg.innerHTML = '<use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#' + x[i].id + '"></use>';
+		//b.appendChild(svg);
+	//}
+}});
+
 console.log('main');
 if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
 	BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
@@ -131,11 +768,11 @@ if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.s
 }
 
 BusEngine.localization.initialize();
-
-if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
+console.logs(window.navigator.connection);
+if (('connection' in window.navigator ? ['2g', 'slow-2g'].indexOf(window.navigator.connection.effectiveType) == -1 : true) && 'matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
 	window.addEventListener('mouseover', function() {
 		BusEngine.polyfillTagSource();
-	});
+	}, {one: true});
 }
 
 window.addEventListener('beforeunload', function(e) {

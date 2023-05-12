@@ -42,11 +42,12 @@
       <picture>
         <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-width:1280px)">
         <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px)">
-        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px)">
-        <!-- <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
+        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-width:1921px) and (max-width:2560px)">
         <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)"> -->
+        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-width:2561px)">
+        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)">
         <img loading="eager" decoding="async" src="Textures/background_login_1280x720.png" alt="background_login" >
       </picture>
       <video autoplay="autoplay" preload="none" muted="false" loop="true">
@@ -100,10 +101,10 @@ if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.s
 
 BusEngine.localization.initialize();
 
-if ('matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
+if (('connection' in window.navigator ? ['2g', 'slow-2g'].indexOf(window.navigator.connection.effectiveType) == -1 : true) && 'matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
 	window.addEventListener('mouseover', function() {
 		BusEngine.polyfillTagSource();
-	});
+	}, {one: true});
 }
 
 window.addEventListener('beforeunload', function(e) {
