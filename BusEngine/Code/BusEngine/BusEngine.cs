@@ -738,23 +738,41 @@ BusEngine.Tools.Json
 				} else {
 					root = BusEngine.Engine.DataDirectory;
 				}
-
+				BusEngine.Log.Info(BusEngine.Engine.ExeDirectory);
 				//CefSharp.BrowserSubprocess.SelfHost.Main(args);
 
 				// включаем поддержку экранов с высоким разрешением
-				CefSharp.Cef.EnableHighDPISupport();
+				//CefSharp.Cef.EnableHighDPISupport();
+				CefSharp.CefRuntime.SubscribeAnyCpuAssemblyResolver(BusEngine.Engine.ExeDirectory + "CefSharp");
 
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
-				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings();
+				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings() /* {
+					LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "cef_log.txt"),
+					CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "cache"),
+					UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "userdata")
+				} */;
 
 				// консольные команды хромиум
+				settings.CommandLineArgsDisabled = false;
 				settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
-				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
+				//settings.CefCommandLineArgs.Add("disable-gpu-vsync");
 				//settings.CefCommandLineArgs.Add("disable-gpu");
 
 				// настройка имён файлов
-				//settings.BrowserSubprocessPath = "CefSharp.BrowserSubprocess.exe";
-				//settings.CachePath = "";
+				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/cef_log.txt");
+				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/cache");
+				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/userdata");
+
+				/* settings.BrowserSubprocessPath = BusEngine.Engine.ExeDirectory + "CefSharp\\CefSharp.BrowserSubprocess.exe";
+				settings.LocalesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\locales\\";
+				settings.ResourcesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\"; */
+				//settings.WindowlessRenderingEnabled = true;
+
+				// отключаем создание файла лога
+				settings.LogSeverity = CefSharp.LogSeverity.Disable;
+
+				settings.PersistSessionCookies = true;
+				settings.CookieableSchemesExcludeDefaults = false;
 
 				// устанавливаем свой юзер агент
 				settings.UserAgent = BusEngine.Engine.Device.UserAgent;
@@ -762,9 +780,6 @@ BusEngine.Tools.Json
 				// установка языка
 				//settings.AcceptLanguageList = new BusEngine.Localization().Language.Substring(0, 2).ToLower();
 				settings.Locale = BusEngine.Localization.LanguageStatic.Substring(0, 2).ToLower();
-
-				// отключаем создание файла лога
-				settings.LogSeverity = CefSharp.LogSeverity.Disable;
 
 				// https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
 				// регистрируем свою схему
@@ -790,7 +805,7 @@ BusEngine.Tools.Json
 				timer.Start(); */
 
 				// применяем наши настройки до запуска браузера
-				CefSharp.Cef.Initialize(settings);
+				CefSharp.Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
 				settings.Dispose();
 
 				// запускаем браузер
@@ -1045,6 +1060,7 @@ BusEngine.Tools
 		public static string BinDirectory;
 		public static string EditorDirectory;
 		public static string DataDirectory;
+		public static string LogDirectory;
 		public static string ToolsDirectory;
 		public static string[] Commands;
 		public static string Platform = "BusEngine";
@@ -1105,15 +1121,15 @@ BusEngine.Tools
 		/** функция запуска API BusEngine */
 		public static void Initialize() {
 			// устанавливаем ссылку на рабочий каталог
-			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
 
-			string path = BusEngine.Engine.ExeDirectory + "\\..\\..\\Bin\\";
+			string path = BusEngine.Engine.ExeDirectory + "..\\..\\Bin\\";
 
 			if (!System.IO.Directory.Exists(path)) {
-				path = BusEngine.Engine.ExeDirectory + "\\..\\Bin\\";
+				path = BusEngine.Engine.ExeDirectory + "..\\Bin\\";
 
 				if (!System.IO.Directory.Exists(path)) {
-					path = BusEngine.Engine.ExeDirectory + "\\Bin\\";
+					path = BusEngine.Engine.ExeDirectory + "Bin\\";
 				}
 			}
 
@@ -1123,6 +1139,7 @@ BusEngine.Tools
 			BusEngine.Engine.BinDirectory = path + "Bin\\";
 			BusEngine.Engine.EditorDirectory = path + "Editor\\";
 			BusEngine.Engine.DataDirectory = path + "Data\\";
+			BusEngine.Engine.LogDirectory = path + "Log\\";
 
 			// определяем устройство
 			new BusEngine.Engine.Device();
