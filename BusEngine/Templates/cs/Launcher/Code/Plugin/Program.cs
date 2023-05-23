@@ -12,6 +12,8 @@ namespace BusEngine.Game {
 
 		// при запуске BusEngine до создания формы
 		public override void Initialize() {
+			BusEngine.Log.Info("Commands: {0}", BusEngine.Tools.Json.Encode(BusEngine.Engine.Commands));
+
 			// загружаем свой язык
 			BusEngine.Localization.OnLoadStatic += (BusEngine.Localization l, string language) => {
 				#if LOCALIZATION_LOG
