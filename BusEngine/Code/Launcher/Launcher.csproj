@@ -6,6 +6,17 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <RootNamespace>BusEngine</RootNamespace>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <ApplicationIcon>..\..\Data\Icons\BusEngine.ico</ApplicationIcon>
+    <FileAlignment>512</FileAlignment>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <!-- <DebugType>none</DebugType> -->
+    <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
     <!-- https://stackoverflow.com/questions/42138418/equivalent-to-assemblyinfo-in-dotnet-core-csproj -->
     <!-- <GenerateAssemblyInfo>false</GenerateAssemblyInfo> -->
     <!-- <AssemblyName>Launcher</AssemblyName> -->
@@ -22,18 +33,8 @@
     <!-- <FileVersion>0.4.0.0</FileVersion> -->
     <!-- <AssemblyFileVersion>0.4.0.0</AssemblyFileVersion> -->
     <!-- <ProjectGuid>{81145500-44c6-41c1-816d-be751929b38d}</ProjectGuid> -->
-    <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <ApplicationIcon>..\..\Data\Icons\BusEngine.ico</ApplicationIcon>
-    <FileAlignment>512</FileAlignment>
     <!-- <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport> -->
     <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
-    <!-- <DebugType>none</DebugType> -->
-    <!-- <Optimize>true</Optimize> -->
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <!-- https://stackoverflow.com/questions/57509951/use-windows-forms-in-a-net-core-class-library-net-core-control-library -->
     <!-- <UseWindowsForms>true</UseWindowsForms> -->
     <!-- <UseWPF>true</UseWPF> -->
@@ -41,7 +42,6 @@
     <!-- <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects> -->
     <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
     <!-- <BaseOutputPath>..\..\Bin\Debug\</BaseOutputPath> -->
-    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <!-- <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
@@ -60,15 +60,13 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
     <DefineConstants>BUSENGINE_XAMARIN;BUSENGINE_ANDROID</DefineConstants>
-    <!-- <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit> -->
+    <!-- <PlatformTarget>AnyCPU</PlatformTarget> -->
     <OutputPath>..\..\Bin\Android\</OutputPath>
     <OutputRoot>..\..\Bin\Android\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit>
     <OutputPath>..\..\Bin\Win\</OutputPath>
     <OutputRoot>..\..\Bin\Win\</OutputRoot>
   </PropertyGroup>
@@ -76,10 +74,10 @@
     <!-- возможность использовать dynamic -->
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />

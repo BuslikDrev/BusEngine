@@ -147,6 +147,7 @@ BusEngine.Browser
 		/** функция запуска приложения */
 	}
 
+	// https://www.cyberforum.ru/blogs/529033/blog3609.html
 	// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
 	internal class Form : System.Windows.Forms.Form {
 		/** функция запуска окна приложения */
@@ -180,6 +181,9 @@ BusEngine.Browser
 
 			// кнопка развернуть
 			this.MaximizeBox = false;
+
+			// мерцание
+			this.DoubleBuffered = true;
 
 			// кнопка свернуть
 			//this.MinimizeBox = false;
@@ -251,13 +255,15 @@ BusEngine.Browser
 
 				if (this.FormBorderStyle == System.Windows.Forms.FormBorderStyle.None) {
 					// рамка
-					//cp.Style |= 0x40000;
+					//cp.Style |= 0x00040000;
+					//this.Padding = new System.Windows.Forms.Padding(0);
+					//this.Margin = new System.Windows.Forms.Padding(-100);
 					// тень рамки
-					//cp.ClassStyle |= 0x20000;
+					//cp.ClassStyle |= 0x00000200;
 					// Update the button Style.
 					//cp.Style |= 0x00000040;
 					// Double-buffering
-					//cp.ExStyle |= 0x02000000;
+					//cp.ExStyle |= 0x00800;
 				}
 
 				return cp;

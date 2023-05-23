@@ -5,6 +5,7 @@
 /* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
+//https://learn.microsoft.com/en-us/dotnet/api/system.reflection?view=netframework-4.7.1
 [assembly: System.Reflection.AssemblyTitle("BusEngine Editor Windows")]
 [assembly: System.Reflection.AssemblyDescription("The main C# interface for the BusEngine.")]
 [assembly: System.Reflection.AssemblyConfiguration("")]
