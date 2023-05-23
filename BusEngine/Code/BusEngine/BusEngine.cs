@@ -738,12 +738,13 @@ BusEngine.Tools.Json
 				} else {
 					root = BusEngine.Engine.DataDirectory;
 				}
-				BusEngine.Log.Info(BusEngine.Engine.ExeDirectory);
-				//CefSharp.BrowserSubprocess.SelfHost.Main(args);
+
+				CefSharp.BrowserSubprocess.SelfHost.Main(BusEngine.Engine.Commands);
 
 				// включаем поддержку экранов с высоким разрешением
 				//CefSharp.Cef.EnableHighDPISupport();
-				CefSharp.CefRuntime.SubscribeAnyCpuAssemblyResolver(BusEngine.Engine.ExeDirectory + "CefSharp");
+				//new CefSharp.CefLibraryHafle(BusEngine.Engine.ExeDirectory + "CefSharp\\libcef.dll");
+				//CefSharp.CefRuntime.SubscribeAnyCpuAssemblyResolver(BusEngine.Engine.ExeDirectory + "");
 
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings() /* {
@@ -753,8 +754,9 @@ BusEngine.Tools.Json
 				} */;
 
 				// консольные команды хромиум
+				//settings.ChromeRuntime = true;
 				settings.CommandLineArgsDisabled = false;
-				settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
+				//settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
 				//settings.CefCommandLineArgs.Add("disable-gpu-vsync");
 				//settings.CefCommandLineArgs.Add("disable-gpu");
 
@@ -763,9 +765,9 @@ BusEngine.Tools.Json
 				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/cache");
 				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/userdata");
 
-				/* settings.BrowserSubprocessPath = BusEngine.Engine.ExeDirectory + "CefSharp\\CefSharp.BrowserSubprocess.exe";
-				settings.LocalesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\locales\\";
-				settings.ResourcesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\"; */
+				//settings.BrowserSubprocessPath = BusEngine.Engine.ExeDirectory + "CefSharp\\CefSharp.BrowserSubprocess.exe";
+				//settings.LocalesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\locales\\";
+				//settings.ResourcesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\";
 				//settings.WindowlessRenderingEnabled = true;
 
 				// отключаем создание файла лога
@@ -1118,6 +1120,22 @@ BusEngine.Tools
 			}
 		}
 
+		private static string[] GetProbingPathData = new string[0];
+
+		private static string[] GetProbingPath() {
+			if (GetProbingPathData.Length == 0 && System.IO.File.Exists(System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile)) {
+				System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+				xmlDoc.Load(System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+				System.Xml.XmlNode p = xmlDoc.SelectSingleNode("/*[name()='configuration']/*[name()='runtime']/*[name()='assemblyBinding']/*[name()='probing']/@privatePath");
+
+				if (p != null) {
+					GetProbingPathData = p.Value.Split(';');
+				}
+			}
+
+			return GetProbingPathData;
+		}
+
 		/** функция запуска API BusEngine */
 		public static void Initialize() {
 			// устанавливаем ссылку на рабочий каталог
@@ -1149,6 +1167,40 @@ BusEngine.Tools
 
 			// включаем консоль
 			BusEngine.Log.ConsoleShow();
+
+			// ищем зависимости
+			/* System.AppDomain.CurrentDomain.AssemblyLoad  += new System.AssemblyLoadEventHandler((o, e) => {
+				BusEngine.Log.Info("AssemblyLoad... {0}", e.LoadedAssembly.FullName);
+			}); */
+			System.AppDomain.CurrentDomain.AssemblyResolve += new System.ResolveEventHandler((o, e) => {
+				BusEngine.Log.Info("AssemblyResolve... {0}", e.Name);
+
+				foreach (string i in GetProbingPath()) {
+					foreach (string currentFile in System.IO.Directory.EnumerateFiles(BusEngine.Engine.ExeDirectory + i, e.Name.Split(',')[0] + ".dll", System.IO.SearchOption.AllDirectories)) {
+						if (System.IO.File.Exists(currentFile)) {
+							return System.Reflection.Assembly.LoadFile(currentFile);
+						}
+					}
+				}
+
+				return System.Reflection.Assembly.LoadFile(e.Name);
+			});
+			/* System.AppDomain.CurrentDomain.ResourceResolve += new System.ResolveEventHandler((o, e) => {
+				BusEngine.Log.Info("ResourceResolve... {0}", e.Name);
+			}); */
+			/* System.AppDomain.CurrentDomain.FirstChanceException += (o, e) => {
+				BusEngine.Log.Info("FirstChanceException... {0}", e.Exception);
+				BusEngine.Log.Info("FirstChanceException2... {0}", e.Exception.Message);
+			}; */
+			/* System.AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += new System.ResolveEventHandler((o, e) => {
+				BusEngine.Log.Info("ReflectionOnlyAssemblyResolve... {0}", e.LoadedAssembly.FullName);
+			}); */
+			/* System.AppDomain.CurrentDomain.TypeResolve += new System.ResolveEventHandler((o, e) => {
+				BusEngine.Log.Info("TypeResolve... {0}", e.LoadedAssembly.FullName);
+			}); */
+			/* System.AppDomain.CurrentDomain.UnhandledException += new System.UnhandledExceptionEventHandler((o, e) => {
+				BusEngine.Log.Info("UnhandledException... {0}", e.ExceptionObject);
+			}); */
 
 			/* BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
 			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
@@ -1314,21 +1366,22 @@ BusEngine.Tools
 			// запускаем окно BusEngine
 			if (OnInitialize != null) {
 				OnInitialize.Invoke();
-				OnInitialize = null;
 			}
 		}
 		/** функция запуска API BusEngine */
 
 		/** функция остановки API BusEngine  */
 		public static void Shutdown() {
+			BusEngine.Log.Info("OnExit");
 			// отключаем плагины
 			new BusEngine.IPlugin("Shutdown");
+
 			// закрываем окно консоли
-			BusEngine.Log.ConsoleHide();
+			//BusEngine.Log.ConsoleHide();
+
 			// закрываем окно BusEngine
 			if (BusEngine.Engine.OnShutdown != null) {
 				BusEngine.Engine.OnShutdown.Invoke();
-				BusEngine.Engine.OnShutdown = null;
 			}
 		}
 		/** функция остановки API BusEngine  */
@@ -1902,7 +1955,7 @@ namespace BusEngine {
 			System.Console.WriteLine(arg);
 		}
 
-		public static void Debug() {
+		private static void Debug() {
 			//System.Type myType = System.Type.GetType("System.Windows.Forms.MyMethod");
 			//System.Reflection.MethodInfo myMethod = myType.GetMethod("MyMethod");
 			System.Type myType = System.Type.GetType("LibVLCSharp.Shared.Media");
@@ -3251,7 +3304,7 @@ BusEngine.UI
 		private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
 			BusEngine.UI.Canvas.WinForm.FormClosed -= OnClosed;
 			//BusEngine.Video.Shutdown();
-			BusEngine.Engine.Shutdown();
+			//BusEngine.Engine.Shutdown();
 		}
 		/** событие закрытия окна */
 
