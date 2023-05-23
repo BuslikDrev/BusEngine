@@ -11,6 +11,16 @@
     </image:image>
   </url>
   <url>
+    <loc>https://buslikdrev.github.io/BusEngine/Requirements.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      </image:loc>
+      <image:caption>Possibilities BusEngine</image:caption>
+      <image:title>Possibilities BusEngine</image:title>
+    </image:image>
+  </url>
+  <url>
     <loc>https://buslikdrev.github.io/BusEngine/Environment.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -31,7 +41,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Audio.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Audio.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -41,7 +51,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Browser.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Browser.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -51,7 +61,7 @@
     </image:image>
   </url>
   <!-- <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Camera.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Camera.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -61,7 +71,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Core.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Core.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -71,7 +81,7 @@
     </image:image>
   </url> -->
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Engine.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Engine.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -81,7 +91,7 @@
     </image:image>
   </url>
   <!-- <url>
-    <loc>https://buslikdrev.github.io/BusEngine/FlowGraph.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/FlowGraph.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -91,7 +101,7 @@
     </image:image>
   </url> -->
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Game.MyPlugin.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Game.MyPlugin.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -101,7 +111,7 @@
     </image:image>
   </url>
   <!-- <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Layer.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Layer.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -111,7 +121,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Level.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Level.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -121,7 +131,7 @@
     </image:image>
   </url> -->
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Localization.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Localization.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -131,7 +141,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Log.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Log.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -141,7 +151,7 @@
     </image:image>
   </url>
   <!-- <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Material.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Material.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -151,7 +161,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Model.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Model.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -161,7 +171,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Physics.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Physics.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -171,7 +181,7 @@
     </image:image>
   </url> -->
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Plugin.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Plugin.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -181,7 +191,7 @@
     </image:image>
   </url>
   <!-- <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Rendering.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Rendering.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -191,7 +201,7 @@
     </image:image>
   </url> -->
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Tools.Ajax.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Tools.Ajax.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -201,7 +211,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Tools.Json.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Tools.Json.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -211,7 +221,7 @@
     </image:image>
   </url>
   <!-- <url>
-    <loc>https://buslikdrev.github.io/BusEngine/UI.Canvas.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/UI.Canvas.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -221,7 +231,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Vector.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Vector.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -231,7 +241,7 @@
     </image:image>
   </url> -->
   <url>
-    <loc>https://buslikdrev.github.io/BusEngine/Video.html</loc>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/Video.html</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
