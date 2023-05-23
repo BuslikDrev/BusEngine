@@ -5,18 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <RootNamespace>BusEngine</RootNamespace>
-    <AssemblyName>Plugin</AssemblyName>
     <OutputType>Library</OutputType>
     <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
-    <!-- <Optimize>true</Optimize> -->
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <!-- <BaseOutputPath>..\..\Bin\Debug\</BaseOutputPath> -->
+    <Optimize>false</Optimize>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
-    <!-- <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
@@ -34,15 +30,13 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
     <DefineConstants>BUSENGINE_XAMARIN;BUSENGINE_ANDROID</DefineConstants>
-    <!-- <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>true</Prefer32Bit> -->
+    <!-- <PlatformTarget>AnyCPU</PlatformTarget> -->
     <OutputPath>..\..\Bin\Android\</OutputPath>
     <OutputRoot>..\..\Bin\Android\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <!-- <Prefer32Bit>true</Prefer32Bit> -->
     <OutputPath>..\..\Bin\Win\</OutputPath>
     <OutputRoot>..\..\Bin\Win\</OutputRoot>
   </PropertyGroup>
