@@ -9,13 +9,13 @@
 ### Минимальные требования для успешной работы
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v12.0-orange.svg?cacheSeconds=31536000)](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760)
 [![Maximum C# Version](https://img.shields.io/badge/C%23%20%28CSharp%29-%20%3C%3D%20v5.0-blueviolet.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history#c-version-50)
-[![Minimum NET.Framework Version](https://img.shields.io/badge/NET.Framework-%20%3E%3D%20v4.7.1-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
+[![Minimum .NET Framework Version](https://img.shields.io/badge/.NET%20Framework-%20%3E%3D%20v4.7.1-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
 [![Minimum Visual C++ Version](https://img.shields.io/badge/Visual%20C++-%20%3E%3D%202015-purple.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
 ### Рекомендуемые требования для успешной работы
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v14.0-orange.svg?cacheSeconds=31536000)](https://www.microsoft.com/ru-ru/download/details.aspx?id=48159)
 [![Maximum C# Version](https://img.shields.io/badge/C%23%20%28CSharp%29-%20%3C%3D%20v6.0-blueviolet.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history#c-version-60)
-[![Minimum NET.Framework Version](https://img.shields.io/badge/NET.Framework-%20%3E%3D%20v4.8.0-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
+[![Minimum .NET Framework Version](https://img.shields.io/badge/.NET%20Framework-%20%3E%3D%20v4.8.0-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
 [![Minimum Visual C++ Version](https://img.shields.io/badge/Visual%20C++-%20%3E%3D%202015-purple.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
 ## Описание
