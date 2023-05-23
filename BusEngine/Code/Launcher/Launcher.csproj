@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019 -->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <RootNamespace>BusEngine</RootNamespace>
-    <AssemblyName>Launcher</AssemblyName>
+    <!-- https://stackoverflow.com/questions/42138418/equivalent-to-assemblyinfo-in-dotnet-core-csproj -->
+    <!-- <GenerateAssemblyInfo>false</GenerateAssemblyInfo> -->
+    <!-- <AssemblyName>Launcher</AssemblyName> -->
+    <!-- <AssemblyTitle>BusEngine Launcher</AssemblyTitle> -->
+    <!-- <id>BusEngine Launcher</id> -->
+    <!-- <Description>The main C# interface for the BusEngine.</Description> -->
+    <!-- <Configuration></Configuration> -->
+    <!-- <Company>BuslikDrev</Company> -->
+    <!-- <Product>BusEngine</Product> -->
+    <!-- <Copyright>Copyright 2016-2023 BuslikDrev. All rights reserved.</Copyright> -->
+    <!-- <AssemblyTrademark></AssemblyTrademark> -->
+    <!-- <AssemblyCulture></AssemblyCulture> -->
+    <!-- <AssemblyVersion>0.4.0.0</AssemblyVersion> -->
+    <!-- <FileVersion>0.4.0.0</FileVersion> -->
+    <!-- <AssemblyFileVersion>0.4.0.0</AssemblyFileVersion> -->
+    <!-- <ProjectGuid>{81145500-44c6-41c1-816d-be751929b38d}</ProjectGuid> -->
     <OutputType>WinExe</OutputType>
     <TargetFrameworks>netstandard2.0;net471;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
@@ -63,6 +79,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
