@@ -92,7 +92,7 @@ https://learn.microsoft.com/ru-ru/visualstudio/releases/2022/release-history#eve
 
 https://dotnet.microsoft.com/en-us/download/dotnet-framework/
 
-Microsoft Visual C++ Redistributable 2015-2022 (для некоторых сторонних библиотек)
+Microsoft Visual C++ Redistributable v14+ 2015-2022 (для некоторых сторонних библиотек)
 
 https://learn.microsoft.com/ru-ru/cpp/windows/latest-supported-vc-redist?view=msvc-170
 
