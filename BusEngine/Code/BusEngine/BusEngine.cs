@@ -757,23 +757,35 @@ BusEngine.Tools.Json
 				//settings.ChromeRuntime = true;
 				settings.CommandLineArgsDisabled = false;
 				//settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
-				//settings.CefCommandLineArgs.Add("disable-gpu-vsync");
-				//settings.CefCommandLineArgs.Add("disable-gpu");
+				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
+				settings.CefCommandLineArgs.Add("disable-gpu");
+				settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
 
 				// настройка имён файлов
-				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/cef_log.txt");
-				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/cache");
-				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser/userdata");
-
-				//settings.BrowserSubprocessPath = BusEngine.Engine.ExeDirectory + "CefSharp\\CefSharp.BrowserSubprocess.exe";
+				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cef_log.txt");
+				settings.RootCachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
+				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
+				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\userdata");
+				string subprocess = BusEngine.Engine.ExeDirectory + "CefSharp\\" + System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + " Browser.exe";
+				if (!System.IO.File.Exists(subprocess)) {
+					foreach (string currentFile in System.IO.Directory.EnumerateFiles(BusEngine.Engine.ExeDirectory, "CefSharp.BrowserSubprocess.exe", System.IO.SearchOption.AllDirectories)) {
+						if (System.IO.File.Exists(currentFile)) {
+							System.IO.File.Copy(currentFile, subprocess);
+						}
+					}
+				}
+				if (System.IO.File.Exists(subprocess)) {
+					settings.BrowserSubprocessPath = subprocess;
+				}
 				//settings.LocalesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\locales\\";
 				//settings.ResourcesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\";
 				//settings.WindowlessRenderingEnabled = true;
+				//settings.RemoteDebuggingPort = 8080;
 
 				// отключаем создание файла лога
 				settings.LogSeverity = CefSharp.LogSeverity.Disable;
 
-				settings.PersistSessionCookies = true;
+				//settings.PersistSessionCookies = true;
 				settings.CookieableSchemesExcludeDefaults = false;
 
 				// устанавливаем свой юзер агент
@@ -808,7 +820,7 @@ BusEngine.Tools.Json
 
 				// применяем наши настройки до запуска браузера
 				CefSharp.Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
-				settings.Dispose();
+				//settings.Dispose();
 
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
@@ -939,6 +951,7 @@ BusEngine.Tools.Json
 				browser.JavascriptMessageReceived -= OnCefPostMessage;
 				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
 				browser.Dispose();
+				//CefSharp.Cef.Shutdown();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
 			}
 			/* System.Threading.Tasks.Task.Run(() => {
@@ -958,6 +971,7 @@ BusEngine.Tools.Json
 				browser.JavascriptMessageReceived -= OnCefPostMessage;
 				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
 				browser.Dispose();
+				//CefSharp.Cef.Shutdown();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
 			}
 		}
