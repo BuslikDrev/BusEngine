@@ -759,23 +759,26 @@ BusEngine.Tools.Json
 				//settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
 				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
 				settings.CefCommandLineArgs.Add("disable-gpu");
-				settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
+				//settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
 
 				// настройка имён файлов
 				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cef_log.txt");
 				settings.RootCachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
 				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
 				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\userdata");
-				string subprocess = BusEngine.Engine.ExeDirectory + "CefSharp\\" + System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + " Browser.exe";
-				if (!System.IO.File.Exists(subprocess)) {
-					foreach (string currentFile in System.IO.Directory.EnumerateFiles(BusEngine.Engine.ExeDirectory, "CefSharp.BrowserSubprocess.exe", System.IO.SearchOption.AllDirectories)) {
-						if (System.IO.File.Exists(currentFile)) {
+				string subprocess;
+				foreach (string currentFile in System.IO.Directory.EnumerateFiles(BusEngine.Engine.ExeDirectory, "CefSharp.BrowserSubprocess.exe", System.IO.SearchOption.AllDirectories)) {
+					if (System.IO.File.Exists(currentFile)) {
+						subprocess = System.IO.Path.GetDirectoryName(currentFile) + "\\" + System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + " Browser.exe";
+
+						if (!System.IO.File.Exists(subprocess)) {
 							System.IO.File.Copy(currentFile, subprocess);
 						}
+
+						if (System.IO.File.Exists(subprocess)) {
+							settings.BrowserSubprocessPath = subprocess;
+						}
 					}
-				}
-				if (System.IO.File.Exists(subprocess)) {
-					settings.BrowserSubprocessPath = subprocess;
 				}
 				//settings.LocalesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\locales\\";
 				//settings.ResourcesDirPath = BusEngine.Engine.ExeDirectory + "CefSharp\\";
