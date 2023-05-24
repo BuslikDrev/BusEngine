@@ -90,7 +90,7 @@
         text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" title="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
         </span>
       </div>
-      <button onclick="window.sessionStorage.setItem('mode', true); BusEngine.open('main.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
+      <button onclick="window.localStorage.setItem('mode', true); BusEngine.open('main.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
 <script type="text/javascript">
 console.log('login');
 if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {

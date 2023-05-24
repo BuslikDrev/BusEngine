@@ -192,6 +192,7 @@ body video {
     font-size: 24px;
     color: #ffffff;
     width: 50%;
+    text-shadow: #000 0 0 5px;
 }
 #menu .content .window .account span {
     font-size: 14px;
@@ -200,7 +201,7 @@ body video {
     height: 48px;
     width: 48px;
     float: left;
-    margin-top: 10px;
+    padding-top: 5px;
     margin-right: 10px;
 }
 #menu .content .window .button-engine {
@@ -429,7 +430,7 @@ body video {
           <div class="window">
             <div class="account">
                <img src="Icons/BusEngine_white.png" alt="BuslikDrev">
-              <span>Welcom back</span><br>BuslikDrev
+              <span data-localization="text_welcome">Добро пожаловать</span><br>BuslikDrev
             </div>
             <div class="button-engine">
               <button onclick=""><span>Launch Sandbox</span><br>BusEngine 0.4</button>
@@ -745,22 +746,22 @@ body video {
           </div>
         </div>
       </div>
-      <button onclick="window.sessionStorage.removeItem('mode'); BusEngine.open('login.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
+      <button onclick="window.localStorage.removeItem('mode'); BusEngine.open('login.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
 <script type="text/javascript">
-
-BusEngine.tools.ajax('https://busengine.buslikdrev.by/launcher/Icons/spritemap.svg', {responseType:'document',success: function(ajax) {
+/* BusEngine.tools.ajax('https://busengine.buslikdrev.by/launcher/Icons/spritemap.svg', {responseType:'document',success: function(ajax) {
 	//console.logs(ajax);
-	//var svg, x = ajax.querySelectorAll('[id]');
-	//var b = document.querySelector('.content');
-	//for (var i = 0; i < x.length; ++i) {
-		//svg = document.createElement('svg');
-		//svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-		//svg.innerHTML = '<use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#' + x[i].id + '"></use>';
-		//b.appendChild(svg);
-	//}
-}});
-
+	var svg, x = ajax.querySelectorAll('[id]');
+	var b = document.querySelector('.content');
+	for (var i = 0; i < x.length; ++i) {
+		svg = document.createElement('svg');
+		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+		svg.innerHTML = '<use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#' + x[i].id + '"></use>';
+		b.appendChild(svg);
+	}
+}}); */
+//BusEngine.tools.ajax('https://busengine.buslikdrev.by/', {responseType:'document',success: function(ajax) {}});
 console.log('main');
+console.log('mode', window.localStorage.getItem('mode'));
 if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
 	BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
 } else {
@@ -768,7 +769,7 @@ if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.s
 }
 
 BusEngine.localization.initialize();
-console.logs(window.navigator.connection);
+
 if (('connection' in window.navigator ? ['2g', 'slow-2g'].indexOf(window.navigator.connection.effectiveType) == -1 : true) && 'matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
 	window.addEventListener('mouseover', function() {
 		BusEngine.polyfillTagSource();
