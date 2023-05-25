@@ -113,14 +113,14 @@
                     <a href="cs/Material.html" class="lastfix black">BusEngine.Material (Class)</a>
                     <a href="cs/Model.html" class="lastfix black">BusEngine.Model (Class)</a>
                     <a href="cs/Physics.html" class="lastfix black">BusEngine.Physics (Class)</a>
-                    <a href="cs/Plugin.html" class="lastfix blue">BusEngine.Plugin (Class)</a>
+                    <a href="cs/Plugin.html" class="lastfix green">BusEngine.Plugin (Class)</a>
                     <a href="cs/Rendering.html" class="lastfix black">BusEngine.Rendering (Class)</a>
                     <a href="cs/Vector.html" class="lastfix black">BusEngine.Vector (Class)</a>
                     <a href="cs/Video.html" class="lastfix blue">BusEngine.Video (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-3-2"><label for="menu-3-2" data-position="2"><span>BusEngine.Game (Namespace)</span></label>
                   <div class="menu-3-2" data-position="2">
-                    <a href="cs/Game.MyPlugin.html" class="lastfix blue">BusEngine.Game.MyPlugin (Class)</a>
+                    <a href="cs/Game.MyPlugin.html" class="lastfix green">BusEngine.Game.MyPlugin (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-3-3"><label for="menu-3-3" data-position="2"><span>BusEngine.Tools (Namespace)</span></label>
                   <div class="menu-3-3" data-position="2">
@@ -158,6 +158,7 @@
           </div>
           <p>BusEngine.dll</p>
           <h1 class="notranslate">BusEngine.Browser (Class)</h1>
+          <p>Этот класс скоро будет переведён из статической работы в нестатическую для многоразового вызова - имейте ввиду.</p>
           <p>Класс отвечающий за работу с Web файлами (htm, html, css, js, xml и т.д.). Это Web браузер движка.<br>В основе BusEngine.Browser лежит библиотека <span class="notranslate"><a href="https://github.com/cefsharp/CefSharp" title="CefSharp и Chromium" rel="noreferrer noopener nofollow" target="_blank">CefSharp и Chromium</a></span>. Найден один минус - не работает видео с кодеком mp4/h.264 т.к. этот кодек защищён патентом и бесплатно нельзя его использовать, в итоге бесплатный браузер Сhromium не поддерживает этот кодек. <a href="https://github.com/cefsharp/CefSharp/wiki/General-Usage#multimedia-audiovideo" title="CefSharp и Chromium" rel="noreferrer noopener nofollow" target="_blank">Решение есть</a> - нужно собрать сборку Chromium с поддержкой этого формата. Но я это изучать и делать не планирую, так как есть альтернатива в виде формата webm. Чтобы получить качественное видео в формате webm рекомендую конвертёр <a href="http://freetime.tech/formatfactory/" title="Format Factory" rel="noreferrer noopener nofollow" target="_blank">Format Factory</a>.</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
@@ -192,7 +193,30 @@
           <h2 id="SubClasses" class="h2">Подклассы</h2>
           <table>
             <tbody>
-              <tr>Подклассов нет</tr>
+              <tr id="BusEngine.Browser.OnDownloadArgs">
+                <td><p><span class="notranslate"><a href="cs/Browser.html#BusEngine.Browser.OnDownloadArgs" title="BusEngine.Browser.OnDownloadArgs">(BusEngine.Browser.OnDownloadArgs) _onDownloadArgs = BusEngine.Browser.OnDownloadArgs()</a></span></p></td>
+              </tr>
+              <tr>
+                <td><p>Подкласс (struct) уровня класса выводит object массив содержащий пути файла, количество и скорость скачивания файлы.</p><p>
+(string)_onDownloadArgs.ContentDisposition; // Возвращает расположение содержимого.
+(long)_onDownloadArgs.CurrentSpeed; // Возвращает простую оценку скорости в байтах/с.
+(System.Nullable<System.DateTime>)_onDownloadArgs.EndTime; // Возвращает время окончания загрузки.
+(string)_onDownloadArgs.FullPath; // Возвращает полный путь к загружаемому или загружаемому файлу.
+(int)_onDownloadArgs.Id; // Возвращает уникальный идентификатор для этой загрузки.
+(bool)_onDownloadArgs.IsCancelled; // Возвращает true, если загрузка была отменена или прервана.
+(bool)_onDownloadArgs.IsComplete; // Возвращает true, если загрузка завершена.
+(bool)_onDownloadArgs.IsInProgress; // Возвращает true, если идет загрузка.
+(bool)_onDownloadArgs.IsValid; // Возвращает true, если этот объект действителен. Не вызывайте никаких других методов, если эта функция возвращает false.
+(string)_onDownloadArgs.MimeType; // Возвращает MIME-тип.
+(string)_onDownloadArgs.OriginalUrl; // Возвращает URL-адрес, каким он был до любых перенаправлений.
+(int)_onDownloadArgs.PercentComplete; // Возвращает приблизительный процент завершения или -1, если общий размер полученного файла неизвестен.
+(long)_onDownloadArgs.ReceivedBytes; // Возвращает количество полученных байтов.
+(System.Nullable<System.DateTime>)_onDownloadArgs.StartTime; // Возвращает время начала загрузки.
+(string)_onDownloadArgs.SuggestedFileName; // Возвращает предложенное имя файла.
+(long)_onDownloadArgs.TotalBytes; // Возвращает общее количество байтов.
+(string)_onDownloadArgs.Url; // Возвращает URL.
+</p></td>
+              </tr>
             </tbody>
           </table>
           <h2 id="Constants" class="h2">Константы</h2>
@@ -216,6 +240,18 @@
           <h2 id="Events" class="h2">События</h2>
           <table>
             <tbody>
+              <tr id="BusEngine.Browser.OnDownloadStatic">
+                <td><p><a href="cs/Browser.html#BusEngine.Browser.OnDownloadStatic"><span class="notranslate">(void)BusEngine.Browser.OnDownloadStatic</span></a></p></td>
+              </tr>
+              <tr>
+                <td><p>Событие (статическое) уровня класса принимает метод с одним параметром <span class="notranslate">(BusEngine.Browser.OnDownloadArgs)</span>. Событие <span class="notranslate">"BusEngine.Browser.OnDownloadStatic"</span> будет вызывать ваш метод, когда будет загружаться любой файл и передавать в первый параметр подкласс  <span class="notranslate">"<a href="cs/Browser.html#BusEngine.Browser.OnDownloadArgs" title="BusEngine.Browser.OnDownloadArgs">BusEngine.Browser.OnDownloadArgs()</a>"</span>.</p></td>
+              </tr>
+              <tr id="BusEngine.Browser.OnLoadStatic">
+                <td><p><a href="cs/Browser.html#BusEngine.Browser.OnLoadStatic"><span class="notranslate">(void)BusEngine.Browser.OnLoadStatic</span></a></p></td>
+              </tr>
+              <tr>
+                <td><p>Событие (статическое) уровня класса принимает метод без параметров. Событие <span class="notranslate">"BusEngine.Browser.OnLoadStatic"</span> будет вызывать ваш метод, когда страница будет загружена в <span class="notranslate">"BusEngine.Browser.Initialize()"</span>.</p></td>
+              </tr>
               <tr id="BusEngine.Browser.OnPostMessageStatic">
                 <td><p><a href="cs/Browser.html#BusEngine.Browser.OnPostMessageStatic"><span class="notranslate">(void)BusEngine.Browser.OnPostMessageStatic</span></a></p></td>
               </tr>
