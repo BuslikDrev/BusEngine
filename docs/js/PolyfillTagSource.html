@@ -202,23 +202,24 @@
             </tbody>
           </table>
           <h2 id="api" class="h2">Пример файла index.html</h2>
-          <p>В коде отражён запуск перевода при старте своего плагина с названием <span class="notranslate">"MyPlugin"</span>.</p>
+          <p>В коде отражён запуск видео в зависимости от браузера и разрешения монитора после полной загрузки страницы.</p>
           <div class="csharp notranslate">
-<ol><li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
+<ol>
+<li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
 <li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">html</span>&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="kw2">head</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sy0">&lt;</span>meta charset<span class="sy0">=</span><span class="st0">"UTF-8"</span><span class="sy0">&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">script</span> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>&gt;</span></div></li>
 <li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">style</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/css"</span>&gt;</span></div></li>
 <li class="li1"><div class="de1">body picture img,</div></li>
 <li class="li1"><div class="de1">body video {</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;position: absolute;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;top: 0;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;z-index: -1;</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;object-fit: cover;</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;width:100%;</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;height:100%;</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;top: 50%;</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;left: 50%;</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;z-index: -1;</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;transform: translate(-50%, -50%);</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;background-repeat: no-repeat;</div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;background-size: cover;</div></li>

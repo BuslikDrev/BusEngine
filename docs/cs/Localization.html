@@ -159,6 +159,8 @@
           <p>BusEngine.dll</p>
           <h1 class="notranslate">BusEngine.Localization (Class)</h1>
           <p>Класс отвечающий за работу с Языковыми файлами. Это мультиязычность движка. В данной версии BusEngine включена поддержка Белорусского, Русского и Украинского языка.</p>
+          <p>Языковые файлы располагаются в папке "Localization". Папка "Localization" можно расположить там, где файл настроек проекта "*.busproject" или в папке игровых файлов <span class="notranslate">"<a href="Engine.html#BusEngine.Engine.DataDirectory" title="BusEngine.Engine.DataDirectory" target="_blank">BusEngine.Engine.DataDirectory</a>"</span>. Название папки "Localization" можно изменить в файле настроек проекта "*.busproject".</p>
+          <p>При создании проекта для WebGL (браузеров), языковые файлы будут преобразованы в json формат и помещены в папку "Localization" по пути нахождения игровых файлов <span class="notranslate">"<a href="Engine.html#BusEngine.Engine.DataDirectory" title="BusEngine.Engine.DataDirectory" target="_blank">BusEngine.Engine.DataDirectory</a>"</span> (https://mysite.by/Localization/).</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
@@ -178,49 +180,25 @@
                 <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.GetLanguage">(string)_localization.GetLanguage(string)</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (нестатический) уровня класса принимает string строку для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = _localization.Get("text_start_game");"</span> Если переменной нет в файле, то вернёт название переменной.</p></td>
-              </tr>
-              <tr id="BusEngine.Localization.GetLanguage_2">
-                <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.GetLanguage_2">(string)_localization.GetLanguage(string, string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (нестатический) уровня класса принимает string строку в первый параметр для указания названия языкового файла и string строку во второй параметр для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = _localization.Get("myplugin", "text_start_game");"</span> Если переменной нет в файле или файла, то вернёт название переменной.</p></td>
+                <td><p>Метод (нестатический) уровня класса принимает string строку для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = _localization.GetLanguage("text_start_game");"</span> Если переменной нет в файле, то вернёт название переменной.</p></td>
               </tr>
               <tr id="BusEngine.Localization.SetLanguage">
                 <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.SetLanguage">(void)_localization.SetLanguage(string, string)</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (нестатический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"_localization.Set("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
-              </tr>
-              <tr id="BusEngine.Localization.SetLanguage_2">
-                <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.SetLanguage_2">(void)_localization.SetLanguage(string, string, string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (нестатический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"_localization.Set("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
+                <td><p>Метод (нестатический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"_localization.SetLanguage("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
               </tr>
               <tr id="BusEngine.Localization.GetLanguageStatic">
                 <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.GetLanguageStatic">(string)BusEngine.Localization.GetLanguageStatic(string)</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = BusEngine.Localization.GetLanguage("text_start_game");"</span> Если переменной нет в файле, то вернёт название переменной. Не реакомендуется использовать, если хотите получить переменную не из языкового файла по умолчанию.</p></td>
-              </tr>
-              <tr id="BusEngine.Localization.GetLanguageStatic_2">
-                <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.GetLanguageStatic_2">(string)BusEngine.Localization.GetLanguageStatic(string, string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку в первый параметр для указания названия языкового файла и string строку во второй параметр для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = BusEngine.Localization.GetLanguage("myplugin", "text_start_game");"</span> Если переменной нет в файле, то вернёт название переменной. Реакомендуется использовать этот метод для быстрого доступа к переменной и когда не создавали объект <span class="notranslate">"<a href="cs/Localization.html#BusEngine.Localization" title="BusEngine.Localization">BusEngine.Localization</a>"</span>.</p></td>
+                <td><p>Метод (статический) уровня класса принимает string строку для получения из языкового файла значение указанной переменной. <span class="notranslate">"string text_start_game = BusEngine.Localization.GetLanguageStatic("text_start_game");"</span> Если переменной нет в файле, то вернёт название переменной. Не реакомендуется использовать, если хотите получить переменную не из языкового файла по умолчанию.</p></td>
               </tr>
               <tr id="BusEngine.Localization.SetLanguageStatic">
                 <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.SetLanguageStatic">(void)BusEngine.Localization.SetLanguageStatic(string, string)</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"BusEngine.Localization.SetLanguage("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
-              </tr>
-              <tr id="BusEngine.Localization.SetLanguageStatic_2">
-                <td><p><span class="notranslate"><a href="cs/Localization.html#BusEngine.Localization.SetLanguageStatic_2">(void)BusEngine.Localization.SetLanguageStatic(string, string)</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"BusEngine.Localization.SetLanguage("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
+                <td><p>Метод (статический) уровня класса принимает string строку для установки в языковой файл значение указанной переменной. <span class="notranslate">"BusEngine.Localization.SetLanguageStatic("text_start_game", "<span class="notranslate">Начать игру</span>");"</span>.</p></td>
               </tr>
             </tbody>
           </table>
