@@ -27,9 +27,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-TileImage" content="Icons/msapplication-144x144.png">
     <meta name="theme-color" content="#000000">
-    <title>Browser | API BusEngine</title>
+    <title>postMessage | API BusEngine</title>
     <base href="/BusEngine/">
-    <link href="https://buslikdrev.github.io/BusEngine/cs/Browser.html" rel="canonical">
+    <link href="https://buslikdrev.github.io/BusEngine/js/PostMessage.html" rel="canonical">
     <link href="bus_app.json?v=1.0.13.4" type="application/json" rel="manifest">
     <link href="Icons/favicon-16x16.png" type="image/png" rel="icon" sizes="16x16">
     <link href="Icons/favicon-32x32.png" type="image/png" rel="icon" sizes="32x32">
@@ -98,10 +98,10 @@
               </li>
               <li class="lioff notranslate"><input type="checkbox" id="menu-3" checked="checked"><label for="menu-3" data-position="2"><a href="index.html#api-cs">API BusEngine (C#)</a></label>
                 <div class="menu-3" data-position="2">
-                  <input type="checkbox" id="menu-3-1" checked="checked"><label for="menu-3-1" data-position="2"><span>BusEngine (Namespace)</span></label>
+                  <input type="checkbox" id="menu-3-1"><label for="menu-3-1" data-position="2"><span>BusEngine (Namespace)</span></label>
                   <div class="menu-3-1" data-position="2">
                     <a href="cs/Audio.html" class="lastfix blue">BusEngine.Audio (Class)</a>
-                    <a href="cs/Browser.html" class="lastfix blue active">BusEngine.Browser (Class)</a>
+                    <a href="cs/Browser.html" class="lastfix blue">BusEngine.Browser (Class)</a>
                     <a href="cs/Camera.html" class="lastfix black">BusEngine.Camera (Class)</a>
                     <a href="cs/Core.html" class="lastfix black">BusEngine.Core (Class)</a>
                     <a href="cs/Engine.html" class="lastfix red">BusEngine.Engine (Class)</a>
@@ -135,16 +135,16 @@
               </li>
               <li class="lioff notranslate"><input type="checkbox" id="menu-5" checked="checked"><label for="menu-5" data-position="2"><a href="index.html#api-js">API BusEngine (JS)</a></label>
                 <div class="menu-5" data-position="2">
-                  <input type="checkbox" id="menu-5-1"><label for="menu-5-1" data-position="2"><span>BusEngine (Namespace)</span></label>
+                  <input type="checkbox" id="menu-5-1" checked="checked"><label for="menu-5-1" data-position="2"><span>BusEngine (Namespace)</span></label>
                   <div class="menu-5-1" data-position="2">
                     <a href="js/Engine.html" class="lastfix blue">BusEngine.engine (Object)</a>
                     <a href="js/Localization.html" class="lastfix green">BusEngine.localization (Object)</a>
                     <a href="js/Log.html" class="lastfix green">BusEngine.log (Object)</a>
                     <a href="js/Open.html" class="lastfix green">BusEngine.open (Object)</a>
                     <a href="js/PolyfillTagSource.html" class="lastfix green">BusEngine.polyfillTagSource (Object)</a>
-                    <a href="js/PostMessage.html" class="lastfix green">BusEngine.postMessage (Object)</a>
+                    <a href="js/PostMessage.html" class="lastfix green active">BusEngine.postMessage (Object)</a>
                     <a href="js/Tools.Ajax.html" class="lastfix green">BusEngine.tools.ajax (Object)</a>
-                    <a href="js/Tools.Json.html" class="lastfix green">BusEngine.tools.json (Object)</a>
+                    <a href="js/Tools.Json.html" class="lastfix green">BusEngine.tools.json (Object)</a></a>
                   </div>
                 </div>
               </li>
@@ -156,67 +156,25 @@
           <div class="breadcrumb">
             <a class="n1" href="index.html">Главная</a>
           </div>
-          <p>BusEngine.dll</p>
-          <h1 class="notranslate">BusEngine.Browser (Class)</h1>
-          <p>Этот класс скоро будет переведён из статической работы в нестатическую для многоразового вызова - имейте ввиду.</p>
-          <p>Класс отвечающий за работу с Web файлами (htm, html, css, js, xml и т.д.). Это Web браузер движка.<br>В основе BusEngine.Browser лежит библиотека <span class="notranslate"><a href="https://github.com/cefsharp/CefSharp" title="CefSharp и Chromium" rel="noreferrer noopener nofollow" target="_blank">CefSharp и Chromium</a></span>. Найден один минус - не работает видео с кодеком mp4/h.264 т.к. этот кодек защищён патентом и бесплатно нельзя его использовать, в итоге бесплатный браузер Сhromium не поддерживает этот кодек. <a href="https://github.com/cefsharp/CefSharp/wiki/General-Usage#multimedia-audiovideo" title="CefSharp и Chromium" rel="noreferrer noopener nofollow" target="_blank">Решение есть</a> - нужно собрать сборку Chromium с поддержкой этого формата. Но я это изучать и делать не планирую, так как есть альтернатива в виде формата webm. Чтобы получить качественное видео в формате webm рекомендую конвертёр <a href="http://freetime.tech/formatfactory/" title="Format Factory" rel="noreferrer noopener nofollow" target="_blank">Format Factory</a>.</p>
+          <p>BusEngine.js</p>
+          <h1 class="notranslate">BusEngine.postMessage (Object)</h1>
+          <p>Объект отвечающий за отправку сообщений в событие браузера <span class="notranslate">"<a href="cs/Browser.html#BusEngine.Browser.OnPostMessageStatic" title="BusEngine.Browser.OnPostMessageStatic" target="_blank">BusEngine.Browser.OnPostMessageStatic</a>"</span>.</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.Browser.Initialize">
-                <td><p><a href="cs/Browser.html#BusEngine.Browser.Initialize" title="BusEngine.Browser.Initialize"><span class="notranslate">(void)BusEngine.Browser.Initialize(string, string)</span></a></p></td>
+              <tr id="BusEngine.PostMessage">
+                <td><p><span class="notranslate"><a href="js/PostMessage.html#BusEngine.PostMessage">BusEngine.postMessage(string)</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод (статический) уровня класса принимает первым параметром string строку веб адреса или полного пути файла, или относительного пути файла от <span class="notranslate">"BusEngine.Engine.DataDirectory"</span> до HTML страницы для запуска браузера и загрузки указанной страницы. Второй параметр string строка корневого пути каталога расположения index.html относительного пути от <span class="notranslate">"BusEngine.Engine.DataDirectory"</span> до index.html или полный путь каталога.</p></td>
-              </tr>
-              <tr id="BusEngine.Browser.ExecuteJS">
-                <td><p><a href="cs/Browser.html#BusEngine.Browser.ExecuteJS" title="BusEngine.Browser.ExecuteJS"><span class="notranslate">(void)BusEngine.Browser.ExecuteJSStatic(string)</span></a></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса принимает string строку JavaScript кода для его выполнения в текущей вкладки браузера. Это полезно для передачи данных из СSharp кода.</p></td>
-              </tr>
-              <tr id="BusEngine.Browser.ShutdownStatic">
-                <td><p><a href="cs/Browser.html#BusEngine.Browser.ShutdownStatic" title="BusEngine.Browser.ShutdownStatic"><span class="notranslate">(void)BusEngine.Browser.ShutdownStatic()</span></a></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса для закрытия <span class="notranslate">"BusEngine.Browser"</span>.</p></td>
-              </tr>
-              <tr id="BusEngine.Browser.Dispose">
-                <td><p><a href="cs/Browser.html#BusEngine.Browser.Dispose" title="BusEngine.Browser.Dispose"><span class="notranslate">(void)BusEngine.Browser.Dispose()</span></a></p></td>
-              </tr>
-              <tr>
-                <td><p>Метод (статический) уровня класса для закрытия <span class="notranslate">"BusEngine.Browser"</span> и уничтожения объекта Браузера для освобождения оперативной памяти. Вызывать необязательно так как память освобождается автоматический при событии закрытия Браузера <span class="notranslate">"<a href="cs/Browser.html#BusEngine.Browser.ShutdownStatic" title="BusEngine.Browser.ShutdownStatic">BusEngine.Browser.ShutdownStatic()</a>"</span>.</p></td>
+                <td><p>Метод уровня BusEngine принимает string строку и отправляет её в событие браузера <span class="notranslate">"<a href="cs/Browser.html#BusEngine.Browser.OnPostMessageStatic" title="BusEngine.Browser.OnPostMessageStatic" target="_blank">BusEngine.Browser.OnPostMessageStatic</a>"</span>.</p></td>
               </tr>
             </tbody>
           </table>
-          <a href="cs/Browser.html#top" class="top_link">Наверх</a>
+          <a href="js/PostMessage.html#top" class="top_link">Наверх</a>
           <h2 id="SubClasses" class="h2">Подклассы</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.Browser.OnDownloadArgs">
-                <td><p><span class="notranslate"><a href="cs/Browser.html#BusEngine.Browser.OnDownloadArgs" title="BusEngine.Browser.OnDownloadArgs">(BusEngine.Browser.OnDownloadArgs) _onDownloadArgs = BusEngine.Browser.OnDownloadArgs()</a></span></p></td>
-              </tr>
-              <tr>
-                <td><p>Подкласс (struct) уровня класса выводит object массив содержащий пути файла, количество и скорость скачивания файла.</p><p>
-(string)_onDownloadArgs.ContentDisposition; // Возвращает расположение содержимого.<br>
-(long)_onDownloadArgs.CurrentSpeed; // Возвращает простую оценку скорости в байтах/с.<br>
-(System.Nullable&lt;System.DateTime&gt;)_onDownloadArgs.EndTime; // Возвращает время окончания загрузки.<br>
-(string)_onDownloadArgs.FullPath; // Возвращает полный путь к загружаемому или загружаемому файлу.<br>
-(int)_onDownloadArgs.Id; // Возвращает уникальный идентификатор для этой загрузки.<br>
-(bool)_onDownloadArgs.IsCancelled; // Возвращает true, если загрузка была отменена или прервана.<br>
-(bool)_onDownloadArgs.IsComplete; // Возвращает true, если загрузка завершена.<br>
-(bool)_onDownloadArgs.IsInProgress; // Возвращает true, если идет загрузка.<br>
-(bool)_onDownloadArgs.IsValid; // Возвращает true, если этот объект действителен. Не вызывайте никаких других методов, если эта функция возвращает false.<br>
-(string)_onDownloadArgs.MimeType; // Возвращает MIME-тип.<br>
-(string)_onDownloadArgs.OriginalUrl; // Возвращает URL-адрес, каким он был до любых перенаправлений.<br>
-(int)_onDownloadArgs.PercentComplete; // Возвращает приблизительный процент завершения или -1, если общий размер полученного файла неизвестен.<br>
-(long)_onDownloadArgs.ReceivedBytes; // Возвращает количество полученных байтов.<br>
-(System.Nullable&lt;System.DateTime&gt;)_onDownloadArgs.StartTime; // Возвращает время начала загрузки.<br>
-(string)_onDownloadArgs.SuggestedFileName; // Возвращает предложенное имя файла.<br>
-(long)_onDownloadArgs.TotalBytes; // Возвращает общее количество байтов.<br>
-(string)_onDownloadArgs.Url; // Возвращает URL.<br>
-</p></td>
-              </tr>
+              <tr>Подклассов нет</tr>
             </tbody>
           </table>
           <h2 id="Constants" class="h2">Константы</h2>
@@ -240,29 +198,29 @@
           <h2 id="Events" class="h2">События</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.Browser.OnDownloadStatic">
-                <td><p><a href="cs/Browser.html#BusEngine.Browser.OnDownloadStatic"><span class="notranslate">(void)BusEngine.Browser.OnDownloadStatic</span></a></p></td>
-              </tr>
-              <tr>
-                <td><p>Событие (статическое) уровня класса принимает метод с одним параметром <span class="notranslate">(BusEngine.Browser.OnDownloadArgs)</span>. Событие <span class="notranslate">"BusEngine.Browser.OnDownloadStatic"</span> будет вызывать ваш метод, когда будет загружаться любой файл и передавать в первый параметр подкласс  <span class="notranslate">"<a href="cs/Browser.html#BusEngine.Browser.OnDownloadArgs" title="BusEngine.Browser.OnDownloadArgs">BusEngine.Browser.OnDownloadArgs()</a>"</span>.</p></td>
-              </tr>
-              <tr id="BusEngine.Browser.OnLoadStatic">
-                <td><p><a href="cs/Browser.html#BusEngine.Browser.OnLoadStatic"><span class="notranslate">(void)BusEngine.Browser.OnLoadStatic</span></a></p></td>
-              </tr>
-              <tr>
-                <td><p>Событие (статическое) уровня класса принимает метод без параметров. Событие <span class="notranslate">"BusEngine.Browser.OnLoadStatic"</span> будет вызывать ваш метод, когда страница будет загружена в <span class="notranslate">"BusEngine.Browser.Initialize()"</span>.</p></td>
-              </tr>
-              <tr id="BusEngine.Browser.OnPostMessageStatic">
-                <td><p><a href="cs/Browser.html#BusEngine.Browser.OnPostMessageStatic"><span class="notranslate">(void)BusEngine.Browser.OnPostMessageStatic</span></a></p></td>
-              </tr>
-              <tr>
-                <td><p>Событие (статическое) уровня класса принимает метод с двумя параметрами <span class="notranslate">(object, string)</span>. Событие <span class="notranslate">"BusEngine.Browser.OnPostMessageStatic"</span> будет вызывать ваш метод, когда вы вызываете в JavaScript коде функцию <span class="notranslate">"BusEngine.postMessage(string)"</span> и передавать строку во второй параметр вашего метода, а в первый параметр будет приходить объект <span class="notranslate">"BusEngine.Browser()"</span>.</p></td>
-              </tr>
+              <tr>Событий нет</tr>
             </tbody>
           </table>
-          <a href="cs/Browser.html#top" class="top_link">Наверх</a>
+          <h2 id="api" class="h2">Пример файла index.html</h2>
+          <p>В коде отражена отправка сообщения в CSharp.</p>
+          <div class="csharp notranslate">
+<ol>
+<li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/html.html"><span class="kw2">html</span></a> <span class="kw3">lang</span><span class="sy0">=</span><span class="st0">"ru"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/meta.html"><span class="kw2">meta</span></a> <span class="kw3">charset</span><span class="sy0">=</span><span class="st0">"UTF-8"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;BusEngine.postMessage('Я программист!');</div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/html.html"><span class="kw2">html</span></a>&gt;</span></div></li>
+</ol>
+          </div>
           <h2 id="Example" class="h2">Пример файла Program.cs</h2>
-          <p>В коде отражён запуск браузера и страницы расположенной относительно папки игровых файлов <span class="notranslate">"<a href="cs/Engine.html#BusEngine.Engine.DataDirectory" title="BusEngine.Engine.DataDirectory" target="_blank">BusEngine.Engine.DataDirectory</a>"</span> при старте своего плагина с названием <span class="notranslate">"MyPlugin"</span>.</p>
+          <p>В коде отражён запуск браузера и страницы "index.html" расположенной относительно папки игровых файлов <span class="notranslate">"<a href="cs/Engine.html#BusEngine.Engine.DataDirectory" title="BusEngine.Engine.DataDirectory" target="_blank">BusEngine.Engine.DataDirectory</a>"</span> при старте своего плагина с названием <span class="notranslate">"MyPlugin"</span>.</p>
           <div class="csharp notranslate">
 <ol>
 <li class="li1"><div class="de1"><span class="coMULTI translate">/** API BusEngine.Game - пользовательский код */</span></div></li>
@@ -273,17 +231,7 @@
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> InitializeСanvas<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Browser</span><span class="sy0">.</span><span class="me1">Initialize</span><span class="br0">(</span><span class="st0">"index.html"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Browser</span><span class="sy0">.</span><span class="me1">OnPostMessageStatic</span> <span class="sy0">+=</span> <span class="br0">(</span><span class="kw4">string</span> message<span class="br0">)</span> <span class="sy0">=&gt;</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">if</span> <span class="br0">(</span>message <span class="sy0">==</span> <span class="st0">"Exit"</span><span class="br0">)</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Engine</span><span class="sy0">.</span><span class="me1">Shutdown</span><span class="br0">(</span><span class="br0">)</span><span class="sy0">;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span> <span class="kw1">else</span> <span class="kw1">if</span> <span class="br0">(</span>message <span class="sy0">==</span> <span class="st0">"Debug"</span><span class="br0">)</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"JavaScript: Привет CSharp!"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span><span class="st0">"На команду: "</span> <span class="sy0">+</span> message<span class="br0">)</span><span class="sy0">;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Browser</span><span class="sy0">.</span><span class="me1">ExecuteJSStatic</span><span class="br0">(</span><span class="st0">"document.dispatchEvent(new CustomEvent('BusEngineMessage', {bubbles: true, detail: {hi: 'CSharp: Прювэт JavaScript!', data: 'Получил твою команду! Вось яна: "</span> <span class="sy0">+</span> message <span class="sy0">+</span> <span class="st0">"'}}));"</span><span class="br0">)</span><span class="sy0">;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span> <span class="kw1">else</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">if</span> <span class="br0">(</span>message<span class="sy0">.</span><span class="me1">Substring</span><span class="br0">(</span><span class="nu0">0</span>, <span class="nu0">8</span><span class="br0">)</span> <span class="sy0">==</span> <span class="st0">"console|"</span><span class="br0">)</span> <span class="br0">{</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span>message<span class="sy0">.</span><span class="me1">Substring</span><span class="br0">(</span><span class="nu0">8</span><span class="br0">)</span><span class="br0">)</span><span class="sy0">;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span>message<span class="br0">)</span><span class="sy0">;</span>&nbsp;<span class="co1 translate">// Я программист!</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span><span class="sy0">;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
@@ -292,7 +240,7 @@
 <li class="li1"><div class="de1"><span class="coMULTI translate">/** API BusEngine.Game - пользовательский код */</span></div></li>
 </ol>
           </div>
-          <a href="cs/Browser.html#top" class="top_link">Наверх</a>
+          <a href="js/PolyfillTagSource.html#top" class="top_link">Наверх</a>
         </div>
       </div>
     </main>

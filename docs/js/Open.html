@@ -27,9 +27,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-TileImage" content="Icons/msapplication-144x144.png">
     <meta name="theme-color" content="#000000">
-    <title>polyfillTagSource | API BusEngine</title>
+    <title>open | API BusEngine</title>
     <base href="/BusEngine/">
-    <link href="https://buslikdrev.github.io/BusEngine/js/PolyfillTagSource.html" rel="canonical">
+    <link href="https://buslikdrev.github.io/BusEngine/js/Open.html" rel="canonical">
     <link href="bus_app.json?v=1.0.13.4" type="application/json" rel="manifest">
     <link href="Icons/favicon-16x16.png" type="image/png" rel="icon" sizes="16x16">
     <link href="Icons/favicon-32x32.png" type="image/png" rel="icon" sizes="32x32">
@@ -140,8 +140,8 @@
                     <a href="js/Engine.html" class="lastfix blue">BusEngine.engine (Object)</a>
                     <a href="js/Localization.html" class="lastfix green">BusEngine.localization (Object)</a>
                     <a href="js/Log.html" class="lastfix green">BusEngine.log (Object)</a>
-                    <a href="js/Open.html" class="lastfix green">BusEngine.open (Object)</a>
-                    <a href="js/PolyfillTagSource.html" class="lastfix green active">BusEngine.polyfillTagSource (Object)</a>
+                    <a href="js/Open.html" class="lastfix green active">BusEngine.open (Object)</a>
+                    <a href="js/PolyfillTagSource.html" class="lastfix green">BusEngine.polyfillTagSource (Object)</a>
                     <a href="js/PostMessage.html" class="lastfix green">BusEngine.postMessage (Object)</a>
                     <a href="js/Tools.Ajax.html" class="lastfix green">BusEngine.tools.ajax (Object)</a>
                     <a href="js/Tools.Json.html" class="lastfix green">BusEngine.tools.json (Object)</a></a>
@@ -157,20 +157,20 @@
             <a class="n1" href="index.html">Главная</a>
           </div>
           <p>BusEngine.js</p>
-          <h1 class="notranslate">BusEngine.polyfillTagSource (Object)</h1>
-          <p>Объект отвечающий за работу атрибута "media" в html-теге "source" тега "video".</p>
+          <h1 class="notranslate">BusEngine.open (Object)</h1>
+          <p>Объект отвечающий за отладку кода. Это консоль движка, а значит в нём будет вестить обработка консольных команд (выполнение, сохранение, загрузка и т.д.).</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.PolyfillTagSource">
-                <td><p><span class="notranslate"><a href="js/PolyfillTagSource.html#BusEngine.PolyfillTagSource">BusEngine.polyfillTagSource()</a></span></p></td>
+              <tr id="BusEngine.Open">
+                <td><p><span class="notranslate"><a href="js/Open.html#BusEngine.Open">BusEngine.open()</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод уровня BusEngine не принимает никаких параметров. Можно запускать когда необходимо, но после отрисовки тегов "video".</p></td>
+                <td><p>Метод уровня BusEngine принимает любые параметры и количество. Массивы и объекты конвертирует в json строку для правильного отображения в консоли движка <span class="notranslate">"<a href="cs/Log.html#BusEngine.Log.Info" title="BusEngine.Log.Info" target="_blank">BusEngine.Log.Info()</a>"</span> и добавляет путь вызова этого метода. Можно испоьзовать также <span class="notranslate">"window.console.log()"</span>. Если нужно исходное поведение, то вызывайте <span class="notranslate">"window.console.logs()"</span>.</p></td>
               </tr>
             </tbody>
           </table>
-          <a href="js/PolyfillTagSource.html#top" class="top_link">Наверх</a>
+          <a href="js/Open.html#top" class="top_link">Наверх</a>
           <h2 id="SubClasses" class="h2">Подклассы</h2>
           <table>
             <tbody>
@@ -202,53 +202,23 @@
             </tbody>
           </table>
           <h2 id="api" class="h2">Пример файла index.html</h2>
-          <p>В коде отражён запуск видео в зависимости от браузера и разрешения монитора после полной загрузки страницы.</p>
+          <p>В коде отражён вывод сообщения в консоль движка <span class="notranslate">BusEngine.Log.Info</span>.</p>
           <div class="csharp notranslate">
 <ol>
 <li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">html</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="kw2">head</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sy0">&lt;</span>meta charset<span class="sy0">=</span><span class="st0">"UTF-8"</span><span class="sy0">&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">script</span> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">style</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/css"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">body picture img,</div></li>
-<li class="li1"><div class="de1">body video {</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;position: absolute;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;object-fit: cover;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;width:100%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;height:100%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;top: 50%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;left: 50%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;z-index: -1;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;transform: translate(-50%, -50%);</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-repeat: no-repeat;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-size: cover;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-position-x: center;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-position-y: center;</div></li>
-<li class="li1"><div class="de1">}</div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">style</span>&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">script</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">if ('matchMedia' in window <span class="sc1">&amp;&amp; window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {</span></div></li>
-<li class="li1"><div class="de1"><span class="sc1">&nbsp;&nbsp;&nbsp;&nbsp;window.addEventListener('load', function() {</span></div></li>
-<li class="li1"><div class="de1"><span class="sc1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine.polyfillTagSource();</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;});</div></li>
-<li class="li1"><div class="de1">}</div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">head</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="kw2">body</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;picture&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> srcset<span class="sy0">=</span><span class="st0">"Textures/background_login_1280x720.png"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"image/png"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (max-device-width:1280px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> srcset<span class="sy0">=</span><span class="st0">"Textures/background_login_1920x1080.png"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"image/png"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (min-device-width:1281px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">img</span> loading<span class="sy0">=</span><span class="st0">"eager"</span> decoding<span class="sy0">=</span><span class="st0">"sync"</span> srcset<span class="sy0">=</span><span class="st0">"Textures/background_login_1280x720.png"</span> <span class="kw3">alt</span><span class="sy0">=</span><span class="st0">"background_login"</span> sizes<span class="sy0">=</span><span class="st0">"(max-device-width:1280px) 100px"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="sy0">/</span>picture&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">video</span> autoplay<span class="sy0">=</span><span class="st0">"autoplay"</span> preload<span class="sy0">=</span><span class="st0">"none"</span> muted<span class="sy0">=</span><span class="st0">"false"</span> loop<span class="sy0">=</span><span class="st0">"true"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1280x720.mp4"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/mp4"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (max-device-width:1280px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1280x720.webm"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/webm"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (max-device-width:1280px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1920x1080.mp4"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/mp4"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (min-device-width:1281px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1920x1080.webm"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/webm"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (min-device-width:1281px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">video</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">body</span>&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">html</span>&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/html.html"><span class="kw2">html</span></a> <span class="kw3">lang</span><span class="sy0">=</span><span class="st0">"ru"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/meta.html"><span class="kw2">meta</span></a> <span class="kw3">charset</span><span class="sy0">=</span><span class="st0">"UTF-8"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;BusEngine.log('description 1', 'description 2', {d:'description 3'});&nbsp;// "description 1 description 2 {"d":"description 3"} https://bd.busengine/index.html:57:9</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;window.console.log('description 1', 'description 2', {d:'description 3'});&nbsp;// "description 1 description 2 {"d":"description 3"} https://bd.busengine/index.html:58:9</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;window.console.logs('description 1', 'description 2', {d:'description 3'});&nbsp;// "description 1 description 2 [object Object]</div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/html.html"><span class="kw2">html</span></a>&gt;</span></div></li>
 </ol>
           </div>
           <a href="js/PolyfillTagSource.html#top" class="top_link">Наверх</a>

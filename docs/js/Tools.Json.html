@@ -27,9 +27,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="msapplication-TileImage" content="Icons/msapplication-144x144.png">
     <meta name="theme-color" content="#000000">
-    <title>polyfillTagSource | API BusEngine</title>
+    <title>Tools.Json | API BusEngine</title>
     <base href="/BusEngine/">
-    <link href="https://buslikdrev.github.io/BusEngine/js/PolyfillTagSource.html" rel="canonical">
+    <link href="https://buslikdrev.github.io/BusEngine/cs/Tools.Json.html" rel="canonical">
     <link href="bus_app.json?v=1.0.13.4" type="application/json" rel="manifest">
     <link href="Icons/favicon-16x16.png" type="image/png" rel="icon" sizes="16x16">
     <link href="Icons/favicon-32x32.png" type="image/png" rel="icon" sizes="32x32">
@@ -122,10 +122,10 @@
                   <div class="menu-3-2" data-position="2">
                     <a href="cs/Game.MyPlugin.html" class="lastfix green">BusEngine.Game.MyPlugin (Class)</a>
                   </div>
-                  <input type="checkbox" id="menu-3-3"><label for="menu-3-3" data-position="2"><span>BusEngine.Tools (Namespace)</span></label>
+                  <input type="checkbox" id="menu-3-3" checked="checked"><label for="menu-3-3" data-position="2"><span>BusEngine.Tools (Namespace)</span></label>
                   <div class="menu-3-3" data-position="2">
                     <a href="cs/Tools.Ajax.html" class="lastfix gray">BusEngine.Tools.Ajax (Class)</a>
-                    <a href="cs/Tools.Json.html" class="lastfix blue">BusEngine.Tools.Json (Class)</a>
+                    <a href="cs/Tools.Json.html" class="lastfix blue active">BusEngine.Tools.Json (Class)</a>
                   </div>
                   <input type="checkbox" id="menu-3-10"><label for="menu-3-10" data-position="2"><span>BusEngine.UI (Namespace)</span></label>
                   <div class="menu-3-10" data-position="2">
@@ -135,16 +135,16 @@
               </li>
               <li class="lioff notranslate"><input type="checkbox" id="menu-5" checked="checked"><label for="menu-5" data-position="2"><a href="index.html#api-js">API BusEngine (JS)</a></label>
                 <div class="menu-5" data-position="2">
-                  <input type="checkbox" id="menu-5-1" checked="checked"><label for="menu-5-1" data-position="2"><span>BusEngine (Namespace)</span></label>
+                  <input type="checkbox" id="menu-5-1"><label for="menu-5-1" data-position="2"><span>BusEngine (Namespace)</span></label>
                   <div class="menu-5-1" data-position="2">
                     <a href="js/Engine.html" class="lastfix blue">BusEngine.engine (Object)</a>
                     <a href="js/Localization.html" class="lastfix green">BusEngine.localization (Object)</a>
                     <a href="js/Log.html" class="lastfix green">BusEngine.log (Object)</a>
                     <a href="js/Open.html" class="lastfix green">BusEngine.open (Object)</a>
-                    <a href="js/PolyfillTagSource.html" class="lastfix green active">BusEngine.polyfillTagSource (Object)</a>
+                    <a href="js/PolyfillTagSource.html" class="lastfix green">BusEngine.polyfillTagSource (Object)</a>
                     <a href="js/PostMessage.html" class="lastfix green">BusEngine.postMessage (Object)</a>
                     <a href="js/Tools.Ajax.html" class="lastfix green">BusEngine.tools.ajax (Object)</a>
-                    <a href="js/Tools.Json.html" class="lastfix green">BusEngine.tools.json (Object)</a></a>
+                    <a href="js/Tools.Json.html" class="lastfix green">BusEngine.tools.json (Object)</a>
                   </div>
                 </div>
               </li>
@@ -156,21 +156,27 @@
           <div class="breadcrumb">
             <a class="n1" href="index.html">Главная</a>
           </div>
-          <p>BusEngine.js</p>
-          <h1 class="notranslate">BusEngine.polyfillTagSource (Object)</h1>
-          <p>Объект отвечающий за работу атрибута "media" в html-теге "source" тега "video".</p>
+          <p>BusEngine.dll</p>
+          <h1 class="notranslate">BusEngine.Tools.Json (Class)</h1>
+          <p>Класс отвечающий за конвертацию object содержащие различные типы данных в строку формата JSON и обратно - сериализация и десериализация.<br>Сериализация и десериализация необходима, чтобы не париться с многочисленными вариантам типов данных, а приводить их к одному стилю, где уже с лёгкостью сможете обрабатывать и настраивать условия их обработки.<br>В основе BusEngine.Tools.Json лежит библиотека <span class="notranslate"><a href="https://github.com/JamesNK/Newtonsoft.Json" rel="noreferrer noopener nofollow" target="_blank">Json.NET от NewTonSoft</a></span> и данные по умолчанию конвертируются в <span class="notranslate">"System.Collections.Generic.Dictionary"</span> с добавлением обработки типов т.к. у <span class="notranslate">Json.NET</span> некрасивая реализация проверки и есть такая проблема, что библиотека не обрабатывает первый уровень массива (функции библиотеки не работают для первого уровня массива) в результате решено вручную обработать весь массив данных и привести его полностью к <span class="notranslate">"System.Collections.Generic.Dictionary"</span> отказывшись от возможности использования функционала <span class="notranslate">Json.NET</span>. Привлекательность библиотеки <span class="notranslate">Json.NET</span> в том, что <span class="notranslate">Json.NET</span> понимает комментарии в файле JSON, а такая возможность сильно упрощает разработку. Также посетите описание глобальных методов, полей и свойств <span class="notranslate"><a href="https://learn.microsoft.com/en-us/dotnet/api/system.type?view=netframework-4.7.1" rel="noreferrer noopener nofollow" target="_blank">System.Type от MicroSoft</a></span>.</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
-              <tr id="BusEngine.PolyfillTagSource">
-                <td><p><span class="notranslate"><a href="js/PolyfillTagSource.html#BusEngine.PolyfillTagSource">BusEngine.polyfillTagSource()</a></span></p></td>
+              <tr id="BusEngine.Tools.Json.Encode">
+                <td><p><span class="notranslate"><a href="cs/Tools.Json.html#BusEngine.Tools.Json.Encode" title="BusEngine.Tools.Json.Encode">(string)BusEngine.Tools.Json.Encode(System.Type)</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод уровня BusEngine не принимает никаких параметров. Можно запускать когда необходимо, но после отрисовки тегов "video".</p></td>
+                <td><p>Метод (статический) уровня класса принимает System.Type|object|string|int|Dictionary|List данные для конвертации в строку json формат.</p></td>
+              </tr>
+              <tr id="BusEngine.Tools.Json.Decode">
+                <td><p><span class="notranslate"><a href="cs/Tools.Json.html#BusEngine.Tools.Json.Decode" title="BusEngine.Tools.Json.Decode">(object)BusEngine.Tools.Json.Decode(string, bool)</a></span></p></td>
+              </tr>
+              <tr>
+                <td><p>Метод (статический) уровня класса принимает string строку для конвертации в Dictionary<dynamic, dynamic> (Newtonsoft.Json.Linq.JObject) формат, если нужно получить object формат, то вторым параметром установите true.</p></td>
               </tr>
             </tbody>
           </table>
-          <a href="js/PolyfillTagSource.html#top" class="top_link">Наверх</a>
+          <a href="cs/Tools.Json.html#top" class="top_link">Наверх</a>
           <h2 id="SubClasses" class="h2">Подклассы</h2>
           <table>
             <tbody>
@@ -201,57 +207,47 @@
               <tr>Событий нет</tr>
             </tbody>
           </table>
-          <h2 id="api" class="h2">Пример файла index.html</h2>
-          <p>В коде отражён запуск видео в зависимости от браузера и разрешения монитора после полной загрузки страницы.</p>
+          <h2 id="Example" class="h2">Пример файла Program.cs</h2>
+          <p>В коде отражено конвертирование объекта в json и обратно при старте своего плагина с названием <span class="notranslate">"MyPlugin"</span>.</p>
           <div class="csharp notranslate">
 <ol>
-<li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">html</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="kw2">head</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sy0">&lt;</span>meta charset<span class="sy0">=</span><span class="st0">"UTF-8"</span><span class="sy0">&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">script</span> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">style</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/css"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">body picture img,</div></li>
-<li class="li1"><div class="de1">body video {</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;position: absolute;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;object-fit: cover;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;width:100%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;height:100%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;top: 50%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;left: 50%;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;z-index: -1;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;transform: translate(-50%, -50%);</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-repeat: no-repeat;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-size: cover;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-position-x: center;</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;background-position-y: center;</div></li>
-<li class="li1"><div class="de1">}</div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">style</span>&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="kw2">script</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">if ('matchMedia' in window <span class="sc1">&amp;&amp; window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {</span></div></li>
-<li class="li1"><div class="de1"><span class="sc1">&nbsp;&nbsp;&nbsp;&nbsp;window.addEventListener('load', function() {</span></div></li>
-<li class="li1"><div class="de1"><span class="sc1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine.polyfillTagSource();</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;});</div></li>
-<li class="li1"><div class="de1">}</div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">head</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="kw2">body</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;picture&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> srcset<span class="sy0">=</span><span class="st0">"Textures/background_login_1280x720.png"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"image/png"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (max-device-width:1280px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> srcset<span class="sy0">=</span><span class="st0">"Textures/background_login_1920x1080.png"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"image/png"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (min-device-width:1281px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">img</span> loading<span class="sy0">=</span><span class="st0">"eager"</span> decoding<span class="sy0">=</span><span class="st0">"sync"</span> srcset<span class="sy0">=</span><span class="st0">"Textures/background_login_1280x720.png"</span> <span class="kw3">alt</span><span class="sy0">=</span><span class="st0">"background_login"</span> sizes<span class="sy0">=</span><span class="st0">"(max-device-width:1280px) 100px"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="sy0">/</span>picture&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">video</span> autoplay<span class="sy0">=</span><span class="st0">"autoplay"</span> preload<span class="sy0">=</span><span class="st0">"none"</span> muted<span class="sy0">=</span><span class="st0">"false"</span> loop<span class="sy0">=</span><span class="st0">"true"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1280x720.mp4"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/mp4"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (max-device-width:1280px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1280x720.webm"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/webm"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (max-device-width:1280px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1920x1080.mp4"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/mp4"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (min-device-width:1281px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<span class="kw2">source</span> data-<span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Videos/background_login_1920x1080.webm"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"video/webm"</span> <span class="kw3">media</span><span class="sy0">=</span><span class="st0">"screen and (min-device-width:1281px)"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">video</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">body</span>&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">html</span>&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="coMULTI translate">/** API BusEngine.Game - пользовательский код */</span></div></li>
+<li class="li1"><div class="de1"><span class="kw1">namespace</span> BusEngine<span class="sy0">.</span><span class="me1">Game</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI translate">/** API BusEngine.Plugin */</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw4">class</span> MyPlugin <span class="sy0">:</span> BusEngine<span class="sy0">.</span><span class="me1">Plugin</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">internal</span> <span class="kw4">class</span> ProjectSettingDefault <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">static</span> <span class="kw4">object</span> content<span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1"></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> ProjectSettingDefault<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content <span class="sy0">=</span> <a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assets <span class="sy0">=</span> <a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> <span class="kw4">string</span><span class="br0">[</span><span class="br0">]</span> <span class="br0">{</span><span class="st0">"GameData"</span><span class="br0">}</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;code <span class="sy0">=</span> <a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> <span class="kw4">string</span><span class="br0">[</span><span class="br0">]</span> <span class="br0">{</span><span class="st0">"Code"</span><span class="br0">}</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;libs <span class="sy0">=</span> <a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name <span class="sy0">=</span> <span class="st0">"BusEngine"</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shared <span class="sy0">=</span> <a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Any <span class="sy0">=</span> <span class="st0">""</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Android <span class="sy0">=</span> <span class="st0">""</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Win <span class="sy0">=</span> <span class="st0">""</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Win_x64 <span class="sy0">=</span> <span class="st0">""</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Win_x86 <span class="sy0">=</span> <span class="st0">""</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span>,</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1"></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="co1 translate">// при запуске BusEngine до создания формы</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw1">public</span> <span class="kw1">override</span> <span class="kw4">void</span> Initialize<span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span>BusEngine<span class="sy0">.</span><span class="me1">Tools</span><span class="sy0">.</span><span class="me1">Json</span><span class="sy0">.</span><span class="me1">Encode</span><span class="br0">(</span><a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> ProjectSettingDefault<span class="br0">(</span><span class="br0">)</span><span class="br0">)</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusEngine<span class="sy0">.</span><span class="me1">Log</span><span class="sy0">.</span><span class="me1">Info</span><span class="br0">(</span>BusEngine<span class="sy0">.</span><span class="me1">Tools</span><span class="sy0">.</span><span class="me1">Json</span><span class="sy0">.</span><span class="me1">Decode</span><span class="br0">(</span>BusEngine<span class="sy0">.</span><span class="me1">Tools</span><span class="sy0">.</span><span class="me1">Json</span><span class="sy0">.</span><span class="me1">Encode</span><span class="br0">(</span><a href="http://www.google.com/search?q=new+msdn.microsoft.com"><span class="kw3">new</span></a> ProjectSettingDefault<span class="br0">(</span><span class="br0">)</span><span class="br0">)</span><span class="br0">)</span><span class="br0">)</span><span class="sy0">;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="br0">}</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="coMULTI translate">/** API BusEngine.Plugin */</span></div></li>
+<li class="li1"><div class="de1"><span class="br0">}</span></div></li>
+<li class="li1"><div class="de1"><span class="coMULTI translate">/** API BusEngine.Game - пользовательский код */</span></div></li>
 </ol>
           </div>
-          <a href="js/PolyfillTagSource.html#top" class="top_link">Наверх</a>
+          <a href="cs/Tools.Json.html#top" class="top_link">Наверх</a>
         </div>
       </div>
     </main>
