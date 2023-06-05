@@ -391,7 +391,7 @@ table td + td{width:100%}
 table td + td + td{display:none}
 }
 table td img{width:30px;height:30px}
-table td i{font-size:30px}
+table td i{font-size:30px;text-align:center;width:100%}
 #goog-gt-tt,#goog-gt-{display:none!important}
 #language .skiptranslate.goog-te-gadget,#language_vertical .skiptranslate.goog-te-gadget,#language_content .skiptranslate.goog-te-gadget{display:block!important;margin-bottom:20px}
 #language .skiptranslate.goog-te-gadget select,#language_vertical .skiptranslate.goog-te-gadget select,#language_content .skiptranslate.goog-te-gadget select{margin:0}
