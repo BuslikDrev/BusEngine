@@ -54,6 +54,8 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [three.js](https://github.com/mrdoob/three.js) r152
 
+[DeepSpeech](https://github.com/mozilla/DeepSpeech) 0.9.3
+
 ## Полезные ссылки
 
 Microsoft Build Tools 2005 v2.0
