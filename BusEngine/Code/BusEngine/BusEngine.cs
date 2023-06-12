@@ -220,6 +220,24 @@ namespace BusEngine {
 /** API BusEngine */
 namespace BusEngine {
 /*
+Зависимости нет
+*/
+	/** API BusEngine.AI */
+	// https://www.assemblyai.com/blog/the-top-free-speech-to-text-apis-and-open-source-engines/
+	// https://cloud.google.com/speech-to-text
+	// https://www.chromium.org/developers/how-tos/api-keys/
+	public class AI : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.AI */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
 Зависит от плагинов:
 BusEngine.Log
 */
@@ -655,8 +673,78 @@ BusEngine.Tools.Json
 		private static CefSharp.WinForms.ChromiumWebBrowser browser;
 		public delegate void OnPostMessageHandler(string e);
 		public static event OnPostMessageHandler OnPostMessageStatic;
+		public delegate OnDownloadArgs OnDownloadHandler(OnDownloadArgs e);
+		public static event OnDownloadHandler OnDownloadStatic;
+		public struct OnDownloadArgs {
+			public string ContentDisposition;
+			public long CurrentSpeed;
+			public System.Nullable<System.DateTime> EndTime;
+			public string FullPath;
+			public int Id;
+			public bool IsCancelled;
+			public bool IsComplete;
+			public bool IsInProgress;
+			public bool IsValid;
+			public string MimeType;
+			public string OriginalUrl;
+			public int PercentComplete;
+			public long ReceivedBytes;
+			public System.Nullable<System.DateTime> StartTime;
+			public string SuggestedFileName;
+			public long TotalBytes;
+			public string Url;
+			public OnDownloadArgs (CefSharp.DownloadItem download) {
+				ContentDisposition = download.ContentDisposition;
+				CurrentSpeed = download.CurrentSpeed;
+				EndTime = download.EndTime;
+				FullPath = download.FullPath;
+				Id = download.Id;
+				IsCancelled = download.IsCancelled;
+				IsComplete = download.IsComplete;
+				IsInProgress = download.IsInProgress;
+				IsValid = download.IsValid;
+				MimeType = download.MimeType;
+				OriginalUrl = download.OriginalUrl;
+				PercentComplete = download.PercentComplete;
+				ReceivedBytes = download.ReceivedBytes;
+				StartTime = download.StartTime;
+				SuggestedFileName = download.SuggestedFileName;
+				TotalBytes = download.TotalBytes;
+				Url = download.Url;
+			}
+		}
 		public delegate void OnLoadHandler();
 		public static event OnLoadHandler OnLoadStatic;
+		private static string _DownloadPuth = BusEngine.Engine.LogDirectory + "Browser\\download";
+		public static string DownloadPuth {
+			get {
+				return _DownloadPuth;
+			} set {
+				_DownloadPuth = value;
+				if (value != "") {
+					browser.DownloadHandler = CefSharp.Fluent.DownloadHandler.AskUser((a, b, download, d) => {
+						OnDownloadArgs onDownloadArgs = new OnDownloadArgs(download);
+						if (OnDownloadStatic != null) {
+							onDownloadArgs = OnDownloadStatic.Invoke(onDownloadArgs);
+						}
+					});
+				} else {
+					browser.DownloadHandler = CefSharp.Fluent.DownloadHandler.UseFolder(value, (a, b, download, d) => {
+						OnDownloadArgs onDownloadArgs = new OnDownloadArgs(download);
+						if (OnDownloadStatic != null) {
+							onDownloadArgs = OnDownloadStatic.Invoke(onDownloadArgs);
+						}
+					});
+				}
+			}
+		}
+		public static CefSharp.IDownloadHandler DownloadHandler { get; set; }
+		public static CefSharp.IDownloadHandler Download(CefSharp.IDownloadHandler downloadHandler) {
+			return downloadHandler;
+		}
+		public static CefSharp.IDownloadHandler Download(string puth, CefSharp.IDownloadHandler downloadHandler) {
+			return downloadHandler;
+		}
 		public Browser() {}
 
 		/** все события из PostMessage js браузера */
@@ -692,8 +780,6 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
 		}
-		/** функция выполнения js кода в браузере */
-
 		/* public static void ExecuteJSStatic(Browser browser, string js = "") {
 			if (browser != null) {
 				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
@@ -701,6 +787,35 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
 		} */
+		/** функция выполнения js кода в браузере */
+
+		/** функция скачиваяния файла в браузере */
+		public static void DownloadStartStatic(string url = "") {
+			if (browser != null) {
+				CefSharp.WebBrowserExtensions.StartDownload(browser, @url);
+			} else {
+				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
+			}
+		}
+		public static void DownloadStartStatic(string url = "", string puth = "") {
+			CefSharp.IDownloadHandler x;
+
+			if (browser != null) {
+				x = browser.DownloadHandler;
+				browser.DownloadHandler = CefSharp.Fluent.DownloadHandler.UseFolder((System.IO.Directory.Exists(puth) ? puth : DownloadPuth), (a, b, download, d) => {
+					OnDownloadArgs onDownloadArgs = new OnDownloadArgs(download);
+					if (OnDownloadStatic != null) {
+						onDownloadArgs = OnDownloadStatic.Invoke(onDownloadArgs);
+					}
+					BusEngine.Log.Info("Скачивание: {0}", BusEngine.Tools.Json.Encode(onDownloadArgs));
+					if (onDownloadArgs.PercentComplete == 0) {
+						browser.DownloadHandler = x;
+					}
+				});
+			}
+			DownloadStartStatic(url);
+		}
+		/** функция скачиваяния файла в браузере */
 
 		internal static bool ValidURLStatic(string s, out System.Uri url) {
 			if (!System.Text.RegularExpressions.Regex.IsMatch(s, @"^https?:\/\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) {
@@ -727,7 +842,7 @@ BusEngine.Tools.Json
 				System.Uri uriResult;
 				if (ValidURLStatic(url, out uriResult) && url.IndexOf(':') == -1) {
 					if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
-						url = "https://BusEngine/" + url;
+						url = "https://bd.busengine/" + url;
 					} else {
 						url = null;
 					}
@@ -739,12 +854,20 @@ BusEngine.Tools.Json
 					root = BusEngine.Engine.DataDirectory;
 				}
 
-				CefSharp.BrowserSubprocess.SelfHost.Main(BusEngine.Engine.Commands);
-
 				// включаем поддержку экранов с высоким разрешением
 				//CefSharp.Cef.EnableHighDPISupport();
 				//new CefSharp.CefLibraryHafle(BusEngine.Engine.ExeDirectory + "CefSharp\\libcef.dll");
 				//CefSharp.CefRuntime.SubscribeAnyCpuAssemblyResolver(BusEngine.Engine.ExeDirectory + "");
+
+				// https://www.chromium.org/developers/how-tos/run-chromium-with-flags/
+				// https://peter.sh/experiments/chromium-command-line-switches/
+				CefSharp.BrowserSubprocess.SelfHost.Main(BusEngine.Engine.Commands);
+
+				// Google Speech API
+				System.Environment.SetEnvironmentVariable("GOOGLE_API_KEY", "AIzaSyCjxZ5lksh742LpH_Rs1N2JEtyTxgpE8V4");
+				System.Environment.SetEnvironmentVariable("GOOGLE_DEFAULT_CLIENT_ID", "274065950685-3n40dkcnkpgeuglqe6nul0mud0ophrkl.apps.googleusercontent.com");
+				System.Environment.SetEnvironmentVariable("GOOGLE_DEFAULT_CLIENT_SECRET", "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");
+				System.Environment.SetEnvironmentVariable("USE_PROPRIETARY_CODECS", "1");
 
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings() /* {
@@ -757,8 +880,19 @@ BusEngine.Tools.Json
 				//settings.ChromeRuntime = true;
 				settings.CommandLineArgsDisabled = false;
 				//settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
-				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
-				settings.CefCommandLineArgs.Add("disable-gpu");
+				//settings.CefCommandLineArgs.Add("disable-gpu-vsync");
+				//settings.CefCommandLineArgs.Add("disable-gpu");
+
+				// воспроизводим аудио автоматом
+				settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
+				//settings.CefCommandLineArgs.Add("mute-audio");
+				//settings.CefCommandLineArgs.Add("proprietary_codecs");
+				//settings.CefCommandLineArgs.Add("enable-tab-audio-muting", "0");
+
+				settings.CefCommandLineArgs.Add("enable-media-stream");
+				settings.CefCommandLineArgs.Add("enable-speech-input");
+				//settings.CefCommandLineArgs.Add("disable-speech-synthesis-api");
+				settings.CefCommandLineArgs.Add("ignore-certificate-errors");
 				//settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
 
 				// настройка имён файлов
@@ -788,24 +922,26 @@ BusEngine.Tools.Json
 				// отключаем создание файла лога
 				settings.LogSeverity = CefSharp.LogSeverity.Disable;
 
-				//settings.PersistSessionCookies = true;
+				settings.PersistSessionCookies = true;
 				settings.CookieableSchemesExcludeDefaults = false;
+				//settings.CookieableSchemesList = "";
+				//settings.PersistUserPreferences = true;
 
 				// устанавливаем свой юзер агент
 				settings.UserAgent = BusEngine.Engine.Device.UserAgent;
 
 				// установка языка
-				//settings.AcceptLanguageList = new BusEngine.Localization().Language.Substring(0, 2).ToLower();
-				settings.Locale = BusEngine.Localization.LanguageStatic.Substring(0, 2).ToLower();
+				settings.AcceptLanguageList = BusEngine.Localization.LanguageStatic.Substring(0, 2).ToLower() + "," + BusEngine.Localization.LanguageStatic.ToLower();
+				//settings.Locale = BusEngine.Localization.LanguageStatic.Substring(0, 2).ToLower();
 
 				// https://github.com/cefsharp/CefSharp/wiki/General-Usage#scheme-handler
 				// регистрируем свою схему
 				settings.RegisterScheme(new CefSharp.CefCustomScheme {
 					SchemeName = "https",
-					DomainName = "BusEngine",
+					DomainName = "bd.busengine",
 					SchemeHandlerFactory = new CefSharp.SchemeHandler.FolderSchemeHandlerFactory (
 						rootFolder: root,
-						hostName: "BusEngine",
+						hostName: "bd.busengine",
 						defaultPage: "index.html"
 					)
 				});
@@ -864,6 +1000,28 @@ BusEngine.Tools.Json
 					}
 					System.Console.ForegroundColor = cc;
 				};
+				// подключаем событие скачивания файлов
+				if (DownloadHandler != null) {
+					browser.DownloadHandler = DownloadHandler;
+				}
+
+				if (DownloadPuth == "") {
+					browser.DownloadHandler = CefSharp.Fluent.DownloadHandler.AskUser((a, b, download, d) => {
+						OnDownloadArgs onDownloadArgs = new OnDownloadArgs(download);
+						if (OnDownloadStatic != null) {
+							onDownloadArgs = OnDownloadStatic.Invoke(onDownloadArgs);
+						}
+					});
+				} else {
+					browser.DownloadHandler = CefSharp.Fluent.DownloadHandler.UseFolder(DownloadPuth, (a, b, download, d) => {
+						OnDownloadArgs onDownloadArgs = new OnDownloadArgs(download);
+						if (OnDownloadStatic != null) {
+							onDownloadArgs = OnDownloadStatic.Invoke(onDownloadArgs);
+						}
+						BusEngine.Log.Info("Скачивание: {0}", BusEngine.Tools.Json.Encode(onDownloadArgs));
+					});
+				}
+
 				// подключаем событие загрузки страницы
 				/* browser.LoadingStateChanged += (object s, CefSharp.LoadingStateChangedEventArgs e) => {
 					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
@@ -886,7 +1044,7 @@ BusEngine.Tools.Json
 				}; */
 				/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
 				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
-				browser.FrameLoadStart += (object s, CefSharp.FrameLoadStartEventArgs e) => {
+				browser.FrameLoadStart += (object b, CefSharp.FrameLoadStartEventArgs e) => {
 					if (e.Frame.IsMain) {
 
 						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, @"
@@ -911,12 +1069,15 @@ BusEngine.Tools.Json
 	/*BusEngine.engine.settingEngine = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingEngine) + @";*/
 	BusEngine.engine.settingProject = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingProject) + @";
 ");
+				CefSharp.WebBrowserExtensions.StartDownload(browser, BusEngine.Engine.DataDirectory + "Videos\\BusEngine.mp4");
+
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
 						#endif
 						e.Frame.Dispose();
 					}
 				};
+
 				/* browser.FrameLoadEnd += (object s, CefSharp.FrameLoadEndEventArgs e) => {
 					if (e.Frame.IsMain) {
 						#if BROWSER_LOG

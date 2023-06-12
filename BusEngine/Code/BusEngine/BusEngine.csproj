@@ -80,6 +80,11 @@
       <HintPath>BusPlugins\AssetsTools.NET\AssetsTools.NET.dll</HintPath>
       <Private>False</Private>
     </Reference> -->
+    <!-- https://github.com/mozilla/DeepSpeech/issues/3364 -->
+    <Reference Include="DeepSpeech">
+      <HintPath>BusPlugins\DeepSpeech\DeepSpeechClient.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="CefSharp">
       <HintPath>BusPlugins\CefSharp\CefSharp.dll</HintPath>
       <Private>False</Private>
