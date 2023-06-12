@@ -52,7 +52,7 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [Drawflow](https://github.com/jerosoler/Drawflow) 0.0.59 (для использования в BusEngine.FlowGraph)
 
-[three.js](https://github.com/mrdoob/three.js) r152 (для использования в тестовом проекте BusEngine)
+[three.js](https://github.com/mrdoob/three.js) r153 (для использования в тестовом проекте BusEngine)
 
 [DeepSpeech](https://github.com/mozilla/DeepSpeech) 0.9.3 (планируется - для возможности бесплатно распознавать голос и переводить в текст)
 
