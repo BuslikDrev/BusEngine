@@ -54,7 +54,9 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [three.js](https://github.com/mrdoob/three.js) r152
 
-[DeepSpeech](https://github.com/mozilla/DeepSpeech) 0.9.3
+[DeepSpeech](https://github.com/mozilla/DeepSpeech) 0.9.3 (планируется)
+
+[Silk.NET](https://github.com/dotnet/Silk.NET) 2.17.1 (планируется - для удобного использования возможностей видеокарт различных устройств)
 
 ## Полезные ссылки
 
