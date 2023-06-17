@@ -158,7 +158,7 @@
           </div>
           <p>BusEngine.js</p>
           <h1 class="notranslate">BusEngine.open (Object)</h1>
-          <p>Объект отвечающий за отладку кода. Это консоль движка, а значит в нём будет вестить обработка консольных команд (выполнение, сохранение, загрузка и т.д.).</p>
+          <p>Объект отвечающий за ajax подгрузку контента или открытие ссылки в браузере по умолчанию.</p>
           <h2 id="Methods" class="h2">Методы</h2>
           <table>
             <tbody>
@@ -166,7 +166,7 @@
                 <td><p><span class="notranslate"><a href="js/Open.html#BusEngine.Open">BusEngine.open()</a></span></p></td>
               </tr>
               <tr>
-                <td><p>Метод уровня BusEngine принимает любые параметры и количество. Массивы и объекты конвертирует в json строку для правильного отображения в консоли движка <span class="notranslate">"<a href="cs/Log.html#BusEngine.Log.Info" title="BusEngine.Log.Info" target="_blank">BusEngine.Log.Info()</a>"</span> и добавляет путь вызова этого метода. Можно испоьзовать также <span class="notranslate">"window.console.log()"</span>. Если нужно исходное поведение, то вызывайте <span class="notranslate">"window.console.logs()"</span>.</p></td>
+                <td><p>Метод (нестатический) уровня класса принимает 5 параметров. Первый - string строка означающая ссылку на страницу. Второй - string строка означающая путь html блока в который нужно поместить контент по ссылке (по умолчанию в тег main). Третий - string строка означающая путь html блока из которого нужно взять контент по ссылке (по умолчанию из тега main). Четвёртый - string строка означающая параметры запроса в формате json для их передачи методом POST. Пятый - callback функция которая срабатывает при успешном запросе. Во время работы в теге "<span class="notranslate">body</span>" будет добавляться на время класс "<span class="notranslate">be-open</span>"</p></td>
               </tr>
             </tbody>
           </table>
@@ -210,13 +210,11 @@
 <li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/meta.html"><span class="kw2">meta</span></a> <span class="kw3">charset</span><span class="sy0">=</span><span class="st0">"UTF-8"</span>&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;BusEngine.log('description 1', 'description 2', {d:'description 3'});&nbsp;// "description 1 description 2 {"d":"description 3"} https://bd.busengine/index.html:57:9</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;window.console.log('description 1', 'description 2', {d:'description 3'});&nbsp;// "description 1 description 2 {"d":"description 3"} https://bd.busengine/index.html:58:9</div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;window.console.logs('description 1', 'description 2', {d:'description 3'});&nbsp;// "description 1 description 2 [object Object]</div></li>
-<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;BusEngine.open('https://buslikdrev.by/', 'body');</div></li>
+<li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
 <li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
 <li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/html.html"><span class="kw2">html</span></a>&gt;</span></div></li>
 </ol>
