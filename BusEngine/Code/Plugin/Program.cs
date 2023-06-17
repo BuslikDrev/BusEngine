@@ -142,6 +142,11 @@ namespace BusEngine.Game {
 			}
 		}
 
+		// перед закрытием BusEngine
+		public override void Shutdown() {
+			BusEngine.Browser.ShutdownStatic();
+		}
+
 		// запускаем браузер WinForm только в одном потоке =(
 		private void Browser(string url) {
 			BusEngine.Browser.Initialize(url);                                                   
