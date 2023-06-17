@@ -55,7 +55,10 @@ namespace BusEngine {
 				r_Displayinfo = "0",
 				r_Fullscreen = "0",
 				r_Width = "1280",
-				r_Height = "720"
+				r_Height = "720",
+				google_api_key = "",
+				google_default_client_id = "",
+				google_default_client_secret = "",
 			},
 			console_variables = new {
 				sys_spec = "1",
@@ -65,25 +68,34 @@ namespace BusEngine {
 				r_Displayinfo = "0",
 				r_Fullscreen = "0",
 				r_Width = "1280",
-				r_Height = "720"
+				r_Height = "720",
+				google_api_key = "",
+				google_default_client_id = "",
+				google_default_client_secret = "",
 			},
-			version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-			type = "",
 			info = new {
 				name = (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyTitleAttribute), false)[0] as System.Reflection.AssemblyTitleAttribute).Title,
+				version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+				icon = "[data]/Icons/BusEngine.ico",
+				type = "",
 				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
 			},
 			content = new {
-				assets = new string[] {"Assets"},
-				code = new string[] {"Code"},
-				libs = new {
-					name = "BusEngine",
-					shared = new {
-						Any = "",
-						Android = "",
-						Win = "",
-						Win_x64 = "",
-						Win_x86 = ""
+				bin = "Bin",
+				code = "Code",
+				data = "Data",
+				localization = "Localization",
+				log = "Log",
+				libs = new object[] {
+					new {
+						name = "BusEngine",
+						shared = new {
+							Any = "",
+							Android = "",
+							Win = "",
+							Win_x64 = "",
+							Win_x86 = ""
+						}
 					},
 				},
 			},
@@ -127,7 +139,10 @@ namespace BusEngine {
 				{"r_Displayinfo", "0"},
 				{"r_Fullscreen", "0"},
 				{"r_Width", "1280"},
-				{"r_Height", "720"}
+				{"r_Height", "720"},
+				{"google_api_key", ""},
+				{"google_default_client_id", ""},
+				{"google_default_client_secret", ""},
 			}},
 			{"console_variables", new System.Collections.Generic.Dictionary<string, string>() {
 				{"sys_spec", "1"},
@@ -137,26 +152,35 @@ namespace BusEngine {
 				{"r_Displayinfo", "0"},
 				{"r_Fullscreen", "0"},
 				{"r_Width", "1280"},
-				{"r_Height", "720"}
+				{"r_Height", "720"},
+				{"google_api_key", ""},
+				{"google_default_client_id", ""},
+				{"google_default_client_secret", ""},
 			}},
-			{"version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
-			{"type", ""},
 			{"info", new System.Collections.Generic.Dictionary<string, string>() {
 				{"name", "Game"},
+				{"version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
+				{"Icon", "[data]/Icons/BusEngine.ico"},
+				{"type", ""},
 				{"guid", "ddc2049b-3a86-425b-9713-ee1babec5365"}
 			}},
 			{"content", new System.Collections.Generic.Dictionary<string, object>() {
-				{"assets", new string[] {"GameData"}},
-				{"code", new string[] {"Code"}},
-				{"libs", new System.Collections.Generic.Dictionary<string, object>() {
-					{"name", "BusEngine"},
-					{"shared", new System.Collections.Generic.Dictionary<string, string>() {
-						{"Any", ""},
-						{"Android", ""},
-						{"Win", ""},
-						{"Win_x64", ""},
-						{"Win_x86", ""}
-					}}
+				{"bin", "Bin"},
+				{"code", "Code"},
+				{"data", "Data"},
+				{"localization", "Localization"},
+				{"log", "Log"},
+				{"libs",  new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>() {
+					new System.Collections.Generic.Dictionary<string, object>() {
+						{"name", "BusEngine"},
+						{"shared", new System.Collections.Generic.Dictionary<string, string>() {
+							{"Any", ""},
+							{"Android", ""},
+							{"Win", ""},
+							{"Win_x64", ""},
+							{"Win_x86", ""}
+						}}
+					}
 				}}
 			}},
 			{"require", new System.Collections.Generic.Dictionary<string, object>() {
@@ -861,13 +885,18 @@ BusEngine.Tools.Json
 
 				// https://www.chromium.org/developers/how-tos/run-chromium-with-flags/
 				// https://peter.sh/experiments/chromium-command-line-switches/
-				CefSharp.BrowserSubprocess.SelfHost.Main(BusEngine.Engine.Commands);
+				//CefSharp.BrowserSubprocess.SelfHost.Main(BusEngine.Engine.Commands);
 
 				// Google Speech API
-				System.Environment.SetEnvironmentVariable("GOOGLE_API_KEY", "AIzaSyCjxZ5lksh742LpH_Rs1N2JEtyTxgpE8V4");
-				System.Environment.SetEnvironmentVariable("GOOGLE_DEFAULT_CLIENT_ID", "274065950685-3n40dkcnkpgeuglqe6nul0mud0ophrkl.apps.googleusercontent.com");
-				System.Environment.SetEnvironmentVariable("GOOGLE_DEFAULT_CLIENT_SECRET", "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");
-				System.Environment.SetEnvironmentVariable("USE_PROPRIETARY_CODECS", "1");
+				if (BusEngine.Engine.SettingEngine["console_commands"]["google_api_key"] != "") {
+					System.Environment.SetEnvironmentVariable("google_api_key", BusEngine.Engine.SettingEngine["console_commands"]["google_api_key"]);
+				}
+				if (BusEngine.Engine.SettingEngine["console_commands"]["google_default_client_id"] != "") {
+					System.Environment.SetEnvironmentVariable("google_default_client_id", BusEngine.Engine.SettingEngine["console_commands"]["google_api_key"]);
+				}
+				if (BusEngine.Engine.SettingEngine["console_commands"]["google_default_client_secret"] != "") {
+					System.Environment.SetEnvironmentVariable("google_default_client_secret", BusEngine.Engine.SettingEngine["console_commands"]["google_api_key"]);
+				}
 
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings() /* {
@@ -882,18 +911,14 @@ BusEngine.Tools.Json
 				//settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
 				//settings.CefCommandLineArgs.Add("disable-gpu-vsync");
 				//settings.CefCommandLineArgs.Add("disable-gpu");
+				//settings.CefCommandLineArgs.Add("disable-speech-synthesis-api");
+				//settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
 
 				// воспроизводим аудио автоматом
 				settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
-				//settings.CefCommandLineArgs.Add("mute-audio");
-				//settings.CefCommandLineArgs.Add("proprietary_codecs");
-				//settings.CefCommandLineArgs.Add("enable-tab-audio-muting", "0");
-
 				settings.CefCommandLineArgs.Add("enable-media-stream");
 				settings.CefCommandLineArgs.Add("enable-speech-input");
-				//settings.CefCommandLineArgs.Add("disable-speech-synthesis-api");
-				settings.CefCommandLineArgs.Add("ignore-certificate-errors");
-				//settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
+				//settings.CefCommandLineArgs.Add("ignore-certificate-errors");
 
 				// настройка имён файлов
 				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cef_log.txt");
@@ -1235,11 +1260,13 @@ BusEngine.Tools
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingEngine = new System.Collections.Generic.Dictionary<string, dynamic>();
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingProject = new System.Collections.Generic.Dictionary<string, dynamic>();
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
-		public static string EngineDirectory;
-		public static string ExeDirectory;
 		public static string BinDirectory;
+		public static string ExeDirectory;
 		public static string EditorDirectory;
+		public static string EngineDirectory;
+		public static string CodeDirectory;
 		public static string DataDirectory;
+		public static string LocalizationDirectory;
 		public static string LogDirectory;
 		public static string ToolsDirectory;
 		public static string[] Commands;
@@ -1334,8 +1361,11 @@ BusEngine.Tools
 			BusEngine.Engine.EngineDirectory = path;
 			BusEngine.Engine.BinDirectory = path + "Bin\\";
 			BusEngine.Engine.EditorDirectory = path + "Editor\\";
+			BusEngine.Engine.CodeDirectory = path + "Code\\";
 			BusEngine.Engine.DataDirectory = path + "Data\\";
+			BusEngine.Engine.LocalizationDirectory = path + "Localization\\";
 			BusEngine.Engine.LogDirectory = path + "Log\\";
+			BusEngine.Engine.ToolsDirectory = path + "Tools\\";
 
 			// определяем устройство
 			new BusEngine.Engine.Device();
@@ -1400,72 +1430,54 @@ BusEngine.Tools
 			// https://metanit.com/sharp/tutorial/6.4.php
 			// https://dir.by/developer/csharp/serialization_json/?lang=eng
 			// ищем, загружаем и обрабатываем настройки проекта
-			string[] files;
+			// https://learn.microsoft.com/en-us/dotnet/api/system.io.memorymappedfiles.memorymappedfile?redirectedfrom=MSDN&view=net-7.0
+			string[] project_files;
+			string[] busengine_files;
 
-			files = System.IO.Directory.GetFiles(path, "*.busproject");
+			project_files = System.IO.Directory.GetFiles(path, "*.busproject");
+			busengine_files = System.IO.Directory.GetFiles(path, "busengine.busengine");
 
-			if (files.Length == 0) {
+			if (busengine_files.Length > 0) {
+				project_files = busengine_files;
+			}
+
+			if (project_files.Length == 0) {
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "Game.busproject")) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 					fstream.Write(buffer, 0, buffer.Length);
 				}
-			} else {
-				//BusEngine.Log.Info(files[0]);
 
-				// запись
-				/* using (System.IO.StreamWriter fstream = new System.IO.StreamWriter(files[0], false, System.Text.Encoding.UTF8)) {
-					fstream.Write(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
-				} */
-
-				// запись
-				/* using (System.IO.FileStream fstream = System.IO.File.OpenWrite(files[0])) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true)));
-
-					fstream.Write(buffer, 0, buffer.Length);
-				} */
-
-				// запись
-				/* using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
-					fstream.WriteAsync(buffer, 0, buffer.Length);
-				} */
-
-				// запись
-				//System.IO.File.WriteAllText(files[0], BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
-
-				// чтение
-				/* using (System.IO.FileStream fstream = new System.IO.FileStream(files[0], System.IO.FileMode.OpenOrCreate)) {
-					byte[] buffer = new byte[fstream.Length];
-					fstream.ReadAsync(buffer, 0, buffer.Length);
-					// декодируем байты в строку
-					BusEngine.Tools.Json.Decode(System.Text.Encoding.UTF8.GetString(buffer));
-				} */
-
-				// чтение
-				//BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(files[0]));
-			}
-
-			// тестирование плагина - прогонка кода
-			//Newtonsoft.Json.JsonConvert.DeserializeObject(Newtonsoft.Json.JsonConvert.SerializeObject(new BusEngine.ProjectSettingDefault(), Newtonsoft.Json.Formatting.Indented));
-			//BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true);
-
-			files = System.IO.Directory.GetFiles(path, "busengine.busengine");
-
-			if (files.Length == 0) {
-				//BusEngine.Log.Info(files.Length);
-
-				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(path + "busengine.busengine")) {
-					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
-					fstream.Write(buffer, 0, buffer.Length);
-				}
+				BusEngine.ProjectDefault.Setting2 = BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 			} else {
 				// улаляем массивы данных по умолчанию т.к. они не нужны
 				BusEngine.ProjectDefault.Setting2["require"]["plugins"].Clear();
 
 				// получаем новые данные
-				var setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(files[0]));
+				var setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(project_files[0]));
+
+				dynamic content;
+
+				if (setting.TryGetValue("content", out content) && content.GetType().GetProperty("Type") != null && !content.GetType().IsArray) {
+					foreach (var i in content) {
+						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string && content[i.Name] is string) {
+							if (i.Name == "bin") {
+								BusEngine.Engine.BinDirectory = path + (string)content[i.Name] + "\\";
+							} else if (i.Name == "code") {
+								BusEngine.Engine.CodeDirectory = path + (string)content[i.Name] + "\\";
+							} else if (i.Name == "data") {
+								BusEngine.Engine.DataDirectory = path + (string)content[i.Name] + "\\";
+							} else if (i.Name == "localization") {
+								BusEngine.Engine.LocalizationDirectory = path + (string)content[i.Name] + "\\";
+							} else if (i.Name == "log") {
+								BusEngine.Engine.LogDirectory = path + (string)content[i.Name] + "\\";
+							}
+							BusEngine.ProjectDefault.Setting2["content"][i.Name] = (string)content[i.Name];
+						}
+					}
+
+					//BusEngine.Log.Info("content {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["content"]));
+				}
 
 				dynamic console_commands;
 
@@ -1496,7 +1508,20 @@ BusEngine.Tools
 				if (setting.TryGetValue("info", out info) && info.GetType().GetProperty("Type") != null && !info.GetType().IsArray) {
 					foreach (var i in info) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-							BusEngine.ProjectDefault.Setting2["info"][i.Name] = (string)info[i.Name];
+							if (i.Name == "icon") {
+								BusEngine.ProjectDefault.Setting2["info"][i.Name] = ((string)info[i.Name])
+								.Replace("[bin]", BusEngine.Engine.BinDirectory)
+								.Replace("[exe]", BusEngine.Engine.ExeDirectory)
+								.Replace("[data]", BusEngine.Engine.DataDirectory)
+								//.Replace("[code]", BusEngine.Engine.CodeDirectory)
+								.Replace("[localization]", BusEngine.Engine.DataDirectory)
+								.Replace("[log]", BusEngine.Engine.DataDirectory)
+								.Replace("[engine]", BusEngine.Engine.DataDirectory)
+								.Replace("[editor]", BusEngine.Engine.DataDirectory)
+								.Replace("[tools]", BusEngine.Engine.ToolsDirectory);
+							} else {
+								BusEngine.ProjectDefault.Setting2["info"][i.Name] = (string)info[i.Name];
+							}
 						}
 					}
 
