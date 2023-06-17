@@ -24,7 +24,7 @@
 
 Для кроссплатформенности: для сборки игры под Android планируется использовать MSBuild 2017 и Xamarin с Android SDK API 25, а для WebGL OpenSilver или аналоги. Лаунчер движка будет объяснять, что необходимо скачать и(или) установить.
 
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/image_1.jpg)
+![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_1.jpg)
 
 ## Инструкция по установке
 
