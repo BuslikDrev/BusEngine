@@ -78,7 +78,7 @@ namespace BusEngine {
 				version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
 				icon = "[data]/Icons/BusEngine.ico",
 				type = "",
-				guid = "ddc2049b-3a86-425b-9713-ee1babec5365"
+				guid = System.Convert.ToString(System.Guid.NewGuid()),
 			},
 			content = new {
 				bin = "Bin",
@@ -162,7 +162,7 @@ namespace BusEngine {
 				{"version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
 				{"Icon", "[data]/Icons/BusEngine.ico"},
 				{"type", ""},
-				{"guid", "ddc2049b-3a86-425b-9713-ee1babec5365"}
+				{"guid", System.Convert.ToString(System.Guid.NewGuid())}
 			}},
 			{"content", new System.Collections.Generic.Dictionary<string, object>() {
 				{"bin", "Bin"},
