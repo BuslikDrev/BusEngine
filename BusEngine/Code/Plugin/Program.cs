@@ -136,7 +136,7 @@ namespace BusEngine.Game {
 
 			// запускаем браузер
 			if (BusEngine.Engine.Platform == "WindowsEditor") {
-				Browser("<iframe width=\"" + BusEngine.UI.Canvas.WinForm.Width + "\" weight=\"" + BusEngine.UI.Canvas.WinForm.Height + "\" src=\"https://threejs.org/editor/\"></iframe>"); 
+				Browser("https://threejs.org/editor/"); 
 			} else if (BusEngine.Engine.Platform == "WindowsLauncher") {
 				Browser("launcher.html");
 			}
@@ -160,6 +160,12 @@ namespace BusEngine.Game {
 						System.Console.ForegroundColor = cc;
 					}
 				}
+			};
+
+			BusEngine.Browser.OnDownloadStatic += (e) => {
+				BusEngine.Log.Info("Скачивание: {0}", e.FullPath);
+				//BusEngine.Log.Info("Скачивание: {0}", e.GetType().GetProperty("FullPath").GetValue(e, null));
+				return e;
 			};
 		}
 	}

@@ -7,6 +7,8 @@
 
 /** дорожная карта
 - написать запуск игры BusEngine
+https://apilevels.com/
+https://habr.com/ru/companies/otus/articles/466367/
 */
 
 //#define RUN_LOG
@@ -156,11 +158,11 @@ BusEngine.Browser
 			this.TopMost = true;
 
 			// название окна
-			this.Text = BusEngine.Engine.SettingEngine["info"]["name"] + " v" + BusEngine.Engine.SettingEngine["version"];
+			this.Text = BusEngine.Engine.SettingEngine["info"]["name"] + " v" + BusEngine.Engine.SettingEngine["info"]["version"];
 
 			// иконка
-			if (System.IO.File.Exists(BusEngine.Engine.DataDirectory + "Icons/BusEngine.ico")) {
-				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, "Icons/BusEngine.ico"), 128, 128);
+			if (System.IO.File.Exists(BusEngine.Engine.SettingEngine["info"]["icon"])) {
+				this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(BusEngine.Engine.SettingEngine["info"]["icon"]), 128, 128);
 			} else {
 				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 			}

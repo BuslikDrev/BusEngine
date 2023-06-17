@@ -181,6 +181,8 @@ IF %typestatus% == true (
 	)
 )
 
+echo "привет"
+
 REM Log | Log
 PAUSE
 REM EXIT
