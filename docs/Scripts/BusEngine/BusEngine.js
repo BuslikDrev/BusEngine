@@ -257,9 +257,10 @@ BusEngine.language = {
 		// устанавливаем язык из нашей долгой куки
 		if (BusEngine.cookie.has('BusEngineLang')) {
 			BusEngine.language.setting.lang = BusEngine.cookie.get('BusEngineLang');
-			BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
-			BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 		}
+
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, BusEngine.language.setting.domain);
+		BusEngine.cookie.set('googtrans', '/' + BusEngine.language.setting.langDefault + '/' + BusEngine.language.setting.lang, '');
 
 		// запускаем переводчик
 		x = new google.translate.TranslateElement({
