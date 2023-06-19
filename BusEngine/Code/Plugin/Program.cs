@@ -24,6 +24,15 @@ namespace BusEngine.Game {
 				#endif
 			};
 			new BusEngine.Localization().Load("Ukrainian");
+			// устанавливаем язык системы в противном случае будет язык по умолчанию.
+			new BusEngine.Localization().Load(System.Globalization.CultureInfo.CurrentCulture.EnglishName.Split(' ')[0]);
+
+			//https://learn.microsoft.com/ru-ru/dotnet/api/system.globalization.cultureinfo?view=netframework-4.8
+			/* BusEngine.Log.Info(System.Globalization.CultureInfo.CurrentCulture.EnglishName.Split(' ')[0]);
+			System.Globalization.CultureInfo[] specificCultures = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures);
+            foreach (System.Globalization.CultureInfo ci in specificCultures) {
+                BusEngine.Log.Info(ci.EnglishName.Split(' ')[0] + " | " + ci.Name);
+			} */
 
 			// добавляем стартовую обложку
 			SplashScreen = new System.Windows.Forms.Form();
