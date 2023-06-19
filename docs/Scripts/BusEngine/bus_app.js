@@ -1622,16 +1622,8 @@ var busApp = {
 };
 
 // запуск скрипта
-if (document.readyState == 'loading') {
-	//document.addEventListener('DOMContentLoaded', busApp.start, {once:true, passive:true});
+if (!('readyState' in document) || document.readyState == 'complete') {
+	busApp.start();
+} else {
 	window.addEventListener('load', busApp.start, {once:true, passive:true});
-}
-if (document.readyState == 'interactive') {
-	window.addEventListener('load', busApp.start, {once:true, passive:true});
-}
-if (document.readyState == 'complete') {
-	window.addEventListener('pagehide', busApp.start, {once:true, passive:true});
-	window.addEventListener('scroll', busApp.start, {once:true, passive:true});
-	window.addEventListener('mouseover', busApp.start, {once:true, passive:true});
-	window.addEventListener('touchstart', busApp.start, {once:true, passive:true});
 }
