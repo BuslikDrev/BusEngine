@@ -40,6 +40,16 @@
       <image:title>Examples BusEngine</image:title>
     </image:image>
   </url>
+  <!-- <url>
+    <loc>https://buslikdrev.github.io/BusEngine/cs/AI.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      </image:loc>
+      <image:caption>BusEngine.AI</image:caption>
+      <image:title>BusEngine.AI</image:title>
+    </image:image>
+  </url> -->
   <url>
     <loc>https://buslikdrev.github.io/BusEngine/cs/Audio.html</loc>
     <changefreq>weekly</changefreq>
