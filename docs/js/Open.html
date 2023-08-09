@@ -163,7 +163,7 @@
           <table>
             <tbody>
               <tr id="BusEngine.Open">
-                <td><p><span class="notranslate"><a href="js/Open.html#BusEngine.Open">BusEngine.open()</a></span></p></td>
+                <td><p><span class="notranslate"><a href="js/Open.html#BusEngine.Open">BusEngine.open(string, string, string, string, function)</a></span></p></td>
               </tr>
               <tr>
                 <td><p>Метод (нестатический) уровня класса принимает 5 параметров. Первый - string строка означающая ссылку на страницу. Второй - string строка означающая путь html блока в который нужно поместить контент по ссылке (по умолчанию в тег main). Третий - string строка означающая путь html блока из которого нужно взять контент по ссылке (по умолчанию из тега main). Четвёртый - string строка означающая параметры запроса в формате json для их передачи методом POST. Пятый - callback функция которая срабатывает при успешном запросе. Во время работы в теге "<span class="notranslate">body</span>" будет добавляться на время класс "<span class="notranslate">be-open</span>".</p></td>
@@ -207,15 +207,15 @@
 <ol>
 <li class="li1"><div class="de1"><span class="sc0">&lt;!DOCTYPE html&gt;</span></div></li>
 <li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/html.html"><span class="kw2">html</span></a> <span class="kw3">lang</span><span class="sy0">=</span><span class="st0">"ru"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/meta.html"><span class="kw2">meta</span></a> <span class="kw3">charset</span><span class="sy0">=</span><span class="st0">"UTF-8"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/meta.html"><span class="kw2">meta</span></a> <span class="kw3">charset</span><span class="sy0">=</span><span class="st0">"UTF-8"</span>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">src</span><span class="sy0">=</span><span class="st0">"Scripts/BusEngine/BusEngine.js"</span> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/head.html"><span class="kw2">head</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
 <li class="li1"><div class="de1"><span class="sc2">&lt;<a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a> <span class="kw3">type</span><span class="sy0">=</span><span class="st0">"text/javascript"</span>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;&nbsp;BusEngine.open('https://buslikdrev.by/', 'body');</div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;&nbsp;&nbsp;BusEngine.open('https://buslikdrev.by/', 'body');</div></li>
 <li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/script.html"><span class="kw2">script</span></a>&gt;</span></div></li>
-<li class="li1"><div class="de1">&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
+<li class="li1"><div class="de1">&nbsp;&nbsp;<span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/body.html"><span class="kw2">body</span></a>&gt;</span></div></li>
 <li class="li1"><div class="de1"><span class="sc2">&lt;<span class="sy0">/</span><a href="http://december.com/html/4/element/html.html"><span class="kw2">html</span></a>&gt;</span></div></li>
 </ol>
           </div>
