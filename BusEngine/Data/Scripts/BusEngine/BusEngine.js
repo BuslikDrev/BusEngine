@@ -48,9 +48,6 @@ if (!window.console) {
 if (!('BusEngine' in window)) {
 	window.BusEngine = {};
 }
-if (!('postMessage' in window.BusEngine)) {
-	window.BusEngine.postMessage = function(m) {};
-}
 
 window.console.logs = window.console.log;
 BusEngine.log = window.console.log = function(args) {
@@ -135,7 +132,7 @@ if (!('getLanguages' in window.BusEngine.localization)) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-	if (window.location.host != 'busengine') {
+	if (window.location.host != 'bd.busengine') {
 		import(window.location.href.substring(0, window.location.href.lastIndexOf('/', window.location.href.length)+1) + 'Localization/' + document.documentElement.lang + '.js').then(function(module) {
 			if (typeof module.default == 'object') {
 				for (var i in module.default) {
@@ -156,30 +153,33 @@ BusEngine.localization.initialize = function() {
 	l = langs.length;
 
 	for (i = 0; i < l; ++i) {
-		langs2 = langs[i].childNodes;
-		l2 = langs2.length;
+		//BusEngine.log(langs[i]);
+		if (langs[i]) {
+			langs2 = langs[i].childNodes;
+			l2 = langs2.length;
 
-		for (i2 = 0; i2 < l2; ++i2) {
-			if (langs2[i2].nodeType == Node.TEXT_NODE) {
-				for (i4 in BusEngine.localization.getLanguages) {
-					langs2[i2].data = langs2[i2].data.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '', 'gim'), BusEngine.localization.getLanguages[i4]);
-				}
-			} else if (langs2[i2].nodeType == Node.ELEMENT_NODE) {
-				for (i4 in BusEngine.localization.getLanguages) {
-					if ('attributes' in langs2[i2] && ['HEAD', 'LINK', 'BODY', 'HTML'].indexOf(langs2[i2].tagName) == -1) {
-						//console.logs(langs2[i2].tagName);
-						langs3 = langs2[i2].attributes;
-						l3 = langs3.length;
+			for (i2 = 0; i2 < l2; ++i2) {
+				if (langs2[i2].nodeType == Node.TEXT_NODE) {
+					for (i4 in BusEngine.localization.getLanguages) {
+						langs2[i2].data = langs2[i2].data.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '', 'gim'), BusEngine.localization.getLanguages[i4]);
+					}
+				} else if (langs2[i2].nodeType == Node.ELEMENT_NODE) {
+					for (i4 in BusEngine.localization.getLanguages) {
+						if ('attributes' in langs2[i2] && ['HEAD', 'LINK', 'BODY', 'HTML'].indexOf(langs2[i2].tagName) == -1) {
+							//console.logs(langs2[i2].tagName);
+							langs3 = langs2[i2].attributes;
+							l3 = langs3.length;
 
-						for (i3 = 0; i3 < l3; ++i3) {
-							if (['rel', 'type', 'class'].indexOf(langs3[i3].nodeName) == -1) {
-								d = langs3[i3].value;
-								langs3[i3].value = langs3[i3].value.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '$', 'i'), BusEngine.localization.getLanguages[i4]);
-								if (langs3[i3].nodeName == 'data-localization' && langs3[i3].value != d) {
-									//window.console.logs(langs3[i3]);
-									langs2[i2].value = langs3[i3].value;
-									langs2[i2].innerText = langs3[i3].value;
-									//langs3[i2].value = langs3[i3].value;
+							for (i3 = 0; i3 < l3; ++i3) {
+								if (['rel', 'type', 'class'].indexOf(langs3[i3].nodeName) == -1) {
+									d = langs3[i3].value;
+									langs3[i3].value = langs3[i3].value.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '$', 'i'), BusEngine.localization.getLanguages[i4]);
+									if (langs3[i3].nodeName == 'data-localization' && langs3[i3].value != d) {
+										//window.console.logs(langs3[i3]);
+										langs2[i2].value = langs3[i3].value;
+										langs2[i2].innerText = langs3[i3].value;
+										//langs3[i2].value = langs3[i3].value;
+									}
 								}
 							}
 						}
@@ -499,6 +499,17 @@ BusEngine.tools.ajax = function(url, setting) {
 	return xhr;
 };
 
+if (!('postMessage' in window.BusEngine)) {
+	window.BusEngine.postMessage = function(m) {
+		BusEngine.tools.ajax({
+			url: window.location.href.substring(0, window.location.href.lastIndexOf('/', window.location.href.length)+1) + 'post_message.php',
+			method: 'POST',
+			responseType: 'text',
+			data: {post_message: m}
+		});
+	};
+}
+
 /* BusEngine.tools.ajax({
 	url:'https://busengine.buslikdrev.by/',
 	method:'post',
@@ -555,17 +566,13 @@ BusEngine.open = function(url, node1, node2, params, callback) {
 			}
 
 			if (element) {
-				/* var div = document.createElement('html');
-				div.innerHTML = data;
-				data = div; */
-
 				e = data.querySelector(node2);
 
 				if (!e) {
 					e = data;
 				}
 
-				if (e) {
+				if (e && 'innerHTML' in e) {
 					var i, l, m, scripts, script;
 
 					// fix memory chrome
@@ -624,8 +631,6 @@ BusEngine.open = function(url, node1, node2, params, callback) {
 							}
 						}
 					}
-
-					//window.history.pushState(null, null, xhr.responseURL);
 				}
 			}
 
