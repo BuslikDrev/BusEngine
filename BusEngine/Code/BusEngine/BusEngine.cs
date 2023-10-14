@@ -897,6 +897,7 @@ BusEngine.Tools.Json
 				if (BusEngine.Engine.SettingEngine["console_commands"]["google_default_client_secret"] != "") {
 					System.Environment.SetEnvironmentVariable("google_default_client_secret", BusEngine.Engine.SettingEngine["console_commands"]["google_api_key"]);
 				}
+				//System.Environment.SetEnvironmentVariable("USE_PROPRIETARY_CODECS", "1");
 
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
 				CefSharp.WinForms.CefSettings settings = new CefSharp.WinForms.CefSettings() /* {
@@ -918,7 +919,7 @@ BusEngine.Tools.Json
 				settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
 				settings.CefCommandLineArgs.Add("enable-media-stream");
 				settings.CefCommandLineArgs.Add("enable-speech-input");
-				//settings.CefCommandLineArgs.Add("ignore-certificate-errors");
+				settings.CefCommandLineArgs.Add("ignore-certificate-errors");
 
 				// настройка имён файлов
 				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cef_log.txt");
