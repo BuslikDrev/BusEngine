@@ -381,14 +381,14 @@ select{cursor:pointer}
 #menu_vertical [id^="menu-"]:checked + label[for^="menu-"][data-position="2"] + div[class^="menu-"][data-position="2"]{display:block;transform:translate(0,0);-webkit-transform:translate(0,0px);-moz-transform:translate(0,0);-o-transform:translate(0,0);-ms-transform:translate(0,0)}
 table{width:100%}
 table tr:not([id*="BusEngine"]):nth-child(even) td{border-bottom:2px dashed #1179bb}
-table td{min-width:1px}
+table td{min-width:1px;font-weight:normal}
 @media (min-width: 600px) {
-table td + td{min-width:180px}
-table td + td + td{width:100%}
+table td + th{min-width:180px}
+table td + th + td{width:100%}
 }
 @media (max-width: 599px) {
-table td + td{width:100%}
-table td + td + td{display:none}
+table td + th{width:100%}
+table td + th + td{display:none}
 }
 table td img{width:30px;height:30px}
 table td i{font-size:30px;text-align:center;width:100%}
