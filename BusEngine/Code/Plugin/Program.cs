@@ -52,8 +52,8 @@ namespace BusEngine.Game {
 			}
 
 			if (BusEngine.Engine.Platform == "Windows") {
-				BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width + "";
-				BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height + "";
+				//BusEngine.Engine.SettingEngine["console_commands"]["r_Width"] = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width + "";
+				//BusEngine.Engine.SettingEngine["console_commands"]["r_Height"] = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height + "";
 			}
 
 			if (BusEngine.Engine.Platform == "WindowsLauncher") {
@@ -112,8 +112,46 @@ namespace BusEngine.Game {
 				BusEngine.UI.Canvas.WinForm.KeyDown += KeyDownAudio;
 			}
 
+				/* System.Timers.ElapsedEventHandler onTimer = (o, e) => {
+					BusEngine.Log.Info(System.Windows.Forms.Cursor.Position);
+				};
+				System.Timers.Timer DisposeTimer = null;
+					string message = "BusEngine.requestPointerLock";
+				if (message == "BusEngine.requestPointerLock") {
+					System.Windows.Forms.Cursor.Position = new System.Drawing.Point(400, 700);
+					//System.Windows.Forms.Cursor.Hide();
+
+					if (DisposeTimer == null) {
+						DisposeTimer = new System.Timers.Timer(1000/250);
+					}
+					//DisposeTimer.Interval = 1;
+					DisposeTimer.Elapsed -= onTimer;
+					DisposeTimer.Elapsed += onTimer;
+					DisposeTimer.AutoReset = true;
+					DisposeTimer.Enabled = true;
+					
+					BusEngine.UI.Canvas.WinForm.BackColor = System.Drawing.Color.White;
+					System.Windows.Forms.Panel panel1 = new System.Windows.Forms.Panel();
+					panel1.Location = BusEngine.UI.Canvas.WinForm.Location;
+					panel1.Size = new System.Drawing.Size(100, 100);
+					panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+					panel1.BackColor = System.Drawing.Color.Red;
+					BusEngine.UI.Canvas.WinForm.Controls.Add(panel1);
+					
+					
+				} else if (message == "BusEngine.exitPointerLock") {
+					System.Windows.Forms.Cursor.Show();
+
+					if (DisposeTimer != null) {
+						DisposeTimer.Elapsed -= onTimer;
+						DisposeTimer.Dispose();
+					}
+				} */
+
+
+
 			// запускаем видео
-			if (BusEngine.Engine.Platform == "Windows") {
+			if (BusEngine.Engine.Platform == "Windows1") {
 				// создаём массив ссылок или путей
 				string[] videos = {"Videos/BusEngine.mp4", "Videos/BusEngine.webm", "Videos/BusEngine.webm"};
 				// создаём новый объект видео
@@ -145,6 +183,7 @@ namespace BusEngine.Game {
 
 			// запускаем браузер
 			if (BusEngine.Engine.Platform == "WindowsEditor") {
+				BusEngine.Browser.DownloadPath = "";
 				Browser("https://threejs.org/editor/"); 
 			} else if (BusEngine.Engine.Platform == "WindowsLauncher") {
 				Browser("launcher.html");
@@ -175,6 +214,41 @@ namespace BusEngine.Game {
 					}
 				}
 			};
+			/* BusEngine.Browser.OnPostMessageStatic += (string message) => {
+				System.Timers.ElapsedEventHandler onTimer = (o, e) => {
+					BusEngine.Log.Info(System.Windows.Forms.Cursor.Position);
+				};
+				System.Timers.Timer DisposeTimer = null;
+				if (message == "BusEngine.requestPointerLock") {
+					System.Windows.Forms.Cursor.Position = new System.Drawing.Point(400, 700);
+					System.Windows.Forms.Cursor.Hide();
+
+					if (DisposeTimer == null) {
+						DisposeTimer = new System.Timers.Timer(1000/250);
+					}
+					//DisposeTimer.Interval = 1;
+					DisposeTimer.Elapsed -= onTimer;
+					DisposeTimer.Elapsed += onTimer;
+					DisposeTimer.AutoReset = true;
+					DisposeTimer.Enabled = true;
+					
+					
+					System.Windows.Forms.Panel panel1 = new System.Windows.Forms.Panel();
+					panel1.Location = BusEngine.UI.Canvas.WinForm.Location;
+					panel1.Size = BusEngine.UI.Canvas.WinForm.Size;
+					panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+					BusEngine.UI.Canvas.WinForm.Controls.Add(panel1);
+					
+					
+				} else if (message == "BusEngine.exitPointerLock") {
+					System.Windows.Forms.Cursor.Show();
+
+					if (DisposeTimer != null) {
+						DisposeTimer.Elapsed -= onTimer;
+						DisposeTimer.Dispose();
+					}
+				}
+			}; */
 
 			BusEngine.Browser.OnDownloadStatic += (e) => {
 				BusEngine.Log.Info("Скачивание: {0}", e.FullPath);
