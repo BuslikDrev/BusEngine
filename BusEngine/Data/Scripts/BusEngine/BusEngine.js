@@ -1,7 +1,7 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2023; BuslikDrev - Усе правы захаваны. */
 'use strict';
-'use asm';
+//'use asm';
 /* Chrome error off/block cookie "'Window': Access is denied for this document." */
 try {
 	window.localStorage.length;
@@ -373,51 +373,66 @@ BusEngine.tools.ajax = function(url, setting) {
 			url = setting['url'];
 		}
 	}
-	if (typeof setting['type'] !== 'undefined') {
+
+	if (typeof setting['type'] === 'string') {
 		setting['method'] = setting['type'];
 	}
-	if (typeof setting['method'] === 'undefined') {
+
+	if (typeof setting['method'] !== 'string') {
 		setting['method'] = 'GET';
 	}
-	if (typeof setting['responseType'] === 'undefined') {
+
+	if (typeof setting['responseType'] !== 'string') {
 		setting['responseType'] = 'json';
 	}
-	if (typeof setting['dataType'] === 'undefined') {
+
+	if (typeof setting['dataType'] !== 'string') {
 		setting['dataType'] = 'text';
 	}
+
 	if (typeof setting['data'] === 'undefined') {
 		setting['data'] = '';
 	}
-	if (typeof setting['async'] === 'undefined') {
+
+	if (typeof setting['async'] !== 'boolean') {
 		setting['async'] = true;
 	}
+
 	if (typeof setting['user'] === 'undefined') {
 		setting['user'] = null;
 	}
+
 	if (typeof setting['password'] === 'undefined') {
 		setting['password'] = null;
 	}
+
 	if (typeof setting['beforeSend'] !== 'function') {
 		setting['beforeSend'] = function() {};
 	}
+
 	if (typeof setting['success'] !== 'function') {
 		setting['success'] = function() {};
 	}
+
 	if (typeof setting['error'] !== 'function') {
 		setting['error'] = function() {};
 	}
+
 	if (typeof setting['complete'] !== 'function') {
 		setting['complete'] = function() {};
 	}
-	if (typeof setting['debug'] === 'undefined') {
+
+	if (typeof setting['debug'] === 'boolean') {
 		setting['debug'] = false;
 	}
 
 	var datanew = null, xhr = new XMLHttpRequest();
+
 	setting['beforeSend'](xhr, setting);
 
 	if (setting['data']) {
-		var i, i2, i3;
+		var i;
+
 		if (setting['dataType'] == 'json') {
 			datanew = JSON.stringify(setting['data']);
 		} else {
@@ -478,12 +493,15 @@ BusEngine.tools.ajax = function(url, setting) {
 			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
 		}
 	}
+
 	if (setting['responseType']) {
 		xhr.responseType = setting['responseType']; //\"text\" – строка,\"arraybuffer\", \"blob\", \"document\", \"json\" – JSON (парсится автоматически).
 	}
+
 	if (setting['debug']) {
 		console.log('xhr data: ', datanew);
 	}
+
 	xhr.onload = function(e) {
 		if (e.target.status == 200) {
 			setting['success'](e.target.response, e.target);
@@ -494,7 +512,6 @@ BusEngine.tools.ajax = function(url, setting) {
 		}
 	};
 	xhr.send(datanew);
-	xhr = null;
 
 	return xhr;
 };
