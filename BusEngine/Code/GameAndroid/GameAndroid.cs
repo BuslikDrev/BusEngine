@@ -19,7 +19,6 @@ namespace BusEngine {
 System.Windows.Forms
 BusEngine.Engine
 BusEngine.UI
-BusEngine.Browser
 */
 	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
@@ -28,9 +27,6 @@ BusEngine.Browser
 			// инициализируем API BusEngine
 			BusEngine.Engine.Platform = "Android";
 			BusEngine.Engine.Commands = args;
-			// размер экрана
-			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
-			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
 			BusEngine.Engine.OnInitialize += BusEngine.Initialize.OnRun;
 			BusEngine.Engine.OnShutdown += BusEngine.Initialize.OnExit;
 			BusEngine.Engine.Initialize();
@@ -65,16 +61,10 @@ BusEngine.Browser
 				return;
 			}
 
-			// подключаем API BusEngine.UI.Canvas
-			BusEngine.UI.Canvas.WinForm = new BusEngine.Form();
-
-			// инициализируем API BusEngine.UI.Canvas
-			BusEngine.UI.Canvas.Initialize();
-
 			// запускаем приложение System.Windows.Forms
 			//System.Windows.Forms.Application.EnableVisualStyles();
 			//System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-			System.Windows.Forms.Application.Run(BusEngine.UI.Canvas.WinForm);
+			System.Windows.Forms.Application.Run(new BusEngine.Form());
 		}
 
 		private static void OnExit() {
@@ -156,6 +146,7 @@ BusEngine.Browser
 		public Form() {
 			// поверх всех окон
 			this.TopMost = true;
+			this.TopLevel = true;
 
 			// название окна
 			this.Text = BusEngine.Engine.SettingEngine["info"]["name"] + " v" + BusEngine.Engine.SettingEngine["info"]["version"];
@@ -175,6 +166,9 @@ BusEngine.Browser
 			// https://learn.microsoft.com/ru-ru/windows/win32/learnwin32/dpi-and-device-independent-pixels#converting-physical-pixels-to-dips
 			this.Width = this.Width * this.DeviceDpi / 96;
 			this.Height = this.Height * this.DeviceDpi / 96;
+
+			// размер экрана
+			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
 
 			this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
 
@@ -244,7 +238,13 @@ BusEngine.Browser
 			//this.ShowDialog();
 
 			// фикс создания дескриптора раньше плагинов
-			System.IntPtr hWnd = this.Handle;
+			//System.IntPtr hWnd = this.Handle;
+
+			// подключаем API BusEngine.UI.Canvas
+			BusEngine.UI.Canvas.WinForm = this;
+
+			// инициализируем API BusEngine.UI.Canvas
+			BusEngine.UI.Canvas.Initialize();
 		}
 		/** функция запуска окна приложения */
 

@@ -24,7 +24,7 @@ BusEngine.UI
 
 		private static void Run(string[] args) {
 			// инициализируем API BusEngine
-			BusEngine.Engine.Platform = "WindowsLauncher";
+			BusEngine.Engine.Platform = "WindowsEditor";
 			BusEngine.Engine.Commands = args;
 			BusEngine.Engine.OnInitialize += BusEngine.Initialize.OnRun;
 			BusEngine.Engine.OnShutdown += BusEngine.Initialize.OnExit;
