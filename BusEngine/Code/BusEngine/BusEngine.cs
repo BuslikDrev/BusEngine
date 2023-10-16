@@ -798,7 +798,7 @@ BusEngine.Tools.Json
 		} */
 		/** функция выполнения js кода в браузере */
 
-		/** функция скачиваяния файла в браузере */
+		/** функция скачивания файла в браузере */
 		private static void typeDownload(bool status = true) {
 			CefSharp.IDownloadHandler x;
 
@@ -855,7 +855,7 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
 		}
-		/** функция скачиваяния файла в браузере */
+		/** функция скачивания файла в браузере */
 
 		internal static bool ValidURLStatic(string s, out System.Uri url) {
 			if (!System.Text.RegularExpressions.Regex.IsMatch(s, @"^https?:\/\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) {
@@ -3487,6 +3487,114 @@ Newtonsoft.Json
 		public void Dispose() {}
 	}
 	/** API BusEngine.Tools.Json */
+}
+/** API BusEngine.Tools */
+
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+/*
+Зависит от плагинов:
+System.Windows.Forms
+*/
+	/** API BusEngine.Tools.FileFolderDialog */
+	public class FileFolderDialog : System.Windows.Forms.CommonDialog {
+		private System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+
+		public System.Windows.Forms.OpenFileDialog Dialog {
+			get { return dialog; }
+			set { dialog = value; }
+		}
+
+		public new System.Windows.Forms.DialogResult ShowDialog() {
+			return this.ShowDialog(null);
+		}
+
+		public new System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.IWin32Window owner) {
+			// Set validate names to false otherwise windows will not let you select "Folder Selection."
+			dialog.ValidateNames = false;
+			dialog.CheckFileExists = false;
+			dialog.CheckPathExists = true;
+ 
+			try {
+				// Set initial directory (used when dialog.FileName is set from outside)
+				if (dialog.FileName != null && dialog.FileName != "") {
+					if (System.IO.Directory.Exists(dialog.FileName)) {
+						dialog.InitialDirectory = dialog.FileName;
+					} else {
+						dialog.InitialDirectory = System.IO.Path.GetDirectoryName(dialog.FileName);
+					}
+				}
+			} catch (System.Exception ex) {
+				// Do nothing
+				BusEngine.Log.Info(ex);
+			}
+ 
+			// Always default to Folder Selection.
+			dialog.FileName = "Откройте папку которую хотите выбрать.";
+ 
+			if (owner == null) {
+				return dialog.ShowDialog();
+			} else {
+				return dialog.ShowDialog(owner);
+			}
+		}
+
+		public string SelectedPath {
+			get {
+				try {
+					if (
+						dialog.FileName != null &&
+						(dialog.FileName.EndsWith("Folder Selection.") || !System.IO.File.Exists(dialog.FileName)) &&
+						!System.IO.Directory.Exists(dialog.FileName)
+					) {
+						return System.IO.Path.GetDirectoryName(dialog.FileName);
+					} else {
+						return dialog.FileName;
+					}
+				} catch (System.Exception ex) {
+					BusEngine.Log.Info(ex);
+
+					return dialog.FileName;
+				}
+			} set {
+				if (value != null && value != "") {
+					dialog.FileName = value;
+				}
+			}
+		}
+
+		public string SelectedPaths {
+			get {
+				if (dialog.FileNames != null && dialog.FileNames.Length > 1) {
+					System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+					foreach (string fileName in dialog.FileNames) {
+						try {
+							if (System.IO.File.Exists(fileName)) {
+								sb.Append(fileName + ";");
+							}
+						} catch (System.Exception ex) {
+							// Go to next
+							BusEngine.Log.Info(ex);
+						}
+					}
+
+					return sb.ToString();
+				} else {
+					return null;
+				}
+			}
+		}
+
+		public override void Reset() {
+			dialog.Reset();
+		}
+
+		protected override bool RunDialog(System.IntPtr hwndOwner) {
+			return true;
+		}
+	}
+	/** API BusEngine.Tools.FileFolderDialog */
 }
 /** API BusEngine.Tools */
 
