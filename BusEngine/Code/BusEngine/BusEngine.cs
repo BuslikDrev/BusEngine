@@ -989,8 +989,8 @@ BusEngine.Tools.Json
 				});
 
 				// в одном потоке (отключить асинхронность)
-				/* settings.MultiThreadedMessageLoop = true;
-				//settings.ExternalMessagePump = true;
+				settings.MultiThreadedMessageLoop = true;
+				/* //settings.ExternalMessagePump = true;
 				System.Timers.Timer timer = new System.Timers.Timer();
 				timer.Interval = 1000 / 30;
 				timer.Elapsed += (o, e) => {
@@ -1127,15 +1127,42 @@ BusEngine.Tools.Json
 				/** событие клика из браузера */
 
 				browser.FrameLoadEnd += OnCefFrameLoadEnd;
-				browser.UseParentFormMessageInterceptor = false;
 
 				// устанавливаем размер окана браузера, как в нашей программе
 				//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
 				//browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
 
+				// https://cefsharp.github.io/api/109.1.x/html/P_CefSharp_WinForms_ChromiumWebBrowser_UseParentFormMessageInterceptor.htm
+				browser.UseParentFormMessageInterceptor = false;
+
 				// подключаем браузер к нашей программе
+				/* BusEngine.Log.Info("1 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
+				BusEngine.Log.Info("1 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
+				BusEngine.Log.Info("1 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForm.TopLevelControl);
+				BusEngine.Log.Info("1 ActiveControl: {0}", BusEngine.UI.Canvas.WinForm.ActiveControl);
+				BusEngine.Log.Info("1 TopLevel: {0}", BusEngine.UI.Canvas.WinForm.TopLevel);
+				BusEngine.Log.Info("1 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
+				BusEngine.Log.Info("1 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
+
 				BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
+
+				/* BusEngine.Log.Info("2 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
+				BusEngine.Log.Info("2 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
+				BusEngine.Log.Info("2 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForm.TopLevelControl);
+				BusEngine.Log.Info("2 ActiveControl: {0}", BusEngine.UI.Canvas.WinForm.ActiveControl);
+				BusEngine.Log.Info("2 TopLevel: {0}", BusEngine.UI.Canvas.WinForm.TopLevel);
+				BusEngine.Log.Info("2 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
+				BusEngine.Log.Info("2 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
+
 				browser.BringToFront();
+
+				/* BusEngine.Log.Info("3 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
+				BusEngine.Log.Info("3 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
+				BusEngine.Log.Info("3 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForm.TopLevelControl);
+				BusEngine.Log.Info("3 ActiveControl: {0}", BusEngine.UI.Canvas.WinForm.ActiveControl);
+				BusEngine.Log.Info("3 TopLevel: {0}", BusEngine.UI.Canvas.WinForm.TopLevel);
+				BusEngine.Log.Info("3 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
+				BusEngine.Log.Info("3 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
 			}
 		}
 		/** функция запуска браузера */
@@ -3497,6 +3524,7 @@ namespace BusEngine.Tools {
 System.Windows.Forms
 */
 	/** API BusEngine.Tools.FileFolderDialog */
+	//https://stackoverflow.com/questions/11624298/how-do-i-use-openfiledialog-to-select-a-folder
 	public class FileFolderDialog : System.Windows.Forms.CommonDialog {
 		private System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
 
@@ -3533,7 +3561,7 @@ System.Windows.Forms
 			dialog.FileName = "Откройте папку которую хотите выбрать.";
  
 			if (owner == null) {
-				return dialog.ShowDialog();
+				return dialog.ShowDialog(BusEngine.UI.Canvas.WinForm.TopLevelControl);
 			} else {
 				return dialog.ShowDialog(owner);
 			}
