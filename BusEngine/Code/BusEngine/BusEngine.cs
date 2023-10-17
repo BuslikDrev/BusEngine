@@ -789,13 +789,6 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
 		}
-		/* public static void ExecuteJSStatic(Browser browser, string js = "") {
-			if (browser != null) {
-				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
-			} else {
-				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
-			}
-		} */
 		/** функция выполнения js кода в браузере */
 
 		/** функция скачивания файла в браузере */
@@ -1018,8 +1011,6 @@ BusEngine.Tools.Json
 					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
 				}
 
-				//ExecuteJSStatic("BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {});");
-
 				// https://stackoverflow.com/questions/51259813/call-c-sharp-function-from-javascript-using-cefsharp-in-windows-form-app
 				// подключаем событие сообщения из javascript
 				browser.JavascriptMessageReceived += OnCefPostMessage;
@@ -1077,7 +1068,6 @@ BusEngine.Tools.Json
 				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
 				browser.FrameLoadStart += (object b, CefSharp.FrameLoadStartEventArgs e) => {
 					if (e.Frame.IsMain) {
-
 						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, @"
 	if (!('BusEngine' in window)) {
 		window.BusEngine = {};
@@ -3533,16 +3523,26 @@ System.Windows.Forms
 			set { dialog = value; }
 		}
 
-		public new System.Windows.Forms.DialogResult ShowDialog() {
+		public static string _name;
+
+		public System.Windows.Forms.DialogResult ShowDialog() {
 			return this.ShowDialog(null);
 		}
 
-		public new System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.IWin32Window owner) {
+		public System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.IWin32Window owner) {
 			// Set validate names to false otherwise windows will not let you select "Folder Selection."
+			dialog.AddExtension = false;
+			//dialog.AutoUpgradeEnabled = false;
 			dialog.ValidateNames = false;
 			dialog.CheckFileExists = false;
 			dialog.CheckPathExists = true;
- 
+			dialog.RestoreDirectory = true;
+			if (BusEngine.Localization.GetLanguageStatic("text_select_folder_title") != "text_select_folder_title") {
+				dialog.Title = BusEngine.Localization.GetLanguageStatic("text_select_folder_title");
+			} else {
+				dialog.Title = "Откройте папку которую хотите выбрать.";
+			}
+
 			try {
 				// Set initial directory (used when dialog.FileName is set from outside)
 				if (dialog.FileName != null && dialog.FileName != "") {
@@ -3558,7 +3558,11 @@ System.Windows.Forms
 			}
  
 			// Always default to Folder Selection.
-			dialog.FileName = "Откройте папку которую хотите выбрать.";
+			if (BusEngine.Localization.GetLanguageStatic("text_select_folder") != "text_select_folder") {
+				dialog.FileName = BusEngine.Localization.GetLanguageStatic("text_select_folder");
+			} else {
+				dialog.FileName = "Выбор папки";
+			}
  
 			if (owner == null) {
 				return dialog.ShowDialog(BusEngine.UI.Canvas.WinForm.TopLevelControl);
@@ -3570,14 +3574,10 @@ System.Windows.Forms
 		public string SelectedPath {
 			get {
 				try {
-					if (
-						dialog.FileName != null &&
-						(dialog.FileName.EndsWith("Folder Selection.") || !System.IO.File.Exists(dialog.FileName)) &&
-						!System.IO.Directory.Exists(dialog.FileName)
-					) {
+					if (dialog.FileName != null) {
 						return System.IO.Path.GetDirectoryName(dialog.FileName);
 					} else {
-						return dialog.FileName;
+						return "";
 					}
 				} catch (System.Exception ex) {
 					BusEngine.Log.Info(ex);
