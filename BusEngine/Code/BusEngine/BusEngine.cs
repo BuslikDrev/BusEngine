@@ -1,5 +1,5 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
-/* © 2016-2023; BuslikDrev - Усе правы захаваны. */
+/* © 2016-2024; BuslikDrev - Усе правы захаваны. */
 
 /* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
@@ -29,6 +29,34 @@ https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/
 то можно static с проверкой на null.
 - сторонние библиотеки обвернуть в исключения try catch - нужно от них ожидать только ошибки.
 - наладить многопоточность - потокобезопасность.
+*/
+
+/*
+internal class ProjectDefault
+public class TooltipAttribute
+public class AI
+public class Audio
+public class Browser
+public class Camera
+public class Core
+public class Engine
+public class FlowGraph
+public class Layer
+public class Level
+public class Localization
+public class Log
+public class Material
+public class Model
+public class Physics
+public abstract class Plugin
+internal class IPlugin
+public class Rendering
+public class Ajax
+public class Json
+public class FileFolderDialog
+public class Canvas
+public class Vector
+public class Video
 */
 
 //#define AUDIO_LOG
@@ -264,6 +292,7 @@ namespace BusEngine {
 /*
 Зависит от плагинов:
 BusEngine.Log
+LibVLCSharp
 */
 	/** API BusEngine.Audio */
 	public class Audio : System.IDisposable {
@@ -289,11 +318,6 @@ BusEngine.Log
 		public bool IsStop { get; private set; }
 		public bool IsEnd { get; private set; }
 		public bool IsDispose { get; private set; }
-		/* private bool IsPlay;
-		private bool IsPause;
-		private bool IsStop;
-		private bool IsEnd;
-		private bool IsDispose; */
 
 		// список ссылок
 		public string[] Urls;
@@ -620,7 +644,7 @@ BusEngine.Log
 			}
 			this.IsDispose = true;
 
-			#if VIDEO_LOG
+			#if AUDIO_LOG
 			BusEngine.Log.Info("Аудио Dispose()");
 			#endif
 
@@ -674,7 +698,7 @@ BusEngine.Log
 		~Audio() {
 			// async
 			//new System.Threading.Thread(new System.Threading.ThreadStart(delegate {
-				#if VIDEO_LOG
+				#if AUDIO_LOG
 				BusEngine.Log.Info("Аудио ========== Finalize()");
 				#endif
 			//})).Start();
@@ -1197,10 +1221,28 @@ namespace BusEngine {
 Зависит от плагинов:
 BusEngine.Log
 */
+	/** API BusEngine.Camera */
+	public class Camera : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Camera */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
 	/** API BusEngine.Core */
 	// https://habr.com/ru/post/196578/
-	public class Core {
+	public class Core : System.IDisposable {
+		public void Dispose() {
 
+		}
 	}
 	/** API BusEngine.Core */
 }
@@ -1395,9 +1437,6 @@ BusEngine.Tools
 			// инициализируем язык
 			new BusEngine.Localization().Initialize();
 
-			// включаем консоль
-			BusEngine.Log.ConsoleShow();
-
 			// ищем зависимости
 			/* System.AppDomain.CurrentDomain.AssemblyLoad  += new System.AssemblyLoadEventHandler((o, e) => {
 				BusEngine.Log.Info("AssemblyLoad... {0}", e.LoadedAssembly.FullName);
@@ -1432,12 +1471,6 @@ BusEngine.Tools
 				BusEngine.Log.Info("UnhandledException... {0}", e.ExceptionObject);
 			}); */
 
-			/* BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.UserAgent);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Name);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Version);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.Processor);
-			BusEngine.Log.Info("Device {0}", BusEngine.Engine.Device.ProcessorCount); */
-
 			/* BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
 			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
 			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true));
@@ -1447,6 +1480,7 @@ BusEngine.Tools
 			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["console_commands"]["sys_spec"]);
 			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)))); */
 
+			// https://learn.microsoft.com/ru-ru/dotnet/standard/base-types/best-practices-strings
 			// https://metanit.com/sharp/tutorial/5.4.php
 			// https://metanit.com/sharp/tutorial/5.5.php
 			// https://metanit.com/sharp/tutorial/6.4.php
@@ -1585,6 +1619,24 @@ BusEngine.Tools
 			BusEngine.Engine.SettingEngine = BusEngine.ProjectDefault.Setting2;
 			BusEngine.Engine.SettingProject = BusEngine.ProjectDefault.Setting2;
 
+			// включаем консоль
+			int r_Displayinfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_Displayinfo"]);
+
+			if (r_Displayinfo > 0) {
+				BusEngine.Log.ConsoleShow();
+
+				if (r_Displayinfo > 1) {
+					BusEngine.Log.Info("Device UserAgent: {0}", BusEngine.Engine.Device.UserAgent);
+					BusEngine.Log.Info("Device OS: {0}", BusEngine.Engine.Device.Name);
+					BusEngine.Log.Info("Device Version OS: {0}", BusEngine.Engine.Device.Version);
+					BusEngine.Log.Info("Device Processor: {0}", BusEngine.Engine.Device.Processor);
+					BusEngine.Log.Info("Device ProcessorCount: {0}", BusEngine.Engine.Device.ProcessorCount);
+					BusEngine.Log.Info("Language file: {0}", BusEngine.Localization.LanguageStatic);
+					// https://csharp.webdelphi.ru/kak-izmerit-vremya-vypolneniya-operacii-v-c/
+					//BusEngine.Log.Info("Time: {0}", BusEngine.Localization.LanguageStatic);
+				}
+			}
+
 			// инициализируем плагины
 			new BusEngine.IPlugin("Initialize");
 
@@ -1612,6 +1664,54 @@ BusEngine.Tools
 		/** функция остановки API BusEngine  */
 	}
 	/** API BusEngine.Engine */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine
+*/
+	/** API BusEngine.FlowGraph */
+	public class FlowGraph : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.FlowGraph */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Layer */
+	public class Layer : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Layer */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Level */
+	public class Level : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Level */
 }
 /** API BusEngine */
 
@@ -2272,6 +2372,54 @@ namespace BusEngine {
 
 /** API BusEngine */
 namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Material */
+	public class Material : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Material */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Model */
+	public class Model : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Model */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Physics */
+	public class Physics : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Physics */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
 	/** API BusEngine.Plugin */
 	public abstract class Plugin {
 		// при запуске BusEngine до создания формы
@@ -2286,8 +2434,8 @@ namespace BusEngine {
 		// после загрузки определённого плагина
 		public virtual void Initialize(string plugin) {}
 		public virtual void InitializeAsync(string plugin) {}
-		public virtual void Initialize(string plugin, string state) {}
-		public virtual void InitializeAsync(string plugin, string state) {}
+		public virtual void Initialize(string plugin, string method) {}
+		public virtual void InitializeAsync(string plugin, string method) {}
 
 		// при запуске BusEngine после создания формы Canvas
 		public virtual void InitializeСanvas() {}
@@ -2480,10 +2628,622 @@ namespace BusEngine {
 
 /** API BusEngine */
 namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Rendering */
+	public class Rendering : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Rendering */
+}
+/** API BusEngine */
+
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+/*
+Зависит от плагинов:
+Newtonsoft.Json
+*/
+	/** API BusEngine.Tools.Ajax */
+	public class Ajax : System.IDisposable {
+		public delegate void BeforeSend();
+		public delegate void Success(dynamic data = null, dynamic xhr = null);
+		public delegate void Error(dynamic xhr = null, string textStatus = null, dynamic thrownError = null);
+		public delegate void Complete(dynamic xhr = null, string textStatus = null, dynamic thrownError = null);
+		//private static dynamic E { get; set; }
+		//private HttpRequestException Ex { get; set; }
+		private System.Net.Http.HttpResponseMessage Result { get; set; }
+		public delegate void Call();
+		private Call HttpClientAsync = null;
+
+		// https://metanit.com/sharp/tutorial/2.9.php
+		public Ajax(string engine = null, string url = null, string[] urlAlternative = null, string method = "POST", dynamic data = null, string responseType = "text", string dataType = "text", string headers = null, bool async = true, bool cache = false, string user = null, string password = null, BeforeSend beforeSend = null, Success success = null, Error error = null, Complete complete = null) {
+			if (urlAlternative == null) {
+				urlAlternative = new string[] {"https://buslikdrev.by/", "111111"};
+			}
+			beforeSend();
+			//BusEngine.Localization.GetLanguageStatic("error_server_not")
+			dynamic E = new G();
+
+			if (url != "" && url != null) {
+				try {
+					if (System.Uri.IsWellFormedUriString(url, System.UriKind.Absolute)) {
+						var result = System.Net.HttpWebRequest.Create(url).GetResponse();
+					}
+				} catch (System.Net.WebException e) {
+					if (e.GetType().GetProperty("Status") != null) {
+						E.Status = e.Status.ToString();
+						E.StatusCode = e.ToString();
+					}/*  else {
+						E.Status = "Status crash";
+						E.StatusCode = "StatusCode crash";
+					} */
+					url = "";
+				}
+			}
+
+			if (urlAlternative != null && (url == "" || url == null)) {
+				int i;
+
+				for (i = 0; i < urlAlternative.Length; ++i) {
+					try {
+						if (System.Uri.IsWellFormedUriString(urlAlternative[i], System.UriKind.Absolute)) {
+							var result = System.Net.HttpWebRequest.Create(urlAlternative[i]).GetResponse();
+							if (result != null) {
+								url = urlAlternative[i];
+							}
+						}
+					} catch (System.Net.WebException e) {
+						// https://docs.microsoft.com/en-us/dotnet/api/system.net.webexception?view=net-6.0
+						if (e.GetType().GetProperty("Status") != null) {
+							E.Status = e.Status.ToString();
+							E.StatusCode = e.ToString();
+						}/*  else {
+							E.Status = "Status crash ";
+							E.StatusCode = "StatusCode crash ";
+						} */
+						url = "";
+					}
+				}
+			}
+
+			if (url != "" && url != null) {
+				// https://stackoverflow.com/questions/20530152/deciding-between-httpclient-and-webclient
+				if (engine == null || engine.ToLower() != "webclient") {
+					if (async) {
+						HttpClientAsync = async () => {
+							var baseAddress = new System.Uri(url);
+							var cookieContainer = new System.Net.CookieContainer();
+							using (var handler = new System.Net.Http.HttpClientHandler() {
+								CookieContainer = cookieContainer
+							})
+							using (var client = new System.Net.Http.HttpClient(handler) {
+								BaseAddress = baseAddress
+							}) {
+								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
+
+								try {
+									method = method.ToLower();
+									dataType = dataType.ToLower();
+									if (data != null && method == "post") {
+										if (dataType == "object") {
+											/* object keys = new [] {};
+
+											var i = 0;
+											UnityEngine.Debug.Log(data);
+											foreach (var property in data) {
+												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
+												i += 1;
+											}
+											UnityEngine.Debug.Log(keys);
+
+											Result = await client.PostAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(keys)); */
+										} else if (dataType == "pair" || dataType == "list") {
+											Result = await client.PostAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data));
+										} else {
+											Result = await client.PostAsync(baseAddress, data);
+										}
+									} else if (data != null && method == "put") {
+										if (dataType == "object") {
+											/* object keys = new [] {};
+
+											var i = 0;
+											UnityEngine.Debug.Log(data);
+											foreach (var property in data) {
+												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
+												i += 1;
+											}
+											UnityEngine.Debug.Log(keys);
+
+											Result = await client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(keys)); */
+										} else if (dataType == "pair" || dataType == "list") {
+											Result = await client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data));
+										} else {
+											Result = await client.PutAsync(baseAddress, data);
+										}
+									} else {
+										Result = client.GetAsync(baseAddress).Result;
+									}
+									Result.EnsureSuccessStatusCode();
+									if (Result.IsSuccessStatusCode) {
+										//UnityEngine.Debug.Log(Result);
+									}
+									
+									
+									if (success != null && Result != null) {
+										responseType = responseType.ToLower();
+										if (responseType == "dictionary") {
+											success(BusEngine.Tools.Json.Decode(await Result.Content.ReadAsStringAsync()), Result);
+										} else if (responseType == "list") {
+											
+										} else if (responseType == "json") {
+											success(Result.Content.ReadAsStringAsync(), Result);
+										}
+									}
+								} catch (System.Net.Http.HttpRequestException e) {
+									if (error != null && e != null) {
+										if (e.GetType().GetProperty("StatusCode") != null) {
+											E = e;
+										}
+										string textStatus = "";
+
+										if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+											textStatus = E.StatusCode.ToString();
+										}
+
+										error(Result, textStatus, E);
+										success = null;
+									}
+								} finally {
+
+
+									string textStatus = "";
+
+									if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
+										textStatus = Result.StatusCode.ToString();
+									}
+									if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+										textStatus = E.StatusCode.ToString();
+									}
+
+									if (Result != null && complete != null) {
+										complete(Result, textStatus, E);
+									}
+								}
+							}
+						};
+						HttpClientAsync();
+					} else {
+						HttpClientAsync = () => {
+							var baseAddress = new System.Uri(url);
+							var cookieContainer = new System.Net.CookieContainer();
+							using (var handler = new System.Net.Http.HttpClientHandler() {
+								CookieContainer = cookieContainer
+							})
+							using (var client = new System.Net.Http.HttpClient(handler) {
+								BaseAddress = baseAddress
+							}) {
+								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
+
+								try {
+									method = method.ToLower();
+									dataType = dataType.ToLower();
+									if (method == "get") {
+										Result = client.GetAsync(baseAddress).Result;
+									} else if (method == "put" || method == "post") {
+										if (dataType == "object") {
+
+											Result = client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data)).Result;
+										} else if (dataType == "pair" || dataType == "list") {
+											Result = client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data)).Result;
+										} else {
+											Result = client.PutAsync(baseAddress, data).Result;
+										}
+									} else {
+										Result = client.GetAsync(baseAddress).Result;
+									}
+									Result.EnsureSuccessStatusCode();
+									if (Result.IsSuccessStatusCode) {
+										//UnityEngine.Debug.Log(Result);
+									}
+								} catch (System.Net.Http.HttpRequestException e) {
+									if (error != null && e != null) {
+										if (e.GetType().GetProperty("StatusCode") != null) {
+											E = e;
+										}
+										string textStatus = "";
+
+										if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+											textStatus = E.StatusCode.ToString();
+										}
+
+										error(Result, textStatus, E);
+										success = null;
+									}
+								} finally {
+									if (success != null && Result != null) {
+										responseType = responseType.ToLower();
+										if (responseType == "dictionary") {
+											success(BusEngine.Tools.Json.Decode(Result.Content.ReadAsStringAsync().Result), Result);
+										} else if (responseType == "list") {
+											
+										} else if (responseType == "json") {
+											
+										}
+									}
+
+									string textStatus = "";
+
+									if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
+										textStatus = Result.StatusCode.ToString();
+									}
+									if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+										textStatus = E.StatusCode.ToString();
+									}
+
+									if (complete != null) {
+										complete(Result, textStatus, E);
+									}
+								}
+							}
+						};
+						HttpClientAsync();
+					}
+				} else {
+					if (async) {
+
+					} else {
+
+					}
+				}
+			} else {
+				if (error != null) {
+					string textStatus = "";
+
+					if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
+						textStatus = Result.StatusCode.ToString();
+					}
+					if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
+						textStatus = E.StatusCode.ToString();
+					}
+
+					error(Result, textStatus, E);
+					if (complete != null) {
+						complete(Result, textStatus, E);
+					}
+				}
+			}
+		}
+
+		public static bool Test(string url = "https://buslikdrev.by/") {
+			bool status = false;
+
+			new BusEngine.Tools.Ajax(
+				url: url,
+				async: false,
+				dataType: "pair",
+				responseType: "dictionary",
+				beforeSend: () => {
+					System.Console.WriteLine("beforeSend");
+				},
+				data: new System.Collections.Generic.Dictionary<string, string>() {
+					{"user", "user1"},
+					{"pass", "pass1"},
+				},
+				success: (dynamic data, dynamic xhr) => {
+					//data https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage.Content
+					//xhr https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage
+
+					status = true;
+					System.Console.WriteLine("success");
+				},
+				error: (dynamic xhr, string textStatus, dynamic thrownError) => {
+					//xhr https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage
+					//textStatus request server;
+					//thrownError https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage.ensuresuccessstatuscode
+					//UnityEngine.Debug.Log(thrownError.GetType());
+
+					System.Console.WriteLine("Login.message.error", thrownError.StatusCode);
+				}
+			);
+
+			return status;
+		}
+
+		public static void Shutdown() {}
+
+		public void Dispose() {}
+	}
+
+	// заглушка
+	internal class G {
+		//public virtual System.Collections.IDictionary Data { get; }
+		//public virtual string? HelpLink { get; set; }
+		//public int HResult { get; set; }
+		//public Exception? InnerException { get; }
+		//public virtual string Message { get; }
+		//public virtual string? Source { get; set; }
+		//public virtual string? StackTrace { get; }
+		////public System.Net.WebExceptionStatus Status { get; }
+		////public System.Net.HttpStatusCode? StatusCode { get; }
+		public string Status { get; set; }
+		public string StatusCode { get; set; }
+		//public System.Reflection.MethodBase? TargetSite { get; }
+
+		public G(string text = "") {
+			StatusCode = text;
+			Status = text;
+		}
+	}
+}
+/** API BusEngine.Tools */
+
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+/*
+Зависит от плагинов:
+Newtonsoft.Json
+*/
+	/** API BusEngine.Tools.Json */
+	//https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/migrate-from-newtonsoft?pivots=dotnet-7-0
+	//https://www.nuget.org/packages/System.Text.Json#readme-body-tab
+	public class Json : System.IDisposable {
+		// System.Type|object|string|int|Dictionary|List c#
+		public static string Encode(object t) {
+			try {
+				return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
+			} catch (System.Exception e) {
+				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_json_encode") + ": {0}", e.Message);
+				return "[]";
+			}
+		}
+
+		// массив php
+		public static System.Collections.Generic.Dictionary<string, dynamic> Decode(string t) {
+			try {
+				return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, dynamic>>(t);
+				//return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
+			} catch (System.Exception e) {
+				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_json_decode") + ": {0}", e.Message);
+				return new System.Collections.Generic.Dictionary<string, dynamic>();
+			}
+		}
+
+		// object c#
+		public static object Decode(string t, bool o = true) {
+			try {
+				return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
+			} catch (System.Exception e) {
+				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_json_decode") + ": {0}", e.Message);
+				return new {};
+			}
+		}
+
+		public static void Shutdown() {}
+
+		public void Dispose() {}
+	}
+	/** API BusEngine.Tools.Json */
+}
+/** API BusEngine.Tools */
+
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+/*
+Зависит от плагинов:
+System.Windows.Forms
+*/
+	/** API BusEngine.Tools.FileFolderDialog */
+	//https://stackoverflow.com/questions/11624298/how-do-i-use-openfiledialog-to-select-a-folder
+	public class FileFolderDialog : System.Windows.Forms.CommonDialog {
+		private System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+
+		public System.Windows.Forms.OpenFileDialog Dialog {
+			get { return dialog; }
+			set { dialog = value; }
+		}
+
+		public static string _name;
+
+		public System.Windows.Forms.DialogResult ShowDialog() {
+			return this.ShowDialog(null);
+		}
+
+		public System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.IWin32Window owner) {
+			// Set validate names to false otherwise windows will not let you select "Folder Selection."
+			dialog.AddExtension = false;
+			//dialog.AutoUpgradeEnabled = false;
+			dialog.ValidateNames = false;
+			dialog.CheckFileExists = false;
+			dialog.CheckPathExists = true;
+			dialog.RestoreDirectory = true;
+			if (BusEngine.Localization.GetLanguageStatic("text_select_folder_title") != "text_select_folder_title") {
+				dialog.Title = BusEngine.Localization.GetLanguageStatic("text_select_folder_title");
+			} else {
+				dialog.Title = "Откройте папку которую хотите выбрать.";
+			}
+
+			try {
+				// Set initial directory (used when dialog.FileName is set from outside)
+				if (dialog.FileName != null && dialog.FileName != "") {
+					if (System.IO.Directory.Exists(dialog.FileName)) {
+						dialog.InitialDirectory = dialog.FileName;
+					} else {
+						dialog.InitialDirectory = System.IO.Path.GetDirectoryName(dialog.FileName);
+					}
+				}
+			} catch (System.Exception ex) {
+				// Do nothing
+				BusEngine.Log.Info(ex);
+			}
+ 
+			// Always default to Folder Selection.
+			if (BusEngine.Localization.GetLanguageStatic("text_select_folder") != "text_select_folder") {
+				dialog.FileName = BusEngine.Localization.GetLanguageStatic("text_select_folder");
+			} else {
+				dialog.FileName = "Выбор папки";
+			}
+ 
+			if (owner == null) {
+				return dialog.ShowDialog(BusEngine.UI.Canvas.WinForm.TopLevelControl);
+			} else {
+				return dialog.ShowDialog(owner);
+			}
+		}
+
+		public string SelectedPath {
+			get {
+				try {
+					if (dialog.FileName != null) {
+						return System.IO.Path.GetDirectoryName(dialog.FileName);
+					} else {
+						return "";
+					}
+				} catch (System.Exception ex) {
+					BusEngine.Log.Info(ex);
+
+					return dialog.FileName;
+				}
+			} set {
+				if (value != null && value != "") {
+					dialog.FileName = value;
+				}
+			}
+		}
+
+		public string SelectedPaths {
+			get {
+				if (dialog.FileNames != null && dialog.FileNames.Length > 1) {
+					System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+					foreach (string fileName in dialog.FileNames) {
+						try {
+							if (System.IO.File.Exists(fileName)) {
+								sb.Append(fileName + ";");
+							}
+						} catch (System.Exception ex) {
+							// Go to next
+							BusEngine.Log.Info(ex);
+						}
+					}
+
+					return sb.ToString();
+				} else {
+					return null;
+				}
+			}
+		}
+
+		public override void Reset() {
+			dialog.Reset();
+		}
+
+		protected override bool RunDialog(System.IntPtr hwndOwner) {
+			return true;
+		}
+	}
+	/** API BusEngine.Tools.FileFolderDialog */
+}
+/** API BusEngine.Tools */
+
+/** API BusEngine.UI */
+namespace BusEngine.UI {
+/*
+Зависит от плагинов:
+BusEngine.UI
+*/
+	/** API BusEngine.UI.Canvas */
+	public class Canvas : System.IDisposable {
+		public static System.Windows.Forms.Form WinForm;
+		//public static System.Windows.Forms.Form WPF;
+		//public static BusEngine.UI.Canvas Canvas;
+
+		/** событие уничтожения окна */
+		private void OnDisposed(object o, System.EventArgs e) {
+
+		}
+		/** событие уничтожения окна */
+
+		/** событие закрытия окна */
+		private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
+			BusEngine.UI.Canvas.WinForm.FormClosed -= OnClosed;
+			//BusEngine.Video.Shutdown();
+			//BusEngine.Engine.Shutdown();
+		}
+		/** событие закрытия окна */
+
+		private static Canvas _canvas;
+
+		public Canvas() {
+			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
+				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
+				// устанавливаем событи закрытия окна
+				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
+				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
+				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
+			}
+		}
+
+		public Canvas(System.Windows.Forms.Form _form) {
+			//#if (BUSENGINE_WINFORM == true)
+			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
+				if (_form != null) {
+					BusEngine.UI.Canvas.WinForm = _form;
+				}
+				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
+				// устанавливаем событи закрытия окна
+				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
+				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
+				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
+			//}
+			//#endif
+		}
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0117:", Target="~T:BusEngine.UI.Canvas")]
+		public static void Initialize() {
+			if (_canvas == null) {
+				_canvas = new Canvas();
+
+				// инициализируем плагины
+				new BusEngine.IPlugin("InitializeСanvas");
+			}
+		}
+
+		public static void Shutdown() {}
+
+		public void Dispose() {}
+	}
+	/** API BusEngine.UI.Canvas */
+}
+/** API BusEngine.UI */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Vector */
+	public class Vector : System.IDisposable {
+		public void Dispose() {
+
+		}
+	}
+	/** API BusEngine.Vector */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
 /* 
 Зависит от плагинов:
 BusEngine.Log
 BusEngine.UI.Canvas
+LibVLCSharp
 */
 	/** API BusEngine.Video */
 	public class Video : System.IDisposable {
@@ -2511,11 +3271,6 @@ BusEngine.UI.Canvas
 		public bool IsStop { get; private set; }
 		public bool IsEnd { get; private set; }
 		public bool IsDispose { get; private set; }
-		/* private bool IsPlay;
-		private bool IsPause;
-		private bool IsStop;
-		private bool IsEnd;
-		private bool IsDispose; */
 
 		// список ссылок
 		public string[] Urls;
@@ -3117,582 +3872,3 @@ BusEngine.UI.Canvas
 	/** API BusEngine.Video */
 }
 /** API BusEngine */
-
-/** API BusEngine.Tools */
-namespace BusEngine.Tools {
-/*
-Зависит от плагинов:
-Newtonsoft.Json
-*/
-	/** API BusEngine.Tools.Ajax */
-	public class Ajax : System.IDisposable {
-		public delegate void BeforeSend();
-		public delegate void Success(dynamic data = null, dynamic xhr = null);
-		public delegate void Error(dynamic xhr = null, string textStatus = null, dynamic thrownError = null);
-		public delegate void Complete(dynamic xhr = null, string textStatus = null, dynamic thrownError = null);
-		//private static dynamic E { get; set; }
-		//private HttpRequestException Ex { get; set; }
-		private System.Net.Http.HttpResponseMessage Result { get; set; }
-		public delegate void Call();
-		private Call HttpClientAsync = null;
-
-		// https://metanit.com/sharp/tutorial/2.9.php
-		public Ajax(string engine = null, string url = null, string[] urlAlternative = null, string method = "POST", dynamic data = null, string responseType = "text", string dataType = "text", string headers = null, bool async = true, bool cache = false, string user = null, string password = null, BeforeSend beforeSend = null, Success success = null, Error error = null, Complete complete = null) {
-			if (urlAlternative == null) {
-				urlAlternative = new string[] {"https://buslikdrev.by/", "111111"};
-			}
-			beforeSend();
-			//BusEngine.Localization.GetLanguageStatic("error_server_not")
-			dynamic E = new G();
-
-			if (url != "" && url != null) {
-				try {
-					if (System.Uri.IsWellFormedUriString(url, System.UriKind.Absolute)) {
-						var result = System.Net.HttpWebRequest.Create(url).GetResponse();
-					}
-				} catch (System.Net.WebException e) {
-					if (e.GetType().GetProperty("Status") != null) {
-						E.Status = e.Status.ToString();
-						E.StatusCode = e.ToString();
-					}/*  else {
-						E.Status = "Status crash";
-						E.StatusCode = "StatusCode crash";
-					} */
-					url = "";
-				}
-			}
-
-			if (urlAlternative != null && (url == "" || url == null)) {
-				int i;
-
-				for (i = 0; i < urlAlternative.Length; ++i) {
-					try {
-						if (System.Uri.IsWellFormedUriString(urlAlternative[i], System.UriKind.Absolute)) {
-							var result = System.Net.HttpWebRequest.Create(urlAlternative[i]).GetResponse();
-							if (result != null) {
-								url = urlAlternative[i];
-							}
-						}
-					} catch (System.Net.WebException e) {
-						// https://docs.microsoft.com/en-us/dotnet/api/system.net.webexception?view=net-6.0
-						if (e.GetType().GetProperty("Status") != null) {
-							E.Status = e.Status.ToString();
-							E.StatusCode = e.ToString();
-						}/*  else {
-							E.Status = "Status crash ";
-							E.StatusCode = "StatusCode crash ";
-						} */
-						url = "";
-					}
-				}
-			}
-
-			if (url != "" && url != null) {
-				// https://stackoverflow.com/questions/20530152/deciding-between-httpclient-and-webclient
-				if (engine == null || engine.ToLower() != "webclient") {
-					if (async) {
-						HttpClientAsync = async () => {
-							var baseAddress = new System.Uri(url);
-							var cookieContainer = new System.Net.CookieContainer();
-							using (var handler = new System.Net.Http.HttpClientHandler() {
-								CookieContainer = cookieContainer
-							})
-							using (var client = new System.Net.Http.HttpClient(handler) {
-								BaseAddress = baseAddress
-							}) {
-								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
-
-								try {
-									method = method.ToLower();
-									dataType = dataType.ToLower();
-									if (data != null && method == "post") {
-										if (dataType == "object") {
-											/* object keys = new [] {};
-
-											var i = 0;
-											UnityEngine.Debug.Log(data);
-											foreach (var property in data) {
-												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
-												i += 1;
-											}
-											UnityEngine.Debug.Log(keys);
-
-											Result = await client.PostAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(keys)); */
-										} else if (dataType == "pair" || dataType == "list") {
-											Result = await client.PostAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data));
-										} else {
-											Result = await client.PostAsync(baseAddress, data);
-										}
-									} else if (data != null && method == "put") {
-										if (dataType == "object") {
-											/* object keys = new [] {};
-
-											var i = 0;
-											UnityEngine.Debug.Log(data);
-											foreach (var property in data) {
-												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
-												i += 1;
-											}
-											UnityEngine.Debug.Log(keys);
-
-											Result = await client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(keys)); */
-										} else if (dataType == "pair" || dataType == "list") {
-											Result = await client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data));
-										} else {
-											Result = await client.PutAsync(baseAddress, data);
-										}
-									} else {
-										Result = client.GetAsync(baseAddress).Result;
-									}
-									Result.EnsureSuccessStatusCode();
-									if (Result.IsSuccessStatusCode) {
-										//UnityEngine.Debug.Log(Result);
-									}
-									
-									
-									if (success != null && Result != null) {
-										responseType = responseType.ToLower();
-										if (responseType == "dictionary") {
-											success(BusEngine.Tools.Json.Decode(await Result.Content.ReadAsStringAsync()), Result);
-										} else if (responseType == "list") {
-											
-										} else if (responseType == "json") {
-											success(Result.Content.ReadAsStringAsync(), Result);
-										}
-									}
-								} catch (System.Net.Http.HttpRequestException e) {
-									if (error != null && e != null) {
-										if (e.GetType().GetProperty("StatusCode") != null) {
-											E = e;
-										}
-										string textStatus = "";
-
-										if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
-											textStatus = E.StatusCode.ToString();
-										}
-
-										error(Result, textStatus, E);
-										success = null;
-									}
-								} finally {
-
-
-									string textStatus = "";
-
-									if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
-										textStatus = Result.StatusCode.ToString();
-									}
-									if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
-										textStatus = E.StatusCode.ToString();
-									}
-
-									if (Result != null && complete != null) {
-										complete(Result, textStatus, E);
-									}
-								}
-							}
-						};
-						HttpClientAsync();
-					} else {
-						HttpClientAsync = () => {
-							var baseAddress = new System.Uri(url);
-							var cookieContainer = new System.Net.CookieContainer();
-							using (var handler = new System.Net.Http.HttpClientHandler() {
-								CookieContainer = cookieContainer
-							})
-							using (var client = new System.Net.Http.HttpClient(handler) {
-								BaseAddress = baseAddress
-							}) {
-								cookieContainer.Add(baseAddress, new System.Net.Cookie("PHPSESSID", "cookie_value"));
-
-								try {
-									method = method.ToLower();
-									dataType = dataType.ToLower();
-									if (method == "get") {
-										Result = client.GetAsync(baseAddress).Result;
-									} else if (method == "put" || method == "post") {
-										if (dataType == "object") {
-
-											Result = client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data)).Result;
-										} else if (dataType == "pair" || dataType == "list") {
-											Result = client.PutAsync(baseAddress, new System.Net.Http.FormUrlEncodedContent(data)).Result;
-										} else {
-											Result = client.PutAsync(baseAddress, data).Result;
-										}
-									} else {
-										Result = client.GetAsync(baseAddress).Result;
-									}
-									Result.EnsureSuccessStatusCode();
-									if (Result.IsSuccessStatusCode) {
-										//UnityEngine.Debug.Log(Result);
-									}
-								} catch (System.Net.Http.HttpRequestException e) {
-									if (error != null && e != null) {
-										if (e.GetType().GetProperty("StatusCode") != null) {
-											E = e;
-										}
-										string textStatus = "";
-
-										if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
-											textStatus = E.StatusCode.ToString();
-										}
-
-										error(Result, textStatus, E);
-										success = null;
-									}
-								} finally {
-									if (success != null && Result != null) {
-										responseType = responseType.ToLower();
-										if (responseType == "dictionary") {
-											success(BusEngine.Tools.Json.Decode(Result.Content.ReadAsStringAsync().Result), Result);
-										} else if (responseType == "list") {
-											
-										} else if (responseType == "json") {
-											
-										}
-									}
-
-									string textStatus = "";
-
-									if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
-										textStatus = Result.StatusCode.ToString();
-									}
-									if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
-										textStatus = E.StatusCode.ToString();
-									}
-
-									if (complete != null) {
-										complete(Result, textStatus, E);
-									}
-								}
-							}
-						};
-						HttpClientAsync();
-					}
-				} else {
-					if (async) {
-
-					} else {
-
-					}
-				}
-			} else {
-				if (error != null) {
-					string textStatus = "";
-
-					if (Result != null && Result.GetType().GetProperty("StatusCode") != null) {
-						textStatus = Result.StatusCode.ToString();
-					}
-					if (textStatus == "" && E.GetType().GetProperty("StatusCode") != null) {
-						textStatus = E.StatusCode.ToString();
-					}
-
-					error(Result, textStatus, E);
-					if (complete != null) {
-						complete(Result, textStatus, E);
-					}
-				}
-			}
-		}
-
-		public static bool Test(string url = "https://buslikdrev.by/") {
-			bool status = false;
-
-			new BusEngine.Tools.Ajax(
-				url: url,
-				async: false,
-				dataType: "pair",
-				responseType: "dictionary",
-				beforeSend: () => {
-					System.Console.WriteLine("beforeSend");
-				},
-				data: new System.Collections.Generic.Dictionary<string, string>() {
-					{"user", "user1"},
-					{"pass", "pass1"},
-				},
-				success: (dynamic data, dynamic xhr) => {
-					//data https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage.Content
-					//xhr https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage
-
-					status = true;
-					System.Console.WriteLine("success");
-				},
-				error: (dynamic xhr, string textStatus, dynamic thrownError) => {
-					//xhr https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage
-					//textStatus request server;
-					//thrownError https://docs.microsoft.com/ru-ru/dotnet/api/system.net.http.httpresponsemessage.ensuresuccessstatuscode
-					//UnityEngine.Debug.Log(thrownError.GetType());
-
-					System.Console.WriteLine("Login.message.error", thrownError.StatusCode);
-				}
-			);
-
-			return status;
-		}
-
-		public static void Shutdown() {}
-
-		public void Dispose() {}
-	}
-
-	// заглушка
-	internal class G {
-		//public virtual System.Collections.IDictionary Data { get; }
-		//public virtual string? HelpLink { get; set; }
-		//public int HResult { get; set; }
-		//public Exception? InnerException { get; }
-		//public virtual string Message { get; }
-		//public virtual string? Source { get; set; }
-		//public virtual string? StackTrace { get; }
-		////public System.Net.WebExceptionStatus Status { get; }
-		////public System.Net.HttpStatusCode? StatusCode { get; }
-		public string Status { get; set; }
-		public string StatusCode { get; set; }
-		//public System.Reflection.MethodBase? TargetSite { get; }
-
-		public G(string text = "") {
-			StatusCode = text;
-			Status = text;
-		}
-	}
-}
-/** API BusEngine.Tools */
-
-/** API BusEngine.Tools */
-namespace BusEngine.Tools {
-/*
-Зависит от плагинов:
-Newtonsoft.Json
-*/
-	/** API BusEngine.Tools.Json */
-	//https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/migrate-from-newtonsoft?pivots=dotnet-7-0
-	//https://www.nuget.org/packages/System.Text.Json#readme-body-tab
-	public class Json : System.IDisposable {
-		// System.Type|object|string|int|Dictionary|List c#
-		public static string Encode(object t) {
-			try {
-				return Newtonsoft.Json.JsonConvert.SerializeObject(t, Newtonsoft.Json.Formatting.Indented);
-			} catch (System.Exception e) {
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_json_encode") + ": {0}", e.Message);
-				return "[]";
-			}
-		}
-
-		// массив php
-		public static System.Collections.Generic.Dictionary<string, dynamic> Decode(string t) {
-			try {
-				return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, dynamic>>(t);
-				//return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
-			} catch (System.Exception e) {
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_json_decode") + ": {0}", e.Message);
-				return new System.Collections.Generic.Dictionary<string, dynamic>();
-			}
-		}
-
-		// object c#
-		public static object Decode(string t, bool o = true) {
-			try {
-				return Newtonsoft.Json.JsonConvert.DeserializeObject(t);
-			} catch (System.Exception e) {
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_json_decode") + ": {0}", e.Message);
-				return new {};
-			}
-		}
-
-		public static void Shutdown() {}
-
-		public void Dispose() {}
-	}
-	/** API BusEngine.Tools.Json */
-}
-/** API BusEngine.Tools */
-
-/** API BusEngine.Tools */
-namespace BusEngine.Tools {
-/*
-Зависит от плагинов:
-System.Windows.Forms
-*/
-	/** API BusEngine.Tools.FileFolderDialog */
-	//https://stackoverflow.com/questions/11624298/how-do-i-use-openfiledialog-to-select-a-folder
-	public class FileFolderDialog : System.Windows.Forms.CommonDialog {
-		private System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
-
-		public System.Windows.Forms.OpenFileDialog Dialog {
-			get { return dialog; }
-			set { dialog = value; }
-		}
-
-		public static string _name;
-
-		public System.Windows.Forms.DialogResult ShowDialog() {
-			return this.ShowDialog(null);
-		}
-
-		public System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.IWin32Window owner) {
-			// Set validate names to false otherwise windows will not let you select "Folder Selection."
-			dialog.AddExtension = false;
-			//dialog.AutoUpgradeEnabled = false;
-			dialog.ValidateNames = false;
-			dialog.CheckFileExists = false;
-			dialog.CheckPathExists = true;
-			dialog.RestoreDirectory = true;
-			if (BusEngine.Localization.GetLanguageStatic("text_select_folder_title") != "text_select_folder_title") {
-				dialog.Title = BusEngine.Localization.GetLanguageStatic("text_select_folder_title");
-			} else {
-				dialog.Title = "Откройте папку которую хотите выбрать.";
-			}
-
-			try {
-				// Set initial directory (used when dialog.FileName is set from outside)
-				if (dialog.FileName != null && dialog.FileName != "") {
-					if (System.IO.Directory.Exists(dialog.FileName)) {
-						dialog.InitialDirectory = dialog.FileName;
-					} else {
-						dialog.InitialDirectory = System.IO.Path.GetDirectoryName(dialog.FileName);
-					}
-				}
-			} catch (System.Exception ex) {
-				// Do nothing
-				BusEngine.Log.Info(ex);
-			}
- 
-			// Always default to Folder Selection.
-			if (BusEngine.Localization.GetLanguageStatic("text_select_folder") != "text_select_folder") {
-				dialog.FileName = BusEngine.Localization.GetLanguageStatic("text_select_folder");
-			} else {
-				dialog.FileName = "Выбор папки";
-			}
- 
-			if (owner == null) {
-				return dialog.ShowDialog(BusEngine.UI.Canvas.WinForm.TopLevelControl);
-			} else {
-				return dialog.ShowDialog(owner);
-			}
-		}
-
-		public string SelectedPath {
-			get {
-				try {
-					if (dialog.FileName != null) {
-						return System.IO.Path.GetDirectoryName(dialog.FileName);
-					} else {
-						return "";
-					}
-				} catch (System.Exception ex) {
-					BusEngine.Log.Info(ex);
-
-					return dialog.FileName;
-				}
-			} set {
-				if (value != null && value != "") {
-					dialog.FileName = value;
-				}
-			}
-		}
-
-		public string SelectedPaths {
-			get {
-				if (dialog.FileNames != null && dialog.FileNames.Length > 1) {
-					System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-					foreach (string fileName in dialog.FileNames) {
-						try {
-							if (System.IO.File.Exists(fileName)) {
-								sb.Append(fileName + ";");
-							}
-						} catch (System.Exception ex) {
-							// Go to next
-							BusEngine.Log.Info(ex);
-						}
-					}
-
-					return sb.ToString();
-				} else {
-					return null;
-				}
-			}
-		}
-
-		public override void Reset() {
-			dialog.Reset();
-		}
-
-		protected override bool RunDialog(System.IntPtr hwndOwner) {
-			return true;
-		}
-	}
-	/** API BusEngine.Tools.FileFolderDialog */
-}
-/** API BusEngine.Tools */
-
-/** API BusEngine.UI */
-namespace BusEngine.UI {
-/*
-Зависит от плагинов:
-BusEngine.UI
-*/
-	/** API BusEngine.UI.Canvas */
-	public class Canvas : System.IDisposable {
-		public static System.Windows.Forms.Form WinForm;
-		//public static System.Windows.Forms.Form WPF;
-		//public static BusEngine.UI.Canvas Canvas;
-
-		/** событие уничтожения окна */
-		private void OnDisposed(object o, System.EventArgs e) {
-
-		}
-		/** событие уничтожения окна */
-
-		/** событие закрытия окна */
-		private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
-			BusEngine.UI.Canvas.WinForm.FormClosed -= OnClosed;
-			//BusEngine.Video.Shutdown();
-			//BusEngine.Engine.Shutdown();
-		}
-		/** событие закрытия окна */
-
-		private static Canvas _canvas;
-
-		public Canvas() {
-			if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
-				// устанавливаем событи закрытия окна
-				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
-				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
-				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
-			}
-		}
-
-		public Canvas(System.Windows.Forms.Form _form) {
-			//#if (BUSENGINE_WINFORM == true)
-			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				if (_form != null) {
-					BusEngine.UI.Canvas.WinForm = _form;
-				}
-				BusEngine.UI.Canvas.WinForm.KeyPreview = true;
-				// устанавливаем событи закрытия окна
-				BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
-				BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
-				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
-			//}
-			//#endif
-		}
-
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0117:", Target="~T:BusEngine.UI.Canvas")]
-		public static void Initialize() {
-			if (_canvas == null) {
-				_canvas = new Canvas();
-
-				// инициализируем плагины
-				new BusEngine.IPlugin("InitializeСanvas");
-			}
-		}
-
-		public static void Shutdown() {}
-
-		public void Dispose() {}
-	}
-	/** API BusEngine.UI.Canvas */
-}
-/** API BusEngine.UI */
