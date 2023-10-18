@@ -259,9 +259,12 @@ namespace BusEngine {
 		private string Language;
 
 		public TooltipAttribute(string name) {
+			this.Name = name;
 			BusEngine.Log.Info("TooltipAttribute: {0}", name);  
 		}
 		public TooltipAttribute(string name, string language) {
+			this.Name = name;
+			this.Language = language;
 			BusEngine.Log.Info("TooltipAttribute: {0} {1}", name, language);  
 		}
 	}
@@ -1728,7 +1731,7 @@ namespace BusEngine {
 		//[BusEngine.Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt", "English")]
 		public string Format = "cfg";
 		//[BusEngine.Tooltip("Translate components located in inactive objects?", "English")]
-		private bool IncludeInactive = false;
+		//private bool IncludeInactive = false;
 		//[BusEngine.Tooltip("Replace Resources.load with Bundle.load?", "English")]
 		private bool BundleStatus = false;
 
@@ -1740,7 +1743,7 @@ namespace BusEngine {
 		// https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/how-to-add-and-remove-items
 		internal static System.Collections.Concurrent.ConcurrentDictionary<string, string> GetLanguages = new System.Collections.Concurrent.ConcurrentDictionary<string, string>();
 		private static string Value = "";
-		private Localization _Localization;
+		//private Localization _Localization;
 
 		public static string GetLanguageStatic(string key) {
 			if (GetLanguages.TryGetValue(key, out Value)) {
@@ -3039,7 +3042,7 @@ System.Windows.Forms
 */
 	/** API BusEngine.Tools.FileFolderDialog */
 	//https://stackoverflow.com/questions/11624298/how-do-i-use-openfiledialog-to-select-a-folder
-	public class FileFolderDialog : System.Windows.Forms.CommonDialog {
+	public class FileFolderDialog : System.IDisposable {
 		private System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
 
 		public System.Windows.Forms.OpenFileDialog Dialog {
@@ -3068,7 +3071,6 @@ System.Windows.Forms
 			}
 
 			try {
-				// Set initial directory (used when dialog.FileName is set from outside)
 				if (dialog.FileName != null && dialog.FileName != "") {
 					if (System.IO.Directory.Exists(dialog.FileName)) {
 						dialog.InitialDirectory = dialog.FileName;
@@ -3077,11 +3079,9 @@ System.Windows.Forms
 					}
 				}
 			} catch (System.Exception ex) {
-				// Do nothing
-				BusEngine.Log.Info(ex);
+				BusEngine.Log.Info("FileFolderDialog: {0}", ex);
 			}
- 
-			// Always default to Folder Selection.
+
 			if (BusEngine.Localization.GetLanguageStatic("text_select_folder") != "text_select_folder") {
 				dialog.FileName = BusEngine.Localization.GetLanguageStatic("text_select_folder");
 			} else {
@@ -3104,7 +3104,7 @@ System.Windows.Forms
 						return "";
 					}
 				} catch (System.Exception ex) {
-					BusEngine.Log.Info(ex);
+					BusEngine.Log.Info("FileFolderDialog: {0}", ex);
 
 					return dialog.FileName;
 				}
@@ -3126,8 +3126,7 @@ System.Windows.Forms
 								sb.Append(fileName + ";");
 							}
 						} catch (System.Exception ex) {
-							// Go to next
-							BusEngine.Log.Info(ex);
+							BusEngine.Log.Info("FileFolderDialog: {0}", ex);
 						}
 					}
 
@@ -3138,12 +3137,16 @@ System.Windows.Forms
 			}
 		}
 
-		public override void Reset() {
+		public void Reset() {
 			dialog.Reset();
 		}
 
-		protected override bool RunDialog(System.IntPtr hwndOwner) {
+		protected bool RunDialog(System.IntPtr hwndOwner) {
 			return true;
+		}
+
+		public void Dispose() {
+			dialog.Dispose();
 		}
 	}
 	/** API BusEngine.Tools.FileFolderDialog */

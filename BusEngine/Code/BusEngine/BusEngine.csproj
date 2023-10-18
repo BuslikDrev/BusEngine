@@ -14,8 +14,6 @@
     <WarningLevel>4</WarningLevel>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <PublishTrimmed>false</PublishTrimmed>
-    <ErrorReport>none</ErrorReport>
-    <WarningLevel>0</WarningLevel>
     <Optimize>false</Optimize>
     <!-- <DebugType>none</DebugType> -->
     <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
