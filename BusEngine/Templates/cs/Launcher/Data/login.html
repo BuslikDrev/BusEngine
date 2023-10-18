@@ -8,7 +8,7 @@
     <meta name="description" content="BusEngine">
     <meta name="keywords" content="BusEngine">
     <title>heading_title</title>
-    <!-- <base href="https://BusEngine/"> -->
+    <!-- <base href="https://bd.busengine/"> -->
     <link href="/" rel="canonical">
     <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
@@ -27,7 +27,7 @@
         <div class="point"></div>
         <div class="right">
           <button onclick="BusEngine.postMessage('Collapse');" aria-label="button_collapse" title="button_collapse" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
-          <button onclick="BusEngine.postMessage('Expand'); svgToggle(this);" aria-label="button_expand" title="button_expand" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Expand'); Launcher.svgToggle(this);" aria-label="button_expand" title="button_expand" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
           <button onclick="BusEngine.postMessage('Exit');" aria-label="button_exit" title="button_exit" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
         </div>
       </nav>
@@ -40,14 +40,14 @@
     </div>
     <main>
       <picture>
-        <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px) and (max-width:1920px)">
-        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
-        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-width:2561px)">
-        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)">
+        <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-device-width:1280px)">
+        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
+        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-device-width:2561px)">
+        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-device-width:2561px)">
         <img loading="eager" decoding="async" src="Textures/background_login_1280x720.png" alt="background_login" >
       </picture>
       <video autoplay="autoplay" preload="none" muted="false" loop="true">
@@ -64,6 +64,8 @@
         <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
       </video>
       <div class="login">
+        <a href="Videos/background_login_1920x1080.mp4" download="hello2.jpg">скачать</a>
+        <a onclick="BusEngine.postMessage('___down|Videos/background_login_1920x1080.mp4');">скачать 2</a>
         <form>
           <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</span>
           <span class="input">
@@ -73,7 +75,7 @@
           <span class="input">
             entry_password
             <input type="password" name="password" value="" aria-label="entry_password">
-            <span onclick="svgToggle(this, 'password');">
+            <span onclick="Launcher.svgToggle(this, 'password');">
               <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
               <svg xmlns="http://www.w3.org/2000/svg" style="display: none"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye-off"></use></svg>
             </span>
@@ -92,27 +94,37 @@
       </div>
       <button onclick="window.localStorage.setItem('mode', true); BusEngine.open('main.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
 <script type="text/javascript">
-console.log('login');
-if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
-	BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
-} else {
-	BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
-}
+	if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
+		BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
+	} else {
+		BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
+	}
 
-BusEngine.localization.initialize();
+	BusEngine.localization.initialize();
 
-if (('connection' in window.navigator ? ['2g', 'slow-2g'].indexOf(window.navigator.connection.effectiveType) == -1 : true) && 'matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
-	window.addEventListener('mouseover', function() {
-		BusEngine.polyfillTagSource();
-	}, {one: true});
-}
+	var setting = Launcher.getSetting('settings-launcher');
 
-window.addEventListener('beforeunload', function(e) {
-	document.body.classList.add('be-open');
-}, {once: true});
-window.addEventListener('load', function() {
-	document.body.classList.remove('be-open');
-}, {once: true});
+	if ('background_video' in setting) {
+		var element = document.querySelector('video');
+
+		if (element) {
+			element.autoplay = (setting['background_video'] ? null : 'autoplay');
+		}
+	}
+
+	if (('connection' in window.navigator ? ['2g', 'slow-2g'].indexOf(window.navigator.connection.effectiveType) == -1 : true) && 'matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
+		window.addEventListener('mouseover', function() {
+			BusEngine.polyfillTagSource();
+		}, {one: true});
+	}
+
+	window.addEventListener('beforeunload', function(e) {
+		document.body.classList.add('be-open');
+	}, {once: true});
+
+	window.addEventListener('load', function() {
+		document.body.classList.remove('be-open');
+	}, {once: true});
 </script>
     </main>
   </body>

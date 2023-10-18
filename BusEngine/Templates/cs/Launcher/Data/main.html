@@ -8,17 +8,17 @@
     <meta name="description" content="BusEngine">
     <meta name="keywords" content="BusEngine">
     <title>heading_title</title>
-    <!-- <base href="https://BusEngine/"> -->
+    <!-- <base href="https://bd.busengine/"> -->
     <link href="/" rel="canonical">
+    <link href="Styles/BootStrap/bootstrap.min.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
-    <link href="Styles/BootStrap/bootstrap-grid.min.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Scripts/BusEngine/BusEngine.js" type="text/javascript" media="all" rel="preload" as="script">
     <link href="Scripts/Launcher/Launcher.js" type="text/javascript" media="all" rel="preload" as="script">
-    <link href="Scripts/BootStrap/bootstrap.min.js" type="text/javascript" media="all" rel="preload" as="script">
+    <link href="Scripts/BootStrap/bootstrap.bundle.min.js" type="text/javascript" media="all" rel="preload" as="script">
     <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
     <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
-    <script src="Scripts/BootStrap/bootstrap.min.js" type="text/javascript"></script>
+    <script src="Scripts/BootStrap/bootstrap.bundle.min.js" type="text/javascript"></script>
   </head>
   <body class="be-open">
     <div class="resize"></div>
@@ -30,7 +30,7 @@
         <div class="point"></div>
         <div class="right">
           <button onclick="BusEngine.postMessage('Collapse');" aria-label="button_collapse" title="button_collapse" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
-          <button onclick="BusEngine.postMessage('Expand'); svgToggle(this);" aria-label="button_expand" title="button_expand" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Expand'); Launcher.svgToggle(this);" aria-label="button_expand" title="button_expand" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
           <button onclick="BusEngine.postMessage('Exit');" aria-label="button_exit" title="button_exit" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
         </div>
       </nav>
@@ -43,14 +43,14 @@
     </div>
     <main>
       <picture>
-        <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px) and (max-width:1920px)">
-        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
-        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-width:2561px)">
-        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)">
+        <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-device-width:1280px)">
+        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
+        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-device-width:2561px)">
+        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-device-width:2561px)">
         <img loading="eager" decoding="async" src="Textures/background_login_1280x720.png" alt="background_login" >
       </picture>
       <video autoplay="autoplay" preload="none" muted="false" loop="true">
@@ -66,677 +66,208 @@
         <source src="Videos/background_login_3840x2160.mp4" type="video/mp4" media="screen and (min-device-width:2561px) and (max-device-width:3840px)">
         <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
       </video>
-<style type="text/css">
-body picture img,
-body video {
-    transform: translate(-50%, -50%) rotate(180deg);
-}
-#menu {
-    position: fixed;
-    width: 100%;
-    display: block;
-}
-#menu .top {
-    height: 80px;
-    background-color: black;
-    z-index: 1000;
-}
-#menu .top .logo {
-    position: relative;
-    display: inline-table;
-}
-#menu .top .logo a {
-    font-size: 36px;
-    color: #ffffff;
-}
-#menu .top .setting {
-    float: right;
-    position: relative;
-}
-#menu .top .setting a {
-    margin-left: 15px;
-}
-#menu .top .setting img {
-    width: 32px;
-    height: 32px;
-    border-radius: 5px;
-}
-#menu .top .setting svg {
-    width: 24px;
-    height: 24px;
-    fill: #cccccc;
-}
-#menu .left {
-    background-color: #191C1F;
-    color: #849A9F;
-    margin: 0;
-    padding: 0;
-    float: left;
-    height: 100%;
-    position: inherit;
-    border-right: 1px solid #2B3136;
-    z-index: 1000;
-}
-#menu .left a {
-    font-size: 14px;
-    color: #849A9F;
-}
-#menu .left svg {
-    width: 20px;
-    height: 20px;
-    fill: #849A9F;
-    margin-right: 10px;
-}
-#menu .left a:hover,
-#menu .left svg:hover {
-    color: #9db7bc;
-    fill: #9db7bc;
-}
-#menu .left ul {
-    margin: 0;
-    padding: 0;
-}
-#menu .left ul li {
-    padding: 15px;
-    padding-left: 30px;
-}
-#menu .left ul:first-child li:hover {
-    background-color: #00AEEF;
-    cursor: pointer;
-}
-#menu .left ul:first-child a,
-#menu .left ul:first-child svg {
-    font-size: 16px;
-    font-weight: 600;
-    fill: #cccccc;
-    color: #cccccc;
-}
-#menu .left .social {
-    bottom: 0;
-    position: inherit;
-}
-#menu .left .social a {
-    margin-left: 10px;
-}
-#menu .left .social a:hover,
-#menu .left .social svg:hover {
-    fill: #cccccc;
-    color: #cccccc;
-}
-#menu .content {
-    padding: 0;
-    position: inherit;
-    overflow-y: auto;
-    margin: 0;
-    right: 0;
-    height: 100%;
-    scrollbar-color: #292B2F #16191C;
-    scrollbar-width: thin;
-}
-#menu .content::-webkit-scrollbar{width:4px;background-color:#16191C}
-#menu .content::-webkit-scrollbar-thumb{height:56px;background-clip:content-box;background-color:#292B2F;}
-#menu .content::-webkit-scrollbar-thumb:hover{background-color:#292B2F80}
-#menu .content svg {
-    position: relative;
-    height: 30px;
-    width: 30px;
-    fill: #849A9F;
-}
-#menu .content .window {
-    height: 150px;
-    position: relative;
-}
-#menu .content .window .account {
-    margin: 40px;
-    position: absolute;
-    font-size: 24px;
-    color: #ffffff;
-    width: 50%;
-    text-shadow: #000 0 0 5px;
-}
-#menu .content .window .account span {
-    font-size: 14px;
-}
-#menu .content .window .account img {
-    height: 48px;
-    width: 48px;
-    float: left;
-    padding-top: 5px;
-    margin-right: 10px;
-}
-#menu .content .window .button-engine {
-    position: absolute;
-    right: 0;
-    margin: 40px;
-    display: flex;
-}
-#menu .content .window .button-engine button {
-    background-color: #00AEEF;
-    color: #ffffff;
-    padding: 7px 15px;
-}
-#menu .content .window .button-engine button svg {
-    fill: #ffffff;
-}
-#menu .content .window .button-engine button:first-child {
-    border-radius: 5px 0 0 5px;
-    margin-right: -2px;
-}
-#menu .content .window .button-engine button:last-child {
-    border-radius: 0 5px 5px 0;
-}
-#menu .content .window .button-engine button svg {
-    height: 16px;
-    width: 16px;
-}
-#menu .content .window .button-engine button:hover {
-    background-color: #23BCF8;
-}
-#menu .content .projects {
-    background-color: #191C1F;
-    color: #ffffff;
-    line-height: 1.6;
-}
-#menu .content .projects span {
-    color: #849A9F;
-}
-#menu .content .projects a {
-    font-size: 16px;
-}
-#menu .content .projects a svg {
-    height: 16px;
-    width: 16px;
-    fill: #00AEEF
-}
-#menu .content .projects span.v-engine {
-    border: 1px solid #849A9F;
-    padding: 1px 8px;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-#menu .content .projects ul.list {
-    display: block;
-    position: relative;
-    float: left;
-    padding: 0;
-}
-#menu .content .projects ul.list li {
-    border: 1px solid #2B3136;
-    display: flow-root;
-}
-#menu .content .projects ul.list li:hover {
-    border: 1px solid #545f69;
-}
-#menu .content .projects ul.list li div {
-    float: left;
-}
-#menu .content .projects ul.list li div:last-child {
-    float: right;
-}
-#menu .content .projects ul.list li img {
-    height: 48px;
-    width: 48px;
-}
-#menu .content .projects ul.list li button {
-    background-color: #191C1F;
-    border: none;
-}
-#menu .content .projects ul.list li button:hover svg {
-    fill: #ffffff;
-}
-#menu .content .projects ul.link {
-    display: block;
-    position: relative;
-    float: left;
-    padding: 0px;
-}
-#menu .content .projects ul.link a {
-    font-size: 16px;
-    color: #849A9F;
-}
-#menu .content .projects ul.link svg {
-    width: 20px;
-    height: 20px;
-    fill: #849A9F;
-    margin-right: 10px;
-}
-#menu .content .projects ul.link a:hover,
-#menu .content .projects ul.link svg:hover {
-    color: #9db7bc;
-    fill: #9db7bc;
-}
-#menu .content .projects .news div.box {
-    -webkit-box-shadow: 0 0.2rem 1.6rem rgb(0 0 0 / 50%);
-    box-shadow: 0 0.2rem 1.6rem rgb(0 0 0 / 50%);
-    -webkit-transition: .15s cubic-bezier(.785,.135,.15,.86);
-    transition: .15s cubic-bezier(.785,.135,.15,.86);
-    cursor: pointer;
-}
-#menu .content .projects .news div.box:hover {
-    -webkit-box-shadow: 0 0.5rem 2.6rem rgb(0 0 0 / 50%);
-    box-shadow: 0 0.5rem 2.6rem rgb(0 0 0 / 50%);
-    -webkit-transform: translateY(-0.5rem);
-    transform: translateY(-0.5rem);
-}
-#menu .content .projects .news .image img {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-#menu .content .projects .news .name {
-    font-size: 16px;
-    height: 56px;
-    overflow: hidden;
-}
-#menu .content .projects .news .icon svg {
-    width: 14px;
-    height: 14px;
-}
-#menu .content .projects .news .author {
-    font-size: 14px;
-    color: #23BCF8
-}
-#menu .content .projects .news .date {
-    font-size: 12px;
-    color: #666666
-}
-#menu .content .projects .assets .tab-content {
-    min-height: 640px;
-}
-@media (min-width: 1281px) {
-    #menu .content .projects .assets .tab-content {
-        min-height: 440px;
-    }
-}
-@media (min-width: 1400px) {
-    #menu .content .projects .assets .tab-content {
-        min-height: 340px;
-    }
-}
-#menu .content .projects .assets .tab-pane > div:hover {
-    box-shadow: 0 0 15px #d3d3d3;
-    transition: box-shadow 0.1s ease-in-out;
-    cursor: pointer;
-    z-index: 1;
-}
-#menu .content .projects .assets .image img {
-    width: 128px;
-    height: auto;
-    border-radius: 5px;
-}
-#menu .content .projects .assets .name {
-    font-size: 14px;
-}
-#menu .content .projects .assets .type {
-    font-size: 11px;
-    color: #23BCF8
-}
-#menu .content .projects .assets .author {
-    font-size: 11px;
-    color: #666666
-}
-#menu .content .projects .assets .rating {
-    display: flex;
-}
-#menu .content .projects .assets .rating svg {
-    width: 13px;
-    height: 13px;
-    fill: #666666;
-}
-#menu .content .projects .assets .rating.r1 svg:nth-child(1) {
-    fill: #23BCF8;
-}
-#menu .content .projects .assets .rating.r2 svg:nth-child(-1n+2) {
-    fill: #23BCF8;
-}
-#menu .content .projects .assets .rating.r3 svg:nth-child(-1n+3) {
-    fill: #23BCF8;
-}
-#menu .content .projects .assets .rating.r4 svg:nth-child(-1n+4) {
-    fill: #23BCF8;
-}
-#menu .content .projects .assets .rating.r5 svg:nth-child(-1n+5) {
-    fill: #23BCF8;
-}
-</style>
       <div id="menu">
-        <div class="top">
-          <span class="logo px-4 pt-3"><a href="/main.html" onclick="BusEngine.open('main.html'); return false;"> <img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</a></span>
+        <div id="top" class="top">
+          <span class="logo px-4 pt-2"><a href="main.html" onclick="BusEngine.open('main.html'); return false;"> <img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> <span data-localization="text_name_engine">BusEngine</span></a></span>
           <span class="setting px-4 pt-4">
-            <a href="#" title="Текущие загрузки"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-download"></use></svg></a>
-            <a href="/main.html" onclick="BusEngine.open('main.html'); return false;" title="Настройки"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-control-panel"></use></svg></a>
+            <a href="#" title="text_downloads_current"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-download"></use></svg></a>
+            <a href="#" title="text_settings" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-control-panel"></use></svg></a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" onclick="Launcher.unfoldable('settings-launcher');" data-unfoldable-button="settings-launcher" data-localization="text_settings_launcher">Настройки лаунчера</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="Launcher.unfoldable('settings-update');" data-unfoldable-button="settings-update" data-localization="text_chek_update">Проверить обновление</a></li>
+              <li><a class="dropdown-item" href="#" onclick="Launcher.unfoldable('settings-about');" data-unfoldable-button="settings-about" data-localization="text_about">О программе</a></li>
+            </ul>
+            <a href="login.html" onclick="window.localStorage.removeItem('mode'); BusEngine.open('login.html'); return false;" title="button_login" class="btn btn-primary" style="margin-left: 15px;">button_login</a>
             <a href="#"> <img src="Icons/BusEngine_white.png" alt="BuslikDrev"></a>
           </span>
         </div>
-        <div class="left col-3">
-          <ul class="mt-4">
-            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-material-outlined"></use></svg> Проекты</a></li>
-            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#icon-sandbox"></use></svg> Движок</a></li>
-            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-cart"></use></svg> Библиотека Ассетов</a></li>
-            <li><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-vendor"></use></svg> Мои Ассеты</a></li>
+        <div id="left" class="left col-3">
+          <ul class="mt-3">
+            <li onclick="BusEngine.open('projects.html');" class="p-3 ps-4"><a href="projects.html" onclick="return false;"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-material-outlined"></use></svg> <span data-localization="text_projects">Проекты</span></a></li>
+            <li onclick="BusEngine.open('engines.html');" class="p-3 ps-4"><a href="engines.html" onclick="return false;"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#icon-sandbox"></use></svg> <span data-localization="text_engine">Движок</span></a></li>
+            <li onclick="BusEngine.open('assets.html');" class="p-3 ps-4"><a href="assets.html" onclick="return false;"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-cart"></use></svg> <span data-localization="text_assets_library">Библиотека Ассетов</span></a></li>
+            <li onclick="BusEngine.open('myassets.html');" class="p-3 ps-4"><a href="myassets.html" onclick="return false;"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-vendor"></use></svg> <span data-localization="text_assets_my">Мои Ассеты</span></a></li>
           </ul>
           <hr class="col-10">
           <ul>
-            <li><a href="https://busengine.buslikdrev.by/assets/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/assets/'); return false;">База Ассетов</a></li>
-            <li><a href="https://busengine.buslikdrev.by/api/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/api/'); return false;">Документация</a></li>
-            <li><a href="https://busengine.buslikdrev.by/forum/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/forum/'); return false;">Форум</a></li>
-            <li><a href="https://busengine.buslikdrev.by/blog/news/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;">Новости</a></li>
+            <li class="p-1 ps-4"><a href="https://busengine.buslikdrev.by/assets/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/assets/'); return false;" data-localization="text_assets_base">База Ассетов</a></li>
+            <li class="p-1 ps-4"><a href="https://busengine.buslikdrev.by/api/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/api/'); return false;" data-localization="text_documentation">Документация</a></li>
+            <li class="p-1 ps-4"><a href="https://busengine.buslikdrev.by/forum/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/forum/'); return false;" data-localization="text_forum">Форум</a></li>
+            <li class="p-1 ps-4"><a href="https://busengine.buslikdrev.by/blog/news/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;" data-localization="text_news">Новости</a></li>
+            <li class="p-1 ps-4"><a href="https://buslikdrev.by/donate.html" onclick="BusEngine.postMessage('_linkGo|https://buslikdrev.by/donate.html'); return false;" data-localization="text_news">Поддержать проект</a></li>
           </ul>
           <div class="social m-4">
-            <a href="https://www.youtube.com/@YouTubeProger" onclick="BusEngine.postMessage('_linkGo|https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz'); return false;"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-youtube"></use></svg></a>
+            <a href="https://www.youtube.com/@YouTubeProger" onclick="BusEngine.postMessage('_linkGo|https://www.youtube.com/watch?v=R1MwBJZzpsk&list=PLRGxF3wlHh5fIxFQCSg1FarDYGbzC9Vqz'); return false;" title="YouTube"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-youtube"></use></svg></a>
+            <a href="https://github.com/BuslikDrev/BusEngine" onclick="BusEngine.postMessage('_linkGo|https://github.com/BuslikDrev/BusEngine'); return false;" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#social-github"></use></svg></a>
           </div>
         </div>
-        <div class="content col-9">
+        <div id="content" class="content col-9">
+          <div id="settings-launcher" class="unfoldable p-5" style="top: -100vh;">
+            <button type="button" onclick="this.parentNode['style']['top'] = '-100vh'; Launcher.setSetting('settings-launcher');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
+            <div class="unfoldable-content">
+              <h2 data-localization="text_settings_launcher">Настройки лаунчера</h2>
+              <div class="col-12"></div>
+              <div class="col-12 mb-3">
+                <span data-localization="entry_directory_project">Директория проекта</span>
+                <div class="input-group mt-1 mb-1">
+                  <input type="text" name="directory_project" value="/dfdf/dfdf/" placeholder="Директория проекта" class="form-control" aria-label="entry_directory_project" aria-describedby="input-directory-project" disabled="disabled">
+                  <button type="button" onclick="BusEngine.postMessage('dfolder|input[name=\\\'' + this.parentNode.querySelector('input').name + '\\\']');" id="input-directory-project" class="btn btn-outline-light"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-folder"></use></svg></button>
+                </div>
+                <span data-localization="help_directory_project">Директория по умолчанию при создании нового проекта</span>
+              </div>
+              <div class="col-12 mb-3">
+                <span data-localization="entry_directory_engine">Директория движка</span>
+                <div class="input-group mt-1 mb-1">
+                  <input type="text" name="directory_engine" value="/dfdf/dfdf/" placeholder="Директория проекта" class="form-control" aria-label="entry_directory_engine" aria-describedby="input-directory-engine" disabled="disabled">
+                  <button type="button" onclick="BusEngine.postMessage('dfolder|input[name=\\\'' + this.parentNode.querySelector('input').name + '\\\']');" id="input-directory-engine" class="btn btn-outline-light"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-folder"></use></svg></button>
+                </div>
+                <span data-localization="help_directory_engine">Директория для хранения всех версий BusEngine</span>
+              </div>
+              <div class="col-12 mb-3">
+                <span data-localization="entry_background_video">Выключить видео обложку?</span>
+                <div class="input-group mt-1 mb-1">
+                  <select name="background_video" class="form-select" aria-label="entry_background_video">
+                    <option value="1" data-localization="text_yes">Да</option>
+                    <option value="" selected data-localization="text_no">Нет</option>
+                  </select>
+                </div>
+                <span data-localization="help_background_video">Отключение обложки ускорит загрузку страницы лаунчера, если у вас слабый компьютер</span>
+              </div>
+            </div>
+          </div>
+          <div id="settings-update" class="unfoldable p-5" style="top: -100vh;">
+            <button type="button" onclick="this.parentNode['style']['top'] = '-100vh'; Launcher.setSetting('settings-launcher');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
+            <div class="unfoldable-content">
+              <h2 data-localization="text_chek_update">Обновления</h2>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+            </div>
+          </div>
+          <div id="settings-about" class="unfoldable p-5" style="top: -100vh;">
+            <button type="button" onclick="this.parentNode['style']['top'] = '-100vh'; Launcher.setSetting('settings-launcher');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
+            <div class="unfoldable-content">
+              <h2 data-localization="text_about">О программе</h2>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+            </div>
+          </div>
           <div class="window">
             <div class="account">
                <img src="Icons/BusEngine_white.png" alt="BuslikDrev">
               <span data-localization="text_welcome">Добро пожаловать</span><br>BuslikDrev
             </div>
-            <div class="button-engine">
-              <button onclick=""><span>Launch Sandbox</span><br>BusEngine 0.4</button>
-              <button onclick=""><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chevron-down"></use></svg></button>
+            <div class="button-engine btn-group">
+              <button type="button" class="btn btn-primary dropdown-toggle-split"><span>Launch Sandbox</span><br>BusEngine 0.4</button>
+              <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-chevron-down"></use></svg></button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" data-localization="text_engines_list">Manage Engines</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" data-localization="text_engines_list">Manage Engines</a></li>
+              </ul>
             </div>
           </div>
           <div class="projects row p-5 mb-5">
             <div class="col-9">
-              <h2>Список проектов</h2>
+              <h2 data-localization="text_projects_list">Список проектов</h2>
               <ul class="list col-12">
                 <li class="me-4 mb-4 p-3">
-                <div class="me-2 col-auto">
-                 <img loading="lazy" src="Icons/BusEngine_white.png" alt="BusEngine Launcher">
-                </div>
-                <div class="col-auto">
-                BusEngine Launcher <span class="v-engine">0.4</span><br><span>H:\BusEngine Launcher</span>
-                </div>
-                <div class="m-2 col-auto">
-                <button><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-more"></use></svg></button>
-                </div>
+                  <div class="me-2 col-auto">
+                   <img loading="lazy" src="Icons/BusEngine_white.png" alt="BusEngine Launcher">
+                  </div>
+                  <div class="col-auto">
+                  BusEngine Launcher <span class="v-engine">0.4</span><br><span>H:\BusEngine Launcher</span>
+                  </div>
+                  <div class="m-2 col-auto">
+                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-more"></use></svg></button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#" data-localization="text_engines_list">Manage Engines</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#" data-localization="text_engines_list">Manage Engines</a></li>
+                    </ul>
+                  </div>
+                </li>
+                <li class="me-4 mb-4 p-3">
+                  <div class="me-2 col-auto">
+                   <img loading="lazy" src="Icons/BusEngine_white.png" alt="BusEngine AI">
+                  </div>
+                  <div class="col-auto">
+                  BusEngine AI <span class="v-engine">0.4</span><br><span>H:\BusEngine AI</span>
+                  </div>
+                  <div class="m-2 col-auto">
+                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-more"></use></svg></button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#" data-localization="text_engines_list">Manage Engines</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#" data-localization="text_engines_list">Manage Engines</a></li>
+                    </ul>
+                  </div>
                 </li>
               </ul>
             </div>
             <div class="col-3">
-              <h2>Быстрые ссылки</h2>
+              <h2 data-localization="text_links_quick">Быстрые ссылки</h2>
               <ul class="link">
-                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-material-plus-outlined"></use></svg> Создать новый проект</a></li>
-                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-upload"></use></svg> Импортировать проект</a></li>
-                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-cart"></use></svg> Скачать ассет</a></li>
-                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-submission-guidelines"></use></svg> Поделиться ассетом</a></li>
+                <li class="mb-4"><a onclick="directory();"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-material-plus-outlined"></use></svg> <span data-localization="text_project_new">Создать новый проект</span></a></li>
+                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-upload"></use></svg> <span data-localization="text_project_import">Импортировать проект</span></a></li>
+                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-cart"></use></svg> <span data-localization="text_download_asset">Скачать ассет</span></a></li>
+                <li class="mb-4"><a><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-submission-guidelines"></use></svg> <span data-localization="text_asset_share">Поделиться ассетом</span></a></li>
               </ul>
             </div>
             <div class="news row col-12 mb-5">
-              <h2 class="col-9">Последние новости</h2>
-              <a href="https://busengine.buslikdrev.by/blog/news/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;" class="col-3 text-right">Посмотреть ещё <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
-              <div class="col-4 mb-4">
-                <div class="box">
-                  <div class="col-12">
-                    <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+              <h2 class="col-9" data-localization="text_news_last">Последние новости</h2>
+              <a href="https://busengine.buslikdrev.by/blog/news/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;" class="col-3 text-right"><span style="color:#00AEEF;" data-localization="text_other_view">Посмотреть ещё</span> <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+              <div class="block row">
+                <!-- <div class="col-4 mb-4">
+                  <div class="box">
+                    <div class="col-12">
+                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
+                    </div>
+                    <div class="col-12 p-3">
+                      <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>
+                      <div class="author">BuslikDrev</div>
+                      <div class="name">BusEngine v0.4 уже здесь!</div>
+                      <div class="date">10:10 01.01.2024</div>
+                    </div>
                   </div>
-                  <div class="col-12 p-3">
-                    <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>
-                    <div class="author">BuslikDrev</div>
-                    <div class="name">BusEngine v0.4 уже здесь!</div>
-                    <div class="date">10:10 01.01.2024</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-4 mb-4">
-                <div class="box">
-                  <div class="col-12">
-                    <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                  </div>
-                  <div class="col-12 p-3">
-                    <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>
-                    <div class="author">BuslikDrev</div>
-                    <div class="name">BusEngine v0.4 уже здесь!</div>
-                    <div class="date">10:10 01.01.2024</div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-4 mb-4">
-                <div class="box">
-                  <div class="col-12">
-                    <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                  </div>
-                  <div class="col-12 p-3">
-                    <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>
-                    <div class="author">BuslikDrev</div>
-                    <div class="name">BusEngine v0.4 уже здесь!</div>
-                    <div class="date">10:10 01.01.2024</div>
+                </div> -->
+                <div class="preload">
+                  <div class="preload-loading">
+                    <img loading="lazy" src="Textures/loading.svg" height="50" width="50" alt="text_loading">
+                    <div class="preload-text" data-localization="text_preload">Загрузка...</div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="assets row col-12 mb-5">
               <h2 class="col-9">База ассетов</h2>
-              <a href="https://busengine.buslikdrev.by/assets/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/blog/news/'); return false;" class="col-3 text-right">Посмотреть ещё <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+              <a href="https://busengine.buslikdrev.by/assets" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/assets'); return false;" class="col-3 text-right"><span style="color:#00AEEF;" data-localization="text_other_view">Посмотреть ещё</span> <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
               <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                  <button class="nav-link px-0 py-3 me-4 active" id="nav-featured-tab" data-bs-toggle="tab" data-bs-target="#nav-featured" type="button" role="tab" aria-controls="nav-featured" aria-selected="true">Рекомендуемые</button>
-                  <button class="nav-link px-0 py-3 me-4" id="nav-latest-tab" data-bs-toggle="tab" data-bs-target="#nav-latest" type="button" role="tab" aria-controls="nav-latest" aria-selected="false">Новые</button>
-                  <button class="nav-link px-0 py-3 me-4" id="nav-popular-tab" data-bs-toggle="tab" data-bs-target="#nav-popular" type="button" role="tab" aria-controls="nav-popular" aria-selected="false">Популярные</button>
-                  <button class="nav-link px-0 py-3 me-4" id="nav-top-tab" data-bs-toggle="tab" data-bs-target="#nav-top" type="button" role="tab" aria-controls="nav-top" aria-selected="false">Качественные</button>
+                <div class="nav nav-tabs" id="nav-tab1" role="tablist">
+                  <!-- <button class="nav-link px-0 py-3 me-4 active" id="nav-featured-tab" data-bs-toggle="tab" data-bs-target="#nav-featured" type="button" role="tab" aria-controls="nav-featured" aria-selected="true">Рекомендуемые</button> -->
                 </div>
               </nav>
-              <div class="tab-content px-0 py-4" id="nav-tabContent">
-                <div class="tab-pane row fade show active" id="nav-featured" role="tabpanel" aria-labelledby="nav-featured-tab">
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 1</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r1">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <div class="author ms-1">25</div>
-                      </div>
-                    </div>
+              <div class="tab-content px-0 py-4" id="nav-tabContent1">
+                <!-- <div class="tab-pane fade show active" id="nav-featured" role="tabpanel" aria-labelledby="nav-featured-tab">
+                  <div class="row">
+                  1
                   </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 2</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r2">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <div class="author ms-1">25</div>
-                      </div>
-                    </div>
+                </div> -->
+                <div class="preload">
+                  <div class="preload-loading">
+                    <img loading="lazy" src="Textures/loading.svg" height="50" width="50" alt="text_loading">
+                    <div class="preload-text" data-localization="text_preload">Загрузка...</div>
                   </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 1</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r3">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <div class="author ms-1">25</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 2</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r4">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <div class="author ms-1">25</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"><img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 1</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r5">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <div class="author ms-1">25</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 2</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r0">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 1</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r5">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 2</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r5">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 1</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r5">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 2</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r5">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 1"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 1</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r5">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-xl-4 col-xxl-3 row mb-4 ms-1">
-                    <div class="col-auto">
-                      <div class="image"> <img loading="lazy" src="Textures/background_login_1280x720.webp" alt="Asset 2"></div>
-                    </div>
-                    <div class="col-auto">
-                      <div class="name">Asset 2</div>
-                      <div class="type">Бесплатное</div>
-                      <div class="author">BuslikDrev</div>
-                      <div class="rating r5">
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="tab-pane fade" id="nav-latest" role="tabpanel" aria-labelledby="nav-latest-tab">
-                2
-                </div>
-                <div class="tab-pane fade" id="nav-popular" role="tabpanel" aria-labelledby="nav-popular-tab">
-                3
-                </div>
-                <div class="tab-pane fade" id="nav-top" role="tabpanel" aria-labelledby="nav-top-tab">
-                4
                 </div>
               </div>
             </div>
@@ -746,42 +277,163 @@ body video {
           </div>
         </div>
       </div>
-      <button onclick="window.localStorage.removeItem('mode'); BusEngine.open('login.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
 <script type="text/javascript">
-/* BusEngine.tools.ajax('https://busengine.buslikdrev.by/launcher/Icons/spritemap.svg', {responseType:'document',success: function(ajax) {
-	//console.logs(ajax);
-	var svg, x = ajax.querySelectorAll('[id]');
-	var b = document.querySelector('.content');
-	for (var i = 0; i < x.length; ++i) {
-		svg = document.createElement('svg');
-		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-		svg.innerHTML = '<use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#' + x[i].id + '"></use>';
-		b.appendChild(svg);
+	var setting = Launcher.getSetting('settings-launcher');
+
+	if ('background_video' in setting) {
+		var element = document.querySelector('video');
+
+		if (element) {
+			element.autoplay = (setting['background_video'] ? null : 'autoplay');
+		}
 	}
-}}); */
-//BusEngine.tools.ajax('https://busengine.buslikdrev.by/', {responseType:'document',success: function(ajax) {}});
-console.log('main');
-console.log('mode', window.localStorage.getItem('mode'));
-if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
-	BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
-} else {
-	BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
-}
 
-BusEngine.localization.initialize();
+	window.removeEventListener('setSetting', setting = function(event) {
+		var setting;
 
-if (('connection' in window.navigator ? ['2g', 'slow-2g'].indexOf(window.navigator.connection.effectiveType) == -1 : true) && 'matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
-	window.addEventListener('mouseover', function() {
-		BusEngine.polyfillTagSource();
-	}, {one: true});
-}
+		if (event.detail) {
+			setting = event.detail;
+		} else {
+			setting= Launcher.getSetting('settings-launcher');
+		}
 
-window.addEventListener('beforeunload', function(e) {
-	document.body.classList.add('be-open');
-}, {once: true});
-window.addEventListener('load', function() {
-	document.body.classList.remove('be-open');
-}, {once: true});
+		if ('background_video' in setting) {
+			var element = document.querySelector('video');
+
+			if (element) {
+				element.autoplay = (setting['background_video'] ? null : 'autoplay');
+				(setting['background_video'] ? element.pause() : element.play());
+			}
+		}
+	});
+	window.addEventListener('setSetting', setting);
+</script>
+<script type="text/javascript">
+	var time;
+
+	if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
+		BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
+	} else {
+		BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
+	}
+
+	time = new Date().getTime();
+	// последние новости
+	BusEngine.tools.ajax({
+		url: 'news.js', 
+		success: function(data, xhr) {
+			var econ = document.querySelector('.news .block');
+
+			if (econ && data && 'length' in data && data.length > 0) {
+				var content = '', i, l = data.length, i2, l2;
+
+				for (i = 0; i < l; ++i) {
+					if (data[i]['module'] == 'lastblog') {
+						l2 = data[i]['products'].length;
+
+						for (i2 = 0; i2 < l2; ++i2) {
+							content += '                <div class="col-4 mb-4">';
+							content += '                  <div onclick="BusEngine.postMessage(\'_linkGo|' + data[i]['products'][i2]['href'] + '\');" class="box">';
+							content += '                    <div class="col-12">';
+							content += '                      <div class="image"> <img loading="lazy" src="' + data[i]['products'][i2]['image'] + '" alt="' + data[i]['products'][i2]['name'] + '"></div>';
+							content += '                    </div>';
+							content += '                    <div class="col-12 p-3">';
+							content += '                      <div class="icon pe-5 float-right"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></div>';
+							content += '                      <div class="author">' + data[i]['products'][i2]['author'] + '</div>';
+							content += '                      <div class="name">' + data[i]['products'][i2]['name'] + '</div>';
+							content += '                      <div class="date">' + (data[i]['products'][i2]['date_update'] > '' ? data[i]['products'][i2]['date_update'] : data[i]['products'][i2]['date_creat']) + '</div>';
+							content += '                    </div>';
+							content += '                  </div>';
+							content += '                </div>';
+						}
+					}
+				}
+
+				econ.innerHTML = '';
+				econ.appendChild(document.createRange().createContextualFragment(content));
+			}
+		},
+		error: function(data) {
+			console.error(data);
+		}
+	});
+
+	// модуль табов
+	BusEngine.tools.ajax({
+		url: 'assets.js',
+		success: function(data, xhr) {
+			var enav = document.querySelector('.assets .nav-tabs'), econ = document.querySelector('.assets .tab-content');
+
+			if (enav && econ && data && 'length' in data && data.length > 0) {
+				var content = '', button = '', i, l = data.length, i2, l2;
+
+				for (i = 0; i < l; ++i) {
+					button += '                  <button type="button" class="nav-link px-0 py-3 me-4' + (i == 0 ? ' active' : '') + '" id="nav-' + data[i].module + '-tab" data-bs-toggle="tab" data-bs-target="#nav-' + data[i].module + '" role="tab" aria-controls="nav-' + data[i].module + '" aria-selected="true">' + data[i].name + '</button>';
+					content += '                <div class="tab-pane fade show' + (i == 0 ? ' active' : '') + '" id="nav-' + data[i].module + '" role="tabpanel" aria-labelledby="nav-' + data[i].module + '-tab">';
+					content += '                  <div class="row">';
+
+					l2 = data[i]['products'].length;
+
+					for (i2 = 0; i2 < l2; ++i2) {
+						content += '                    <div onclick="BusEngine.postMessage(\'_linkGo|' + data[i]['products'][i2]['href'] + '\');" class="row col-lg-6 col-xl-4 col-xxl-3 p-2 mb-4 ms-1">';
+						content += '                      <div class="col-6">';
+						content += '                        <div class="image"><img loading="lazy" src="' + data[i]['products'][i2]['image'] + '" alt="Asset 1"></div>';
+						content += '                      </div>';
+						content += '                      <div class="col-6">';
+						content += '                        <div class="name">' + data[i]['products'][i2]['name'] + '</div>';
+						content += '                        <div class="type">' + data[i]['products'][i2]['type'] + '</div>';
+						content += '                        <div class="author">' + data[i]['products'][i2]['author'] + '</div>';
+						content += '                        <div class="rating r' + data[i]['products'][i2]['rating'] + '">';
+						content += '                          <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>';
+						content += '                          <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>';
+						content += '                          <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>';
+						content += '                          <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>';
+						content += '                          <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-star"></use></svg>';
+						content += '                          <div class="author ms-1">' + data[i]['products'][i2]['reviews'] + '</div>';
+						content += '                        </div>';
+						content += '                      </div>';
+						content += '                    </div>';
+					}
+
+					content += '                  </div>';
+					content += '                </div>';
+				}
+
+				enav.innerHTML = '';
+				enav.appendChild(document.createRange().createContextualFragment(button));
+
+				econ.innerHTML = '';
+				econ.appendChild(document.createRange().createContextualFragment(content));
+			}
+		},
+		error: function(data) {
+			console.error(data);
+		}
+	});
+	time = new Date().getTime() - time;
+	console.logs('Время сбора ajax: ' + time/1000 + ' сек. или ' + time + ' мс.');
+
+	time = new Date().getTime();
+	if (('connection' in window.navigator ? ['2g', 'slow-2g'].indexOf(window.navigator.connection.effectiveType) == -1 : true) && 'matchMedia' in window && window.navigator.userAgent.toLowerCase().match(/(chrome|busengine)\/(\d+\.)/)) {
+		window.addEventListener('mouseover', function() {
+			BusEngine.polyfillTagSource();
+		}, {one: true});
+	}
+	time = new Date().getTime() - time;
+	console.logs('Время сбора video: ' + time/1000 + ' сек. или ' + time + ' мс.');
+
+	time = new Date().getTime();
+	BusEngine.localization.initialize();
+	time = new Date().getTime() - time;
+	console.logs('Время сбора localization: ' + time/1000 + ' сек. или ' + time + ' мс.');
+
+	window.addEventListener('beforeunload', function(e) {
+		document.body.classList.add('be-open');
+	}, {once: true});
+
+	window.addEventListener('load', function() {
+		document.body.classList.remove('be-open');
+	}, {once: true});
 </script>
     </main>
   </body>

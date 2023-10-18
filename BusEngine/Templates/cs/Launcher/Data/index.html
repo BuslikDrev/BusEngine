@@ -8,17 +8,17 @@
     <meta name="description" content="BusEngine">
     <meta name="keywords" content="BusEngine">
     <title>heading_title</title>
-    <!-- <base href="https://BusEngine/"> -->
+    <!-- <base href="https://bd.busengine/"> -->
     <link href="/" rel="canonical">
+    <link href="Styles/BootStrap/bootstrap.min.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/BusEngine/BusEngine.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Styles/Launcher/Launcher.css" type="text/css" media="all" rel="stylesheet preload" as="style">
-    <link href="Styles/BootStrap/bootstrap-grid.min.css" type="text/css" media="all" rel="stylesheet preload" as="style">
     <link href="Scripts/BusEngine/BusEngine.js" type="text/javascript" media="all" rel="preload" as="script">
     <link href="Scripts/Launcher/Launcher.js" type="text/javascript" media="all" rel="preload" as="script">
-    <link href="Scripts/BootStrap/bootstrap.min.js" type="text/javascript" media="all" rel="preload" as="script">
+    <link href="Scripts/BootStrap/bootstrap.bundle.min.js" type="text/javascript" media="all" rel="preload" as="script">
     <script src="Scripts/BusEngine/BusEngine.js" type="text/javascript"></script>
     <script src="Scripts/Launcher/Launcher.js" type="text/javascript"></script>
-	<script src="Scripts/BootStrap/bootstrap.min.js" type="text/javascript"></script>
+	<script src="Scripts/BootStrap/bootstrap.bundle.min.js" type="text/javascript"></script>
   </head>
   <body class="be-open">
     <div class="resize"></div>
@@ -30,7 +30,7 @@
         <div class="point"></div>
         <div class="right">
           <button onclick="BusEngine.postMessage('Collapse');" aria-label="button_collapse" title="button_collapse" class="collapse"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-collapse"></use></svg></button>
-          <button onclick="BusEngine.postMessage('Expand'); svgToggle(this);" aria-label="button_expand" title="button_expand" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
+          <button onclick="BusEngine.postMessage('Expand'); Launcher.svgToggle(this);" aria-label="button_expand" title="button_expand" class="expand"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand"></use></svg><svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-expand-x2"></use></svg></button>
           <button onclick="BusEngine.postMessage('Exit');" aria-label="button_exit" title="button_exit" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
         </div>
       </nav>
@@ -43,30 +43,32 @@
     </div>
     <main>
       <picture>
-        <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-width:1280px)">
-        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-width:1281px) and (max-width:1920px)">
-        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-width:1281px) and (max-width:1920px)">
-        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-width:1921px) and (max-width:2560px)">
-        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-width:2561px)">
-        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-width:2561px)">
-        <img loading="eager" decoding="sync" src="Textures/background_login_1280x720.png" alt="background_login" >
+        <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-device-width:1280px)">
+        <source srcset="Textures/background_login_1280x720.png" type="image/png" media="screen and (max-device-width:1280px)">
+        <source srcset="Textures/background_login_1920x1080.webp" type="image/webp" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source srcset="Textures/background_login_1920x1080.png" type="image/png" media="screen and (min-device-width:1281px) and (max-device-width:1920px)">
+        <source srcset="Textures/background_login_2560x1440.webp" type="image/webp" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source srcset="Textures/background_login_2560x1440.png" type="image/png" media="screen and (min-device-width:1921px) and (max-device-width:2560px)">
+        <source srcset="Textures/background_login_3840x2160.webp" type="image/webp" media="screen and (min-device-width:2561px)">
+        <source srcset="Textures/background_login_3840x2160.png" type="image/png" media="screen and (min-device-width:2561px)">
+        <img loading="eager" decoding="async" src="Textures/background_login_1280x720.png" alt="background_login" >
       </picture>
 <script type="text/javascript">
-console.log('index');
-console.log('mode', window.localStorage.getItem('mode'));
-if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
-	BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
-} else {
-	BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
-}
+	if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
+		BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
+	} else {
+		BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
+	}
 
-if (window.localStorage.getItem('authorization') || window.localStorage.getItem('mode')) {
-	BusEngine.open('main.html');
-} else {
-	BusEngine.open('login.html');
-}
+	/* console.log('cookie', BusEngine.cookie.get('mode'));
+	BusEngine.cookie.set('mode', '11111', {day: 10});
+	console.log('cookie2', BusEngine.cookie.get('mode')); */
+
+	if (window.localStorage.getItem('authorization') || window.localStorage.getItem('mode')) {
+		BusEngine.open('main.html');
+	} else {
+		BusEngine.open('login.html');
+	}
 </script>
     </main>
   </body>
