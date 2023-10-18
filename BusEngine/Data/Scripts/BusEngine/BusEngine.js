@@ -240,47 +240,45 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 BusEngine.localization.initialize = function() {
-	var i, i2, i3, i4, l, l2, l4, langs, langs2, langs3, d, gl;
+	var i, i2, i3, l, l2, l3, langs, langs2, langs3, k, gl;
 	langs = document.getElementsByTagName("*");
 	l = langs.length;
 
 	for (i = 0; i < l; ++i) {
-		if (langs[i]) {
-			langs2 = langs[i].childNodes;
-			l2 = langs2.length;
+		langs2 = langs[i].childNodes;
+		l2 = langs2.length;
 
-			for (i2 = 0; i2 < l2; ++i2) {
-				if (langs2[i2].nodeType == Node.TEXT_NODE) {
-					for (i3 in BusEngine.localization.getLanguages) {
-						langs2[i2].data = langs2[i2].data.replace(new RegExp(i3, 'gim'), BusEngine.localization.getLanguages[i3]);
-					}
-				} else if (langs2[i2].nodeType == Node.ELEMENT_NODE) {
-					d = langs2[i2].getAttribute('data-localization');
+		for (i2 = 0; i2 < l2; ++i2) {
+			if (langs2[i2].nodeType == Node.TEXT_NODE) {
+				for (i3 in BusEngine.localization.getLanguages) {
+					langs2[i2].data = langs2[i2].data.replace(new RegExp(i3, 'gim'), BusEngine.localization.getLanguages[i3]);
+				}
+			} else if (langs2[i2].nodeType == Node.ELEMENT_NODE) {
+				if (['HEAD', 'LINK', 'BODY', 'HTML', 'SOURCE'].indexOf(langs2[i2].tagName) == -1) {
+					k = langs2[i2].getAttribute('data-localization');
 
-					if (d && d in BusEngine.localization.getLanguages) {
-						gl = BusEngine.localization.getLanguages[d];
+					if (k && k in BusEngine.localization.getLanguages) {
+						gl = BusEngine.localization.getLanguages[k];
 					} else {
 						gl = false;
 					}
 
-					if (['HEAD', 'LINK', 'BODY', 'HTML', 'SOURCE'].indexOf(langs2[i2].tagName) == -1) {
-						langs3 = langs2[i2].attributes;
-						l4 = langs3.length;
+					langs3 = langs2[i2].attributes;
+					l3 = langs3.length;
 
-						for (i4 = 0; i4 < l4; ++i4) {
-							if (['rel', 'type', 'class', 'data-src', 'src', 'name', 'value'].indexOf(langs3[i4].nodeName) == -1) {
-								if (langs3[i4].nodeName == 'data-localization' && langs3[i4].value == d && gl) {
-									//langs2[i2].value = gl;
-									langs2[i2].innerText = gl;
-								} else {
-									if (!gl && langs3[i4].value in BusEngine.localization.getLanguages) {
-										d = langs3[i4].value;
-										gl = BusEngine.localization.getLanguages[d];
-									}
+					for (i3 = 0; i3 < l3; ++i3) {
+						if (['rel', 'type', 'class', 'data-src', 'src', 'name', 'value'].indexOf(langs3[i3].nodeName) == -1) {
+							if (langs3[i3].nodeName == 'data-localization' && langs3[i3].value == k && gl) {
+								//langs2[i2].value = gl;
+								langs2[i2].innerText = gl;
+							} else {
+								if (!gl && langs3[i3].value in BusEngine.localization.getLanguages) {
+									k = langs3[i3].value;
+									gl = BusEngine.localization.getLanguages[k];
+								}
 
-									if (gl) {
-										langs3[i4].value = langs3[i4].value.replace(new RegExp('\\b' + d + '$', 'i'), gl);
-									}
+								if (gl) {
+									langs3[i3].value = langs3[i3].value.replace(new RegExp('\\b' + k + '$', 'i'), gl);
 								}
 							}
 						}
