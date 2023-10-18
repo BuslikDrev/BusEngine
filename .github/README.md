@@ -102,6 +102,10 @@ Microsoft Visual C++ Redistributable v14.0+ 2015-2022 (для некоторых
 
 https://learn.microsoft.com/ru-ru/cpp/windows/latest-supported-vc-redist?view=msvc-170
 
+Совместимость по API
+
+https://learn.microsoft.com/ru-ru/dotnet/standard/net-standard?tabs=net-standard-1-0#select-net-standard-version
+
 Учебные материалы
 
 https://professorweb.ru/my/csharp/charp_theory/level2/2_2.php
