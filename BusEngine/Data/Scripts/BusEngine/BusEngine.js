@@ -1,5 +1,5 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
-/* © 2016-2023; BuslikDrev - Усе правы захаваны. */
+/* © 2016-2024; BuslikDrev - Усе правы захаваны. */
 'use strict';
 //'use asm';
 /* Chrome error off/block cookie "'Window': Access is denied for this document." */
@@ -87,40 +87,132 @@ if (!('engine' in window.BusEngine)) {
 	};
 }
 
-BusEngine.loadScript = function(url, callback, setting) {
-	var s = document.createElement('script');
-	s.src = url;
-	s.type = 'text/javascript';
-	if (typeof callback != 'undefined') {
-		s.onreadystatechange = callback;
-		s.onload = callback;
-	}
-	if (typeof setting == 'object') {
-		for (var ss in setting) {
-			s.setAttribute(ss, setting[ss]);
+BusEngine.basename = function(path, suffix) {
+	path = path.replace(/\\\\/g, '/');
+	var s = path.lastIndexOf('/');
+
+	if (s != -1) {
+		var ss = path.length;
+
+		if (suffix) {
+			ss = path.lastIndexOf(suffix, ss);
+			if (ss == -1) {
+				ss = path.length;
+			}
 		}
+
+		path = path.substring(s+1, ss);
 	}
-	if ('head' in document) {
-		document.head.appendChild(s);
-	}
-};
+
+	return path;
+}
 
 BusEngine.loadStyle = function(url, callback, setting) {
-	var s = document.createElement('link');
-	s.href = url;
-	s.type = 'text/css';
-	if (typeof callback != 'undefined') {
-		s.onreadystatechange = callback;
-		s.onload = callback;
-	}
-	if (typeof setting == 'object') {
-		for (var ss in setting) {
-			s.setAttribute(ss, setting[ss]);
+	var status, s;
+	s = document.querySelector('link[href*="' + url + '"], link[href*="' + BusEngine.basename(url) + '"]');
+	status = s;
+
+	if (status) {
+		if (typeof callback == 'function') {
+			if (s.getAttribute('data-start')) {
+				s.addEventListener('readystatechange', callback);
+				s.addEventListener('load', callback);
+			} else {
+				setTimeout(callback, 1);
+			}
+		}
+	} else {
+		s = document.createElement('link');
+		s.href = url;
+		s.type = 'text/css';
+		s.rel = 'stylesheet';
+
+		if (typeof callback == 'function') {
+			s.addEventListener('readystatechange', function() {
+				s.removeAttribute('data-start');
+			});
+			s.addEventListener('load', function() {
+				s.removeAttribute('data-start');
+			});
+			s.addEventListener('readystatechange', callback);
+			s.addEventListener('load', callback);
 		}
 	}
-	if ('head' in document) {
+
+	if (typeof setting == 'object') {
+		if (Symbol.toStringTag in setting && setting[Symbol.toStringTag] == 'NamedNodeMap') {
+			var i, l;
+			l = setting.length;
+
+			for (i = 0; i < l; ++i) {
+				s.setAttribute(setting[i].name, setting[i].value);
+			}
+		} else {
+			for (var i in setting) {
+				s.setAttribute(i, setting[i]);
+			}
+		}
+	}
+
+	if (!status && 'head' in document) {
 		document.head.appendChild(s);
 	}
+
+	return s;
+};
+
+BusEngine.loadScript = function(url, callback, setting) {
+	var status, s;
+	s = document.querySelector('script[src*="' + url + '"], script[src*="' + BusEngine.basename(url) + '"]');
+	status = s;
+
+	if (status) {
+		if (typeof callback == 'function') {
+			if (s.getAttribute('data-start')) {
+				s.addEventListener('readystatechange', callback);
+				s.addEventListener('load', callback);
+			} else {
+				setTimeout(callback, 1);
+			}
+		}
+	} else {
+		s = document.createElement('script');
+		s.src = url;
+		s.type = 'text/javascript';
+		s.setAttribute('data-start', true);
+
+		if (typeof callback == 'function') {
+			s.addEventListener('readystatechange', function() {
+				s.removeAttribute('data-start');
+			});
+			s.addEventListener('load', function() {
+				s.removeAttribute('data-start');
+			});
+			s.addEventListener('readystatechange', callback);
+			s.addEventListener('load', callback);
+		}
+	}
+
+	if (typeof setting == 'object') {
+		if (Symbol.toStringTag in setting && setting[Symbol.toStringTag] == 'NamedNodeMap') {
+			var i, l;
+			l = setting.length;
+
+			for (i = 0; i < l; ++i) {
+				s.setAttribute(setting[i].name, setting[i].value);
+			}
+		} else {
+			for (var i in setting) {
+				s.setAttribute(i, setting[i]);
+			}
+		}
+	}
+
+	if (!status && 'head' in document) {
+		document.head.appendChild(s);
+	}
+
+	return s;
 };
 
 if (!('localization' in window.BusEngine)) {
@@ -148,37 +240,46 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 BusEngine.localization.initialize = function() {
-	var d, i4, i3, l3, langs3, i2, l2, langs2, i, l, langs;
+	var i, i2, i3, i4, l, l2, l4, langs, langs2, langs3, d, gl;
 	langs = document.getElementsByTagName("*");
 	l = langs.length;
 
 	for (i = 0; i < l; ++i) {
-		//BusEngine.log(langs[i]);
 		if (langs[i]) {
 			langs2 = langs[i].childNodes;
 			l2 = langs2.length;
 
 			for (i2 = 0; i2 < l2; ++i2) {
 				if (langs2[i2].nodeType == Node.TEXT_NODE) {
-					for (i4 in BusEngine.localization.getLanguages) {
-						langs2[i2].data = langs2[i2].data.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '', 'gim'), BusEngine.localization.getLanguages[i4]);
+					for (i3 in BusEngine.localization.getLanguages) {
+						langs2[i2].data = langs2[i2].data.replace(new RegExp(i3, 'gim'), BusEngine.localization.getLanguages[i3]);
 					}
 				} else if (langs2[i2].nodeType == Node.ELEMENT_NODE) {
-					for (i4 in BusEngine.localization.getLanguages) {
-						if ('attributes' in langs2[i2] && ['HEAD', 'LINK', 'BODY', 'HTML'].indexOf(langs2[i2].tagName) == -1) {
-							//console.logs(langs2[i2].tagName);
-							langs3 = langs2[i2].attributes;
-							l3 = langs3.length;
+					d = langs2[i2].getAttribute('data-localization');
 
-							for (i3 = 0; i3 < l3; ++i3) {
-								if (['rel', 'type', 'class'].indexOf(langs3[i3].nodeName) == -1) {
-									d = langs3[i3].value;
-									langs3[i3].value = langs3[i3].value.replace(new RegExp('' + String(i4).replace(/([\\\-[\]{}()*+?.,^$|])/g, '\\$1') + '$', 'i'), BusEngine.localization.getLanguages[i4]);
-									if (langs3[i3].nodeName == 'data-localization' && langs3[i3].value != d) {
-										//window.console.logs(langs3[i3]);
-										langs2[i2].value = langs3[i3].value;
-										langs2[i2].innerText = langs3[i3].value;
-										//langs3[i2].value = langs3[i3].value;
+					if (d && d in BusEngine.localization.getLanguages) {
+						gl = BusEngine.localization.getLanguages[d];
+					} else {
+						gl = false;
+					}
+
+					if (['HEAD', 'LINK', 'BODY', 'HTML', 'SOURCE'].indexOf(langs2[i2].tagName) == -1) {
+						langs3 = langs2[i2].attributes;
+						l4 = langs3.length;
+
+						for (i4 = 0; i4 < l4; ++i4) {
+							if (['rel', 'type', 'class', 'data-src', 'src', 'name', 'value'].indexOf(langs3[i4].nodeName) == -1) {
+								if (langs3[i4].nodeName == 'data-localization' && langs3[i4].value == d && gl) {
+									//langs2[i2].value = gl;
+									langs2[i2].innerText = gl;
+								} else {
+									if (!gl && langs3[i4].value in BusEngine.localization.getLanguages) {
+										d = langs3[i4].value;
+										gl = BusEngine.localization.getLanguages[d];
+									}
+
+									if (gl) {
+										langs3[i4].value = langs3[i4].value.replace(new RegExp('\\b' + d + '$', 'i'), gl);
 									}
 								}
 							}
@@ -232,11 +333,11 @@ BusEngine.polyfillTagSource = function(ex) {
 
 BusEngine.cookie = {
 	'set': function(name, value, domain, path, day) {
-		if (typeof name == 'undefined' || typeof name != 'string') {
+		if (typeof name != 'string') {
 			return false;
 		}
 
-		if (typeof value == 'undefined' || typeof value != 'string') {
+		if (typeof value != 'string') {
 			value = '';
 		}
 
@@ -252,11 +353,11 @@ BusEngine.cookie = {
 			}
 		}
 
-		if (typeof domain == 'undefined' || typeof domain != 'string') {
+		if (typeof domain != 'string') {
 			domain = '.' + document.domain;
 		}
 
-		if (typeof path == 'undefined' || typeof path != 'string') {
+		if (typeof path != 'string') {
 			path = '/';
 		}
 
@@ -275,7 +376,7 @@ BusEngine.cookie = {
 	'get': function(name) {
 		var c = document.cookie;
 
-		if (!c || typeof name == 'undefined' || typeof name != 'string') {
+		if (!c || typeof name != 'string') {
 			return c;
 		}
 
@@ -288,13 +389,13 @@ BusEngine.cookie = {
 		}
 	},
 	'remove': function(name, value, domain, path) {
-		if (typeof name == 'undefined' || typeof name != 'string') {
+		if (typeof name != 'string') {
 			return false;
 		}
 
 		var v;
 
-		if (typeof value == 'undefined' || typeof value != 'string') {
+		if (typeof value != 'string') {
 			v = '';
 		} else {
 			v = value;
@@ -309,11 +410,11 @@ BusEngine.cookie = {
 			}
 		}
 
-		if (typeof domain == 'undefined' || typeof domain != 'string') {
+		if (typeof domain != 'string') {
 			domain = '.' + document.domain;
 		}
 
-		if (typeof path == 'undefined' || typeof path != 'string') {
+		if (typeof path != 'string') {
 			path = '/';
 		}
 
@@ -325,13 +426,13 @@ BusEngine.cookie = {
 	'has': function(name, value) {
 		var c = document.cookie;
 
-		if (!c || typeof name == 'undefined' || typeof name != 'string') {
+		if (!c || typeof name != 'string') {
 			return false;
 		}
 
 		c = c.match(new RegExp('(' + name + ')\\=(\\S[^\\;]+)'));
 
-		if (typeof value == 'undefined' || typeof value != 'string') {
+		if (typeof value != 'string') {
 			if (c && c[1] && c[1] == name) {
 				return true;
 			}
@@ -372,6 +473,10 @@ BusEngine.tools.ajax = function(url, setting) {
 		} else {
 			url = setting['url'];
 		}
+	}
+
+	if (typeof setting['headers'] !== 'object') {
+		setting['headers'] = {};
 	}
 
 	if (typeof setting['type'] === 'string') {
@@ -426,13 +531,11 @@ BusEngine.tools.ajax = function(url, setting) {
 		setting['debug'] = false;
 	}
 
-	var datanew = null, xhr = new XMLHttpRequest();
+	var i, datanew = null, xhr = new XMLHttpRequest();
 
 	setting['beforeSend'](xhr, setting);
 
 	if (setting['data']) {
-		var i;
-
 		if (setting['dataType'] == 'json') {
 			datanew = JSON.stringify(setting['data']);
 		} else {
@@ -492,6 +595,10 @@ BusEngine.tools.ajax = function(url, setting) {
 		} else if (setting['dataType'] == 'text') {
 			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
 		}
+	}
+
+	for (i in setting['headers']) {
+		xhr.setRequestHeader(i, setting['headers'][i]);
 	}
 
 	if (setting['responseType']) {
@@ -559,7 +666,7 @@ BusEngine.open = function(url, node1, node2, params, callback) {
 
 	var method = 'GET';
 
-	if (typeof params !== 'undefined') {
+	if (typeof params !== 'undefined' && typeof params !== 'function') {
 		method = 'POST';
 	}
 
@@ -590,7 +697,7 @@ BusEngine.open = function(url, node1, node2, params, callback) {
 				}
 
 				if (e && 'innerHTML' in e) {
-					var i, l, m, scripts, script;
+					var i, l, m, stylesheets, scripts, script;
 
 					// fix memory chrome
 					m = element.querySelectorAll('video, audio');
@@ -627,6 +734,34 @@ BusEngine.open = function(url, node1, node2, params, callback) {
 					//element.innerHTML = e.innerHTML;
 					element.innerHTML = '';
 					element.insertAdjacentHTML('beforeEnd', e.innerHTML);
+
+					// стили из страницы
+					stylesheets = data.getElementsByTagName('link');
+
+					if (stylesheets) {
+						l = stylesheets.length;
+
+						for (i = 0; i < l; ++i) {
+							if (stylesheets[i].href && [window.location.href, window.location.protocol + '//' + window.location.hostname + '/'].indexOf(stylesheets[i].href) == -1) {
+								BusEngine.loadStyle(stylesheets[i].href);
+							}
+						}
+					}
+
+					// скрипты из страницы
+					scripts = data.querySelectorAll('script');
+
+					if (scripts) {
+						l = scripts.length;
+
+						for (i = 0; i < l; ++i) {
+							if (scripts[i].src) {
+								BusEngine.loadScript(scripts[i].src);
+							}
+						}
+					}
+
+					// скрипты в пределах html
 					scripts = e.querySelectorAll('script');
 
 					if (scripts) {
@@ -635,9 +770,9 @@ BusEngine.open = function(url, node1, node2, params, callback) {
 						for (i = 0; i < l; ++i) {
 							if (scripts[i].text || scripts[i].src) {
 								script = document.createElement('script');
-								/* if (scripts[i].type) {
+								if (scripts[i].type) {
 									script.type = scripts[i].type;
-								} */
+								}
 								if (scripts[i].text) {
 									script.text = scripts[i].text;
 								}
