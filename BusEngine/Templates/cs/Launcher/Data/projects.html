@@ -46,7 +46,7 @@
         <div id="top" class="top">
           <span class="logo px-4 pt-2"><a href="main.html" onclick="BusEngine.open('main.html'); return false;"> <img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> <span data-localization="text_name_engine">BusEngine</span></a></span>
           <span class="setting px-4 pt-4">
-            <a href="#" title="text_downloads_current"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-download"></use></svg></a>
+            <a href="#" onclick="Launcher.unfoldable('settings-downloads');" title="text_downloads_current"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-download"></use></svg></a>
             <a href="#" title="text_settings" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#menu-control-panel"></use></svg></a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#" onclick="Launcher.unfoldable('settings-launcher');" data-unfoldable-button="settings-launcher" data-localization="text_settings_launcher">Настройки лаунчера</a></li>
@@ -79,6 +79,19 @@
           </div>
         </div>
         <div id="content" class="content col-9">
+          <div id="settings-downloads" class="unfoldable p-5" style="top: -100vh;">
+            <button type="button" onclick="this.parentNode['style']['top'] = '-100vh'; Launcher.setSetting('settings-launcher');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
+            <div class="unfoldable-content">
+              <h2 data-localization="text_downloads">Загрузки</h2>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+		frame<br>
+            </div>
+          </div>
           <div id="settings-launcher" class="unfoldable p-5" style="top: -100vh;">
             <button type="button" onclick="this.parentNode['style']['top'] = '-100vh'; Launcher.setSetting('settings-launcher');" class="close"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#navbar-close"></use></svg></button>
             <div class="unfoldable-content">
@@ -143,7 +156,7 @@
         </div>
       </div>
 <script type="text/javascript">
-	BusEngine.localization.initialize();
+	BusEngine.localization.load();
 
 	Launcher.getSetting('settings-launcher');
 </script>
