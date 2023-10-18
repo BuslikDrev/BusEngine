@@ -1,10 +1,11 @@
 {
+  // со стороны игры
   "console_commands": {
     "sys_spec": "1",
     "e_WaterOcean": "0",
     "r_WaterOcean": "0",
     "r_VolumetricClouds": "1",
-    "r_Displayinfo": "0",
+    "r_Displayinfo": "1",
     /* r_Fullscreen работает (
     РазрешитьИзменятьРазмерыОкнаПоКнопке=-3,
     РазрешитьИзменятьРазмерыОкна=-2,
@@ -15,10 +16,11 @@
     ) */
     "r_Fullscreen": "-1",
     // r_Width работает
-    "r_Width": "840",
+    "r_Width": "1280",
     // r_Height работает
-    "r_Height": "480"
+    "r_Height": "720"
   },
+  // со стороны редактора
   "console_variables": {
     "sys_spec": "1",
     "e_WaterOcean": "0",
@@ -29,32 +31,31 @@
     "r_Width": "960",
     "r_Height": "540"
   },
-  "version": "0.4.0.0",
-  "type": "",
   "info": {
-    "name": "Game",
+    "name": "BusEngine Launcher",
+    "version": "0.4.0.0",
+    "icon": "[data]/Icons/BusEngine.ico",
+    "type": "",
     "guid": "ddc2049b-3a86-425b-9713-ee1babec5365"
   },
   "content": {
-    "assets": [
-      "Data"
-    ],
-    "code": [
-      "Code"
-    ],
-    "Localization": [
-      "Localization"
-    ],
-    "libs": {
-      "name": "BusEngine",
-      "shared": {
-        "Any": "",
-        "Android": "",
-        "Win": "",
-        "Win_x64": "",
-        "Win_x86": ""
+    "bin": "Bin",
+    "code": "Code",
+    "data": "Data",
+    "localization": "Localization",
+    "log": "Log",
+    "libs": [
+      {
+        "name": "BusEngine",
+        "shared": {
+          "Any": "",
+          "Android": "",
+          "Win": "",
+          "Win_x64": "",
+          "Win_x86": ""
+        }
       }
-    }
+    ]
   },
   "require": {
     "engine": "0.4.0.0",
