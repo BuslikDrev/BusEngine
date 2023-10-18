@@ -42,6 +42,8 @@ BusEngine выпускается под лицензией [MIT](https://github.
 #### Список ссылок на файлы других авторов на которые, не распространяется данная лицензия, так как у них имеется своя
 [MicroSoft dotNET](https://github.com/dotnet) (для работы BusEngine)
 
+[BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) (для отладки кода BusEngine)
+
 [CefSharp](https://github.com/cefsharp/CefSharp) 109.1.110 (для использования в BusEngine.Browser)
 
 [Chromium](https://github.com/chromium/chromium) 109.1.11 (109.0.5414.87) (для использования в BusEngine.Browser)
