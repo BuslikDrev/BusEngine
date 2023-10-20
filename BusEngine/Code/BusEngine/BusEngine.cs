@@ -33,7 +33,6 @@ https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/
 
 /*
 internal class ProjectDefault
-public class TooltipAttribute
 public class AI
 public class Audio
 public class Browser
@@ -51,6 +50,7 @@ public class Physics
 public abstract class Plugin
 internal class IPlugin
 public class Rendering
+public class TooltipAttribute
 public class Ajax
 public class Json
 public class FileFolderDialog
@@ -70,95 +70,7 @@ namespace BusEngine {
 */
 	/** API BusEngine.ProjectDefault */
 	internal class ProjectDefault {
-		public ProjectDefault(object setting) {
-			Setting = setting;
-		}
-
-		public static object Setting = new {
-			console_commands = new {
-				sys_spec = "1",
-				e_WaterOcean = "0",
-				r_WaterOcean = "0",
-				r_VolumetricClouds = "1",
-				r_Displayinfo = "0",
-				r_Fullscreen = "0",
-				r_Width = "1280",
-				r_Height = "720",
-				google_api_key = "",
-				google_default_client_id = "",
-				google_default_client_secret = "",
-			},
-			console_variables = new {
-				sys_spec = "1",
-				e_WaterOcean = "0",
-				r_WaterOcean = "0",
-				r_VolumetricClouds = "1",
-				r_Displayinfo = "0",
-				r_Fullscreen = "0",
-				r_Width = "1280",
-				r_Height = "720",
-				google_api_key = "",
-				google_default_client_id = "",
-				google_default_client_secret = "",
-			},
-			info = new {
-				name = (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Reflection.AssemblyTitleAttribute), false)[0] as System.Reflection.AssemblyTitleAttribute).Title,
-				version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-				icon = "[data]/Icons/BusEngine.ico",
-				type = "",
-				guid = System.Convert.ToString(System.Guid.NewGuid()),
-			},
-			content = new {
-				bin = "Bin",
-				code = "Code",
-				data = "Data",
-				localization = "Localization",
-				log = "Log",
-				libs = new object[] {
-					new {
-						name = "BusEngine",
-						shared = new {
-							Any = "",
-							Android = "",
-							Win = "",
-							Win_x64 = "",
-							Win_x86 = ""
-						}
-					},
-				},
-			},
-			require = new {
-				engine = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-				plugins = new object[] {
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Android/Game.dll",
-						platforms = new string[] {"Android"}
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Win/Game.dll",
-						platforms = new string[] {"win_x86"}
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Win_x86/Game.dll",
-						platforms = new string[] {"win_x86"}
-					},
-					new {
-						guid = "",
-						type = "EType::Managed",
-						path = "Bin/Win_x64/Game.dll",
-						platforms = new string[] {"Win_x64"}
-					}
-				},
-			},
-		};
-
-		public static System.Collections.Generic.Dictionary<string, dynamic> Setting2 = new System.Collections.Generic.Dictionary<string, dynamic>() {
+		public static System.Collections.Generic.Dictionary<string, dynamic> Setting = new System.Collections.Generic.Dictionary<string, dynamic>() {
 			{"console_commands", new System.Collections.Generic.Dictionary<string, string>() {
 				{"sys_spec", "1"},
 				{"e_WaterOcean", "0"},
@@ -1346,7 +1258,7 @@ BusEngine.Tools
 			public static byte ProcessorCount;
 			public static string UserAgent;
 			static Device() {
-				var os = System.Environment.OSVersion;
+				System.OperatingSystem os = System.Environment.OSVersion;
 
 				switch (os.Platform) {
 					case System.PlatformID.Win32NT:
@@ -1364,35 +1276,15 @@ BusEngine.Tools
 						break;
 				}
 
-				/* switch ((0).GetType().ToString()) {
-					case "Int32":
-						Processor = "x32";
-						break;
-					case "Int64":
-						Processor = "x64";
-						break;
-					case "Int128":
-						Processor = "x128";
-						break;
-					case "Int256":
-						Processor = "x256";
-						break;
-					case "Int512":
-						Processor = "x512";
-						break;
-					default:
-						Processor = "Other";
-						break;
-				} */
-
 				Version = os.Version.Major + "." + os.Version.Minor;
 				Processor = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
 				ProcessorCount = (byte)System.Environment.ProcessorCount;
-				UserAgent = "Mozilla/5.0 (" + Name + " NT " + Version + "; " + System.Convert.ToString(os.Platform) + "; " + Processor + ") AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + " Safari/537.36";
+				UserAgent = "Mozilla/5.0 (" + Name + " NT " + Version + "; " + System.Convert.ToString(os.Platform) + "; " + Processor + ") AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/" + BusEngine.ProjectDefault.Setting["require"]["engine"] + " Safari/537.36";
 			}
 		}
 
-		private static string[] GetProbingPathData = new string[0];
+		// изменить путь
+		/* private static string[] GetProbingPathData = new string[0];
 
 		private static string[] GetProbingPath() {
 			if (GetProbingPathData.Length == 0 && System.IO.File.Exists(System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile)) {
@@ -1406,7 +1298,7 @@ BusEngine.Tools
 			}
 
 			return GetProbingPathData;
-		}
+		} */
 
 		/** функция запуска API BusEngine */
 		public static void Initialize() {
@@ -1434,9 +1326,6 @@ BusEngine.Tools
 			BusEngine.Engine.LogDirectory = path + "Log\\";
 			BusEngine.Engine.ToolsDirectory = path + "Tools\\";
 
-			// определяем устройство
-			new BusEngine.Engine.Device();
-
 			// инициализируем язык
 			new BusEngine.Localization().Initialize();
 
@@ -1444,7 +1333,7 @@ BusEngine.Tools
 			/* System.AppDomain.CurrentDomain.AssemblyLoad  += new System.AssemblyLoadEventHandler((o, e) => {
 				BusEngine.Log.Info("AssemblyLoad... {0}", e.LoadedAssembly.FullName);
 			}); */
-			System.AppDomain.CurrentDomain.AssemblyResolve += new System.ResolveEventHandler((o, e) => {
+			/* System.AppDomain.CurrentDomain.AssemblyResolve += new System.ResolveEventHandler((o, e) => {
 				BusEngine.Log.Info("AssemblyResolve... {0}", e.Name);
 
 				foreach (string i in GetProbingPath()) {
@@ -1456,7 +1345,7 @@ BusEngine.Tools
 				}
 
 				return System.Reflection.Assembly.LoadFile(e.Name);
-			});
+			}); */
 			/* System.AppDomain.CurrentDomain.ResourceResolve += new System.ResolveEventHandler((o, e) => {
 				BusEngine.Log.Info("ResourceResolve... {0}", e.Name);
 			}); */
@@ -1474,15 +1363,6 @@ BusEngine.Tools
 				BusEngine.Log.Info("UnhandledException... {0}", e.ExceptionObject);
 			}); */
 
-			/* BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("version").GetValue(BusEngine.ProjectDefault.Setting));
-			BusEngine.Log.Info("Setting {0}", BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting).GetType().GetProperty("sys_spec").GetValue(BusEngine.ProjectDefault.Setting.GetType().GetProperty("console_commands").GetValue(BusEngine.ProjectDefault.Setting)));
-			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting), true));
-			BusEngine.Log.Info("Setting {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting))));
-
-			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["version"]);
-			BusEngine.Log.Info("Setting2 {0}", BusEngine.ProjectDefault.Setting2["console_commands"]["sys_spec"]);
-			BusEngine.Log.Info("Setting2 {0}", BusEngine.Tools.Json.Encode(BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2)))); */
-
 			// https://learn.microsoft.com/ru-ru/dotnet/standard/base-types/best-practices-strings
 			// https://metanit.com/sharp/tutorial/5.4.php
 			// https://metanit.com/sharp/tutorial/5.5.php
@@ -1491,13 +1371,11 @@ BusEngine.Tools
 			// ищем, загружаем и обрабатываем настройки проекта
 			// https://learn.microsoft.com/en-us/dotnet/api/system.io.memorymappedfiles.memorymappedfile?redirectedfrom=MSDN&view=net-7.0
 			string[] project_files;
-			string[] busengine_files;
 
-			project_files = System.IO.Directory.GetFiles(path, "*.busproject");
-			busengine_files = System.IO.Directory.GetFiles(path, "busengine.busengine");
+			project_files = System.IO.Directory.GetFiles(path, "*.busproject", System.IO.SearchOption.TopDirectoryOnly);
 
-			if (busengine_files.Length > 0) {
-				project_files = busengine_files;
+			if (project_files.Length == 0) {
+				project_files = System.IO.Directory.GetFiles(path, "busengine.busengine", System.IO.SearchOption.TopDirectoryOnly);
 			}
 
 			if (project_files.Length == 0) {
@@ -1507,13 +1385,13 @@ BusEngine.Tools
 					fstream.Write(buffer, 0, buffer.Length);
 				}
 
-				BusEngine.ProjectDefault.Setting2 = BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
+				BusEngine.ProjectDefault.Setting = BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting));
 			} else {
 				// улаляем массивы данных по умолчанию т.к. они не нужны
-				BusEngine.ProjectDefault.Setting2["require"]["plugins"].Clear();
+				BusEngine.ProjectDefault.Setting["require"]["plugins"].Clear();
 
 				// получаем новые данные
-				var setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(project_files[0]));
+				System.Collections.Generic.Dictionary<string, dynamic> setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(project_files[0]));
 
 				dynamic content;
 
@@ -1531,11 +1409,11 @@ BusEngine.Tools
 							} else if (i.Name == "log") {
 								BusEngine.Engine.LogDirectory = path + (string)content[i.Name] + "\\";
 							}
-							BusEngine.ProjectDefault.Setting2["content"][i.Name] = (string)content[i.Name];
+							BusEngine.ProjectDefault.Setting["content"][i.Name] = (string)content[i.Name];
 						}
 					}
 
-					//BusEngine.Log.Info("content {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["content"]));
+					//BusEngine.Log.Info("content {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting["content"]));
 				}
 
 				dynamic console_commands;
@@ -1543,11 +1421,11 @@ BusEngine.Tools
 				if (setting.TryGetValue("console_commands", out console_commands) && console_commands.GetType().GetProperty("Type") != null && !console_commands.GetType().IsArray) {
 					foreach (var i in console_commands) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-							BusEngine.ProjectDefault.Setting2["console_commands"][i.Name] = (string)console_commands[i.Name];
+							BusEngine.ProjectDefault.Setting["console_commands"][i.Name] = (string)console_commands[i.Name];
 						}
 					}
 
-					//BusEngine.Log.Info("console_commands {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_commands"]));
+					//BusEngine.Log.Info("console_commands {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting["console_commands"]));
 				}
 
 				dynamic console_variables;
@@ -1555,11 +1433,11 @@ BusEngine.Tools
 				if (setting.TryGetValue("console_variables", out console_variables) && console_variables.GetType().GetProperty("Type") != null && !console_variables.GetType().IsArray) {
 					foreach (var i in console_variables) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-							BusEngine.ProjectDefault.Setting2["console_variables"][i.Name] = (string)console_variables[i.Name];
+							BusEngine.ProjectDefault.Setting["console_variables"][i.Name] = (string)console_variables[i.Name];
 						}
 					}
 
-					//BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["console_variables"]));
+					//BusEngine.Log.Info("console_variables {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting["console_variables"]));
 				}
 
 				dynamic info;
@@ -1568,7 +1446,7 @@ BusEngine.Tools
 					foreach (var i in info) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
 							if (i.Name == "icon") {
-								BusEngine.ProjectDefault.Setting2["info"][i.Name] = ((string)info[i.Name])
+								BusEngine.ProjectDefault.Setting["info"][i.Name] = ((string)info[i.Name])
 								.Replace("[bin]", BusEngine.Engine.BinDirectory)
 								.Replace("[exe]", BusEngine.Engine.ExeDirectory)
 								.Replace("[data]", BusEngine.Engine.DataDirectory)
@@ -1579,12 +1457,12 @@ BusEngine.Tools
 								.Replace("[editor]", BusEngine.Engine.DataDirectory)
 								.Replace("[tools]", BusEngine.Engine.ToolsDirectory);
 							} else {
-								BusEngine.ProjectDefault.Setting2["info"][i.Name] = (string)info[i.Name];
+								BusEngine.ProjectDefault.Setting["info"][i.Name] = (string)info[i.Name];
 							}
 						}
 					}
 
-					//BusEngine.Log.Info("info {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["info"]));
+					//BusEngine.Log.Info("info {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting["info"]));
 				}
 
 				dynamic require;
@@ -1605,7 +1483,7 @@ BusEngine.Tools
 							}
 
 							if (require["plugins"][i]["path"] != "") {
-								BusEngine.ProjectDefault.Setting2["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>() {
+								BusEngine.ProjectDefault.Setting["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>() {
 									{"path", System.Convert.ToString(require["plugins"][i]["path"])},
 									{"guid", (require["plugins"][i].ContainsKey("guid") && require["plugins"][i]["guid"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["guid"]) : "")},
 									{"type", (require["plugins"][i].ContainsKey("type") && require["plugins"][i]["type"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["type"]) : "")},
@@ -1615,19 +1493,23 @@ BusEngine.Tools
 						}
 					}
 
-					//BusEngine.Log.Info("plugins {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting2["require"]["plugins"]));
+					//BusEngine.Log.Info("plugins {0}", BusEngine.Tools.Json.Encode(BusEngine.ProjectDefault.Setting["require"]["plugins"]));
 				}
 			}
 
-			BusEngine.Engine.SettingEngine = BusEngine.ProjectDefault.Setting2;
-			BusEngine.Engine.SettingProject = BusEngine.ProjectDefault.Setting2;
+			BusEngine.Engine.SettingEngine = BusEngine.ProjectDefault.Setting;
+			BusEngine.Engine.SettingProject = BusEngine.ProjectDefault.Setting;
+
+			// определяем устройство
+			//new BusEngine.Engine.Device();
 
 			// включаем консоль
 			int r_Displayinfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_Displayinfo"]);
 
 			if (r_Displayinfo > 0) {
-				BusEngine.Log.ConsoleShow();
-
+				
+				BusEngine.Log.ConsoleShow().Wait();
+				System.Threading.Tasks.Task.Run(() => {
 				if (r_Displayinfo > 1) {
 					BusEngine.Log.Info("Device UserAgent: {0}", BusEngine.Engine.Device.UserAgent);
 					BusEngine.Log.Info("Device OS: {0}", BusEngine.Engine.Device.Name);
@@ -1638,15 +1520,18 @@ BusEngine.Tools
 					// https://csharp.webdelphi.ru/kak-izmerit-vremya-vypolneniya-operacii-v-c/
 					//BusEngine.Log.Info("Time: {0}", BusEngine.Localization.LanguageStatic);
 				}
+				}).Wait();
 			}
 
-			// инициализируем плагины
-			new BusEngine.IPlugin("Initialize");
+			System.Threading.Tasks.Task.Run(() => {
+				// инициализируем плагины
+				new BusEngine.IPlugin("Initialize");
 
-			// запускаем окно BusEngine
-			if (OnInitialize != null) {
-				OnInitialize.Invoke();
-			}
+				// запускаем окно BusEngine
+				if (OnInitialize != null) {
+					OnInitialize.Invoke();
+				}
+			}).Wait();
 		}
 		/** функция запуска API BusEngine */
 
@@ -2000,7 +1885,8 @@ namespace BusEngine {
 		}
 
 		// функция запуска консоли
-		public static void ConsoleShow() {
+		public async static System.Threading.Tasks.Task ConsoleShow() {
+			await System.Threading.Tasks.Task.Run(() => {
 			if (BusEngine.Log.StatusConsole == false) {
 				/* System.Windows.Forms.MessageBox.Show("Сообщение из Windows Forms!"); */
 
@@ -2032,6 +1918,7 @@ namespace BusEngine {
 				/* System.Console.Read(); */
 				/* System.Console.ReadKey(); */
 			}
+			});
 		}
 
 		// функция остановки консоли
@@ -2053,7 +1940,7 @@ namespace BusEngine {
 		// функция запуска\остановки консоли
 		public static void ConsoleToggle() {
 			if (BusEngine.Log.StatusConsole == false) {
-				BusEngine.Log.ConsoleShow();
+				BusEngine.Log.ConsoleShow().Wait();
 			} else {
 				BusEngine.Log.ConsoleHide();
 			}
@@ -2566,7 +2453,7 @@ namespace BusEngine {
 												}
 											}
 										});
-										thread.Name = BusEngine.ProjectDefault.Setting2["require"]["plugins"][i]["path"];
+										thread.Name = BusEngine.ProjectDefault.Setting["require"]["plugins"][i]["path"];
 										thread.Priority = System.Threading.ThreadPriority.Lowest;
 										thread.Start();
 									} else {
@@ -3229,6 +3116,7 @@ namespace BusEngine {
 /*
 Зависит от плагинов:
 BusEngine.Log
+https://habr.com/ru/articles/274605/
 */
 	/** API BusEngine.Vector */
 	public class Vector : System.IDisposable {

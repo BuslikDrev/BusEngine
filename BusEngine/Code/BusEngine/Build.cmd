@@ -22,7 +22,7 @@ SET Platform=0
 REM 0=BusEngine 1=Launcher 2=Editor 3=Plugin 4=Server 5=Game 6=GameAndroid
 SET Type=0
 
-REM 0=MSBuild 1=MSBuild 2=dotNET
+REM 0=MSBuild 1=MSBuild 2=dotNET build 3=dotNET run
 SET TypeBuild=1
 
 SET NameBusEngine="BusEngine"
@@ -145,10 +145,15 @@ COPY /b nul+%CSProj% %Dump%
 MOVE /Y %Dump% %CSProj%
 
 REM Сборка для BusEngine | Building for BusEngine
-IF %TypeBuild% == 2 (
-	%dotNET% build %CSProj% %Params%
+IF %TypeBuild% == 3 (
+	REM https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-build
+	%dotNET% run --project %CSProj% -c Release -f net471 %Params%
+) ELSE IF %TypeBuild% == 2 (
+	%dotNET% build %CSProj% -f net5.0-windows %Params%
+) ELSE IF %TypeBuild% == 1 (
+	%MSBuild% %CSProj% -p:TargetFramework=net471 %Params%
 ) ELSE (
-	%MSBuild% %CSProj% %Params%
+	%MSBuild% %CSProj% -p:TargetFramework=net471 %Params%
 )
 REM удалить "obj\*" | delete "obj\*"
 rd "%~dp0obj" /s /q
