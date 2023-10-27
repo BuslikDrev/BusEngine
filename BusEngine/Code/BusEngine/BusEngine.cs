@@ -194,9 +194,9 @@ namespace BusEngine {
 				BusEngine.Log.Info("Benchmark");
 			}
 		} */
-		/* private void Benchmark() {
+		public Benchmark() {
 			BusEngine.Log.Info("Benchmark");  
-		} */
+		}
 	}
 	/** API BusEngine.Benchmark */
 }
@@ -2456,12 +2456,10 @@ namespace BusEngine {
 	/** API BusEngine.IPlugin */
 	internal class IPlugin : System.IDisposable {
 		private static int Count = 0;
-		private static string[] Plugins = new string[0];
+		private string[] Plugins = new string[0];
 		private bool IsAsync(System.Reflection.MethodInfo method) {
-			foreach (object o in method.GetCustomAttributes(false)) {
-				if (o.GetType() == typeof(System.Runtime.CompilerServices.AsyncStateMachineAttribute)) {
-					return true;
-				}
+			foreach (object o in method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.AsyncStateMachineAttribute), false)) {
+				return true;
 			}
 
 			return false;
