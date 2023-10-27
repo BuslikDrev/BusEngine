@@ -33,30 +33,31 @@ https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/
 
 /*
 internal class ProjectDefault
-public class AI
-public class Audio
-public class Browser
-public class Camera
-public class Core
-public class Engine
-public class FlowGraph
-public class Layer
-public class Level
-public class Localization
-public class Log
-public class Material
-public class Model
-public class Physics
-public abstract class Plugin
+public class AI https://busengine.buslikdrev.by/api/cs/AI.html
+public class Audio https://busengine.buslikdrev.by/api/cs/Audio.html
+public class Browser https://busengine.buslikdrev.by/api/cs/Browser.html
+public class Camera https://busengine.buslikdrev.by/api/cs/Camera.html
+public class Core https://busengine.buslikdrev.by/api/cs/Core.html
+public class Engine https://busengine.buslikdrev.by/api/cs/Engine.html
+public class FlowGraph https://busengine.buslikdrev.by/api/cs/FlowGraph.html
+public class Layer https://busengine.buslikdrev.by/api/cs/Layer.html
+public class Level https://busengine.buslikdrev.by/api/cs/Level.html
+public class Localization https://busengine.buslikdrev.by/api/cs/Localization.html
+public class Log https://busengine.buslikdrev.by/api/cs/Log.html
+public class Material https://busengine.buslikdrev.by/api/cs/Material.html
+public class Model https://busengine.buslikdrev.by/api/cs/Model.html
+public class Physics https://busengine.buslikdrev.by/api/cs/Physics.html
+public abstract class Plugin https://busengine.buslikdrev.by/api/cs/Plugin.html
 internal class IPlugin
-public class Rendering
+public class Rendering https://busengine.buslikdrev.by/api/cs/Rendering.html
 public class TooltipAttribute
-public class Ajax
-public class Json
+public class Benchmark
+public class Ajax https://busengine.buslikdrev.by/api/cs/Tools.Ajax.html
+public class Json https://busengine.buslikdrev.by/api/cs/Tools.Json.html
 public class FileFolderDialog
-public class Canvas
-public class Vector
-public class Video
+public class Canvas https://busengine.buslikdrev.by/api/cs/UI.Canvas.html
+public class Vector https://busengine.buslikdrev.by/api/cs/Vector.html
+public class Video https://busengine.buslikdrev.by/api/cs/Video.html
 */
 
 //#define AUDIO_LOG
@@ -71,7 +72,7 @@ namespace BusEngine {
 	/** API BusEngine.ProjectDefault */
 	internal class ProjectDefault {
 		public static System.Collections.Generic.Dictionary<string, dynamic> Setting = new System.Collections.Generic.Dictionary<string, dynamic>() {
-			{"console_commands", new System.Collections.Generic.Dictionary<string, string>() {
+			{"console_commands", new System.Collections.Generic.Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase) {
 				{"sys_spec", "1"},
 				{"e_WaterOcean", "0"},
 				{"r_WaterOcean", "0"},
@@ -110,6 +111,7 @@ namespace BusEngine {
 				{"data", "Data"},
 				{"localization", "Localization"},
 				{"log", "Log"},
+				{"tools", "Tools"},
 				{"libs",  new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>() {
 					new System.Collections.Generic.Dictionary<string, object>() {
 						{"name", "BusEngine"},
@@ -181,6 +183,22 @@ namespace BusEngine {
 		}
 	}
 	/** API BusEngine.TooltipAttribute */
+
+	/** API BusEngine.Benchmark */
+	[System.AttributeUsage(System.AttributeTargets.All)]
+	public class Benchmark : System.Attribute {
+		/* public string Benchmark {
+			get {
+				return BusEngine.Log.Info("Benchmark");
+			} set {
+				BusEngine.Log.Info("Benchmark");
+			}
+		} */
+		/* private void Benchmark() {
+			BusEngine.Log.Info("Benchmark");  
+		} */
+	}
+	/** API BusEngine.Benchmark */
 }
 /** API BusEngine */
 
@@ -220,6 +238,7 @@ LibVLCSharp
 		public delegate void AudioHandler(BusEngine.Audio sender, string url);
 
 		public event AudioHandler OnPlay;
+		public event AudioHandler OnDuration;
 		public event AudioHandler OnLoop;
 		public event AudioHandler OnPause;
 		public event AudioHandler OnStop;
@@ -274,6 +293,21 @@ LibVLCSharp
 			}
 		}
 		/** событие запуска aудио */
+
+		/** событие времени в секундах */
+		private void OnDurating(object o, object e) {
+			#if AUDIO_LOG
+			BusEngine.Log.Info("Аудио OnDuration {0}", this.Position);
+			#endif
+
+			this.Duration = _mediaPlayer.Time;
+
+			if (this.OnDuration != null) {
+				//this.OnDuration.Invoke(this, this.Url);
+				BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
+			}
+		}
+		/** событие времени в секундах */
 
 		/** событие повтора aудио */
 		private void OnLooping(object o, object e) {
@@ -383,6 +417,7 @@ LibVLCSharp
 			_mediaPlayer.Stopped += this.OnStopping;
 			//_mediaPlayer.Disposed += this.OnDisposing;
 			_mediaPlayer.EndReached += this.OnEnding;
+			_mediaPlayer.PositionChanged += this.OnDurating;
 		}
 		public Audio(string url = "") : this() {
 			this.Url = url;
@@ -393,60 +428,68 @@ LibVLCSharp
 				this.Urls = urls;
 				this.UrlsArray = urls;
 				this.Url = urls[0];
-				this.OnStop += (BusEngine.Audio a, string url) => {
-					#if AUDIO_LOG
-					BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
-					BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
-					#endif
+				if (this.OnStop == null) {
+					this.OnStop += (BusEngine.Audio a, string url) => {
+						#if AUDIO_LOG
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						#endif
 
-					if (this.UrlsArray.Length > 0) {
-						System.Array.Reverse(this.UrlsArray);
-						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
-						System.Array.Reverse(this.UrlsArray);
-					}
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
 
-					if (this.UrlsArray.Length > 0) {
-						this.Play(this.UrlsArray[0]);
-					}
-				};
-				this.OnEnd += (BusEngine.Audio a, string url) => {
-					#if AUDIO_LOG
-					BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
-					BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
-					#endif
+						if (this.UrlsArray.Length > 0) {
+							this.Play(this.UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnEnd == null) {
+					this.OnEnd += (BusEngine.Audio a, string url) => {
+						#if AUDIO_LOG
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						#endif
 
-					if (this.UrlsArray.Length > 0) {
-						System.Array.Reverse(this.UrlsArray);
-						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
-						System.Array.Reverse(this.UrlsArray);
-					}
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
 
-					if (this.UrlsArray.Length > 0) {
-						this.Play(UrlsArray[0]);
-					}
-				};
-				this.OnNotFound += (BusEngine.Audio a, string url) => {
-					#if AUDIO_LOG
-					BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
-					BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
-					#endif
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnNotFound == null) {
+					this.OnNotFound += (BusEngine.Audio a, string url) => {
+						#if AUDIO_LOG
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						#endif
 
-					if (this.UrlsArray.Length > 0) {
-						System.Array.Reverse(this.UrlsArray);
-						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
-						System.Array.Reverse(this.UrlsArray);
-					}
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
 
-					if (this.UrlsArray.Length > 0) {
-						this.Play(UrlsArray[0]);
-					}
-				};
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
 			}
 		}
-		public BusEngine.Audio Play() {
+
+		public Audio Play() {
 			return this.Play(this.Url);
 		}
-		public BusEngine.Audio Play(string url = "") {
+
+		public Audio Play(string url = "") {
 			if (this.IsPlay) {
 				return this;
 			}
@@ -516,6 +559,72 @@ LibVLCSharp
 			}
 
 			return this;
+		}
+
+		public Audio Play(string[] urls) {
+			if (urls.Length > 0) {
+				this.Urls = urls;
+				this.UrlsArray = urls;
+				this.Url = urls[0];
+				if (this.OnStop == null) {
+					this.OnStop += (BusEngine.Audio a, string url) => {
+						#if AUDIO_LOG
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						#endif
+
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
+
+						if (this.UrlsArray.Length > 0) {
+							this.Play(this.UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnEnd == null) {
+					this.OnEnd += (BusEngine.Audio a, string url) => {
+						#if AUDIO_LOG
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						#endif
+
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
+
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnNotFound == null) {
+					this.OnNotFound += (BusEngine.Audio a, string url) => {
+						#if AUDIO_LOG
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						#endif
+
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
+
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
+
+				return this.Play(this.Url);
+			} else {
+				return this;
+			}
 		}
 		/** функция запуска aудио */
 
@@ -595,6 +704,7 @@ LibVLCSharp
 				_mediaPlayer.Stopped -= this.OnStopping;
 				//_mediaPlayer.Disposed -= this.OnDisposing;
 				_mediaPlayer.EndReached -= this.OnEnding;
+				_mediaPlayer.PositionChanged -= this.OnDurating;
 
 				_mediaPlayer.Dispose();
 				_VLC.Dispose();
@@ -1265,25 +1375,25 @@ BusEngine.Tools
 					case System.PlatformID.Win32S:
 					case System.PlatformID.Win32Windows:
 					case System.PlatformID.WinCE:
-						Name = "Windows";
+						Name = "windows";
 						break;
 					case System.PlatformID.MacOSX:
 					case System.PlatformID.Unix:
-						Name = "MacOSX";
+						Name = "macos";
 						break;
 					default:
-						Name = "Other";
+						Name = "other";
 						break;
 				}
 
 				Version = os.Version.Major + "." + os.Version.Minor;
 				Processor = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
 				ProcessorCount = (byte)System.Environment.ProcessorCount;
-				UserAgent = "Mozilla/5.0 (" + Name + " NT " + Version + "; " + System.Convert.ToString(os.Platform) + "; " + Processor + ") AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/" + BusEngine.ProjectDefault.Setting["require"]["engine"] + " Safari/537.36";
+				UserAgent = "Mozilla/5.0 (" + Name + " NT " + Version + "; " + System.Convert.ToString(os.Platform) + "; " + Processor + ") AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/" + BusEngine.Engine.SettingProject["require"]["engine"] + " Safari/537.36";
 			}
 		}
 
-		// изменить путь
+		// изменить путь для .NET 5+
 		/* private static string[] GetProbingPathData = new string[0];
 
 		private static string[] GetProbingPath() {
@@ -1319,15 +1429,12 @@ BusEngine.Tools
 
 			BusEngine.Engine.EngineDirectory = path;
 			BusEngine.Engine.BinDirectory = path + "Bin\\";
-			BusEngine.Engine.EditorDirectory = path + "Editor\\";
 			BusEngine.Engine.CodeDirectory = path + "Code\\";
 			BusEngine.Engine.DataDirectory = path + "Data\\";
+			BusEngine.Engine.EditorDirectory = path + "Editor\\";
 			BusEngine.Engine.LocalizationDirectory = path + "Localization\\";
 			BusEngine.Engine.LogDirectory = path + "Log\\";
 			BusEngine.Engine.ToolsDirectory = path + "Tools\\";
-
-			// инициализируем язык
-			new BusEngine.Localization().Initialize();
 
 			// ищем зависимости
 			/* System.AppDomain.CurrentDomain.AssemblyLoad  += new System.AssemblyLoadEventHandler((o, e) => {
@@ -1398,18 +1505,51 @@ BusEngine.Tools
 				if (setting.TryGetValue("content", out content) && content.GetType().GetProperty("Type") != null && !content.GetType().IsArray) {
 					foreach (var i in content) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string && content[i.Name] is string) {
-							if (i.Name == "bin") {
-								BusEngine.Engine.BinDirectory = path + (string)content[i.Name] + "\\";
-							} else if (i.Name == "code") {
-								BusEngine.Engine.CodeDirectory = path + (string)content[i.Name] + "\\";
-							} else if (i.Name == "data") {
-								BusEngine.Engine.DataDirectory = path + (string)content[i.Name] + "\\";
-							} else if (i.Name == "localization") {
-								BusEngine.Engine.LocalizationDirectory = path + (string)content[i.Name] + "\\";
-							} else if (i.Name == "log") {
-								BusEngine.Engine.LogDirectory = path + (string)content[i.Name] + "\\";
+							string result = (string)content[i.Name];
+
+							BusEngine.ProjectDefault.Setting["content"][i.Name] = result;
+
+							if (result.IndexOf("[bin]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[bin]", BusEngine.Engine.BinDirectory);
+							} else if (result.IndexOf("[code]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[code]", BusEngine.Engine.CodeDirectory);
+							} else if (result.IndexOf("[data]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[data]", BusEngine.Engine.DataDirectory);
+							} else /* if (result.IndexOf("[editor]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[editor]", BusEngine.Engine.EditorDirectory);
+							} else */ if (result.IndexOf("[engine]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[engine]", BusEngine.Engine.EngineDirectory);
+							} else if (result.IndexOf("[exe]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[exe]", BusEngine.Engine.ExeDirectory);
+							} else if (result.IndexOf("[localization]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[localization]", BusEngine.Engine.LocalizationDirectory);
+							} else if (result.IndexOf("[log]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[log]", BusEngine.Engine.LogDirectory);
+							} else if (result.IndexOf("[tools]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+								result = result.Replace("[tools]", BusEngine.Engine.ToolsDirectory);
 							}
-							BusEngine.ProjectDefault.Setting["content"][i.Name] = (string)content[i.Name];
+
+							if (result.IndexOf(":") != -1) {
+								result = BusEngine.Engine.EngineDirectory + result;
+							}
+
+							if (i.Name == "exe") {
+								BusEngine.Engine.ExeDirectory = result + "\\";
+							} else if (i.Name == "bin") {
+								BusEngine.Engine.BinDirectory = result + "\\";
+							} else if (i.Name == "code") {
+								BusEngine.Engine.CodeDirectory = result + "\\";
+							} else if (i.Name == "data") {
+								BusEngine.Engine.DataDirectory = result + "\\";
+							} else /* if (i.Name == "editor") {
+								BusEngine.Engine.EditorDirectory = result + "\\";
+							} else */ if (i.Name == "localization") {
+								BusEngine.Engine.LocalizationDirectory = result + "\\";
+							} else if (i.Name == "log") {
+								BusEngine.Engine.LogDirectory = result + "\\";
+							} else if (i.Name == "tools") {
+								BusEngine.Engine.ToolsDirectory = result + "\\";
+							}
 						}
 					}
 
@@ -1448,13 +1588,13 @@ BusEngine.Tools
 							if (i.Name == "icon") {
 								BusEngine.ProjectDefault.Setting["info"][i.Name] = ((string)info[i.Name])
 								.Replace("[bin]", BusEngine.Engine.BinDirectory)
-								.Replace("[exe]", BusEngine.Engine.ExeDirectory)
+								.Replace("[code]", BusEngine.Engine.CodeDirectory)
 								.Replace("[data]", BusEngine.Engine.DataDirectory)
-								//.Replace("[code]", BusEngine.Engine.CodeDirectory)
-								.Replace("[localization]", BusEngine.Engine.DataDirectory)
-								.Replace("[log]", BusEngine.Engine.DataDirectory)
-								.Replace("[engine]", BusEngine.Engine.DataDirectory)
-								.Replace("[editor]", BusEngine.Engine.DataDirectory)
+								.Replace("[editor]", BusEngine.Engine.EditorDirectory)
+								.Replace("[engine]", BusEngine.Engine.EngineDirectory)
+								.Replace("[exe]", BusEngine.Engine.ExeDirectory)
+								.Replace("[localization]", BusEngine.Engine.LocalizationDirectory)
+								.Replace("[log]", BusEngine.Engine.LogDirectory)
 								.Replace("[tools]", BusEngine.Engine.ToolsDirectory);
 							} else {
 								BusEngine.ProjectDefault.Setting["info"][i.Name] = (string)info[i.Name];
@@ -1499,18 +1639,21 @@ BusEngine.Tools
 
 			BusEngine.Engine.SettingEngine = BusEngine.ProjectDefault.Setting;
 			BusEngine.Engine.SettingProject = BusEngine.ProjectDefault.Setting;
+			//setting.Dispose();
+			//BusEngine.ProjectDefault.Setting.Clear();
+
+			// инициализируем язык
+			new BusEngine.Localization().Initialize();
 
 			// определяем устройство
 			//new BusEngine.Engine.Device();
 
 			// включаем консоль
-			int r_Displayinfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_Displayinfo"]);
+			int r_DisplayInfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_DisplayInfo"]);
 
-			if (r_Displayinfo > 0) {
-				
-				BusEngine.Log.ConsoleShow().Wait();
-				System.Threading.Tasks.Task.Run(() => {
-				if (r_Displayinfo > 1) {
+			if (r_DisplayInfo > 0) {
+				BusEngine.Log.ConsoleShow();
+				if (r_DisplayInfo > 1) {
 					BusEngine.Log.Info("Device UserAgent: {0}", BusEngine.Engine.Device.UserAgent);
 					BusEngine.Log.Info("Device OS: {0}", BusEngine.Engine.Device.Name);
 					BusEngine.Log.Info("Device Version OS: {0}", BusEngine.Engine.Device.Version);
@@ -1520,18 +1663,15 @@ BusEngine.Tools
 					// https://csharp.webdelphi.ru/kak-izmerit-vremya-vypolneniya-operacii-v-c/
 					//BusEngine.Log.Info("Time: {0}", BusEngine.Localization.LanguageStatic);
 				}
-				}).Wait();
 			}
 
-			System.Threading.Tasks.Task.Run(() => {
-				// инициализируем плагины
-				new BusEngine.IPlugin("Initialize");
+			// инициализируем плагины
+			new BusEngine.IPlugin("Initialize");
 
-				// запускаем окно BusEngine
-				if (OnInitialize != null) {
-					OnInitialize.Invoke();
-				}
-			}).Wait();
+			// запускаем окно BusEngine
+			if (OnInitialize != null) {
+				OnInitialize.Invoke();
+			}
 		}
 		/** функция запуска API BusEngine */
 
@@ -1618,7 +1758,6 @@ namespace BusEngine {
 		//[BusEngine.Tooltip("Translate components located in inactive objects?", "English")]
 		//private bool IncludeInactive = false;
 		//[BusEngine.Tooltip("Replace Resources.load with Bundle.load?", "English")]
-		private bool BundleStatus = false;
 
 		public delegate void LocalizationHandler(Localization sender, string language);
 		public event LocalizationHandler OnLoad;
@@ -1672,7 +1811,7 @@ namespace BusEngine {
 			return false;
 		}
 
-		public Localization Initialize() {
+		internal Localization Initialize() {
 			if (Language == null || Language == "") {
 				Language = LanguageDefault.ToString();
 			}
@@ -1698,27 +1837,7 @@ namespace BusEngine {
 		}
 
 		public void ReLoad() {
-			/* if (GetLanguages.Count > 0) {
-				Component[] results = GetComponentsInChildren(typeof(Text), includeInactive);
 
-				if (results != null) {
-					foreach (Text reslut in results) {
-						if (GetLanguages.ContainsKey(reslut.text)) {
-							reslut.text = GetLanguages[reslut.text].ToString();
-						}
-					}
-				}
-
-				Component[] results_mesh_pro = GetComponentsInChildren(typeof(TMPro.TextMeshProUGUI), includeInactive);
-
-				if (results_mesh_pro != null) {
-					foreach (TMPro.TextMeshProUGUI reslut in results_mesh_pro) {
-						if (GetLanguages.ContainsKey(reslut.text)) {
-							reslut.text = GetLanguages[reslut.text].ToString();
-						}
-					}
-				}
-			} */
 		}
 
 		private void StartLocalization(string Language = null) {
@@ -1729,25 +1848,21 @@ namespace BusEngine {
 			string path, platform, files;
 
 			files = "";
+
 			if (Language == null || Language == "") {
 				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
 			}
-			// https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
+
 			platform = BusEngine.Engine.Platform;
 
-			if (platform.IndexOf("Windows") != -1 || 1 == 1) {
-				path = BusEngine.Engine.DataDirectory + "../Localization/";
+			if (platform.IndexOf("Windows", System.StringComparison.OrdinalIgnoreCase) != -1 || 1 == 1) {
+				path = BusEngine.Engine.LocalizationDirectory;
+
 				if (!System.IO.Directory.Exists(path)) {
-					path = BusEngine.Engine.DataDirectory + "/Localization/";
-				}
-				if (!System.IO.Directory.Exists(path)) {
-					path = BusEngine.Engine.DataDirectory + "/Resources/Localization/";
-				}
-				if (!System.IO.Directory.Exists(path)) {
-					path = BusEngine.Engine.DataDirectory + "/Localization/";
+					path = path.Replace(BusEngine.Engine.EngineDirectory, BusEngine.Engine.DataDirectory);
 				}
 			} else {
-				if (platform == "WebGLPlayer" && !BundleStatus) {
+				if (platform == "WebGL") {
 					path = "Localization/";
 				} else {
 					// https://docs.unity3d.com/Manual/StreamingAssets.html
@@ -1756,56 +1871,14 @@ namespace BusEngine {
 				}
 			}
 
-			if (platform == "WebGLPlayer") {
-				// https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022#embeddedresource
-				// https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows
-				/* if (BundleStatus) {
-					//AssetBundle bundle = myLoadedAssetBundle = AssetBundle.LoadFromFile(path + Language + File + "." + Format);
-					//TextAsset resources = bundle.Load<TextAsset>(File + "." + Format);
-				} else {
-					// https://docs.unity3d.com/2022.2/Documentation/Manual/class-TextAsset.html
-					TextAsset resources = Resources.Load(path + Language + File, typeof(TextAsset)) as TextAsset;
-					if (resources != null) {
-						files = resources.text;
-						//files = System.Text.Encoding.UTF8.GetString(resources.bytes);
-						//Resources.UnloadAsset(resources);
-					} else {
-						Language = LanguageDefault;
-						resources = Resources.Load(path + Language + File, typeof(TextAsset)) as TextAsset;
-						if (resources != null) {
-							files = resources.text;
-							//files = System.Text.Encoding.UTF8.GetString(resources.bytes);
-							//Resources.UnloadAsset(resources);
-						}
-					}
-				} */
-
-				/* IEnumerator GetText(string url) {
-					UnityWebRequest www = UnityWebRequest.Get(url);
-					yield return www.Send();
-
-					if(www.isError) {
-						Debug.Log(www.error);
-					} else {
-						// Show results as text
-						Debug.Log(www.downloadHandler.text);
-
-						// Or retrieve results as binary data
-						byte[] results = www.downloadHandler.data;
-					}
-				}
-				files = StartCoroutine(GetText("https://buslikdrev.by/game/StreamingAssets/Localization/Belarusian.txt")).ToString();
-				UnityEngine.Debug.Log(files); */
+			if (System.IO.File.Exists(path + Language + File + "." + Format)) {
+				files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
+				//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + File + "." + Format));
 			} else {
+				Language = LanguageDefault;
 				if (System.IO.File.Exists(path + Language + File + "." + Format)) {
 					files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
 					//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + File + "." + Format));
-				} else {
-					Language = LanguageDefault;
-					if (System.IO.File.Exists(path + Language + File + "." + Format)) {
-						files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
-						//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + File + "." + Format));
-					}
 				}
 			}
 
@@ -1870,6 +1943,9 @@ namespace BusEngine {
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "GetStdHandle", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]  
 		private static extern System.IntPtr GetStdHandle(int nStdHandle);
 
+		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+		private static extern bool SetConsoleDisplayMode(System.IntPtr ConsoleHandle, uint Flags, System.IntPtr NewScreenBufferDimensions);
+
 		// функция отправки заголовков в консоль, чтобы можно было записать из файла
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
 		private static extern void SetStdHandle(uint nStdHandle, System.IntPtr handle);
@@ -1884,22 +1960,31 @@ namespace BusEngine {
 			
 		}
 
+		const int STD_OUTPUT_HANDLE = -11;
+
 		// функция запуска консоли
-		public async static System.Threading.Tasks.Task ConsoleShow() {
-			await System.Threading.Tasks.Task.Run(() => {
+		public static void ConsoleShow() {
 			if (BusEngine.Log.StatusConsole == false) {
+				//https://ru.stackoverflow.com/questions/1098793/%D0%A1%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%81%D0%BE%D0%BB%D1%8C%D0%BD%D0%BE%D0%BC-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B8-net-framework-c
 				/* System.Windows.Forms.MessageBox.Show("Сообщение из Windows Forms!"); */
 
 				BusEngine.Log.AttachConsole(-1);
 				BusEngine.Log.AllocConsole();
 				BusEngine.Log.StatusConsole = true;
 
+				System.Console.WindowHeight = System.Console.LargestWindowHeight;
+				System.Console.WindowWidth = System.Console.LargestWindowWidth;
+				System.Console.WindowTop = 0;
+				System.Console.WindowLeft = 0;
+
+				System.Console.SetBufferSize(System.Console.WindowWidth, System.Console.WindowHeight);
+
 				System.Console.Title = BusEngine.Localization.GetLanguageStatic("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 				BusEngine.Localization.OnLoadStatic += OnLoadLanguage;
 				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
 				//System.Console.Clear();
-				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_console"));
+				//BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_console"));
 				while (true) {
 					break;
 					//if (System.Console.ReadKey(true).Key == System.ConsoleKey.Enter) {
@@ -1918,7 +2003,6 @@ namespace BusEngine {
 				/* System.Console.Read(); */
 				/* System.Console.ReadKey(); */
 			}
-			});
 		}
 
 		// функция остановки консоли
@@ -1940,7 +2024,7 @@ namespace BusEngine {
 		// функция запуска\остановки консоли
 		public static void ConsoleToggle() {
 			if (BusEngine.Log.StatusConsole == false) {
-				BusEngine.Log.ConsoleShow().Wait();
+				BusEngine.Log.ConsoleShow();
 			} else {
 				BusEngine.Log.ConsoleHide();
 			}
@@ -2392,7 +2476,7 @@ namespace BusEngine {
 			string m;
 
 			for (i = 0; i < ii; ++i) {
-				if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
+				//if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
 					System.Array.Resize(ref Plugins, ii);
 					Plugins.SetValue(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"], i);
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
@@ -2453,7 +2537,7 @@ namespace BusEngine {
 												}
 											}
 										});
-										thread.Name = BusEngine.ProjectDefault.Setting["require"]["plugins"][i]["path"];
+										thread.Name = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
 										thread.Priority = System.Threading.ThreadPriority.Lowest;
 										thread.Start();
 									} else {
@@ -2503,7 +2587,7 @@ namespace BusEngine {
 							}
 						}
 					}
-				}
+				//}
 			}
 
 			BusEngine.Log.Info( "============================ System Plugins Stop  ============================" );
@@ -3117,6 +3201,7 @@ namespace BusEngine {
 Зависит от плагинов:
 BusEngine.Log
 https://habr.com/ru/articles/274605/
+https://habr.com/ru/articles/312078/
 */
 	/** API BusEngine.Vector */
 	public class Vector : System.IDisposable {
@@ -3149,6 +3234,7 @@ LibVLCSharp
 		public delegate void VideoHandler(Video sender, string url);
 
 		public event VideoHandler OnPlay;
+		public event VideoHandler OnDuration;
 		public event VideoHandler OnLoop;
 		public event VideoHandler OnPause;
 		public event VideoHandler OnStop;
@@ -3203,6 +3289,19 @@ LibVLCSharp
 			}
 		}
 		/** событие запуска видео */
+
+		/** событие времени в секундах */
+		private void OnDurating(object o, object e) {
+			#if AUDIO_LOG
+			BusEngine.Log.Info("Аудио OnDuration {0}", this.Position);
+			#endif
+
+			if (this.OnDuration != null) {
+				//this.OnDuration.Invoke(this, this.Url);
+				BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
+			}
+		}
+		/** событие времени в секундах */
 
 		/** событие повтора видео */
 		private void OnLooping(object o, object e) {
@@ -3312,6 +3411,7 @@ LibVLCSharp
 			_mediaPlayer.Stopped += this.OnStopping;
 			//_mediaPlayer.Disposed += this.OnDisposing;
 			_mediaPlayer.EndReached += this.OnEnding;
+			_mediaPlayer.PositionChanged += this.OnDurating;
 
 			_winForm = new LibVLCSharp.WinForms.VideoView();
 			((System.ComponentModel.ISupportInitialize)(_winForm)).BeginInit();
@@ -3357,56 +3457,63 @@ LibVLCSharp
 				this.Urls = urls;
 				this.UrlsArray = urls;
 				this.Url = urls[0];
-				this.OnStop += (BusEngine.Video v, string url) => {
-					#if VIDEO_LOG
-					BusEngine.Log.Info("Video OnStopVideo: {0}", url);
-					BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
-					#endif
+				if (this.OnStop == null) {
+					this.OnStop += (BusEngine.Video v, string url) => {
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Video OnStopVideo: {0}", url);
+						BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
+						#endif
 
-					if (this.UrlsArray.Length > 0) {
-						System.Array.Reverse(this.UrlsArray);
-						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
-						System.Array.Reverse(this.UrlsArray);
-					}
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
 
-					if (this.UrlsArray.Length > 0) {
-						this.Play(this.UrlsArray[0]);
-					}
-				};
-				this.OnEnd += (BusEngine.Video v, string url) => {
-					#if VIDEO_LOG
-					BusEngine.Log.Info("Video OnStopVideo: {0}", url);
-					BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
-					#endif
+						if (this.UrlsArray.Length > 0) {
+							this.Play(this.UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnEnd == null) {
+					this.OnEnd += (BusEngine.Video v, string url) => {
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Video OnStopVideo: {0}", url);
+						BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
+						#endif
 
-					if (this.UrlsArray.Length > 0) {
-						System.Array.Reverse(this.UrlsArray);
-						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
-						System.Array.Reverse(this.UrlsArray);
-					}
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
 
-					if (this.UrlsArray.Length > 0) {
-						this.Play(UrlsArray[0]);
-					}
-				};
-				this.OnNotFound += (BusEngine.Video v, string url) => {
-					#if VIDEO_LOG
-					BusEngine.Log.Info("Video OnStopVideo: {0}", url);
-					BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
-					#endif
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnNotFound == null) {
+					this.OnNotFound += (BusEngine.Video v, string url) => {
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Video OnStopVideo: {0}", url);
+						BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
+						#endif
 
-					if (this.UrlsArray.Length > 0) {
-						System.Array.Reverse(this.UrlsArray);
-						System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
-						System.Array.Reverse(this.UrlsArray);
-					}
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
 
-					if (this.UrlsArray.Length > 0) {
-						this.Play(UrlsArray[0]);
-					}
-				};
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
 			}
 		}
+
 		public Video Play() {
 			return this.Play(this.Url);
 		}
@@ -3646,6 +3753,72 @@ LibVLCSharp
 
 			return this;
 		}
+
+		public Video Play(string[] urls) {
+			if (urls.Length > 0) {
+				this.Urls = urls;
+				this.UrlsArray = urls;
+				this.Url = urls[0];
+				if (this.OnStop == null) {
+					this.OnStop += (BusEngine.Video v, string url) => {
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Video OnStopVideo: {0}", url);
+						BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
+						#endif
+
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
+
+						if (this.UrlsArray.Length > 0) {
+							this.Play(this.UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnEnd == null) {
+					this.OnEnd += (BusEngine.Video v, string url) => {
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Video OnStopVideo: {0}", url);
+						BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
+						#endif
+
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
+
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
+				if (this.OnNotFound == null) {
+					this.OnNotFound += (BusEngine.Video v, string url) => {
+						#if VIDEO_LOG
+						BusEngine.Log.Info("Video OnStopVideo: {0}", url);
+						BusEngine.Log.Info("Video OnStopVideo: {0}", v.Url);
+						#endif
+
+						if (this.UrlsArray.Length > 0) {
+							System.Array.Reverse(this.UrlsArray);
+							System.Array.Resize(ref this.UrlsArray, this.UrlsArray.Length - 1);
+							System.Array.Reverse(this.UrlsArray);
+						}
+
+						if (this.UrlsArray.Length > 0) {
+							this.Play(UrlsArray[0]);
+						}
+					};
+				}
+
+				return this.Play(this.Url);
+			} else {
+				return this;
+			}
+		}
 		/** функция запуска видео */
 
 		/** функция временной остановки видео */
@@ -3732,6 +3905,7 @@ LibVLCSharp
 				_mediaPlayer.Stopped -= this.OnStopping;
 				//_mediaPlayer.Disposed -= this.OnDisposing;
 				_mediaPlayer.EndReached -= this.OnEnding;
+				_mediaPlayer.PositionChanged -= this.OnDurating;
 
 				_mediaPlayer.Dispose();
 				_VLC.Dispose();
