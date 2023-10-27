@@ -5,20 +5,15 @@
     "e_WaterOcean": "0",
     "r_WaterOcean": "0",
     "r_VolumetricClouds": "1",
-    "r_Displayinfo": "0",
-    /* r_Fullscreen работает (
-    РазрешитьИзменятьРазмерыОкнаПоКнопке=-3,
-    РазрешитьИзменятьРазмерыОкна=-2,
-    СкрытьРамкуОкна=-1,
-    ЗапретитьИзменятьРазмерыОкна=0,
-    СделатьНаВесьЭкран=1,
-    СделатьНаВесьЭкранСРамкой=2
-    ) */
-    "r_Fullscreen": "0",
-    // r_Width работает
-    "r_Width": "800",
-    // r_Height работает
-    "r_Height": "480"
+    "r_DisplayInfo": "2",
+    //"r_FullScreen": "-3", //-3 = разрешить изменять размеры окна с кнопками и рамкой
+    //"r_FullScreen": "-2", //-2 = разрешить изменять размеры окна без кнопок и рамкой
+    "r_FullScreen": "-1", //-1 = окно без кнопок и рамки - изменение размера окна нужно делать вручную
+    //"r_FullScreen": "0", //0 = запретить изменять размеры окна с кнопками и рамкой
+    //"r_FullScreen": "1", //1 = сделать на весь экран окно без кнопок и рамки
+    //"r_FullScreen": "2", //2 = сделать на весь экран окно без кнопок с рамкой
+    "r_Width": "1280",
+    "r_Height": "720"
   },
   // со стороны редактора
   "console_variables": {
@@ -26,13 +21,13 @@
     "e_WaterOcean": "0",
     "r_WaterOcean": "0",
     "r_VolumetricClouds": "1",
-    "r_Displayinfo": "0",
-    "r_Fullscreen": "0",
+    "r_DisplayInfo": "0",
+    "r_FullScreen": "0",
     "r_Width": "960",
     "r_Height": "540"
   },
   "info": {
-    "name": "BusEngine",
+    "name": "BusEngine Launcher",
     "version": "0.4.0.0",
     "icon": "[data]/Icons/BusEngine.ico",
     "type": "",
@@ -44,6 +39,7 @@
     "data": "Data",
     "localization": "Localization",
     "log": "Log",
+    "tools": "Tools",
     "libs": [
       {
         "name": "BusEngine",
