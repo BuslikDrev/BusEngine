@@ -1,26 +1,23 @@
 {
   // со стороны игры
   "console_commands": {
-    "sys_spec": "1",
-    "e_WaterOcean": "0",
-    "r_WaterOcean": "0",
-    "r_VolumetricClouds": "1",
-    "r_DisplayInfo": "2",
+    //"google_api_key": "",               //для активации API Google в BusEngine.Browser
+	//"google_default_client_id": "",     //для активации API Google в BusEngine.Browser
+	//"google_default_client_secret": "", //для активации API Google в BusEngine.Browser
+    "r_DisplayInfo": "0", //0 = консоль отключена
+    "r_DisplayInfo": "1", //1 = включение консоли и вывод информации уровня 1
+    "r_DisplayInfo": "2", //2 = включение консоли и вывод информации уровня 2
     //"r_FullScreen": "-3", //-3 = разрешить изменять размеры окна с кнопками и рамкой
     //"r_FullScreen": "-2", //-2 = разрешить изменять размеры окна без кнопок и рамкой
-    "r_FullScreen": "-1", //-1 = окно без кнопок и рамки - изменение размера окна нужно делать вручную
-    //"r_FullScreen": "0", //0 = запретить изменять размеры окна с кнопками и рамкой
-    //"r_FullScreen": "1", //1 = сделать на весь экран окно без кнопок и рамки
-    //"r_FullScreen": "2", //2 = сделать на весь экран окно без кнопок с рамкой
-    "r_Width": "1280",
-    "r_Height": "720"
+    "r_FullScreen": "-1",  //-1 = окно без кнопок и рамки - изменение размера окна нужно делать вручную
+    //"r_FullScreen": "0",   //0 = запретить изменять размеры окна с кнопками и рамкой
+    //"r_FullScreen": "1",   //1 = сделать на весь экран окно без кнопок и рамки
+    //"r_FullScreen": "2",   //2 = сделать на весь экран окно без кнопок с рамкой
+    "r_Width": "1280",     //1280 = разрешение окна по ширине
+    "r_Height": "720"      //720 = разрешение окна по высоте
   },
   // со стороны редактора
   "console_variables": {
-    "sys_spec": "1",
-    "e_WaterOcean": "0",
-    "r_WaterOcean": "0",
-    "r_VolumetricClouds": "1",
     "r_DisplayInfo": "0",
     "r_FullScreen": "0",
     "r_Width": "960",
