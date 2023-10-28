@@ -2,8 +2,8 @@
   // со стороны игры
   "console_commands": {
     //"google_api_key": "",               //для активации API Google в BusEngine.Browser
-	//"google_default_client_id": "",     //для активации API Google в BusEngine.Browser
-	//"google_default_client_secret": "", //для активации API Google в BusEngine.Browser
+    //"google_default_client_id": "",     //для активации API Google в BusEngine.Browser
+    //"google_default_client_secret": "", //для активации API Google в BusEngine.Browser
     "r_DisplayInfo": "0", //0 = консоль отключена
     "r_DisplayInfo": "1", //1 = включение консоли и вывод информации уровня 1
     "r_DisplayInfo": "2", //2 = включение консоли и вывод информации уровня 2
