@@ -55,27 +55,27 @@
     <EnablePackageValidation>false</EnablePackageValidation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
-    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS;BUSENGINE_BENCHMARK</DefineConstants>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <OutputPath>..\..\Bin\Win_x64\</OutputPath>
     <OutputRoot>..\..\Bin\Win_x64\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
-    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS;BUSENGINE_BENCHMARK</DefineConstants>
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
     <OutputPath>..\..\Bin\Win_x86\</OutputPath>
     <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
-    <DefineConstants>BUSENGINE_XAMARIN;BUSENGINE_ANDROID</DefineConstants>
+    <DefineConstants>BUSENGINE_XAMARIN;BUSENGINE_ANDROID;BUSENGINE_BENCHMARK</DefineConstants>
     <!-- <PlatformTarget>AnyCPU</PlatformTarget> -->
     <OutputPath>..\..\Bin\Android\</OutputPath>
     <OutputRoot>..\..\Bin\Android\</OutputRoot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS</DefineConstants>
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS;BUSENGINE_BENCHMARK</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\..\Bin\Win\</OutputPath>
     <OutputRoot>..\..\Bin\Win\</OutputRoot>

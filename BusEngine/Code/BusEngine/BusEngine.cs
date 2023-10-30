@@ -61,9 +61,56 @@ public class Video https://busengine.buslikdrev.by/api/cs/Video.html
 */
 
 //#define AUDIO_LOG
+//#define BUSENGINE_BENCHMARK
 //#define BROWSER_LOG
 //#define LOG_TYPE
 //#define VIDEO_LOG
+
+/** API BusEngine.Experemental */
+namespace BusEngine.Experemental {
+	internal class Log : System.IDisposable {
+		private static System.Collections.Concurrent.BlockingCollection<string> _blockingCollection;
+		private static System.Threading.Tasks.Task _task;
+
+		static Log() {
+			_blockingCollection = new System.Collections.Concurrent.BlockingCollection<string>();
+			_task = System.Threading.Tasks.Task.Factory.StartNew(() => {
+				using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(BusEngine.Engine.EngineDirectory + "Benchmark.log", true, new System.Text.UTF8Encoding(false))) {
+					streamWriter.AutoFlush = true;
+					streamWriter.WriteLine("------------------------------------------------------------");
+//BusEngine.Engine.UTF8NotBOM
+					foreach (string s in _blockingCollection.GetConsumingEnumerable()) {
+						streamWriter.WriteLine(s);
+					}
+				}
+				using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(BusEngine.Engine.EngineDirectory + "Benchmark2.json", true)) {
+					streamWriter.AutoFlush = true;
+					streamWriter.WriteLine("------------------------------------------------------------");
+					//string[] w = new string[0];
+
+					/* foreach (string s in _blockingCollection.GetConsumingEnumerable()) {
+						//System.Array.Resize(ref w, w.Length + 1);
+						//w[w.Length] = s;
+						streamWriter.WriteLine(s);
+					} */
+					//streamWriter2.WriteLine(BusEngine.Tools.Json.Encode(w));
+				}
+			},
+			System.Threading.Tasks.TaskCreationOptions.LongRunning);
+		}
+
+		public static void File(string action) {
+			_blockingCollection.Add(System.DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + ": " + action);
+		}
+
+		public void Dispose() {
+			_blockingCollection.CompleteAdding();
+			_task.Wait();
+		}
+	}
+}
+/** API BusEngine.Experemental */
+
 /** API BusEngine */
 namespace BusEngine {
 /*
@@ -185,17 +232,42 @@ namespace BusEngine {
 	/** API BusEngine.TooltipAttribute */
 
 	/** API BusEngine.Benchmark */
-	[System.AttributeUsage(System.AttributeTargets.All)]
-	public class Benchmark : System.Attribute {
-		/* public string Benchmark {
+	//https://csharp.webdelphi.ru/kak-izmerit-vremya-vypolneniya-operacii-v-c/
+	//https://habr.com/ru/companies/tinkoff/articles/454058/`	
+	//https://ru.stackoverflow.com/questions/92764/%D0%9F%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B8%D0%B5-%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D1%8B-%D0%B4%D0%BB%D1%8F-%D0%B7%D0%B0%D0%BC%D0%B5%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D1%81%D0%BA%D0%BE%D1%80%D0%BE%D1%81%D1%82%D0%B8-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B-%D0%BA%D0%BE%D0%B4%D0%B0
+	//https://stackoverflow.com/questions/9851150/how-does-onmethodboundaryaspect-works
+	//https://habr.com/ru/articles/468287/
+	[System.AttributeUsage(System.AttributeTargets.All, AllowMultiple = true)]
+	public sealed class Benchmark2 : System.Attribute {
+		/* public static string Benchmark2 {
 			get {
 				return BusEngine.Log.Info("Benchmark");
 			} set {
 				BusEngine.Log.Info("Benchmark");
 			}
 		} */
-		public Benchmark() {
-			BusEngine.Log.Info("Benchmark");  
+		static Benchmark2() {
+			BusEngine.Log.Info("Benchmark2");  
+		}
+	}
+
+	public class Benchmark : System.IDisposable {
+		private System.Diagnostics.Stopwatch _sw;
+		private string _label;
+
+		/* public static Benchmark2 Job(string lable) {
+			return new Benchmark2(lable);
+		} */
+
+		public Benchmark(string label) {
+			_label = label;
+			_sw = System.Diagnostics.Stopwatch.StartNew();
+		}
+
+		public void Dispose() {
+			_sw.Stop();
+			BusEngine.Log.Info("Benchmark, " + BusEngine.Localization.GetLanguageStatic("text_operation") + " {0} " + BusEngine.Localization.GetLanguageStatic("text_loading_speed") + " {1}", _label, _sw.Elapsed);
+			BusEngine.Experemental.Log.File("Benchmark, " + BusEngine.Localization.GetLanguageStatic("text_operation") + " " + _label + " " + BusEngine.Localization.GetLanguageStatic("text_loading_speed") + " " + _sw.Elapsed);
 		}
 	}
 	/** API BusEngine.Benchmark */
@@ -396,6 +468,9 @@ LibVLCSharp
 
 		/** функция запуска aудио */
 		public Audio() {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Audio")) {
+			#endif
 			#if AUDIO_LOG
 			_VLC = new LibVLCSharp.Shared.LibVLC(false, new[] { "--verbose=2" });
 			#else
@@ -418,12 +493,24 @@ LibVLCSharp
 			//_mediaPlayer.Disposed += this.OnDisposing;
 			_mediaPlayer.EndReached += this.OnEnding;
 			_mediaPlayer.PositionChanged += this.OnDurating;
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		public Audio(string url = "") : this() {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Audio url")) {
+			#endif
 			this.Url = url;
 			this.Urls = new string[1] {url};
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		public Audio(string[] urls) : this() {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Audio urls")) {
+			#endif
 			if (urls.Length > 0) {
 				this.Urls = urls;
 				this.UrlsArray = urls;
@@ -483,6 +570,9 @@ LibVLCSharp
 					};
 				}
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 
 		public Audio Play() {
@@ -490,6 +580,9 @@ LibVLCSharp
 		}
 
 		public Audio Play(string url = "") {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Audio.Play url")) {
+			#endif
 			if (this.IsPlay) {
 				return this;
 			}
@@ -559,9 +652,15 @@ LibVLCSharp
 			}
 
 			return this;
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 
 		public Audio Play(string[] urls) {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Audio.Play urlS")) {
+			#endif
 			if (urls.Length > 0) {
 				this.Urls = urls;
 				this.UrlsArray = urls;
@@ -625,6 +724,9 @@ LibVLCSharp
 			} else {
 				return this;
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		/** функция запуска aудио */
 
@@ -767,6 +869,9 @@ BusEngine.Tools.Json
 			public long TotalBytes;
 			public string Url;
 			public OnDownloadArgs (CefSharp.DownloadItem download) {
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark("BusEngine.Browser.OnDownloadArgs")) {
+				#endif
 				ContentDisposition = download.ContentDisposition;
 				CurrentSpeed = download.CurrentSpeed;
 				EndTime = download.EndTime;
@@ -784,6 +889,9 @@ BusEngine.Tools.Json
 				SuggestedFileName = download.SuggestedFileName;
 				TotalBytes = download.TotalBytes;
 				Url = download.Url;
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
 			}
 		}
 		public delegate void OnLoadHandler();
@@ -808,18 +916,27 @@ BusEngine.Tools.Json
 		/** все события из PostMessage js браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Browser.OnCefPostMessage")) {
+			#endif
 			if (OnPostMessageStatic != null) {
 				#if BROWSER_LOG
 				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnPostMessageStatic");
 				#endif
 				OnPostMessageStatic.Invoke((string)e.Message);
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		/** все события из PostMessage js браузера */
 
 		/** событие загрузки страницы браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private static void OnCefFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Browser.OnLoadStatic")) {
+			#endif
 			if (e.Frame.IsMain && OnLoadStatic != null) {
 				#if BROWSER_LOG
 				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnLoadStatic");
@@ -827,21 +944,33 @@ BusEngine.Tools.Json
 				OnLoadStatic.Invoke();
 				//e.Frame.Dispose();
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		/** событие загрузки страницы браузера */
 
 		/** функция выполнения js кода в браузере */
 		public static void ExecuteJSStatic(string js = "") {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Browser.ExecuteJSStatic")) {
+			#endif
 			if (browser != null) {
 				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
 			} else {
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		/** функция выполнения js кода в браузере */
 
 		/** функция скачивания файла в браузере */
 		private static void typeDownload(bool status = true) {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Browser.typeDownload")) {
+			#endif
 			CefSharp.IDownloadHandler x;
 
 			x = browser.DownloadHandler;
@@ -869,6 +998,9 @@ BusEngine.Tools.Json
 					}
 				});
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		public static void DownloadStatic(string url = "") {
 			if (browser != null) {
@@ -882,6 +1014,9 @@ BusEngine.Tools.Json
 			}
 		}
 		public static void DownloadStatic(string url = "", string path = "") {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Browser.DownloadStatic")) {
+			#endif
 			if (browser != null) {
 				string x = DownloadPath;
 				if (path != "") {
@@ -896,10 +1031,16 @@ BusEngine.Tools.Json
 			} else {
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		/** функция скачивания файла в браузере */
 
 		internal static bool ValidURLStatic(string s, out System.Uri url) {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Browser.ValidURLStatic")) {
+			#endif
 			if (!System.Text.RegularExpressions.Regex.IsMatch(s, @"^https?:\/\/", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) {
 				s = "http://" + s;
 			}
@@ -909,6 +1050,9 @@ BusEngine.Tools.Json
 			}
 
 			return false;
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 
 		/** функция запуска браузера */
@@ -917,6 +1061,9 @@ BusEngine.Tools.Json
 			Initialize(url, BusEngine.Engine.DataDirectory);
 		}
 		public static void Initialize(string url = "", string root = "") {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Browser.Initialize")) {
+			#endif
 			if (browser != null) {
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер уже запущен!");
 			} else {
@@ -1203,6 +1350,9 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("3 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
 				BusEngine.Log.Info("3 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		/** функция запуска браузера */
 
@@ -1359,6 +1509,7 @@ BusEngine.Tools
 		public static string LogDirectory;
 		public static string ToolsDirectory;
 		public static string[] Commands;
+		public static System.Text.UTF8Encoding UTF8NotBOM = new System.Text.UTF8Encoding(false);
 		public static string Platform = "BusEngine";
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
 		public class Device {
@@ -1368,6 +1519,9 @@ BusEngine.Tools
 			public static byte ProcessorCount;
 			public static string UserAgent;
 			static Device() {
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark("BusEngine.Initialize.Device")) {
+				#endif
 				System.OperatingSystem os = System.Environment.OSVersion;
 
 				switch (os.Platform) {
@@ -1390,6 +1544,9 @@ BusEngine.Tools
 				Processor = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
 				ProcessorCount = (byte)System.Environment.ProcessorCount;
 				UserAgent = "Mozilla/5.0 (" + Name + " NT " + Version + "; " + System.Convert.ToString(os.Platform) + "; " + Processor + ") AppleWebKit/537.36 (KHTML, like Gecko) BusEngine/" + BusEngine.Engine.SettingProject["require"]["engine"] + " Safari/537.36";
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
 			}
 		}
 
@@ -1412,6 +1569,9 @@ BusEngine.Tools
 
 		/** функция запуска API BusEngine */
 		public static void Initialize() {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Engine.Initialize")) {
+			#endif
 			// устанавливаем ссылку на рабочий каталог
 			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
 
@@ -1653,6 +1813,7 @@ BusEngine.Tools
 
 			if (r_DisplayInfo > 0) {
 				BusEngine.Log.ConsoleShow();
+
 				if (r_DisplayInfo > 1) {
 					BusEngine.Log.Info("Device UserAgent: {0}", BusEngine.Engine.Device.UserAgent);
 					BusEngine.Log.Info("Device OS: {0}", BusEngine.Engine.Device.Name);
@@ -1668,6 +1829,10 @@ BusEngine.Tools
 			// инициализируем плагины
 			new BusEngine.IPlugin("Initialize");
 
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
+
 			// запускаем окно BusEngine
 			if (OnInitialize != null) {
 				OnInitialize.Invoke();
@@ -1677,7 +1842,6 @@ BusEngine.Tools
 
 		/** функция остановки API BusEngine  */
 		public static void Shutdown() {
-			BusEngine.Log.Info("OnExit");
 			// отключаем плагины
 			new BusEngine.IPlugin("Shutdown");
 
@@ -1960,8 +2124,6 @@ namespace BusEngine {
 			
 		}
 
-		const int STD_OUTPUT_HANDLE = -11;
-
 		// функция запуска консоли
 		public static void ConsoleShow() {
 			if (BusEngine.Log.StatusConsole == false) {
@@ -1972,12 +2134,11 @@ namespace BusEngine {
 				BusEngine.Log.AllocConsole();
 				BusEngine.Log.StatusConsole = true;
 
-				System.Console.WindowHeight = System.Console.LargestWindowHeight;
-				System.Console.WindowWidth = System.Console.LargestWindowWidth;
-				System.Console.WindowTop = 0;
-				System.Console.WindowLeft = 0;
-
-				System.Console.SetBufferSize(System.Console.WindowWidth, System.Console.WindowHeight);
+				//System.Console.WindowHeight = System.Console.LargestWindowHeight;
+				//System.Console.WindowWidth = System.Console.LargestWindowWidth;
+				//System.Console.WindowTop = 0;
+				//System.Console.WindowLeft = 0;
+				//System.Console.SetBufferSize(System.Console.WindowWidth, System.Console.WindowHeight);
 
 				System.Console.Title = BusEngine.Localization.GetLanguageStatic("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 				BusEngine.Localization.OnLoadStatic += OnLoadLanguage;
@@ -1985,8 +2146,8 @@ namespace BusEngine {
 
 				//System.Console.Clear();
 				//BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_console"));
-				while (true) {
-					break;
+				//while (true) {
+					//break;
 					//if (System.Console.ReadKey(true).Key == System.ConsoleKey.Enter) {
 						//string command = System.Console.ReadLine();
 						//BusEngine.Log.Info($"Вы ввели команду: {command}");
@@ -1997,7 +2158,7 @@ namespace BusEngine {
 					} else {
 						
 					} */
-				}
+				//}
 
 				/* System.Console.In.ReadLine(); */
 				/* System.Console.Read(); */
@@ -2064,19 +2225,24 @@ namespace BusEngine {
 
 		// http://dir.by/developer/csharp/class_template/
 		//public static delegate void String;
+		
+		public static string Text = "";
 
 		// функция вывода строки в консоль
 		public static void Info() {
 			System.Console.WriteLine();
+			//Text += (string)System.Console.ReadLine();
 		}
 		public static void Info(System.Type args1) {
 			System.Console.WriteLine(args1);
+			//Text += (string)System.Console.ReadLine();
 			#if LOG_TYPE
 			System.Console.WriteLine("System.Type");
 			#endif
 		}
 		public static void Info(string args1) {
 			System.Console.WriteLine(args1);
+			//Text += (string)System.Console.ReadLine();
 			#if LOG_TYPE
 			System.Console.WriteLine("string");
 			#endif
@@ -2089,6 +2255,7 @@ namespace BusEngine {
 		} */
 		public static void Info(ulong args1) {
 			System.Console.WriteLine(args1);
+			//Text += (string)System.Console.ReadLine();
 			#if LOG_TYPE
 			System.Console.WriteLine("ulong");
 			#endif
@@ -2474,7 +2641,9 @@ namespace BusEngine {
 			string m;
 
 			for (i = 0; i < ii; ++i) {
-				//if (BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] != "") {
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"])) {
+				#endif
 					System.Array.Resize(ref Plugins, ii);
 					Plugins.SetValue(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"], i);
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
@@ -2585,7 +2754,9 @@ namespace BusEngine {
 							}
 						}
 					}
-				//}
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
 			}
 
 			BusEngine.Log.Info( "============================ System Plugins Stop  ============================" );
