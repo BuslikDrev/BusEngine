@@ -41,6 +41,9 @@
         <div class="preload-text" data-localization="text_preload">Загрузка...</div>
       </div>
     </div>
+    <audio autoplay="autoplay" preload="none" loop="true">
+      <source src="Audios/background.mp3" type="audio/mp3">
+    </audio>
     <main>
       <picture>
         <source srcset="Textures/background_login_1280x720.webp" type="image/webp" media="screen and (max-device-width:1280px)">
@@ -54,10 +57,8 @@
         <img loading="eager" decoding="async" src="Textures/background_login_1280x720.png" alt="background_login" >
       </picture>
 <script type="text/javascript">
-	if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
-		BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
-	} else {
-		BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
+	if ('info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info'] && 'version' in BusEngine.engine.settingProject['info']) {
+		BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' v' + BusEngine.engine.settingProject['info']['version']);
 	}
 
 	/* console.log('cookie', BusEngine.cookie.get('mode'));

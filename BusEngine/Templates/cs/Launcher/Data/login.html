@@ -22,7 +22,7 @@
     <header>
       <nav id="top">
         <div class="left">
-          <span class="name" data-localization="heading_title">BUSENGINE Лаунчер 0.4.0</span>
+          <span class="name" data-localization="heading_title">BUSENGINE Лаунчер</span>
         </div>
         <div class="point"></div>
         <div class="right">
@@ -64,8 +64,8 @@
         <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
       </video>
       <div class="login">
-        <a href="Videos/background_login_1920x1080.mp4" download="hello2.jpg">скачать</a>
-        <a onclick="BusEngine.postMessage('___down|Videos/background_login_1920x1080.mp4');">скачать 2</a>
+        <!-- <a href="Videos/background_login_1920x1080.mp4" download="hello2.jpg">скачать</a>
+        <a onclick="BusEngine.postMessage('___down|Videos/background_login_1920x1080.mp4');">скачать 2</a> -->
         <form>
           <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</span>
           <span class="input">
@@ -74,7 +74,7 @@
           </span>
           <span class="input">
             entry_password
-            <input type="password" name="password" value="" aria-label="entry_password">
+            <input type="password" name="password" value="" placeholder="entry_password" aria-label="entry_password">
             <span onclick="Launcher.svgToggle(this, 'password');">
               <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
               <svg xmlns="http://www.w3.org/2000/svg" style="display: none"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye-off"></use></svg>
@@ -84,7 +84,7 @@
             <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;" title="text_forgotten">text_forgotten <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
           </span>
           <span class="input" style="height: 50px;">
-            <button class="send">button_login</button>
+            <button class="send" data-localization="button_login">button_login</button>
           </span>
         </form>
         <hr>
@@ -94,15 +94,18 @@
       </div>
       <button onclick="window.localStorage.setItem('mode', true); BusEngine.open('main.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
 <script type="text/javascript">
-	if ('version' in BusEngine.engine.settingProject && 'info' in BusEngine.engine.settingProject && 'name' in BusEngine.engine.settingProject['info']) {
-		BusEngine.localization.setLanguage('heading_title', BusEngine.engine.settingProject['info']['name'] + ' ' + BusEngine.engine.settingProject['version']);
-	} else {
-		BusEngine.localization.setLanguage('heading_title', 'BUSENGINE Лаунчер');
-	}
-
 	BusEngine.localization.load();
 
 	var setting = Launcher.getSetting('settings-launcher');
+
+	if ('background_audio' in setting) {
+		var element = document.querySelector('audio');
+
+		if (element) {
+			element.autoplay = (setting['background_audio'] == 1 || setting['background_audio'] == 2 && (window.localStorage.getItem('authorization') || window.localStorage.getItem('mode')) ? null : 'autoplay');
+			(setting['background_audio'] == 1 || setting['background_audio'] == 2 && (window.localStorage.getItem('authorization') || window.localStorage.getItem('mode')) ? element.pause() : element.play());
+		}
+	}
 
 	if ('background_video' in setting) {
 		var element = document.querySelector('video');

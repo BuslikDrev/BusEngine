@@ -133,7 +133,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		if (e.which == 1 && my_status) {
 			my_bstatus = true;
-			Launcher.svgToggle(document.querySelector('#top .expand'));
+			//Launcher.svgToggle(document.querySelector('#top .expand'));
 			if ('content' in window) {
 				window['content'].style['overflow-y'] = 'unset';
 			}
