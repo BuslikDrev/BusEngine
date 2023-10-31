@@ -1,7 +1,7 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2024; BuslikDrev - Усе правы захаваны. */
 
-/* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
+/* C# 5.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 14.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 /* MSBuild 15.0+        https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/android-api-levels?tabs=windows#android-versions */
@@ -124,8 +124,8 @@ namespace BusEngine {
 				{"e_WaterOcean", "0"},
 				{"r_WaterOcean", "0"},
 				{"r_VolumetricClouds", "1"},
-				{"r_Displayinfo", "0"},
-				{"r_Fullscreen", "0"},
+				{"r_DisplayInfo", "0"},
+				{"r_FullScreen", "0"},
 				{"r_Width", "1280"},
 				{"r_Height", "720"},
 				{"google_api_key", ""},
@@ -137,8 +137,8 @@ namespace BusEngine {
 				{"e_WaterOcean", "0"},
 				{"r_WaterOcean", "0"},
 				{"r_VolumetricClouds", "1"},
-				{"r_Displayinfo", "0"},
-				{"r_Fullscreen", "0"},
+				{"r_DisplayInfo", "0"},
+				{"r_FullScreen", "0"},
 				{"r_Width", "1280"},
 				{"r_Height", "720"},
 				{"google_api_key", ""},
@@ -210,7 +210,8 @@ namespace BusEngine {
 /** API BusEngine */
 namespace BusEngine {
 /*
-Зависимости нет
+Зависит от плагинов:
+BusEngine.Log
 */
 	/** API BusEngine.TooltipAttribute */
 	// https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/creating-custom-attributes
@@ -232,13 +233,8 @@ namespace BusEngine {
 	/** API BusEngine.TooltipAttribute */
 
 	/** API BusEngine.Benchmark */
-	//https://csharp.webdelphi.ru/kak-izmerit-vremya-vypolneniya-operacii-v-c/
-	//https://habr.com/ru/companies/tinkoff/articles/454058/`	
-	//https://ru.stackoverflow.com/questions/92764/%D0%9F%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B8%D0%B5-%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D1%8B-%D0%B4%D0%BB%D1%8F-%D0%B7%D0%B0%D0%BC%D0%B5%D1%80%D0%B5%D0%BD%D0%B8%D1%8F-%D1%81%D0%BA%D0%BE%D1%80%D0%BE%D1%81%D1%82%D0%B8-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B-%D0%BA%D0%BE%D0%B4%D0%B0
-	//https://stackoverflow.com/questions/9851150/how-does-onmethodboundaryaspect-works
-	//https://habr.com/ru/articles/468287/
 	[System.AttributeUsage(System.AttributeTargets.All, AllowMultiple = true)]
-	public sealed class Benchmark2 : System.Attribute {
+	public sealed class BenchmarkAttribute : System.Attribute {
 		/* public static string Benchmark2 {
 			get {
 				return BusEngine.Log.Info("Benchmark");
@@ -246,8 +242,8 @@ namespace BusEngine {
 				BusEngine.Log.Info("Benchmark");
 			}
 		} */
-		static Benchmark2() {
-			BusEngine.Log.Info("Benchmark2");  
+		static BenchmarkAttribute() {
+			BusEngine.Log.Info("BenchmarkAttribute");  
 		}
 	}
 
@@ -360,13 +356,14 @@ LibVLCSharp
 			this.IsDispose = false;
 
 			if (this.OnPlay != null) {
-				//this.OnPlay.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnPlay, new object[2] {this, this.Url});
+				this.OnPlay.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPlay, new object[2] {this, this.Url});
 			}
 		}
 		/** событие запуска aудио */
 
 		/** событие времени в секундах */
+		private System.Timers.Timer OnDuratingTimer;
 		private void OnDurating(object o, object e) {
 			#if AUDIO_LOG
 			BusEngine.Log.Info("Аудио OnDuration {0}", this.Position);
@@ -375,8 +372,8 @@ LibVLCSharp
 			this.Duration = _mediaPlayer.Time;
 
 			if (this.OnDuration != null) {
-				//this.OnDuration.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
+				this.OnDuration.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
 			}
 		}
 		/** событие времени в секундах */
@@ -389,8 +386,8 @@ LibVLCSharp
 
 			this.Play(this.Url);
 			if (this.OnLoop != null) {
-				//this.OnLoop.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnLoop, new object[2] {this, this.Url});
+				this.OnLoop.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnLoop, new object[2] {this, this.Url});
 			}
 		}
 		/** событие повтора aудио */
@@ -402,8 +399,8 @@ LibVLCSharp
 			#endif
 
 			if (this.OnPause != null) {
-				//this.OnPause.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnPause, new object[2] {this, this.Url});
+				this.OnPause.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPause, new object[2] {this, this.Url});
 			}
 		}
 		/** событие временной остановки aудио */
@@ -417,8 +414,8 @@ LibVLCSharp
 			this.IsPlay = false;
 
 			if (this.OnStop != null) {
-				//this.OnStop.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnStop, new object[2] {this, this.Url});
+				this.OnStop.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnStop, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -440,8 +437,8 @@ LibVLCSharp
 			this.IsPlay = false;
 
 			if (this.OnEnd != null) {
-				//this.OnEnd.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnEnd, new object[2] {this, this.Url});
+				this.OnEnd.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnEnd, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -460,8 +457,8 @@ LibVLCSharp
 			#endif
 
 			if (this.OnDispose != null) {
-				//this.OnDispose.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+				this.OnDispose.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
 			}
 		}
 		/** событие уничтожения aудио */
@@ -492,7 +489,13 @@ LibVLCSharp
 			_mediaPlayer.Stopped += this.OnStopping;
 			//_mediaPlayer.Disposed += this.OnDisposing;
 			_mediaPlayer.EndReached += this.OnEnding;
-			_mediaPlayer.PositionChanged += this.OnDurating;
+			//_mediaPlayer.PositionChanged += this.OnDurating;
+			OnDuratingTimer = new System.Timers.Timer();
+			OnDuratingTimer.Interval = 100;
+			OnDuratingTimer.Elapsed += this.OnDurating;
+			//OnDuratingTimer.AutoReset = true;
+			//OnDuratingTimer.Enabled = true;
+
 			#if BUSENGINE_BENCHMARK
 			}
 			#endif
@@ -536,8 +539,8 @@ LibVLCSharp
 				if (this.OnEnd == null) {
 					this.OnEnd += (BusEngine.Audio a, string url) => {
 						#if AUDIO_LOG
-						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
-						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						BusEngine.Log.Info("Audio OnEndAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnEndAudio: {0}", a.Url);
 						#endif
 
 						if (this.UrlsArray.Length > 0) {
@@ -633,6 +636,7 @@ LibVLCSharp
 						_mediaPlayer.EnableKeyInput = true;
 						this.Duration = media.Duration;
 
+						OnDuratingTimer.Start();
 						_mediaPlayer.Play(media);
 						media.Dispose();
 					});
@@ -646,8 +650,8 @@ LibVLCSharp
 
 				if (this.OnNotFound != null) {
 					this.IsDispose = true;
-					//this.OnNotFound.Invoke(this, this.Url);
-					BusEngine.UI.Canvas.WinForm.Invoke(this.OnNotFound, new object[2] {this, this.Url});
+					this.OnNotFound.Invoke(this, this.Url);
+					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnNotFound, new object[2] {this, this.Url});
 				}
 			}
 
@@ -686,8 +690,8 @@ LibVLCSharp
 				if (this.OnEnd == null) {
 					this.OnEnd += (BusEngine.Audio a, string url) => {
 						#if AUDIO_LOG
-						BusEngine.Log.Info("Audio OnStopAudio: {0}", url);
-						BusEngine.Log.Info("Audio OnStopAudio: {0}", a.Url);
+						BusEngine.Log.Info("Audio OnEndAudio: {0}", url);
+						BusEngine.Log.Info("Audio OnEndAudio: {0}", a.Url);
 						#endif
 
 						if (this.UrlsArray.Length > 0) {
@@ -737,9 +741,11 @@ LibVLCSharp
 			#endif
 
 			if (!_mediaPlayer.CanPause) {
+				OnDuratingTimer.Start();
 				_mediaPlayer.Play();
 				this.IsPause = false;
 			} else {
+				OnDuratingTimer.Stop();
 				_mediaPlayer.Pause();
 				this.IsPause = true;
 			}
@@ -757,6 +763,7 @@ LibVLCSharp
 			BusEngine.Log.Info("Аудио Stop()");
 			#endif
 
+			OnDuratingTimer.Stop();
 			_mediaPlayer.Stop();
 		}
 		/** функция остановки aудио */
@@ -798,24 +805,28 @@ LibVLCSharp
 
 		protected virtual void Dispose(bool disposing) {
 			if (!this.IsPlay && (this.IsStop || this.IsEnd) && this.IsDispose) {
-				_mediaPlayer.Playing -= this.OnPlaying;
-				if (this.Loop) {
-					_mediaPlayer.EndReached -= this.OnLooping;
+				if (this.OnDuratingTimer != null) {
+					OnDuratingTimer.Dispose();
 				}
-				_mediaPlayer.Paused -= this.OnPausing;
-				_mediaPlayer.Stopped -= this.OnStopping;
-				//_mediaPlayer.Disposed -= this.OnDisposing;
-				_mediaPlayer.EndReached -= this.OnEnding;
-				_mediaPlayer.PositionChanged -= this.OnDurating;
-
-				_mediaPlayer.Dispose();
-				_VLC.Dispose();
-
+				if (_mediaPlayer != null) {
+					_mediaPlayer.Playing -= this.OnPlaying;
+					_mediaPlayer.EndReached -= this.OnLooping;
+					_mediaPlayer.Paused -= this.OnPausing;
+					_mediaPlayer.Stopped -= this.OnStopping;
+					//_mediaPlayer.Disposed -= this.OnDisposing;
+					_mediaPlayer.EndReached -= this.OnEnding;
+					//_mediaPlayer.PositionChanged -= this.OnDurating;
+					_mediaPlayer.Dispose();
+				}
+				if (_VLC != null) {
+					_VLC.Dispose();
+				}
 				if (this.DisposeTimer != null) {
 					this.DisposeTimer.Dispose();
 				}
 				if (this.OnDispose != null) {
-					BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+					this.OnDispose.Invoke(this, this.Url);
+					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
 				}
 			}
 		}
@@ -1499,24 +1510,34 @@ BusEngine.Tools
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingEngine = new System.Collections.Generic.Dictionary<string, dynamic>();
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingProject = new System.Collections.Generic.Dictionary<string, dynamic>();
 		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
-		public static string BinDirectory;
-		public static string ExeDirectory;
-		public static string EditorDirectory;
-		public static string EngineDirectory;
-		public static string CodeDirectory;
-		public static string DataDirectory;
-		public static string LocalizationDirectory;
-		public static string LogDirectory;
-		public static string ToolsDirectory;
+		public static string BinDirectory { get; private set; }
+		public static string ExeDirectory { get; private set; }
+		public static string EditorDirectory { get; private set; }
+		public static string EngineDirectory { get; private set; }
+		public static string CodeDirectory { get; private set; }
+		public static string DataDirectory { get; private set; }
+		public static string LocalizationDirectory { get; private set; }
+		public static string LogDirectory { get; private set; }
+		public static string ToolsDirectory { get; private set; }
 		public static string[] Commands;
 		public static System.Text.UTF8Encoding UTF8NotBOM = new System.Text.UTF8Encoding(false);
-		public static string Platform = "BusEngine";
+		private static string _platform;
+		public static string Platform {
+			get {
+				return (_platform == null ? "BusEngine" : _platform);
+			} set {
+				if (_platform == null) {
+					_platform = value;
+				}
+			}
+		}
+
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
 		public class Device {
-			public static string Name;
-			public static string Version;
-			public static string Processor;
-			public static byte ProcessorCount;
+			public static string Name { get; private set; }
+			public static string Version { get; private set; }
+			public static string Processor { get; private set; }
+			public static byte ProcessorCount { get; private set; }
 			public static string UserAgent;
 			static Device() {
 				#if BUSENGINE_BENCHMARK
@@ -1663,7 +1684,7 @@ BusEngine.Tools
 				dynamic content;
 
 				if (setting.TryGetValue("content", out content) && content.GetType().GetProperty("Type") != null && !content.GetType().IsArray) {
-					foreach (var i in content) {
+					foreach (dynamic i in content) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string && content[i.Name] is string) {
 							string result = (string)content[i.Name];
 
@@ -1719,7 +1740,7 @@ BusEngine.Tools
 				dynamic console_commands;
 
 				if (setting.TryGetValue("console_commands", out console_commands) && console_commands.GetType().GetProperty("Type") != null && !console_commands.GetType().IsArray) {
-					foreach (var i in console_commands) {
+					foreach (dynamic i in console_commands) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
 							BusEngine.ProjectDefault.Setting["console_commands"][i.Name] = (string)console_commands[i.Name];
 						}
@@ -1731,7 +1752,7 @@ BusEngine.Tools
 				dynamic console_variables;
 
 				if (setting.TryGetValue("console_variables", out console_variables) && console_variables.GetType().GetProperty("Type") != null && !console_variables.GetType().IsArray) {
-					foreach (var i in console_variables) {
+					foreach (dynamic i in console_variables) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
 							BusEngine.ProjectDefault.Setting["console_variables"][i.Name] = (string)console_variables[i.Name];
 						}
@@ -1743,7 +1764,7 @@ BusEngine.Tools
 				dynamic info;
 
 				if (setting.TryGetValue("info", out info) && info.GetType().GetProperty("Type") != null && !info.GetType().IsArray) {
-					foreach (var i in info) {
+					foreach (dynamic i in info) {
 						if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
 							if (i.Name == "icon") {
 								BusEngine.ProjectDefault.Setting["info"][i.Name] = ((string)info[i.Name])
@@ -2427,7 +2448,7 @@ namespace BusEngine {
 			System.Type myType = System.Type.GetType("LibVLCSharp.Shared.Media");
 			BusEngine.Log.Info(myType);
 
-			var version = System.Environment.Version;
+			System.Version version = System.Environment.Version;
 
 			BusEngine.Log.Info("Тип: " + version.GetType());
 			BusEngine.Log.Info("Моя версия .NET Framework: " + version.ToString());
@@ -2622,8 +2643,8 @@ namespace BusEngine {
 
 	/** API BusEngine.IPlugin */
 	internal class IPlugin : System.IDisposable {
-		private static int Count = 0;
-		private string[] Plugins = new string[0];
+		//private static int Count = 0;
+		//private string[] Plugins = new string[0];
 		private bool IsAsync(System.Reflection.MethodInfo method) {
 			foreach (object o in method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.AsyncStateMachineAttribute), false)) {
 				return true;
@@ -2642,17 +2663,17 @@ namespace BusEngine {
 
 			for (i = 0; i < ii; ++i) {
 				#if BUSENGINE_BENCHMARK
-				using (new BusEngine.Benchmark(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"])) {
+				using (new BusEngine.Benchmark(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"] + " " + stage)) {
 				#endif
-					System.Array.Resize(ref Plugins, ii);
-					Plugins.SetValue(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"], i);
+					//System.Array.Resize(ref Plugins, ii);
+					//Plugins.SetValue(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"], i);
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					foreach (System.Type type in System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]).GetTypes()) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
 							foreach (System.Reflection.MethodInfo method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
 								m = method.Name.ToLower();
 								if (m == stage || m == stage + "async") {
-									Count++;
+									//Count++;
 									BusEngine.Log.Info(BusEngine.Engine.SettingEngine["require"]["plugins"][i]["path"]);
 									BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_class") + ": {0}", type.FullName);
 									BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method") + ": {0}", method.Name);
@@ -2815,7 +2836,7 @@ Newtonsoft.Json
 			if (url != "" && url != null) {
 				try {
 					if (System.Uri.IsWellFormedUriString(url, System.UriKind.Absolute)) {
-						var result = System.Net.HttpWebRequest.Create(url).GetResponse();
+						System.Net.HttpWebRequest.Create(url).GetResponse();
 					}
 				} catch (System.Net.WebException e) {
 					if (e.GetType().GetProperty("Status") != null) {
@@ -2878,7 +2899,7 @@ Newtonsoft.Json
 
 											var i = 0;
 											UnityEngine.Debug.Log(data);
-											foreach (var property in data) {
+											foreach (dynamic property in data) {
 												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
 												i += 1;
 											}
@@ -2896,7 +2917,7 @@ Newtonsoft.Json
 
 											var i = 0;
 											UnityEngine.Debug.Log(data);
-											foreach (var property in data) {
+											foreach (dynamic property in data) {
 												keys[i] = new KeyValuePair<string, string>(property.Key, property.Value);
 												i += 1;
 											}
@@ -3453,21 +3474,24 @@ LibVLCSharp
 			this.IsDispose = false;
 
 			if (this.OnPlay != null) {
-				//this.OnPlay.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnPlay, new object[2] {this, this.Url});
+				this.OnPlay.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPlay, new object[2] {this, this.Url});
 			}
 		}
 		/** событие запуска видео */
 
 		/** событие времени в секундах */
+		private System.Timers.Timer OnDuratingTimer;
 		private void OnDurating(object o, object e) {
 			#if AUDIO_LOG
 			BusEngine.Log.Info("Аудио OnDuration {0}", this.Position);
 			#endif
 
+			this.Duration = _mediaPlayer.Time;
+
 			if (this.OnDuration != null) {
-				//this.OnDuration.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
+				this.OnDuration.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
 			}
 		}
 		/** событие времени в секундах */
@@ -3480,8 +3504,8 @@ LibVLCSharp
 
 			this.Play(this.Url);
 			if (this.OnLoop != null) {
-				//this.OnLoop.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnLoop, new object[2] {this, this.Url});
+				this.OnLoop.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnLoop, new object[2] {this, this.Url});
 			}
 		}
 		/** событие повтора видео */
@@ -3493,8 +3517,8 @@ LibVLCSharp
 			#endif
 
 			if (this.OnPause != null) {
-				//this.OnPause.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnPause, new object[2] {this, this.Url});
+				this.OnPause.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPause, new object[2] {this, this.Url});
 			}
 		}
 		/** событие временной остановки видео */
@@ -3508,8 +3532,8 @@ LibVLCSharp
 			this.IsPlay = false;
 
 			if (this.OnStop != null) {
-				//this.OnStop.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnStop, new object[2] {this, this.Url});
+				this.OnStop.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnStop, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -3531,8 +3555,8 @@ LibVLCSharp
 			this.IsPlay = false;
 
 			if (this.OnEnd != null) {
-				//this.OnEnd.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnEnd, new object[2] {this, this.Url});
+				this.OnEnd.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnEnd, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -3551,14 +3575,17 @@ LibVLCSharp
 			#endif
 
 			if (this.OnDispose != null) {
-				//this.OnDispose.Invoke(this, this.Url);
-				BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+				this.OnDispose.Invoke(this, this.Url);
+				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
 			}
 		}
 		/** событие уничтожения видео */
 
 		/** функция запуска видео */
 		public Video() {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Video")) {
+			#endif
 			#if VIDEO_LOG
 			_VLC = new LibVLCSharp.Shared.LibVLC(false, new[] { "--verbose=2" });
 			#else
@@ -3580,7 +3607,12 @@ LibVLCSharp
 			_mediaPlayer.Stopped += this.OnStopping;
 			//_mediaPlayer.Disposed += this.OnDisposing;
 			_mediaPlayer.EndReached += this.OnEnding;
-			_mediaPlayer.PositionChanged += this.OnDurating;
+			//_mediaPlayer.PositionChanged += this.OnDurating;
+			OnDuratingTimer = new System.Timers.Timer();
+			OnDuratingTimer.Interval = 100;
+			OnDuratingTimer.Elapsed += this.OnDurating;
+			//OnDuratingTimer.AutoReset = true;
+			//OnDuratingTimer.Enabled = true;
 
 			_winForm = new LibVLCSharp.WinForms.VideoView();
 			((System.ComponentModel.ISupportInitialize)(_winForm)).BeginInit();
@@ -3616,12 +3648,24 @@ LibVLCSharp
 
 			((System.ComponentModel.ISupportInitialize)(_winForm)).EndInit();
 			BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		public Video(string url = "") : this() {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Video url")) {
+			#endif
 			this.Url = url;
 			this.Urls = new string[1] {url};
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		public Video(string[] urls) : this() {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Video urls")) {
+			#endif
 			if (urls.Length > 0) {
 				this.Urls = urls;
 				this.UrlsArray = urls;
@@ -3681,6 +3725,9 @@ LibVLCSharp
 					};
 				}
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 
 		public Video Play() {
@@ -3688,6 +3735,9 @@ LibVLCSharp
 		}
 
 		public Video Play(string url = "") {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Video url")) {
+			#endif
 			if (this.IsPlay) {
 				return this;
 			}
@@ -3759,6 +3809,7 @@ LibVLCSharp
 						BusEngine.Log.Info("Видео Position {0}", _mediaPlayer.Position);
 						#endif
 
+						OnDuratingTimer.Start();
 						_mediaPlayer.Play(media);
 						#if VIDEO_LOG
 						/* media.MetaChanged += (o, e) => {
@@ -3915,15 +3966,21 @@ LibVLCSharp
 
 				if (this.OnNotFound != null) {
 					this.IsDispose = true;
-					//this.OnNotFound.Invoke(this, this.Url);
-					BusEngine.UI.Canvas.WinForm.Invoke(this.OnNotFound, new object[2] {this, this.Url});
+					this.OnNotFound.Invoke(this, this.Url);
+					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnNotFound, new object[2] {this, this.Url});
 				}
 			}
 
 			return this;
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 
 		public Video Play(string[] urls) {
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Video urls")) {
+			#endif
 			if (urls.Length > 0) {
 				this.Urls = urls;
 				this.UrlsArray = urls;
@@ -3987,6 +4044,9 @@ LibVLCSharp
 			} else {
 				return this;
 			}
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 		}
 		/** функция запуска видео */
 
@@ -3997,9 +4057,11 @@ LibVLCSharp
 			#endif
 
 			if (!_mediaPlayer.CanPause) {
+				OnDuratingTimer.Start();
 				_mediaPlayer.Play();
 				this.IsPause = false;
 			} else {
+				OnDuratingTimer.Stop();
 				_mediaPlayer.Pause();
 				this.IsPause = true;
 			}
@@ -4017,6 +4079,7 @@ LibVLCSharp
 			BusEngine.Log.Info("Видео Stop()");
 			#endif
 
+			OnDuratingTimer.Stop();
 			_mediaPlayer.Stop();
 		}
 		/** функция остановки видео */
@@ -4065,28 +4128,32 @@ LibVLCSharp
 				//BusEngine.UI.Canvas.WinForm.Controls.Remove(_winForm);
 				((System.ComponentModel.ISupportInitialize)(_winForm)).EndInit();
 				BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
-
-				_mediaPlayer.Playing -= this.OnPlaying;
-				if (this.Loop) {
-					_mediaPlayer.EndReached -= this.OnLooping;
+				if (this.OnDuratingTimer != null) {
+					OnDuratingTimer.Dispose();
 				}
-				_mediaPlayer.Paused -= this.OnPausing;
-				_mediaPlayer.Stopped -= this.OnStopping;
-				//_mediaPlayer.Disposed -= this.OnDisposing;
-				_mediaPlayer.EndReached -= this.OnEnding;
-				_mediaPlayer.PositionChanged -= this.OnDurating;
-
-				_mediaPlayer.Dispose();
-				_VLC.Dispose();
-				_winForm.Dispose();
-
+				if (_mediaPlayer != null) {
+					_mediaPlayer.Playing -= this.OnPlaying;
+					_mediaPlayer.EndReached -= this.OnLooping;
+					_mediaPlayer.Paused -= this.OnPausing;
+					_mediaPlayer.Stopped -= this.OnStopping;
+					//_mediaPlayer.Disposed -= this.OnDisposing;
+					_mediaPlayer.EndReached -= this.OnEnding;
+					//_mediaPlayer.PositionChanged -= this.OnDurating;
+					_mediaPlayer.Dispose();
+				}
+				if (_VLC != null) {
+					_VLC.Dispose();
+				}
+				if (_winForm != null) {
+					_winForm.Dispose();
+				}
 				if (this.DisposeTimer != null) {
 					this.DisposeTimer.Dispose();
 				}
 				if (this.OnDispose != null) {
-					//this.OnDispose.Invoke(this, this.Url);
+					this.OnDispose.Invoke(this, this.Url);
 					// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.control.invoke?view=windowsdesktop-7.0
-					BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
 				}
 			}
 		}
