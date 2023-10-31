@@ -46,7 +46,7 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [Chromium](https://github.com/chromium/chromium) 109.1.11 (109.0.5414.87) (для использования в BusEngine.Browser)
 
-[VideoLAN | libvlcsharp](https://github.com/videolan) 3.0.18 | 3.7.0 (для использования в BusEngine.Audio, BusEngine.Video)
+[VideoLAN | libvlcsharp](https://github.com/videolan) 3.0.18 | 3.8.1 (для использования в BusEngine.Audio, BusEngine.Video)
 
 [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 13.0.3 (для использования в BusEngine.Tools.Json)
 
