@@ -4,7 +4,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Win7+--x64%20|%20Win7+--x86-purple.svg?cacheSeconds=31536000)
 
 ### BusEngine Game
-![Platform](https://img.shields.io/badge/Platform-Windows%207+%20|%20Android%205+-purple.svg?cacheSeconds=31536000)
+![Platform](https://img.shields.io/badge/Platform-Windows%207+%20|%20Android%205+%20|%20WebGL-purple.svg?cacheSeconds=31536000)
 
 ### Минимальные требования для успешной работы
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v12.0-orange.svg?cacheSeconds=31536000)](https://www.microsoft.com/ru-ru/download/details.aspx?id=40760)
