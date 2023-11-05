@@ -1,9 +1,11 @@
+chcp 65001
+REM @echo off
 REM Указать путь до BusEngine | Specify the path to the BusEngine | http://dl.gsu.by/doc/use/ntcmds.htm
-REM SET BusEngineFolder="H:\BusEngine"
 SET BusEngineFolder=%~dp0..\..\
 
-REM Указать путь до MSBuild | Specify the path to the MSBuild | https://en.wikipedia.org/wiki/MSBuild#Versions
+REM Указать путь до MSBuild | Specify the path to the MSBuild | https://vk.com/@busengine-sopostavlyaem-versiu-s-csharp-s-kompilyatorom-i-platformoi-n
 REM SET MSBuild="C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
@@ -22,7 +24,7 @@ REM Cache .NET https://learn.microsoft.com/en-us/dotnet/framework/tools/ngen-exe
 cd C:\Windows\assembly
 SET cache="C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe"
 SET cache64="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe"
-REM C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe install "H:\BusEngine Launcher\Bin\Win\BusEngine.dll" /Profile /queue:1 /nologo
+REM C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe install "%BusEngineFolder:"=%/Bin/Win/BusEngine.dll" /Profile /queue:1 /nologo
 
 REM 0=AnyCPU 1=x64 2=x86 3=Android
 SET Platform=0
