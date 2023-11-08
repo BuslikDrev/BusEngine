@@ -152,9 +152,9 @@
                 <span data-localization="help_directory_engine">Директория для хранения всех версий BusEngine</span>
               </div>
               <div class="col-12 mb-3">
-                <span data-localization="entry_directory_msbuild">Путь до компилятора MSBuild</span>
+                <span data-localization="entry_file_msbuild">Путь до компилятора MSBuild</span>
                 <div class="input-group mt-1 mb-1">
-                  <input type="text" name="directory_msbuild" value="" placeholder="entry_directory_msbuild" class="form-control" aria-label="entry_directory_msbuild" aria-describedby="input-directory-msbuild" disabled="disabled">
+                  <input type="text" name="directory_msbuild" value="" placeholder="entry_file_msbuild" class="form-control" aria-label="entry_file_msbuild" aria-describedby="input-directory-msbuild" disabled="disabled">
                   <button type="button" onclick="BusEngine.postMessage('__dfile|input[name=\\\'' + this.parentNode.querySelector('input').name + '\\\']');" id="input-directory-msbuild" class="btn btn-outline-light"><svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-folder"></use></svg></button>
                 </div>
                 <span data-localization="help_directory_msbuild">Укажите путь до исполняемого файла программы компилятора "MSBuild.exe". Этот путь будет по умолчанию для всех проектов</span>
