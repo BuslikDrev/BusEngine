@@ -168,25 +168,41 @@ namespace BusEngine {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Android/Game.dll"},
-						{"platforms", new string[] {"Android"}}
+						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+							{"Android", "Android"}
+						}}
 					},
 					new System.Collections.Generic.Dictionary<string, object>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Win/Game.dll"},
-						{"platforms", new string[] {"win_x86"}}
+						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+							{"Win_x86", "Windows"}
+						}}
 					},
 					new System.Collections.Generic.Dictionary<string, object>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Win_x86/Game.dll"},
-						{"platforms", new string[] {"win_x86"}}
+						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+							{"Win_x86", "Windows"}
+						}}
 					},
 					new System.Collections.Generic.Dictionary<string, object>() {
 						{"System", ""},
 						{"type", "EType::Managed"},
 						{"path", "Bin/Win_x64/Game.dll"},
-						{"platforms", new string[] {"Win_x64"}}
+						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+							{"Win_x64", "Windows"}
+						}}
+					},
+					new System.Collections.Generic.Dictionary<string, object>() {
+						{"System", ""},
+						{"type", "EType::Managed"},
+						{"path", "Bin/Win_x64/Game.dll"},
+						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+							{"Any", "Any"}
+						}}
 					}
 				}}
 			}}
@@ -1367,9 +1383,6 @@ BusEngine.Tools.Json
 				//CefSharp.Cef.Shutdown();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
 			}
-			/* System.Threading.Tasks.Task.Run(() => {
-				CefSharp.Cef.Shutdown();
-			}); */
 		}
 
 		public void Shutdown() {
@@ -1786,7 +1799,7 @@ BusEngine.Tools
 				}
 			}
 
-			//info = null;
+			info = null;
 
 			dynamic require;
 
@@ -1810,7 +1823,7 @@ BusEngine.Tools
 								{"path", System.Convert.ToString(require["plugins"][i]["path"])},
 								{"guid", (require["plugins"][i].ContainsKey("guid") && require["plugins"][i]["guid"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["guid"]) : "")},
 								{"type", (require["plugins"][i].ContainsKey("type") && require["plugins"][i]["type"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["type"]) : "")},
-								{"platforms", (require["plugins"][i].ContainsKey("platforms") && require["plugins"][i]["platforms"].Type.ToString() == "Array" ? require["plugins"][i]["platforms"] : new string[] {})}
+								{"platforms", (require["plugins"][i].ContainsKey("platforms") && require["plugins"][i]["platforms"].GetType().GetProperty("Count") != null ? require["plugins"][i]["platforms"] : BusEngine.ProjectDefault.Setting["require"]["plugins"][i]["platforms"])}
 							});
 						}
 					}
@@ -1829,6 +1842,8 @@ BusEngine.Tools
 			// определяем устройство
 			//new BusEngine.Engine.Device();
 
+			// инициализируем язык
+			new BusEngine.Localization().Initialize();
 
 			// включаем консоль
 			int r_DisplayInfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_DisplayInfo"]);
@@ -1849,14 +1864,8 @@ BusEngine.Tools
 			}
 
 			//r_DisplayInfo = 0;
-			// инициализируем язык
-			new BusEngine.Localization().Initialize();
-
-			BusEngine.Log.Info("Device BusEngine.ProjectDefault.Setting: {0}", BusEngine.ProjectDefault.Setting.Count);
 
 			//BusEngine.ProjectDefault.Setting = null;
-			
-			BusEngine.Log.Info("Device BusEngine.ProjectDefault.Setting: {0}", BusEngine.ProjectDefault.Setting);
 
 			//new BusEngine.ProjectDefault().Dispose();
 			/* System.GC.Collect();
@@ -1865,7 +1874,7 @@ BusEngine.Tools
 
 
 
-
+			//BusEngine.Log.Info(BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingProject["plugins"]));
 
 
 			// инициализируем плагины
@@ -1888,6 +1897,14 @@ BusEngine.Tools
 			BusEngine.Engine.ShutdownStatic(false);
 		}
 
+		public static void Shutdown(bool nagibator = false) {
+			BusEngine.Engine.ShutdownStatic(nagibator);
+		}
+
+		public static void ShutdownStatic() {
+			BusEngine.Engine.ShutdownStatic(false);
+		}
+
 		public static void ShutdownStatic(bool nagibator = false) {
 			// асинхронно закрываем программу, чтобы BENCHMARK смог отработать
 			//System.Threading.Tasks.Task.Run(() => {
@@ -1905,9 +1922,10 @@ BusEngine.Tools
 				// закрываем окно BusEngine
 				if (BusEngine.Engine.OnShutdown != null) {
 					BusEngine.Engine.OnShutdown.Invoke();
-					/* System.Threading.Tasks.Task.Run(() => {
+				}
+
+				if (nagibator) {
 					System.Environment.Exit(0);
-					}); */
 				}
 
 				// предотвращаем повторное использование
@@ -2117,7 +2135,7 @@ namespace BusEngine {
 			}
 
 			if (BusEngine.Localization.Timer == null) {
-				BusEngine.Log.Info("Timer ne всё. {0}", BusEngine.Localization.Timer);
+				//BusEngine.Log.Info("Timer ne всё. {0}", BusEngine.Localization.Timer);
 				BusEngine.Localization.Timer = new System.Timers.Timer(5000);
 				System.Timers.ElapsedEventHandler onTime = null;
 				onTime = (o, e) => {
@@ -2720,7 +2738,6 @@ namespace BusEngine {
 	/** API BusEngine.IPlugin */
 	internal class IPlugin : System.IDisposable {
 		private static string IsShutdown = "";
-		//private string[] Plugins = new string[0];
 		private bool IsAsync(System.Reflection.MethodInfo method) {
 			foreach (object o in method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.AsyncStateMachineAttribute), false)) {
 				return true;
