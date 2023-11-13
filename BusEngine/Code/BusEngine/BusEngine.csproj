@@ -14,7 +14,7 @@
     <FileAlignment>4096</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <!-- Отключение публикации своего кода в nuget и т.д. -->
     <PublishRelease>false</PublishRelease>
