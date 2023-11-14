@@ -1,6 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <!-- https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/configure-language-version#c-language-version-reference -->
-    <LangVersion>5.0</LangVersion>
-  </PropertyGroup>
-</Project>
