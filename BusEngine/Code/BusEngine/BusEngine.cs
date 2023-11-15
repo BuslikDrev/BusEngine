@@ -1645,61 +1645,6 @@ BusEngine.Tools
 			BusEngine.Engine.LocalizationDirectory = BusEngine.Engine.EngineDirectory + "Localization\\";
 			BusEngine.Engine.LogDirectory = BusEngine.Engine.EngineDirectory + "Log\\";
 			BusEngine.Engine.ToolsDirectory = BusEngine.Engine.EngineDirectory + "Tools\\";
-			
-using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee3")) {
-
-}			
-
-
-using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
-			BusEngine.Engine.BinDirectory = BusEngine.Engine.EngineDirectory + "Bin\\";
-			BusEngine.Engine.CodeDirectory = BusEngine.Engine.EngineDirectory + "Code\\";
-			BusEngine.Engine.DataDirectory = BusEngine.Engine.EngineDirectory + "Data\\";
-			BusEngine.Engine.EditorDirectory = BusEngine.Engine.EngineDirectory + "Editor\\";
-			BusEngine.Engine.LocalizationDirectory = BusEngine.Engine.EngineDirectory + "Localization\\";
-			BusEngine.Engine.LogDirectory = BusEngine.Engine.EngineDirectory + "Log\\";
-			BusEngine.Engine.ToolsDirectory = BusEngine.Engine.EngineDirectory + "Tools\\";
-}
-
-using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee1")) {
-			BinDirectory = BusEngine.Engine.EngineDirectory + "Bin\\";
-			CodeDirectory = BusEngine.Engine.EngineDirectory + "Code\\";
-			DataDirectory = BusEngine.Engine.EngineDirectory + "Data\\";
-			EditorDirectory = BusEngine.Engine.EngineDirectory + "Editor\\";
-			LocalizationDirectory = BusEngine.Engine.EngineDirectory + "Localization\\";
-			LogDirectory = BusEngine.Engine.EngineDirectory + "Log\\";
-			ToolsDirectory = BusEngine.Engine.EngineDirectory + "Tools\\";
-}
-
-using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
-			BusEngine.Engine.BinDirectory = BusEngine.Engine.EngineDirectory + "Bin\\";
-			BusEngine.Engine.CodeDirectory = BusEngine.Engine.EngineDirectory + "Code\\";
-			BusEngine.Engine.DataDirectory = BusEngine.Engine.EngineDirectory + "Data\\";
-			BusEngine.Engine.EditorDirectory = BusEngine.Engine.EngineDirectory + "Editor\\";
-			BusEngine.Engine.LocalizationDirectory = BusEngine.Engine.EngineDirectory + "Localization\\";
-			BusEngine.Engine.LogDirectory = BusEngine.Engine.EngineDirectory + "Log\\";
-			BusEngine.Engine.ToolsDirectory = BusEngine.Engine.EngineDirectory + "Tools\\";
-}
-
-using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee1")) {
-			BinDirectory = BusEngine.Engine.EngineDirectory + "Bin\\";
-			CodeDirectory = BusEngine.Engine.EngineDirectory + "Code\\";
-			DataDirectory = BusEngine.Engine.EngineDirectory + "Data\\";
-			EditorDirectory = BusEngine.Engine.EngineDirectory + "Editor\\";
-			LocalizationDirectory = BusEngine.Engine.EngineDirectory + "Localization\\";
-			LogDirectory = BusEngine.Engine.EngineDirectory + "Log\\";
-			ToolsDirectory = BusEngine.Engine.EngineDirectory + "Tools\\";
-}
-
-using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
-			BusEngine.Engine.BinDirectory = BusEngine.Engine.EngineDirectory + "Bin\\";
-			BusEngine.Engine.CodeDirectory = BusEngine.Engine.EngineDirectory + "Code\\";
-			BusEngine.Engine.DataDirectory = BusEngine.Engine.EngineDirectory + "Data\\";
-			BusEngine.Engine.EditorDirectory = BusEngine.Engine.EngineDirectory + "Editor\\";
-			BusEngine.Engine.LocalizationDirectory = BusEngine.Engine.EngineDirectory + "Localization\\";
-			BusEngine.Engine.LogDirectory = BusEngine.Engine.EngineDirectory + "Log\\";
-			BusEngine.Engine.ToolsDirectory = BusEngine.Engine.EngineDirectory + "Tools\\";
-}
 
 			// ищем зависимости
 			/* System.AppDomain.CurrentDomain.AssemblyLoad  += new System.AssemblyLoadEventHandler((o, e) => {
@@ -1779,53 +1724,54 @@ using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
 
 			dynamic content;
 
-			if (setting.TryGetValue("content", out content) && content.GetType().GetProperty("Type") != null && !content.GetType().IsArray) {
+			if (setting.TryGetValue("content", out content) && content.GetType().GetProperty("Count") != null) {
 				foreach (dynamic i in content) {
-					if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string && content[i.Name] is string) {
-						string result = (string)content[i.Name];
+					if (i is object) {
+						string n = i.Name.ToString();
+						string v = i.Value.ToString();
 
-						settingDefault["content"][i.Name] = result;
+						settingDefault["content"][n] = v;
 
-						if (result.IndexOf("[bin]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[bin]", BusEngine.Engine.BinDirectory);
-						} else if (result.IndexOf("[code]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[code]", BusEngine.Engine.CodeDirectory);
-						} else if (result.IndexOf("[data]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[data]", BusEngine.Engine.DataDirectory);
-						} else /* if (result.IndexOf("[editor]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[editor]", BusEngine.Engine.EditorDirectory);
-						} else */ if (result.IndexOf("[engine]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[engine]", BusEngine.Engine.EngineDirectory);
-						} else if (result.IndexOf("[exe]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[exe]", BusEngine.Engine.ExeDirectory);
-						} else if (result.IndexOf("[localization]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[localization]", BusEngine.Engine.LocalizationDirectory);
-						} else if (result.IndexOf("[log]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[log]", BusEngine.Engine.LogDirectory);
-						} else if (result.IndexOf("[tools]", System.StringComparison.OrdinalIgnoreCase) != -1) {
-							result = result.Replace("[tools]", BusEngine.Engine.ToolsDirectory);
+						/* if (v.IndexOf("[bin]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[bin]", BusEngine.Engine.BinDirectory);
+						} else if (v.IndexOf("[code]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[code]", BusEngine.Engine.CodeDirectory);
+						} else if (v.IndexOf("[data]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[data]", BusEngine.Engine.DataDirectory);
+						} else if (v.IndexOf("[editor]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[editor]", BusEngine.Engine.EditorDirectory);
+						} else if (v.IndexOf("[engine]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[engine]", BusEngine.Engine.EngineDirectory);
+						} else if (v.IndexOf("[exe]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[exe]", BusEngine.Engine.ExeDirectory);
+						} else if (v.IndexOf("[localization]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[localization]", BusEngine.Engine.LocalizationDirectory);
+						} else if (v.IndexOf("[log]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[log]", BusEngine.Engine.LogDirectory);
+						} else if (v.IndexOf("[tools]", System.StringComparison.OrdinalIgnoreCase) != -1) {
+							v = v.Replace("[tools]", BusEngine.Engine.ToolsDirectory);
+						} */
+
+						if (v.IndexOf(":") == -1) {
+							v = BusEngine.Engine.EngineDirectory + v;
 						}
 
-						if (result.IndexOf(":") != -1) {
-							result = BusEngine.Engine.EngineDirectory + result;
-						}
-
-						if (i.Name == "exe") {
-							BusEngine.Engine.ExeDirectory = result + "\\";
-						} else if (i.Name == "bin") {
-							BusEngine.Engine.BinDirectory = result + "\\";
-						} else if (i.Name == "code") {
-							BusEngine.Engine.CodeDirectory = result + "\\";
-						} else if (i.Name == "data") {
-							BusEngine.Engine.DataDirectory = result + "\\";
-						} else /* if (i.Name == "editor") {
-							BusEngine.Engine.EditorDirectory = result + "\\";
-						} else */ if (i.Name == "localization") {
-							BusEngine.Engine.LocalizationDirectory = result + "\\";
-						} else if (i.Name == "log") {
-							BusEngine.Engine.LogDirectory = result + "\\";
-						} else if (i.Name == "tools") {
-							BusEngine.Engine.ToolsDirectory = result + "\\";
+						if (n == "exe") {
+							BusEngine.Engine.ExeDirectory = v + "\\";
+						} else if (n == "bin") {
+							BusEngine.Engine.BinDirectory = v + "\\";
+						} else if (n == "code") {
+							BusEngine.Engine.CodeDirectory = v + "\\";
+						} else if (n == "data") {
+							BusEngine.Engine.DataDirectory = v + "\\";
+						} else /* if (n == "editor") {
+							BusEngine.Engine.EditorDirectory = v + "\\";
+						} else */ if (n == "localization") {
+							BusEngine.Engine.LocalizationDirectory = v + "\\";
+						} else if (n == "log") {
+							BusEngine.Engine.LogDirectory = v + "\\";
+						} else if (n == "tools") {
+							BusEngine.Engine.ToolsDirectory = v + "\\";
 						}
 					}
 				}
@@ -1835,10 +1781,10 @@ using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
 
 			dynamic console_commands;
 
-			if (setting.TryGetValue("console_commands", out console_commands) && console_commands.GetType().GetProperty("Type") != null && !console_commands.GetType().IsArray) {
+			if (setting.TryGetValue("console_commands", out console_commands) && console_commands.GetType().GetProperty("Count") != null) {
 				foreach (dynamic i in console_commands) {
-					if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-						settingDefault["console_commands"][i.Name] = (string)console_commands[i.Name];
+					if (i is object) {
+						settingDefault["console_commands"][i.Name.ToString()] = i.Value.ToString();
 					}
 				}
 			}
@@ -1847,10 +1793,33 @@ using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
 
 			dynamic console_variables;
 
-			if (setting.TryGetValue("console_variables", out console_variables) && console_variables.GetType().GetProperty("Type") != null && !console_variables.GetType().IsArray) {
+			if (setting.TryGetValue("console_variables", out console_variables) && console_variables.GetType().GetProperty("Count") != null) {
+				/* BusEngine.Log.Info("console_variables.GetType().IsArray: {0}", console_variables.GetType().IsArray);
+				BusEngine.Log.Info("console_variables.GetType().IsByRef: {0}", console_variables.GetType().IsByRef);
+				BusEngine.Log.Info("console_variables.GetType().IsAutoClass: {0}", console_variables.GetType().IsAutoClass);
+				BusEngine.Log.Info("console_variables.GetType().IsAutoLayout: {0}", console_variables.GetType().IsAutoLayout);
+				BusEngine.Log.Info("console_variables.GetType().IsGenericParameter: {0}", console_variables.GetType().IsGenericParameter);
+				BusEngine.Log.Info("console_variables.GetType().IsClass: {0}", console_variables.GetType().IsClass);
+				BusEngine.Log.Info("console_variables.GetType().IsCOMObject: {0}", console_variables.GetType().IsCOMObject);
+				BusEngine.Log.Info("console_variables.GetType().IsConstructedGenericType: {0}", console_variables.GetType().IsConstructedGenericType);
+				BusEngine.Log.Info("console_variables.GetType().IsContextful: {0}", console_variables.GetType().IsContextful);
+				BusEngine.Log.Info("console_variables.GetType().IsEnum: {0}", console_variables.GetType().IsEnum);
+				BusEngine.Log.Info("console_variables.GetType().IsExplicitLayout: {0}", console_variables.GetType().IsExplicitLayout);
+				BusEngine.Log.Info("console_variables.GetType().IsGenericType: {0}", console_variables.GetType().IsGenericType);
+				BusEngine.Log.Info("console_variables.GetType().IsGenericTypeDefinition: {0}", console_variables.GetType().IsGenericTypeDefinition);
+				BusEngine.Log.Info("console_variables.GetType().IsImport: {0}", console_variables.GetType().IsImport);
+				BusEngine.Log.Info("console_variables.GetType().IsInterface: {0}", console_variables.GetType().IsInterface);
+				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
+				BusEngine.Log.Info("console_variables.GetType().IsMarshalByRef: {0}", console_variables.GetType().IsMarshalByRef);
+				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
+				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
+				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
+				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
+				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
+				BusEngine.Log.Info("console_variables.GetType().Count: {0}", console_variables.GetType().GetProperty("Count") == null); */
 				foreach (dynamic i in console_variables) {
-					if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-						settingDefault["console_variables"][i.Name] = (string)console_variables[i.Name];
+					if (i is object) {
+						settingDefault["console_variables"][i.Name.ToString()] = i.Value.ToString();
 					}
 				}
 			}
@@ -1859,11 +1828,14 @@ using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
 
 			dynamic info;
 
-			if (setting.TryGetValue("info", out info) && info.GetType().GetProperty("Type") != null && !info.GetType().IsArray) {
+			if (setting.TryGetValue("info", out info) && info.GetType().GetProperty("Count") != null) {
 				foreach (dynamic i in info) {
-					if (i is object && i.GetType().GetProperty("Name") != null && i.Name is string) {
-						if (i.Name == "icon") {
-							settingDefault["info"][i.Name] = ((string)info[i.Name])
+					if (i is object) {
+						string n = i.Name.ToString();
+						string v = i.Value.ToString();
+
+						if (n == "icon") {
+							settingDefault["info"][n] = (v)
 							.Replace("[bin]", BusEngine.Engine.BinDirectory)
 							.Replace("[code]", BusEngine.Engine.CodeDirectory)
 							.Replace("[data]", BusEngine.Engine.DataDirectory)
@@ -1874,7 +1846,7 @@ using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
 							.Replace("[log]", BusEngine.Engine.LogDirectory)
 							.Replace("[tools]", BusEngine.Engine.ToolsDirectory);
 						} else {
-							settingDefault["info"][i.Name] = (string)info[i.Name];
+							settingDefault["info"][n] = v;
 						}
 					}
 				}
@@ -1884,7 +1856,7 @@ using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
 
 			dynamic require;
 
-			if (setting.TryGetValue("require", out require) && require.GetType().GetProperty("Type") != null && require.ContainsKey("plugins") && require["plugins"].Type.ToString() == "Array") {
+			if (setting.TryGetValue("require", out require) && require.ContainsKey("plugins") && require["plugins"].Type.ToString() == "Array") {
 				int i, ii = require["plugins"].Count;
 
 				for (i = 0; i < ii; ++i) {
@@ -1920,9 +1892,6 @@ using (new BusEngine.Benchmark("eeeeeeeeeeeeeeee2")) {
 			BusEngine.Engine.SettingProject = settingDefault;
 
 			//settingDefault = null;
-BusEngine.Log.Info("settingDefault: {0}", settingDefault);
-			// определяем устройство
-			//new BusEngine.Engine.Device();
 
 			// инициализируем язык
 			new BusEngine.Localization().Initialize();
@@ -3567,17 +3536,28 @@ BusEngine.UI
 				//_canvas = new Canvas();
 
 				// инициализируем плагины
-				new BusEngine.IPlugin("InitializeСanvas");
+				//System.Threading.Tasks.Task.Run(() => {
+					new BusEngine.IPlugin("InitializeСanvas");
+				//});
 			//}
 		}
 
 		public static void Shutdown() {
+			BusEngine.UI.Canvas.ShutdownStatic();
+		}
+
+		public static void ShutdownStatic() {
 			//BusEngine.UI.Canvas.WinForm.Close();
-			BusEngine.UI.Canvas.WinForm.Dispose();
+			//BusEngine.UI.Canvas.WinForm.Dispose();
 		}
 
 		public void Dispose() {
+			BusEngine.Log.Info("Canvas Dispose");
 			BusEngine.UI.Canvas.WinForm.Dispose();
+		}
+
+		~Canvas() {
+			BusEngine.Log.Info("Canvas ~");
 		}
 	}
 	/** API BusEngine.UI.Canvas */
