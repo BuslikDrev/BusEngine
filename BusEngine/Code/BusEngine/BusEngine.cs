@@ -68,24 +68,23 @@ namespace BusEngine.Experemental {
 	internal class Log : System.IDisposable {
 		private static System.Collections.Concurrent.BlockingCollection<string> _blockingCollection = new System.Collections.Concurrent.BlockingCollection<string>();
 		private static System.Threading.Tasks.Task _task = System.Threading.Tasks.Task.Factory.StartNew(() => {
-				if (!System.IO.Directory.Exists(BusEngine.Engine.LogDirectory)) {
-					System.IO.Directory.CreateDirectory(BusEngine.Engine.LogDirectory);
+			if (!System.IO.Directory.Exists(BusEngine.Engine.LogDirectory)) {
+				System.IO.Directory.CreateDirectory(BusEngine.Engine.LogDirectory);
+			}
+
+			using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(BusEngine.Engine.LogDirectory + "Benchmark.log", true, BusEngine.Engine.UTF8NotBOM)) {
+				streamWriter.AutoFlush = true;
+				streamWriter.WriteLine("------------------------------------------------------------");
+
+				foreach (string s in _blockingCollection.GetConsumingEnumerable()) {
+					streamWriter.WriteLine(s);
 				}
+			}
+		}, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 
-				using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(BusEngine.Engine.LogDirectory + "Benchmark.log", true, BusEngine.Engine.UTF8NotBOM)) {
-					streamWriter.AutoFlush = true;
-					streamWriter.WriteLine("------------------------------------------------------------");
-//BusEngine.Engine.UTF8NotBOM
-					foreach (string s in _blockingCollection.GetConsumingEnumerable()) {
-						streamWriter.WriteLine(s);
-					}
-				}
-			},
-			System.Threading.Tasks.TaskCreationOptions.LongRunning);
+		/* static Log() {
 
-		static Log() {
-
-		}
+		} */
 
 		public static void File(string action) {
 			_blockingCollection.Add(System.DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + ": " + action);
@@ -109,108 +108,108 @@ namespace BusEngine {
 		public System.Collections.Generic.Dictionary<string, dynamic> Setting;
 
 		public ProjectDefault() {
-		Setting = new System.Collections.Generic.Dictionary<string, dynamic>(5, System.StringComparer.OrdinalIgnoreCase) {
-			{"console_commands", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
-				{"sys_Spec", "1"},                    // Выбор уровня настроек графики
-				{"sys_FPS", "256"},                   // Ограничение частоты кадров в секунду
-				{"sys_MemoryClearTime", "5"},        // Установка промежутка времени для освобождения оперативной памяти в секундах
-				{"sys_MemoryClearAuto", "1"},         // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
-				{"r_WaterOcean", "0"},                // Статус работы океана
-				{"r_VolumetricClouds", "1"},          // Статус работы облаков
-				{"r_DisplayInfo", "2"},               // Статус работы окна информации
-				{"r_FullScreen", "0"},                // Выбор режима работы окна приложения
-				{"r_Width", "1280"},                  // Ширина окна приложения
-				{"r_Height", "720"},                  // Высота окна приложения
-				{"google_api_key", ""},               // Секретный ключ API приложения Google
-				{"google_default_client_id", ""},     // ID пользователя API приложения Google
-				{"google_default_client_secret", ""}, // Секретный ключ пользователя API приложения Google
-			}},
-			{"console_variables", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
-				{"sys_Spec", "1"},
-				{"e_WaterOcean", "0"},
-				{"r_WaterOcean", "0"},
-				{"r_VolumetricClouds", "1"},
-				{"r_DisplayInfo", "0"},
-				{"r_FullScreen", "0"},
-				{"r_Width", "1280"},
-				{"r_Height", "720"},
-				{"google_api_key", ""},
-				{"google_default_client_id", ""},
-				{"google_default_client_secret", ""},
-			}},
-			{"info", new System.Collections.Generic.Dictionary<string, string>(5) {
-				{"name", "Game"},
-				{"version", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
-				{"icon", "[data]/Icons/BusEngine.ico"},
-				{"type", ""},
-				{"guid", System.Convert.ToString(System.Guid.NewGuid())}
-			}},
-			{"content", new System.Collections.Generic.Dictionary<string, object>(7) {
-				{"bin", "Bin"},
-				{"code", "Code"},
-				{"data", "Data"},
-				{"localization", "Localization"},
-				{"log", "Log"},
-				{"tools", "Tools"},
-				{"libs",  new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
-					new System.Collections.Generic.Dictionary<string, object>(2) {
-						{"name", "BusEngine"},
-						{"shared", new System.Collections.Generic.Dictionary<string, string>(5) {
-							{"Any", ""},
-							{"Android", ""},
-							{"Win", ""},
-							{"Win_x64", ""},
-							{"Win_x86", ""}
-						}}
-					}
+			Setting = new System.Collections.Generic.Dictionary<string, dynamic>(5, System.StringComparer.OrdinalIgnoreCase) {
+				{"console_commands", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
+					{"sys_Spec", "1"},                    // Выбор уровня настроек графики
+					{"sys_FPS", "256"},                   // Ограничение частоты кадров в секунду
+					{"sys_MemoryClearTime", "5"},         // Установка промежутка времени для освобождения оперативной памяти в секундах
+					{"sys_MemoryClearAuto", "1"},         // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
+					{"r_WaterOcean", "0"},                // Статус работы океана
+					{"r_VolumetricClouds", "1"},          // Статус работы облаков
+					{"r_DisplayInfo", "2"},               // Статус работы окна информации
+					{"r_FullScreen", "0"},                // Выбор режима работы окна приложения
+					{"r_Width", "1280"},                  // Ширина окна приложения
+					{"r_Height", "720"},                  // Высота окна приложения
+					{"google_api_key", ""},               // Секретный ключ API приложения Google
+					{"google_default_client_id", ""},     // ID пользователя API приложения Google
+					{"google_default_client_secret", ""}, // Секретный ключ пользователя API приложения Google
+				}},
+				{"console_variables", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
+					{"sys_Spec", "1"},
+					{"e_WaterOcean", "0"},
+					{"r_WaterOcean", "0"},
+					{"r_VolumetricClouds", "1"},
+					{"r_DisplayInfo", "0"},
+					{"r_FullScreen", "0"},
+					{"r_Width", "1280"},
+					{"r_Height", "720"},
+					{"google_api_key", ""},
+					{"google_default_client_id", ""},
+					{"google_default_client_secret", ""},
+				}},
+				{"info", new System.Collections.Generic.Dictionary<string, string>(5) {
+					{"name", "Game"},
+					{"version", "1.0.0.0"},
+					{"icon", "[data]/Icons/BusEngine.ico"},
+					{"type", ""},
+					{"guid", System.Convert.ToString(System.Guid.NewGuid())}
+				}},
+				{"content", new System.Collections.Generic.Dictionary<string, object>(7) {
+					{"bin", "Bin"},
+					{"code", "Code"},
+					{"data", "Data"},
+					{"localization", "Localization"},
+					{"log", "Log"},
+					{"tools", "Tools"},
+					{"libs",  new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
+						new System.Collections.Generic.Dictionary<string, object>(2) {
+							{"name", "BusEngine"},
+							{"shared", new System.Collections.Generic.Dictionary<string, string>(5) {
+								{"Any", ""},
+								{"Android", ""},
+								{"Win", ""},
+								{"Win_x64", ""},
+								{"Win_x86", ""}
+							}}
+						}
+					}}
+				}},
+				{"require", new System.Collections.Generic.Dictionary<string, object>(2) {
+					{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
+					{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
+						new System.Collections.Generic.Dictionary<string, object>() {
+							{"System", ""},
+							{"type", "EType::Managed"},
+							{"path", "Bin/Android/Game.dll"},
+							{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+								{"Android", "Android"}
+							}}
+						},
+						new System.Collections.Generic.Dictionary<string, object>() {
+							{"System", ""},
+							{"type", "EType::Managed"},
+							{"path", "Bin/Win/Game.dll"},
+							{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+								{"Win", "Windows"}
+							}}
+						},
+						new System.Collections.Generic.Dictionary<string, object>() {
+							{"System", ""},
+							{"type", "EType::Managed"},
+							{"path", "Bin/Win_x86/Game.dll"},
+							{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+								{"Win_x86", "Windows"}
+							}}
+						},
+						new System.Collections.Generic.Dictionary<string, object>() {
+							{"System", ""},
+							{"type", "EType::Managed"},
+							{"path", "Bin/Win_x64/Game.dll"},
+							{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+								{"Win_x64", "Windows"}
+							}}
+						},
+						new System.Collections.Generic.Dictionary<string, object>() {
+							{"System", ""},
+							{"type", "EType::Managed"},
+							{"path", "Game"},
+							{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
+								{"Any", "Any"}
+							}}
+						}
+					}}
 				}}
-			}},
-			{"require", new System.Collections.Generic.Dictionary<string, object>(2) {
-				{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
-				{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
-					new System.Collections.Generic.Dictionary<string, object>() {
-						{"System", ""},
-						{"type", "EType::Managed"},
-						{"path", "Bin/Android/Game.dll"},
-						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
-							{"Android", "Android"}
-						}}
-					},
-					new System.Collections.Generic.Dictionary<string, object>() {
-						{"System", ""},
-						{"type", "EType::Managed"},
-						{"path", "Bin/Win/Game.dll"},
-						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
-							{"Win", "Windows"}
-						}}
-					},
-					new System.Collections.Generic.Dictionary<string, object>() {
-						{"System", ""},
-						{"type", "EType::Managed"},
-						{"path", "Bin/Win_x86/Game.dll"},
-						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
-							{"Win_x86", "Windows"}
-						}}
-					},
-					new System.Collections.Generic.Dictionary<string, object>() {
-						{"System", ""},
-						{"type", "EType::Managed"},
-						{"path", "Bin/Win_x64/Game.dll"},
-						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
-							{"Win_x64", "Windows"}
-						}}
-					},
-					new System.Collections.Generic.Dictionary<string, object>() {
-						{"System", ""},
-						{"type", "EType::Managed"},
-						{"path", "Bin/Win_x64/Game.dll"},
-						{"platforms", new System.Collections.Generic.Dictionary<string, string>(1) {
-							{"Any", "Any"}
-						}}
-					}
-				}}
-			}}
-		};
+			};
 		}
 
 		public void Dispose() {
@@ -1524,7 +1523,6 @@ BusEngine.Tools
 */
 	/** API BusEngine.Engine */
 	public class Engine : System.IDisposable {
-		private static int TimerCount = 3;
 		private static System.Timers.Timer Timer;
 		public delegate void EngineHandler();
 		public static event EngineHandler OnInitialize;
@@ -1794,29 +1792,6 @@ BusEngine.Tools
 			dynamic console_variables;
 
 			if (setting.TryGetValue("console_variables", out console_variables) && console_variables.GetType().GetProperty("Count") != null) {
-				/* BusEngine.Log.Info("console_variables.GetType().IsArray: {0}", console_variables.GetType().IsArray);
-				BusEngine.Log.Info("console_variables.GetType().IsByRef: {0}", console_variables.GetType().IsByRef);
-				BusEngine.Log.Info("console_variables.GetType().IsAutoClass: {0}", console_variables.GetType().IsAutoClass);
-				BusEngine.Log.Info("console_variables.GetType().IsAutoLayout: {0}", console_variables.GetType().IsAutoLayout);
-				BusEngine.Log.Info("console_variables.GetType().IsGenericParameter: {0}", console_variables.GetType().IsGenericParameter);
-				BusEngine.Log.Info("console_variables.GetType().IsClass: {0}", console_variables.GetType().IsClass);
-				BusEngine.Log.Info("console_variables.GetType().IsCOMObject: {0}", console_variables.GetType().IsCOMObject);
-				BusEngine.Log.Info("console_variables.GetType().IsConstructedGenericType: {0}", console_variables.GetType().IsConstructedGenericType);
-				BusEngine.Log.Info("console_variables.GetType().IsContextful: {0}", console_variables.GetType().IsContextful);
-				BusEngine.Log.Info("console_variables.GetType().IsEnum: {0}", console_variables.GetType().IsEnum);
-				BusEngine.Log.Info("console_variables.GetType().IsExplicitLayout: {0}", console_variables.GetType().IsExplicitLayout);
-				BusEngine.Log.Info("console_variables.GetType().IsGenericType: {0}", console_variables.GetType().IsGenericType);
-				BusEngine.Log.Info("console_variables.GetType().IsGenericTypeDefinition: {0}", console_variables.GetType().IsGenericTypeDefinition);
-				BusEngine.Log.Info("console_variables.GetType().IsImport: {0}", console_variables.GetType().IsImport);
-				BusEngine.Log.Info("console_variables.GetType().IsInterface: {0}", console_variables.GetType().IsInterface);
-				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
-				BusEngine.Log.Info("console_variables.GetType().IsMarshalByRef: {0}", console_variables.GetType().IsMarshalByRef);
-				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
-				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
-				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
-				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
-				BusEngine.Log.Info("console_variables.GetType().IsLayoutSequential: {0}", console_variables.GetType().IsLayoutSequential);
-				BusEngine.Log.Info("console_variables.GetType().Count: {0}", console_variables.GetType().GetProperty("Count") == null); */
 				foreach (dynamic i in console_variables) {
 					if (i is object) {
 						settingDefault["console_variables"][i.Name.ToString()] = i.Value.ToString();
@@ -1919,36 +1894,19 @@ BusEngine.Tools
 			// чистим память в автоматическом режиме
 			//System.IntPtr hglobal = System.Runtime.InteropServices.Marshal.AllocHGlobal(1024*1024*1000);
 			if (BusEngine.Engine.SettingProject["console_commands"]["sys_MemoryClearAuto"] == "1" && BusEngine.Engine.Timer == null) {
-				BusEngine.Log.Info("Timer ne всё. {0}", BusEngine.Engine.Timer);
 				BusEngine.Engine.Timer = new System.Timers.Timer(System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["sys_MemoryClearTime"])*1000);
 				System.Timers.ElapsedEventHandler onTime = null;
 				onTime = (o, e) => {
-					BusEngine.Engine.TimerCount--;
-
-					if (BusEngine.Engine.TimerCount <= 0) {
-						BusEngine.Log.Info("Timer всё.");
-						//BusEngine.Engine.Timer.Elapsed -= onTime;
-						System.EventHandler onTimeDisposed = null;
-						onTimeDisposed = (os, es) => {
-							BusEngine.Engine.Timer.Disposed -= onTimeDisposed;
-							onTimeDisposed = null;
-							BusEngine.Log.Info("x {0}", BusEngine.Engine.Timer);
-							BusEngine.Log.Info("Generation Benchmark ~: {0}", System.GC.GetGeneration(BusEngine.Engine.Timer));
-							BusEngine.Engine.Timer = null;
-							System.GC.Collect();
-							System.GC.WaitForPendingFinalizers();
-							System.GC.Collect();
-							BusEngine.Log.Info("x {0}", BusEngine.Engine.Timer);
-							BusEngine.Log.Info("Total Memory Benchmark ~: {0}", System.GC.GetTotalMemory(true));
-							//System.Runtime.InteropServices.Marshal.FreeHGlobal(hglobal);
-						};
-						BusEngine.Engine.Timer.Disposed += onTimeDisposed;
+					if (BusEngine.Engine.IsShutdown) {
+						BusEngine.Engine.Timer.Elapsed -= onTime;
 						BusEngine.Engine.Timer.Dispose();
 					}
 
 					System.GC.Collect();
 					System.GC.WaitForPendingFinalizers();
 					System.GC.Collect();
+
+					BusEngine.Log.Info("Вызов сборщика мусора. {0}", BusEngine.Engine.Timer);
 				};
 				BusEngine.Engine.Timer.Elapsed += onTime;
 				BusEngine.Engine.Timer.AutoReset = true;
