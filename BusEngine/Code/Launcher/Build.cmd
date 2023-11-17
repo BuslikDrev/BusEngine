@@ -1,13 +1,17 @@
+chcp 65001
+REM @echo off
 REM Указать путь до BusEngine | Specify the path to the BusEngine | http://dl.gsu.by/doc/use/ntcmds.htm
-REM SET BusEngineFolder="H:\BusEngine"
 SET BusEngineFolder=%~dp0..\..\
 
-REM Указать путь до MSBuild | Specify the path to the MSBuild | https://en.wikipedia.org/wiki/MSBuild#Versions
+REM Указать путь до MSBuild | Specify the path to the MSBuild | https://vk.com/@busengine-sopostavlyaem-versiu-s-csharp-s-kompilyatorom-i-platformoi-n
 REM SET MSBuild="C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
+SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\MSBuild\14.0\Bin\amd64\MSBuild.exe"
-SET MSBuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
+REM SET MSBuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe"
@@ -16,13 +20,19 @@ REM SET MSBuild="C:\Windows\Microsoft.NET\Framework64\v3.5\MSBuild.exe"
 REM Указать путь до dotNET (если он нужен) | Specify the path to dotNET (if needed) | MSBuild v17.0+ in dotnet v6
 SET dotNET="C:\Program Files\dotnet\dotnet.exe"
 
+REM Cache .NET https://learn.microsoft.com/en-us/dotnet/framework/tools/ngen-exe-native-image-generator#PriorityTable
+cd C:\Windows\assembly
+SET cache="C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe"
+SET cache64="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe"
+REM C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe install "%BusEngineFolder:"=%/Bin/Win/BusEngine.dll" /Profile /queue:1 /nologo
+
 REM 0=AnyCPU 1=x64 2=x86 3=Android
 SET Platform=0
 
 REM 0=BusEngine 1=Launcher 2=Editor 3=Plugin 4=Server 5=Game 6=GameAndroid
 SET Type=1
 
-REM 0=MSBuild 1=MSBuild 2=dotNET
+REM 0=MSBuild 1=MSBuild 2=dotNET build 3=dotNET run
 SET TypeBuild=1
 
 SET NameBusEngine="BusEngine"
@@ -145,10 +155,15 @@ COPY /b nul+%CSProj% %Dump%
 MOVE /Y %Dump% %CSProj%
 
 REM Сборка для BusEngine | Building for BusEngine
-IF %TypeBuild% == 2 (
-	%dotNET% build %CSProj% %Params%
+IF %TypeBuild% == 3 (
+	REM https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-build
+	%dotNET% run --project %CSProj% -c Release -f net471 %Params%
+) ELSE IF %TypeBuild% == 2 (
+	%dotNET% build %CSProj% -f net5.0-windows %Params%
+) ELSE IF %TypeBuild% == 1 (
+	%MSBuild% %CSProj% -p:TargetFramework=net471 %Params%
 ) ELSE (
-	%MSBuild% %CSProj% %Params%
+	%MSBuild% %CSProj% -p:TargetFramework=net471 %Params%
 )
 REM удалить "obj\*" | delete "obj\*"
 rd "%~dp0obj" /s /q
@@ -163,10 +178,16 @@ IF %Type% == 0 (
 )
 IF %typestatus% == true (
 	IF %Platform% == 1 (
+		REM cd "%BusEngineFolder:"=%/Bin/Win_x64"
+		REM %cache64% install %win64% /queue:1
 		"c:\windows\explorer.exe" %win64%
 	) ELSE IF %Platform% == 2 (
+		REM "%BusEngineFolder:"=%/Bin/Win_x86"
+		REM %cache% install %win86% /queue:1
 		"c:\windows\explorer.exe" %win86%
 	) ELSE (
+		REM "%BusEngineFolder:"=%/Bin/Win"
+		REM %cache% install %win% /queue:1
 		"c:\windows\explorer.exe" %win%
 	)
 ) ELSE (
