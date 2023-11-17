@@ -214,11 +214,11 @@ namespace BusEngine {
 
 		public void Dispose() {
 			Setting = null;
-			BusEngine.Log.Info("ProjectDefault Dispose");
+			//BusEngine.Log.Info("ProjectDefault Dispose");
 		}
 
 		~ProjectDefault() {
-			BusEngine.Log.Info("ProjectDefault ~");
+			//BusEngine.Log.Info("ProjectDefault ~");
 		}
 	}
 	/** API BusEngine.ProjectDefault */
@@ -1617,7 +1617,7 @@ BusEngine.Tools
 			#endif
 			
 			//BusEngine.Log.ConsoleShow();
-			BusEngine.Log.Info("Engine Start");
+			//BusEngine.Log.Info("Engine Start");
 
 			UTF8NotBOM = new System.Text.UTF8Encoding(false);
 
@@ -1860,7 +1860,7 @@ BusEngine.Tools
 
 			//require = null;
 
-			setting.Clear();
+			//setting.Clear();
 			//setting = null;
 
 			//BusEngine.Engine.SettingEngine = settingDefault;
@@ -1894,7 +1894,11 @@ BusEngine.Tools
 			// чистим память в автоматическом режиме
 			//System.IntPtr hglobal = System.Runtime.InteropServices.Marshal.AllocHGlobal(1024*1024*1000);
 			if (BusEngine.Engine.SettingProject["console_commands"]["sys_MemoryClearAuto"] == "1" && BusEngine.Engine.Timer == null) {
-				BusEngine.Engine.Timer = new System.Timers.Timer(System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["sys_MemoryClearTime"])*1000);
+				int sys_MemoryClearTime;
+				if (!int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_MemoryClearTime"], out sys_MemoryClearTime) || sys_MemoryClearTime < 1) {
+					sys_MemoryClearTime = 1;
+				}
+				BusEngine.Engine.Timer = new System.Timers.Timer(sys_MemoryClearTime*1000);
 				System.Timers.ElapsedEventHandler onTime = null;
 				onTime = (o, e) => {
 					if (BusEngine.Engine.IsShutdown) {
@@ -1945,31 +1949,20 @@ BusEngine.Tools
 		}
 
 		public static void ShutdownStatic(bool nagibator = false) {
-			// асинхронно закрываем программу, чтобы BENCHMARK смог отработать
-			//System.Threading.Tasks.Task.Run(() => {
-				//if (!BusEngine.Engine.IsShutdown) {
-					// отключаем плагины
-					new BusEngine.IPlugin("Shutdown");
-				//}
+			// отключаем плагины
+			new BusEngine.IPlugin("Shutdown");
 
-				// закрываем окно консоли
-				//BusEngine.Log.Shutdown();
+			// закрываем окно BusEngine
+			if (BusEngine.Engine.OnShutdown != null) {
+				BusEngine.Engine.OnShutdown.Invoke();
+			}
 
-				// закрываем окно принудительно
-				//BusEngine.UI.Canvas.Shutdown();
+			if (nagibator) {
+				System.Environment.Exit(0);
+			}
 
-				// закрываем окно BusEngine
-				if (BusEngine.Engine.OnShutdown != null) {
-					BusEngine.Engine.OnShutdown.Invoke();
-				}
-
-				if (nagibator) {
-					System.Environment.Exit(0);
-				}
-
-				// предотвращаем повторное использование
-				BusEngine.Engine.IsShutdown = true;
-			//});
+			// предотвращаем повторное использование
+			BusEngine.Engine.IsShutdown = true;
 		}
 
 		public void Dispose() {
@@ -2102,33 +2095,21 @@ namespace BusEngine {
 			StartLocalization(language);
 		}
 
-		/* public void ReLoad() {
-
-		} */
-
 		private void StartLocalization(string Language = null) {
 			int n = File.Length;
 			if (n > 0) {
 				File = "/" + File;
 			}
-			string path, platform, files;
+			string path = BusEngine.Engine.LocalizationDirectory, files = "";
 
-			files = "";
-
-			platform = BusEngine.Engine.Platform;
-
-			if (platform.IndexOf("Windows", System.StringComparison.OrdinalIgnoreCase) != -1 || 1 == 1) {
-				path = BusEngine.Engine.LocalizationDirectory;
-
+			if (BusEngine.Engine.Platform.IndexOf("Windows", System.StringComparison.OrdinalIgnoreCase) != -1 || 1 == 1) {
 				if (!System.IO.Directory.Exists(path)) {
 					path = path.Replace(BusEngine.Engine.EngineDirectory, BusEngine.Engine.DataDirectory);
 				}
 			} else {
-				if (platform == "WebGL") {
+				if (BusEngine.Engine.Platform == "WebGL") {
 					path = "Localization/";
 				} else {
-					// https://docs.unity3d.com/Manual/StreamingAssets.html
-					// https://docs.unity3d.com/ScriptReference/Application-streamingAssetsPath.html
 					path = BusEngine.Engine.DataDirectory + "/Localization/";
 				}
 			}
@@ -2152,47 +2133,51 @@ namespace BusEngine {
 
 			if (files != "") {
 				string[] lines, pairs;
-				int i, ii;
+				int i, l;
+				char[] c = new char[] {'='};
 
 				lines = files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
-				ii = lines.Length;
+				l = lines.Length;
 
 				/* if (GetLanguages != null) {
 					GetLanguages.Clear();
 				} */
-				GetLanguages = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(System.Environment.ProcessorCount, ii);
 
-				for (i = 0; i < ii; ++i) {
-					pairs = lines[i].Split(new char[] {'='}, 2);
+				if (GetLanguages == null) {
+					GetLanguages = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(System.Environment.ProcessorCount, l);
+				}
+
+				for (i = 0; i < l; i++) {
+					pairs = lines[i].Split(c, 2);
+
 					if (pairs.Length == 2) {
 						GetLanguages[pairs[0].Trim()] = pairs[1].Trim();
 					}
 				}
 			}
 
-			//ReLoad();
 			if (OnLoad != null) {
 				OnLoad.Invoke(this, Language);
 			}
+
 			if (OnLoadStatic != null) {
 				OnLoadStatic.Invoke(this, Language);
 			}
-
-			//System.GC.SuppressFinalize(this);
-			this.Dispose();
 		}
 
-		public static void Shutdown() {}
+		public void Shutdown() {
+			GetLanguages.Clear();
+		}
+
+		public static void ShutdownStatic() {
+			GetLanguages.Clear();
+		}
 
 		public void Dispose() {
-			//System.GC.Collect();
-			//System.GC.WaitForPendingFinalizers();
-			//System.GC.SuppressFinalize(this);
+
 		}
 
 		~Localization() {
-			//System.GC.Collect();
-			//System.GC.WaitForPendingFinalizers();
 			BusEngine.Log.Info("Localization ~");
 		}
 	}
