@@ -889,7 +889,8 @@ BusEngine.Tools.Json
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
 		private CefSharp.WinForms.ChromiumWebBrowser browser;
-		public delegate void OnPostMessageHandler(string e);
+		private string Url;
+		public delegate void OnPostMessageHandler(Browser o, string e);
 		public event OnPostMessageHandler OnPostMessage;
 		public delegate OnDownloadArgs OnDownloadHandler(OnDownloadArgs e);
 		public event OnDownloadHandler OnDownload;
@@ -955,13 +956,13 @@ BusEngine.Tools.Json
 		public CefSharp.IDownloadHandler Download(string path, CefSharp.IDownloadHandler downloadHandler) {
 			return downloadHandler;
 		} */
-		
+
 		public Browser() {
 
 		}
-		
+
 		public Browser(string url) : this() {
-			this.Load(url);
+			Url = url;
 		}
 
 		/** все события из PostMessage js браузера */
@@ -974,7 +975,7 @@ BusEngine.Tools.Json
 				#if BROWSER_LOG
 				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnPostMessageStatic");
 				#endif
-				OnPostMessage.Invoke((string)e.Message);
+				OnPostMessage.Invoke(this, (string)e.Message);
 			}
 			#if BUSENGINE_BENCHMARK
 			}
@@ -1053,6 +1054,7 @@ BusEngine.Tools.Json
 			}
 			#endif
 		}
+
 		public void Download(string url = "") {
 			if (browser != null) {
 				typeDownload(false);
@@ -1064,6 +1066,7 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
 		}
+
 		public void Download(string url = "", string path = "") {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Browser.Download")) {
@@ -1108,16 +1111,28 @@ BusEngine.Tools.Json
 
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
-		public void Load(string url = "") {
-			this.Load(url, BusEngine.Engine.DataDirectory);
+		public Browser Load() {
+			return this.Load(this.Url, BusEngine.Engine.DataDirectory);
 		}
-		public void Load(string url = "", string root = "") {
+
+		public Browser Load(string url = "") {
+			if (url == null || url == "") {
+				url = this.Url;
+			}
+			return this.Load(url, BusEngine.Engine.DataDirectory);
+		}
+
+		public Browser Load(string url = "", string root = "") {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Browser.Load")) {
 			#endif
 			if (browser != null) {
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер уже запущен!");
 			} else {
+				if (url == null || url == "") {
+					url = "index.html";
+				}
+
 				// если ссылка не абсолютный адрес, то делаем его абсолютным
 				System.Uri uriResult;
 				if (BusEngine.Browser.ValidURLStatic(url, out uriResult) && url.IndexOf(':') == -1) {
@@ -1397,6 +1412,8 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("3 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
 				BusEngine.Log.Info("3 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
 			}
+
+			return this;
 			#if BUSENGINE_BENCHMARK
 			}
 			#endif
@@ -1894,7 +1911,7 @@ BusEngine.Tools
 			//settingDefault = null;
 
 			// инициализируем язык
-			new BusEngine.Localization().Initialize();
+			new BusEngine.Localization().Load();
 
 			// включаем консоль
 			int r_DisplayInfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_DisplayInfo"]);
@@ -2121,9 +2138,13 @@ namespace BusEngine {
 			}
 		}
 
-		/* public Localization() {
-			_Localization = this;
-		} */
+		public Localization() {
+
+		}
+
+		public Localization(string language = null) : this() {
+			this.Language = language;
+		}
 
 		public static void SetLanguageStatic(string key, string value) {
 			if (GetLanguages != null) {
@@ -2143,18 +2164,14 @@ namespace BusEngine {
 			GetLanguages[key] = value;
 		}
 
-		internal Localization Initialize() {
-			Load(Language);
+		public Localization Load() {
+			return this.Load(this.Language);
+		}
+
+		public Localization Load(string language = null) {
+			StartLocalization(language);
 
 			return this;
-		}
-
-		public void Load() {
-			Load(Language);
-		}
-
-		public void Load(string language = null) {
-			StartLocalization(language);
 		}
 
 		private void StartLocalization(string Language = null) {
