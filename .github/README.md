@@ -48,17 +48,17 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [Chromium](https://github.com/chromium/chromium) 109.1.11 (109.0.5414.87) (для использования в BusEngine.Browser)
 
-[VideoLAN | libvlcsharp](https://github.com/videolan) 3.0.18 | 3.8.1 (для использования в BusEngine.Audio, BusEngine.Video)
+[VideoLAN | libvlcsharp](https://github.com/videolan) 3.0.18 | 3.8.2 (для использования в BusEngine.Audio, BusEngine.Video)
 
 [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 13.0.3 (для использования в BusEngine.Tools.Json)
 
 [Drawflow](https://github.com/jerosoler/Drawflow) 0.0.59 (для использования в BusEngine.FlowGraph)
 
-[three.js](https://github.com/mrdoob/three.js) r158 (для использования в тестовом проекте BusEngine)
+[three.js](https://github.com/mrdoob/three.js) r159 (для использования в тестовом проекте BusEngine)
 
 [DeepSpeech](https://github.com/mozilla/DeepSpeech) 0.9.3 (планируется - для возможности бесплатно распознавать голос и переводить в текст)
 
-[Silk.NET](https://github.com/dotnet/Silk.NET) 2.17.1 (планируется - для удобного использования возможностей видеокарт различных устройств)
+[Silk.NET](https://github.com/dotnet/Silk.NET) 2.19.0 (планируется - для удобного использования возможностей видеокарт различных устройств)
 
 ## Полезные ссылки
 
