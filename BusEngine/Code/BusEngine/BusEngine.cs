@@ -888,11 +888,11 @@ BusEngine.Tools.Json
 */
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
-		private static CefSharp.WinForms.ChromiumWebBrowser browser;
+		private CefSharp.WinForms.ChromiumWebBrowser browser;
 		public delegate void OnPostMessageHandler(string e);
-		public static event OnPostMessageHandler OnPostMessageStatic;
+		public event OnPostMessageHandler OnPostMessage;
 		public delegate OnDownloadArgs OnDownloadHandler(OnDownloadArgs e);
-		public static event OnDownloadHandler OnDownloadStatic;
+		public event OnDownloadHandler OnDownload;
 		public struct OnDownloadArgs {
 			public string ContentDisposition;
 			public long CurrentSpeed;
@@ -939,35 +939,42 @@ BusEngine.Tools.Json
 		}
 		public delegate void OnLoadHandler();
 		//public event OnLoadHandler OnLoad;
-		public static event OnLoadHandler OnLoadStatic;
-		private static string _DownloadPath = BusEngine.Engine.LogDirectory + "Browser\\download";
-		public static string DownloadPath {
+		public event OnLoadHandler OnLoad;
+		private string _DownloadPath = BusEngine.Engine.LogDirectory + "Browser\\download";
+		public string DownloadPath {
 			get {
 				return _DownloadPath;
 			} set {
 				_DownloadPath = value;
 			}
 		}
-		public static CefSharp.IDownloadHandler DownloadHandler { get; set; }
-		public static CefSharp.IDownloadHandler Download(CefSharp.IDownloadHandler downloadHandler) {
+		public CefSharp.IDownloadHandler DownloadHandler { get; set; }
+		/* public CefSharp.IDownloadHandler Download(CefSharp.IDownloadHandler downloadHandler) {
 			return downloadHandler;
 		}
-		public static CefSharp.IDownloadHandler Download(string path, CefSharp.IDownloadHandler downloadHandler) {
+		public CefSharp.IDownloadHandler Download(string path, CefSharp.IDownloadHandler downloadHandler) {
 			return downloadHandler;
+		} */
+		
+		public Browser() {
+
 		}
-		public Browser() {}
+		
+		public Browser(string url) : this() {
+			this.Load(url);
+		}
 
 		/** все события из PostMessage js браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
-		private static void OnCefPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
+		private void OnCefPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Browser.OnCefPostMessage")) {
 			#endif
-			if (OnPostMessageStatic != null) {
+			if (OnPostMessage != null) {
 				#if BROWSER_LOG
 				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnPostMessageStatic");
 				#endif
-				OnPostMessageStatic.Invoke((string)e.Message);
+				OnPostMessage.Invoke((string)e.Message);
 			}
 			#if BUSENGINE_BENCHMARK
 			}
@@ -977,15 +984,15 @@ BusEngine.Tools.Json
 
 		/** событие загрузки страницы браузера */
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
-		private static void OnCefFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
+		private void OnCefFrameLoadEnd(object sender, CefSharp.FrameLoadEndEventArgs e) {
 			#if BUSENGINE_BENCHMARK
-			using (new BusEngine.Benchmark("BusEngine.Browser.OnLoadStatic")) {
+			using (new BusEngine.Benchmark("BusEngine.Browser.OnLoad")) {
 			#endif
-			if (e.Frame.IsMain && OnLoadStatic != null) {
+			if (e.Frame.IsMain && OnLoad != null) {
 				#if BROWSER_LOG
-				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnLoadStatic");
+				BusEngine.Log.Info("BusEngine.Browser.{0}", "OnLoad");
 				#endif
-				OnLoadStatic.Invoke();
+				OnLoad.Invoke();
 				//e.Frame.Dispose();
 			}
 			#if BUSENGINE_BENCHMARK
@@ -995,9 +1002,9 @@ BusEngine.Tools.Json
 		/** событие загрузки страницы браузера */
 
 		/** функция выполнения js кода в браузере */
-		public static void ExecuteJSStatic(string js = "") {
+		public void ExecuteJS(string js = "") {
 			#if BUSENGINE_BENCHMARK
-			using (new BusEngine.Benchmark("BusEngine.Browser.ExecuteJSStatic")) {
+			using (new BusEngine.Benchmark("BusEngine.Browser.ExecuteJS")) {
 			#endif
 			if (browser != null) {
 				CefSharp.WebBrowserExtensions.ExecuteScriptAsync(browser, @js);
@@ -1011,7 +1018,7 @@ BusEngine.Tools.Json
 		/** функция выполнения js кода в браузере */
 
 		/** функция скачивания файла в браузере */
-		private static void typeDownload(bool status = true) {
+		private void typeDownload(bool status = true) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Browser.typeDownload")) {
 			#endif
@@ -1022,8 +1029,8 @@ BusEngine.Tools.Json
 			if (status) {
 				browser.DownloadHandler = CefSharp.Fluent.DownloadHandler.UseFolder(DownloadPath, (a, b, download, d) => {
 					OnDownloadArgs onDownloadArgs = new OnDownloadArgs(download);
-					if (OnDownloadStatic != null) {
-						onDownloadArgs = OnDownloadStatic.Invoke(onDownloadArgs);
+					if (OnDownload != null) {
+						onDownloadArgs = OnDownload.Invoke(onDownloadArgs);
 					}
 					//BusEngine.Log.Info("Скачивание: {0}", BusEngine.Tools.Json.Encode(onDownloadArgs));
 					if (x != null && (onDownloadArgs.IsComplete || onDownloadArgs.IsCancelled)) {
@@ -1033,8 +1040,8 @@ BusEngine.Tools.Json
 			} else {
 				browser.DownloadHandler = CefSharp.Fluent.DownloadHandler.AskUser((a, b, download, d) => {
 					OnDownloadArgs onDownloadArgs = new OnDownloadArgs(download);
-					if (OnDownloadStatic != null) {
-						onDownloadArgs = OnDownloadStatic.Invoke(onDownloadArgs);
+					if (OnDownload != null) {
+						onDownloadArgs = OnDownload.Invoke(onDownloadArgs);
 					}
 					//BusEngine.Log.Info("Скачивание: {0}", BusEngine.Tools.Json.Encode(onDownloadArgs));
 					if (x != null && (onDownloadArgs.IsComplete || onDownloadArgs.IsCancelled)) {
@@ -1046,7 +1053,7 @@ BusEngine.Tools.Json
 			}
 			#endif
 		}
-		public static void DownloadStatic(string url = "") {
+		public void Download(string url = "") {
 			if (browser != null) {
 				typeDownload(false);
 				if (url.IndexOf("://") == -1) {
@@ -1057,9 +1064,9 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер ещё не запущен!");
 			}
 		}
-		public static void DownloadStatic(string url = "", string path = "") {
+		public void Download(string url = "", string path = "") {
 			#if BUSENGINE_BENCHMARK
-			using (new BusEngine.Benchmark("BusEngine.Browser.DownloadStatic")) {
+			using (new BusEngine.Benchmark("BusEngine.Browser.Download")) {
 			#endif
 			if (browser != null) {
 				string x = DownloadPath;
@@ -1101,19 +1108,19 @@ BusEngine.Tools.Json
 
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
-		public static void Initialize(string url = "") {
-			Initialize(url, BusEngine.Engine.DataDirectory);
+		public void Load(string url = "") {
+			this.Load(url, BusEngine.Engine.DataDirectory);
 		}
-		public static void Initialize(string url = "", string root = "") {
+		public void Load(string url = "", string root = "") {
 			#if BUSENGINE_BENCHMARK
-			using (new BusEngine.Benchmark("BusEngine.Browser.Initialize")) {
+			using (new BusEngine.Benchmark("BusEngine.Browser.Load")) {
 			#endif
 			if (browser != null) {
 				BusEngine.Log.Info("Ошибка! {0}", "Браузер уже запущен!");
 			} else {
 				// если ссылка не абсолютный адрес, то делаем его абсолютным
 				System.Uri uriResult;
-				if (ValidURLStatic(url, out uriResult) && url.IndexOf(':') == -1) {
+				if (BusEngine.Browser.ValidURLStatic(url, out uriResult) && url.IndexOf(':') == -1) {
 					if (System.IO.File.Exists(System.IO.Path.Combine(BusEngine.Engine.DataDirectory, url))) {
 						url = "https://bd.busengine/" + url;
 					} else {
@@ -1235,7 +1242,7 @@ BusEngine.Tools.Json
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
 
-				if (url != null && !ValidURLStatic(url, out uriResult)) {
+				if (url != null && !BusEngine.Browser.ValidURLStatic(url, out uriResult)) {
 					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
 				} else if (url == null) {
 					if (BusEngine.Localization.GetLanguageStatic("error_browser_url") != "error_browser_url") {
@@ -1396,27 +1403,28 @@ BusEngine.Tools.Json
 		}
 		/** функция запуска браузера */
 
-		public static void ShutdownStatic() {
+		/* public static void ShutdownStatic() {
 			if (browser != null && !browser.IsDisposed) {
-				browser.JavascriptMessageReceived -= OnCefPostMessage;
-				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
+				browser.JavascriptMessageReceived -= this.OnCefPostMessage;
+				browser.FrameLoadEnd -= this.OnCefFrameLoadEnd;
 				browser.Dispose();
 				//CefSharp.Cef.Shutdown();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
 			}
-		}
+		} */
 
 		public void Shutdown() {
-			Dispose();
+			this.Dispose();
 			/* System.Threading.Tasks.Task.Run(() => {
 				CefSharp.Cef.Shutdown();
 			}); */
 		}
 
 		public void Dispose() {
+			BusEngine.Log.Info("Browser Dispose {0}", browser);
 			if (browser != null && !browser.IsDisposed) {
-				browser.JavascriptMessageReceived -= OnCefPostMessage;
-				browser.FrameLoadEnd -= OnCefFrameLoadEnd;
+				browser.JavascriptMessageReceived -= this.OnCefPostMessage;
+				browser.FrameLoadEnd -= this.OnCefFrameLoadEnd;
 				browser.Dispose();
 				//CefSharp.Cef.Shutdown();
 				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
