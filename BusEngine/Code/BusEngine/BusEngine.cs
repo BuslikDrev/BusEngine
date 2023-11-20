@@ -139,7 +139,7 @@ namespace BusEngine {
 					{"google_default_client_secret", ""},
 				}},
 				{"info", new System.Collections.Generic.Dictionary<string, string>(5) {
-					{"name", "Game"},
+					{"name", System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location)},
 					{"version", "1.0.0.0"},
 					{"icon", "[data]/Icons/BusEngine.ico"},
 					{"type", ""},
@@ -870,7 +870,7 @@ BusEngine.Log
 		}
 
 		~Benchmark() {
-			BusEngine.Log.Info("Benchmark ~ " + _label);
+			//BusEngine.Log.Info("Benchmark ~ " + _label);
 			//BusEngine.Log.Info("Generation Benchmark ~: {0}", System.GC.GetGeneration(_sw));
 			//BusEngine.Log.Info("Total Memory Benchmark ~: {0}", System.GC.GetTotalMemory(false));
 		}
@@ -1175,7 +1175,7 @@ BusEngine.Tools.Json
 				settings.RootCachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
 				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
 				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\userdata");
-				string subprocess = System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location) + " Browser.exe";
+				string subprocess = BusEngine.Engine.NameProject + " Browser.exe";
 				foreach (string currentFile in System.IO.Directory.EnumerateFiles(BusEngine.Engine.ExeDirectory, "CefSharp.BrowserSubprocess.exe", System.IO.SearchOption.AllDirectories)) {
 					subprocess = System.IO.Path.GetDirectoryName(currentFile) + "\\" + subprocess;
 
@@ -1541,6 +1541,8 @@ BusEngine.Tools
 	/** API BusEngine.Engine */
 	public class Engine : System.IDisposable {
 		private static System.Timers.Timer Timer;
+		private static Engine _instance;
+		internal static System.Text.UTF8Encoding UTF8NotBOM;
 		public delegate void EngineHandler();
 		public static event EngineHandler OnInitialize;
 		public static event EngineHandler OnShutdown;
@@ -1548,7 +1550,7 @@ BusEngine.Tools
 		// https://www.manojphadnis.net/need-to-know-general-topics/listkeyvaluepair-vs-dictionary
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingEngine;
 		public static System.Collections.Generic.Dictionary<string, dynamic> SettingProject;
-		//public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get; }
+		public static string NameProject { get; private set; }
 		public static string BinDirectory { get; private set; }
 		public static string ExeDirectory { get; private set; }
 		public static string EditorDirectory { get; private set; }
@@ -1558,17 +1560,7 @@ BusEngine.Tools
 		public static string LocalizationDirectory { get; private set; }
 		public static string LogDirectory { get; private set; }
 		public static string ToolsDirectory { get; private set; }
-		internal static System.Text.UTF8Encoding UTF8NotBOM;
-		private static string _platform;
-		public static string Platform {
-			get {
-				return (_platform == null ? "BusEngine" : _platform);
-			} set {
-				if (_platform == null) {
-					_platform = value;
-				}
-			}
-		}
+		public static string Platform { get; private set; }
 		public static bool IsShutdown { get; private set; }
 		public static string[] Commands;
 
@@ -1632,11 +1624,15 @@ BusEngine.Tools
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Engine.Initialize")) {
 			#endif
-			
+
 			//BusEngine.Log.ConsoleShow();
 			//BusEngine.Log.Info("Engine Start");
 
 			UTF8NotBOM = new System.Text.UTF8Encoding(false);
+
+			if (BusEngine.Engine.Platform == null) {
+				BusEngine.Engine.Platform = "BusEngine";
+			}
 
 			// устанавливаем ссылку на рабочий каталог
 			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
@@ -1716,8 +1712,10 @@ BusEngine.Tools
 			settingDefaultO.Dispose();
 
 			if (project_files.Length == 0) {
+				BusEngine.Engine.NameProject = settingDefault["info"]["name"];
+
 				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(BusEngine.Engine.EngineDirectory + "Game.busproject")) {
+				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(BusEngine.Engine.EngineDirectory + BusEngine.Engine.NameProject + ".busproject")) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(settingDefault));
 					fstream.Write(buffer, 0, buffer.Length);
 				}
@@ -1727,6 +1725,8 @@ BusEngine.Tools
 
 				setting = BusEngine.Tools.Json.Decode(BusEngine.Tools.Json.Encode(settingDefault));
 			} else {
+				BusEngine.Engine.NameProject = System.IO.Path.GetFileNameWithoutExtension(project_files[0]);
+
 				// улаляем массивы данных по умолчанию т.к. они не нужны
 				settingDefault["require"]["plugins"].Clear();
 
@@ -1939,13 +1939,12 @@ BusEngine.Tools
 			#endif
 		}
 
-		private static Engine _instance;
-
 		/** функция запуска API BusEngine */
 		public static void Initialize() {
 			if (_instance == null) {
 				_instance = new Engine();
 			}
+
 			// инициализируем плагины
 			BusEngine.Engine.IsShutdown = false;
 			new BusEngine.IPlugin("Initialize");
@@ -1954,6 +1953,23 @@ BusEngine.Tools
 			if (OnInitialize != null && !BusEngine.Engine.IsShutdown) {
 				OnInitialize.Invoke();
 			}
+		}
+
+		public static void Initialize(string Platform = null, string[] Commands = null, EngineHandler OnInitialize = null, EngineHandler OnShutdown = null) {
+			if (Platform != null) {
+				BusEngine.Engine.Platform = Platform;
+			}
+			if (Commands != null) {
+				BusEngine.Engine.Commands = Commands;
+			}
+			if (OnInitialize != null) {
+				BusEngine.Engine.OnInitialize = OnInitialize;
+			}
+			if (OnShutdown != null) {
+				BusEngine.Engine.OnShutdown = OnShutdown;
+			}
+
+			BusEngine.Engine.Initialize();
 		}
 		/** функция запуска API BusEngine */
 
@@ -2201,6 +2217,8 @@ namespace BusEngine {
 			if (OnLoadStatic != null) {
 				OnLoadStatic.Invoke(this, Language);
 			}
+
+			//System.GC.SuppressFinalize(this);
 		}
 
 		public void Shutdown() {
@@ -2216,7 +2234,7 @@ namespace BusEngine {
 		}
 
 		~Localization() {
-			BusEngine.Log.Info("Localization ~");
+			//BusEngine.Log.Info("Localization ~");
 		}
 	}
 }
@@ -2779,7 +2797,7 @@ namespace BusEngine {
 		}
 
 		~Plugin() {
-			BusEngine.Log.Info("Plugin ~");
+			//BusEngine.Log.Info("Plugin ~");
 		}
 	}
 	/** API BusEngine.Plugin */
@@ -2799,8 +2817,6 @@ namespace BusEngine {
 
 		// при запуске BusEngine до создания формы
 		public IPlugin(string stage = "Initialize") {
-			BusEngine.Log.Info( "============================ System Plugins Start {0}", Modules.Count);
-
 			if (BusEngine.Engine.IsShutdown && stage != "Shutdown") {
 				return;
 			}
@@ -2949,12 +2965,13 @@ namespace BusEngine {
 				#endif
 			}
 
-			x1 = null;
+			/* x1 = null;
 			x2 = null;
-			x3 = null;
+			x3 = null; */
 
 			BusEngine.Log.Info( "============================ System Plugins Stop  ============================" );
-			//this.Dispose();
+
+			//System.GC.SuppressFinalize(this);
 		}
 
 		public void Dispose() {
@@ -2962,7 +2979,7 @@ namespace BusEngine {
 		}
 
 		~IPlugin() {
-			BusEngine.Log.Info("IPlugin ~ {0}", Stage);
+			//BusEngine.Log.Info("IPlugin ~ {0}", Stage);
 		}
 	}
 	/** API BusEngine.IPlugin */
