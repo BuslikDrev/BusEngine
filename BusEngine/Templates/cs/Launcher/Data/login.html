@@ -64,16 +64,16 @@
         <source src="Videos/background_login_3840x2160.webm" type="video/webm" media="screen and (min-device-width:2561px)"> -->
       </video>
       <div class="login">
-        <!-- <a href="Videos/background_login_1920x1080.mp4" download="hello2.jpg">скачать</a>
-        <a onclick="BusEngine.postMessage('___down|Videos/background_login_1920x1080.mp4');">скачать 2</a> -->
+        <a href="Videos/background_login_1920x1080.mp4" download="hello2.jpg">скачать</a>
+        <a onclick="BusEngine.postMessage('___down|Videos/background_login_1920x1080.mp4');">скачать 2</a>
         <form>
-          <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine"> text_name_engine</span>
-          <span class="input">
-            entry_email
+          <span class="logo"><img src="Icons/BusEngine_white.png" height="54" width="54" alt="Logo text_name_engine" data-localization="text_name_engine"> BusEngine</span>
+          <span class="input" data-localization="entry_email">
+            Почта
             <input type="email" name="login" value="" placeholder="entry_email_placeholder" aria-label="entry_email" autocomplete="email" required maxlength="255" oninvalid="//this.setCustomValidity('error_email');">
           </span>
-          <span class="input">
-            entry_password
+          <span class="input" data-localization="entry_password">
+            Пароль
             <input type="password" name="password" value="" placeholder="entry_password" aria-label="entry_password">
             <span onclick="Launcher.svgToggle(this, 'password');">
               <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-eye"></use></svg>
@@ -81,18 +81,18 @@
             </span>
           </span>
           <span class="input" style="height: 50px;">
-            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;" title="text_forgotten">text_forgotten <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+            <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/forgotten'); return false;" title="text_forgotten" data-localization="text_forgotten">Забыли пароль? <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
           </span>
           <span class="input" style="height: 50px;">
-            <button class="send" data-localization="button_login">button_login</button>
+            <button class="send" data-localization="button_login">Авторизоваться</button>
           </span>
         </form>
         <hr>
-        <span>
-        text_new_user <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" title="button_register">button_register <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
+        <span data-localization="text_new_user">
+        Новый пользователь? <a href="https://busengine.buslikdrev.by/" onclick="BusEngine.postMessage('_linkGo|https://busengine.buslikdrev.by/index.php?route=account/register'); return false;" title="button_register" data-localization="button_register">Создать аккаунт <svg xmlns="http://www.w3.org/2000/svg"><use xmlns="http://www.w3.org/2000/svg" xlink:href="Icons/spritemap.svg#ui-external-link"></use></svg></a>
         </span>
       </div>
-      <button onclick="window.localStorage.setItem('mode', true); BusEngine.open('main.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode">button_offline_mode</button>
+      <button onclick="window.localStorage.setItem('mode', true); BusEngine.open('main.html');" aria-label="button_offline_mode" title="button_offline_mode" class="mode" data-localization="button_register">Оффлайн режим</button>
 <script type="text/javascript">
 	BusEngine.localization.load();
 

@@ -242,7 +242,7 @@ BusEngine.tools.ajax = function(url, setting) {
 if (!('postMessage' in window.BusEngine)) {
 	window.BusEngine.postMessage = function(m) {
 		BusEngine.tools.ajax({
-			url: 'post_message.php',
+			url: 'busengine.php',
 			method: 'POST',
 			responseType: 'text',
 			data: {post_message: m}
@@ -558,7 +558,7 @@ if (!('localization' in window.BusEngine)) {
 	BusEngine.localization = {};
 }
 
-if (!('getLanguages' in window.BusEngine.localization)) {
+if (!('getLanguages' in window.BusEngine.localization && typeof BusEngine.localization.getLanguages == 'object' && BusEngine.localization.getLanguages != null)) {
 	BusEngine.localization.getLanguages = {};
 }
 BusEngine.localization.isFiles = {};
