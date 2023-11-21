@@ -139,11 +139,15 @@ namespace BusEngine {
 					{"google_default_client_secret", ""},
 				}},
 				{"info", new System.Collections.Generic.Dictionary<string, string>(5) {
-					{"name", System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location)},
+					{"name", ""},
+					//{"name", System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)},
 					{"version", "1.0.0.0"},
 					{"icon", "[data]/Icons/BusEngine.ico"},
 					{"type", ""},
-					{"guid", System.Guid.NewGuid().ToString()}
+					//https://www.appsloveworld.com/csharp/100/6/how-do-i-programmatically-get-the-guid-of-an-application-in-c-with-net
+					{"guid", ""},
+					//{"guid", ((System.Runtime.InteropServices.GuidAttribute)System.Reflection.Assembly.GetEntryAssembly().GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false)[0]).Value},
+					//{"guid", System.Guid.NewGuid().ToString()},
 				}},
 				{"content", new System.Collections.Generic.Dictionary<string, object>(7) {
 					{"bin", "Bin"},
@@ -152,7 +156,7 @@ namespace BusEngine {
 					{"localization", "Localization"},
 					{"log", "Log"},
 					{"tools", "Tools"},
-					{"libs",  new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
+					/* {"libs",  new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
 						new System.Collections.Generic.Dictionary<string, object>(2) {
 							{"name", "BusEngine"},
 							{"shared", new System.Collections.Generic.Dictionary<string, string>(5) {
@@ -163,10 +167,11 @@ namespace BusEngine {
 								{"Win_x86", ""}
 							}}
 						}
-					}}
+					}} */
 				}},
 				{"require", new System.Collections.Generic.Dictionary<string, object>(2) {
-					{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
+					{"engine", ""},
+					//{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
 					{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
 						new System.Collections.Generic.Dictionary<string, object>() {
 							{"System", ""},
@@ -1660,7 +1665,7 @@ BusEngine.Tools
 			}
 
 			// устанавливаем ссылку на рабочий каталог
-			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
+			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\";
 
 			BusEngine.Engine.EngineDirectory = BusEngine.Engine.ExeDirectory + "..\\..\\Bin\\";
 
@@ -1737,7 +1742,11 @@ BusEngine.Tools
 			settingDefaultO.Dispose();
 
 			if (project_files.Length == 0) {
-				BusEngine.Engine.NameProject = settingDefault["info"]["name"];
+				BusEngine.Engine.NameProject = System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location);
+
+				settingDefault["info"]["name"] = BusEngine.Engine.NameProject;
+				settingDefault["info"]["guid"] = ((System.Runtime.InteropServices.GuidAttribute)System.Reflection.Assembly.GetEntryAssembly().GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false)[0]).Value;
+				settingDefault["require"]["engine"] =  System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 				// запись
 				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(BusEngine.Engine.EngineDirectory + BusEngine.Engine.NameProject + ".busproject")) {
@@ -2326,7 +2335,7 @@ namespace BusEngine {
 				//System.Console.WindowLeft = 0;
 				//System.Console.SetBufferSize(System.Console.WindowWidth, System.Console.WindowHeight);
 
-				System.Console.Title = BusEngine.Localization.GetLanguageStatic("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+				System.Console.Title = BusEngine.Localization.GetLanguageStatic("text_name_console") + " v" + BusEngine.Engine.SettingProject["require"]["engine"];
 				BusEngine.Localization.OnLoadStatic += OnLoadLanguage;
 				System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 
@@ -2379,7 +2388,7 @@ namespace BusEngine {
 
 		/** событие загрузки языка */
 		private static void OnLoadLanguage(BusEngine.Localization l, string language) {
-			System.Console.Title = l.GetLanguage("text_name_console") + " v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			System.Console.Title = l.GetLanguage("text_name_console") + " v" + BusEngine.Engine.SettingProject["require"]["engine"];
 		}
 		/** событие загрузки языка */
 
