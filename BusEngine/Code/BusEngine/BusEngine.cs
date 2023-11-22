@@ -140,14 +140,10 @@ namespace BusEngine {
 				}},
 				{"info", new System.Collections.Generic.Dictionary<string, string>(5) {
 					{"name", ""},
-					//{"name", System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)},
 					{"version", "1.0.0.0"},
 					{"icon", "[data]/Icons/BusEngine.ico"},
 					{"type", ""},
-					//https://www.appsloveworld.com/csharp/100/6/how-do-i-programmatically-get-the-guid-of-an-application-in-c-with-net
 					{"guid", ""},
-					//{"guid", ((System.Runtime.InteropServices.GuidAttribute)System.Reflection.Assembly.GetEntryAssembly().GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false)[0]).Value},
-					//{"guid", System.Guid.NewGuid().ToString()},
 				}},
 				{"content", new System.Collections.Generic.Dictionary<string, object>(7) {
 					{"bin", "Bin"},
@@ -171,7 +167,6 @@ namespace BusEngine {
 				}},
 				{"require", new System.Collections.Generic.Dictionary<string, object>(2) {
 					{"engine", ""},
-					//{"engine", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()},
 					{"plugins", new System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, object>>(1) {
 						new System.Collections.Generic.Dictionary<string, object>() {
 							{"System", ""},
@@ -1124,6 +1119,7 @@ BusEngine.Tools.Json
 			if (url == null || url == "") {
 				url = this.Url;
 			}
+
 			return this.Load(url, BusEngine.Engine.DataDirectory);
 		}
 
@@ -1655,17 +1651,15 @@ BusEngine.Tools
 			using (new BusEngine.Benchmark("BusEngine.Engine.Initialize")) {
 			#endif
 
-			//BusEngine.Log.ConsoleShow();
-			//BusEngine.Log.Info("Engine Start");
-
-			UTF8NotBOM = new System.Text.UTF8Encoding(false);
-
 			if (BusEngine.Engine.Platform == null) {
 				BusEngine.Engine.Platform = "BusEngine";
 			}
 
+			UTF8NotBOM = new System.Text.UTF8Encoding(false);
+
 			// устанавливаем ссылку на рабочий каталог
-			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\";
+			System.Reflection.Assembly assembly = System.Reflection.Assembly.GetEntryAssembly();
+			BusEngine.Engine.ExeDirectory = System.IO.Path.GetDirectoryName(assembly.Location) + "\\";
 
 			BusEngine.Engine.EngineDirectory = BusEngine.Engine.ExeDirectory + "..\\..\\Bin\\";
 
@@ -1742,10 +1736,11 @@ BusEngine.Tools
 			settingDefaultO.Dispose();
 
 			if (project_files.Length == 0) {
-				BusEngine.Engine.NameProject = System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location);
+				BusEngine.Engine.NameProject = System.IO.Path.GetFileNameWithoutExtension(assembly.Location);
 
 				settingDefault["info"]["name"] = BusEngine.Engine.NameProject;
-				settingDefault["info"]["guid"] = ((System.Runtime.InteropServices.GuidAttribute)System.Reflection.Assembly.GetEntryAssembly().GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false)[0]).Value;
+				//https://www.appsloveworld.com/csharp/100/6/how-do-i-programmatically-get-the-guid-of-an-application-in-c-with-net
+				settingDefault["info"]["guid"] = ((System.Runtime.InteropServices.GuidAttribute)assembly.GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false)[0]).Value;
 				settingDefault["require"]["engine"] =  System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 				// запись
@@ -1878,35 +1873,53 @@ BusEngine.Tools
 				}
 			}
 
+			if (settingDefault["info"]["name"] == "") {
+				settingDefault["info"]["name"] = BusEngine.Engine.NameProject;
+			}
+
+			if (settingDefault["info"]["guid"] == "") {
+				settingDefault["info"]["guid"] = ((System.Runtime.InteropServices.GuidAttribute)assembly.GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false)[0]).Value;
+			}
+
 			//info = null;
 
 			dynamic require;
 
-			if (setting.TryGetValue("require", out require) && require.ContainsKey("plugins") && require["plugins"].Type.ToString() == "Array") {
-				int i, ii = require["plugins"].Count;
+			if (setting.TryGetValue("require", out require) && require.GetType().GetProperty("Count") != null) {
+				if (require.ContainsKey("engine") && require["engine"].GetType().GetProperty("Count") == null && require["engine"].Type.ToString() == "String") {
+					settingDefault["require"]["engine"] = require["engine"];
+				}
 
-				for (i = 0; i < ii; ++i) {
-					if (require["plugins"][i].ContainsKey("path") && require["plugins"][i]["path"].Type.ToString() == "String" && require["plugins"][i]["path"] != "") {
-						if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"] + ".dll"))) {
-							require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"] + ".dll");
-						} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"]))) {
-							require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"]);
-						} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + require["plugins"][i]["path"]))) {
-							require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + require["plugins"][i]["path"]);
-						} else {
-							require["plugins"][i]["path"] = "";
-						}
+				if (require.ContainsKey("plugins") && require["plugins"].Type.ToString() == "Array") {
+					int i, ii = require["plugins"].Count;
 
-						if (require["plugins"][i]["path"] != "") {
-							settingDefault["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>(4) {
-								{"path", System.Convert.ToString(require["plugins"][i]["path"])},
-								{"guid", (require["plugins"][i].ContainsKey("guid") && require["plugins"][i]["guid"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["guid"]) : "")},
-								{"type", (require["plugins"][i].ContainsKey("type") && require["plugins"][i]["type"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["type"]) : "")},
-								{"platforms", (require["plugins"][i].ContainsKey("platforms") && require["plugins"][i]["platforms"].GetType().GetProperty("Count") != null ? require["plugins"][i]["platforms"] : settingDefault["require"]["plugins"][i]["platforms"])}
-							});
+					for (i = 0; i < ii; ++i) {
+						if (require["plugins"][i].ContainsKey("path") && require["plugins"][i]["path"].Type.ToString() == "String" && require["plugins"][i]["path"] != "") {
+							if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"] + ".dll"))) {
+								require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"] + ".dll");
+							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"]))) {
+								require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.ExeDirectory + require["plugins"][i]["path"]);
+							} else if (System.IO.File.Exists(System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + require["plugins"][i]["path"]))) {
+								require["plugins"][i]["path"] = System.IO.Path.GetFullPath(BusEngine.Engine.EngineDirectory + require["plugins"][i]["path"]);
+							} else {
+								require["plugins"][i]["path"] = "";
+							}
+
+							if (require["plugins"][i]["path"] != "") {
+								settingDefault["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>(4) {
+									{"path", System.Convert.ToString(require["plugins"][i]["path"])},
+									{"guid", (require["plugins"][i].ContainsKey("guid") && require["plugins"][i]["guid"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["guid"]) : "")},
+									{"type", (require["plugins"][i].ContainsKey("type") && require["plugins"][i]["type"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["type"]) : "")},
+									{"platforms", (require["plugins"][i].ContainsKey("platforms") && require["plugins"][i]["platforms"].GetType().GetProperty("Count") != null ? require["plugins"][i]["platforms"] : settingDefault["require"]["plugins"][i]["platforms"])}
+								});
+							}
 						}
 					}
 				}
+			}
+
+			if (settingDefault["require"]["engine"] == "") {
+				settingDefault["require"]["engine"] = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 			}
 
 			//require = null;
@@ -1920,7 +1933,8 @@ BusEngine.Tools
 			//settingDefault = null;
 
 			// инициализируем язык
-			new BusEngine.Localization().Load();
+			//BusEngine.Log.ConsoleShow();
+			//new BusEngine.Localization().Load();
 
 			// включаем консоль
 			int r_DisplayInfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_DisplayInfo"]);
@@ -2122,30 +2136,25 @@ namespace BusEngine {
 		public string LanguageDefault = "Belarusian";
 		//[BusEngine.Tooltip("Forced language loading", "English")]
 		public string Language = "";
-		public static string LanguageStatic { get; private set; }
 		//[BusEngine.Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.", "English")]
 		public string File = "";
 		//[BusEngine.Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt", "English")]
 		public string Format = "cfg";
-		//[BusEngine.Tooltip("Translate components located in inactive objects?", "English")]
-		//private bool IncludeInactive = false;
 		//[BusEngine.Tooltip("Replace Resources.load with Bundle.load?", "English")]
-
 		public delegate void OnLoadHandler(Localization sender, string language);
 		public event OnLoadHandler OnLoad;
-		public static event OnLoadHandler OnLoadStatic;
-		// https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/how-to-add-and-remove-items
-		internal static System.Collections.Concurrent.ConcurrentDictionary<string, string> GetLanguages;
-		private static string Value = "";
-		//private Localization _Localization;
-
-		public static string GetLanguageStatic(string key) {
-			if (GetLanguages != null && GetLanguages.TryGetValue(key, out Value)) {
-				return Value;
-			} else {
-				return key;
+		private static string _LanguageStatic = "Belarusian";
+		public static string LanguageStatic {
+			get {
+				return _LanguageStatic;
+			} private set {
+				_LanguageStatic = value;
 			}
 		}
+		public static event OnLoadHandler OnLoadStatic;
+		// https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/how-to-add-and-remove-items
+		internal static System.Collections.Concurrent.ConcurrentDictionary<string, System.Collections.Concurrent.ConcurrentDictionary<string, string>> GetLanguages;
+		private static string Value;
 
 		public Localization() {
 
@@ -2155,23 +2164,52 @@ namespace BusEngine {
 			this.Language = language;
 		}
 
-		public static void SetLanguageStatic(string key, string value) {
-			if (GetLanguages != null) {
-				GetLanguages[key] = value;
-			}
-		}
-
-		public string GetLanguage(string key) {
-			if (GetLanguages.TryGetValue(key, out Value)) {
+		public static string GetLanguageStatic(string key) {
+			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic) && GetLanguages[LanguageStatic].TryGetValue(key, out Value)) {
 				return Value;
 			} else {
 				return key;
 			}
 		}
 
-		public void SetLanguage(string key, string value) {
-			GetLanguages[key] = value;
+		/* public static string GetLanguageStatic(string key) {
+			if (GetLanguages != null) {
+				foreach (System.Collections.Generic.KeyValuePair<string, dynamic> i in GetLanguages) {
+					if (i.Value.TryGetValue(key, out Value)) {
+						return Value;
+					}
+				}
+			}
+
+			return key;
+		} */
+
+		public static void SetLanguageStatic(string key, string value) {
+			if (GetLanguages != null) {
+				GetLanguages[LanguageStatic][key] = value;
+			}
 		}
+
+		public string GetLanguage(string key) {
+			/* if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic) && GetLanguages[LanguageStatic].TryGetValue(key, out Value)) {
+				return Value;
+			} else { */
+				return key;
+			/* } */
+			/* if (GetLanguages != null) {
+				foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Concurrent.ConcurrentDictionary<string, string>> i in GetLanguages) {
+					if (i.Value.TryGetValue(key, out Value)) {
+						return Value;
+					}
+				}
+			}
+
+			return key; */
+		}
+
+		/* public void SetLanguage(string key, string value) {
+			GetLanguages[key] = value;
+		} */
 
 		public Localization Load() {
 			return this.Load(this.Language);
@@ -2227,19 +2265,15 @@ namespace BusEngine {
 				lines = files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
 				l = lines.Length;
 
-				/* if (GetLanguages != null) {
-					GetLanguages.Clear();
-				} */
-
-				if (GetLanguages == null) {
-					GetLanguages = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(System.Environment.ProcessorCount, l);
+				if (!GetLanguages.ContainsKey(Language)) {
+					GetLanguages[Language] = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(System.Environment.ProcessorCount, l);
 				}
 
 				for (i = 0; i < l; i++) {
 					pairs = lines[i].Split(c, 2);
 
 					if (pairs.Length == 2) {
-						GetLanguages[pairs[0].Trim()] = pairs[1].Trim();
+						//GetLanguages[Language][pairs[0].Trim()] = pairs[1].Trim();
 					}
 				}
 			}
@@ -3553,7 +3587,7 @@ System.Windows.Forms
 		}
 
 		~FileFolderDialog() {
-			BusEngine.Log.Info("FileFolderDialog ~");
+			//BusEngine.Log.Info("FileFolderDialog ~");
 		}
 	}
 	/** API BusEngine.Tools.FileFolderDialog */
