@@ -2315,7 +2315,7 @@ namespace BusEngine {
 	public class Log : System.IDisposable {
 		/** консоль - на первое время берём консоль System.Console.WriteLine и переопределяем на BusEngine.Log.Info */
 		// статус консоли
-		private static bool StatusConsole = false;
+		public static bool ConsoleStatus = false;
 
 		// функция запуска консоли
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "AllocConsole", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]
@@ -2352,13 +2352,13 @@ namespace BusEngine {
 
 		// функция запуска консоли
 		public static void ConsoleShow() {
-			if (BusEngine.Log.StatusConsole == false) {
+			if (BusEngine.Log.ConsoleStatus == false) {
 				//https://ru.stackoverflow.com/questions/1098793/%D0%A1%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%B2-%D0%BA%D0%BE%D0%BD%D1%81%D0%BE%D0%BB%D1%8C%D0%BD%D0%BE%D0%BC-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B8-net-framework-c
 				/* System.Windows.Forms.MessageBox.Show("Сообщение из Windows Forms!"); */
 
 				BusEngine.Log.AttachConsole(-1);
 				BusEngine.Log.AllocConsole();
-				BusEngine.Log.StatusConsole = true;
+				BusEngine.Log.ConsoleStatus = true;
 
 				//System.Console.WindowHeight = System.Console.LargestWindowHeight;
 				//System.Console.WindowWidth = System.Console.LargestWindowWidth;
@@ -2394,11 +2394,11 @@ namespace BusEngine {
 
 		// функция остановки консоли
 		public static void ConsoleHide() {
-			if (BusEngine.Log.StatusConsole == true) {
+			if (BusEngine.Log.ConsoleStatus == true) {
 				//BusEngine.Log.Info(new System.IO.StreamWriter(System.Console.OpenStandardOutput(), System.Console.OutputEncoding) { AutoFlush = true });
 				//BusEngine.Log.Info(new System.IO.StreamReader(System.Console.OpenStandardInput(), System.Console.InputEncoding));
 				BusEngine.Log.FreeConsole();
-				BusEngine.Log.StatusConsole = false;
+				BusEngine.Log.ConsoleStatus = false;
 				BusEngine.Localization.OnLoadStatic -= OnLoadLanguage;
 				System.Console.CancelKeyPress -= new System.ConsoleCancelEventHandler(BusEngine.Log.MyHandler);
 				//System.Console.OutputEncoding = new System.Text.UTF8Encoding();
@@ -2410,7 +2410,7 @@ namespace BusEngine {
 
 		// функция запуска\остановки консоли
 		public static void ConsoleToggle() {
-			if (BusEngine.Log.StatusConsole == false) {
+			if (BusEngine.Log.ConsoleStatus == false) {
 				BusEngine.Log.ConsoleShow();
 			} else {
 				BusEngine.Log.ConsoleHide();
@@ -2880,7 +2880,7 @@ namespace BusEngine {
 			return false;
 		}
 		private string Stage;
-		private delegate int Operation();
+		//private delegate int Operation();
 
 		// при запуске BusEngine до создания формы
 		public IPlugin(string stage = "Initialize") {
@@ -2899,40 +2899,87 @@ namespace BusEngine {
 			System.Type[] t2 = new System.Type[] { typeof(string) };
 			System.Type[] t3 = new System.Type[] { typeof(string), typeof(string) };
 			stage = stage.ToLower();
+			int typ = 1;
 			
-			if (1 == 1 && Modules == null) {
+			if (typ == 1 && Modules == null) {
 				#if BUSENGINE_BENCHMARK
 				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 				#endif
 
-					//BusEngine.Log.Info(System.Threading.Thread.CurrentThread.ManagedThreadId);
+					string ap;
+					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
-					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, BusEngine.Engine.SettingProject["require"]["plugins"].Count, System.StringComparer.OrdinalIgnoreCase);
+					//System.Collections.Generic.List<System.Threading.Tasks.Task> tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+					System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[l];
+
+					for (i = 0; i < l; ++i) {
+						int g = i;
+						tasks[g] = System.Threading.Tasks.Task.Factory.StartNew(() => {
+							ap = BusEngine.Engine.SettingProject["require"]["plugins"][g]["path"];
+							//if (!Modules.ContainsKey(ap)) {
+								Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
+							//}
+						}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+					}
+
+					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, wordCountTasks => {
+						//BusEngine.Log.Info("Modules {0}", wordCountTasks.Length);
+						foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
+							tt.Dispose();
+						}
+						System.Array.Clear(wordCountTasks, 0, wordCountTasks.Length);
+						wordCountTasks = null;
+						foreach (System.Threading.Tasks.Task tt in tasks) {
+							tt.Dispose();
+						}
+						//BusEngine.Log.Info("Modules {0}", tasks.Count);
+						//tasks.Clear();
+						System.Array.Clear(tasks, 0, tasks.Length);
+						tasks = null;
+					});
+					task.Wait();
+					task.Dispose();
+					ap = null;
+					//System.Threading.Tasks.Task.Dispose();
+
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
+			} else if (typ == 2 && Modules == null) {
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+				#endif
+
+					string ap;
+					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
 					System.Collections.Generic.List<System.Threading.Tasks.Task> tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
 
 					for (i = 0; i < l; ++i) {
-						tasks.Add(System.Threading.Tasks.Task.Factory.StartNew((object ax) => {
-							string ap = BusEngine.Engine.SettingProject["require"]["plugins"][(int)ax]["path"];
-							//BusEngine.Log.Info("{0} {1}", System.Threading.Thread.CurrentThread.ManagedThreadId, ai);
-
-							//BusEngine.Log.Info("Modules {0}", Modules.Count);
-							//BusEngine.Log.Info(Modules.ContainsKey(ap));
-
+						int g = i;
+						tasks.Add(System.Threading.Tasks.Task.Run(() => {
+							ap = BusEngine.Engine.SettingProject["require"]["plugins"][g]["path"];
 							//if (!Modules.ContainsKey(ap)) {
 								Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
-								//BusEngine.Log.Info("Assembly {0}", System.Reflection.Assembly.LoadFile(ap));
 							//}
-
-							//BusEngine.Log.Info(Modules.ContainsKey(ap));
-						}, i, System.Threading.Tasks.TaskCreationOptions.AttachedToParent));
+						}));
 					}
 
-					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks.ToArray(), wordCountTasks => {
+					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks.ToArray(), (wordCountTasks) => {
+						BusEngine.Log.Info("Modules {0}", Modules.Count);
 						BusEngine.Log.Info("Modules {0}", wordCountTasks.Length);
-						BusEngine.Log.Info("Modules {0}", tasks.Count);
+						/* foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
+							tt.Dispose();
+						} */
+						System.Array.Clear(wordCountTasks, 0, wordCountTasks.Length);
+						wordCountTasks = null;
+						/* foreach (System.Threading.Tasks.Task tt in tasks) {
+							tt.Dispose();
+						} */
+						//BusEngine.Log.Info("Modules {0}", tasks.Count);
 						tasks.Clear();
 						tasks = null;
+						ap = null;
 					});
 					task.Wait();
 					task.Dispose();
@@ -2940,41 +2987,37 @@ namespace BusEngine {
 				#if BUSENGINE_BENCHMARK
 				}
 				#endif
-			} else if (1 == 0 && Modules == null) {
-					/* BusEngine.Log.Info(System.Threading.Thread.CurrentThread.ManagedThreadId);
+			} else if (typ == 3 && Modules == null) {
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+				#endif
 
-					BusEngine.IPlugin.Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, BusEngine.Engine.SettingProject["require"]["plugins"].Count, System.StringComparer.OrdinalIgnoreCase);
+					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l, System.StringComparer.OrdinalIgnoreCase);
 
-					#if BUSENGINE_BENCHMARK
-					using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
-					#endif
-
-					System.Threading.Tasks.Task<System.Type[]>[] tasks = new System.Threading.Tasks.Task<System.Type[]>[BusEngine.Engine.SettingProject["require"]["plugins"].Count];
+					System.Threading.Tasks.Task<dynamic>[] tasks = new System.Threading.Tasks.Task<dynamic>[l];
 
 					for (i = 0; i < l; ++i) {
 						tasks[i] = System.Threading.Tasks.Task.Factory.StartNew((ifx) => {
 							return System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][(int)ifx]["path"]).GetTypes();
-						}, i, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+						}, i/* , System.Threading.Tasks.TaskCreationOptions.AttachedToParent */);
 					}
 
 					System.Threading.Tasks.Task.WaitAll(tasks);
-					BusEngine.Log.Info(tasks);
 
 					for (i = 0; i < l; ++i) {
-						//BusEngine.Log.Info(tasks);
-						BusEngine.IPlugin.Modules[BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]] = tasks[i].Result;
+						Modules[BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]] = tasks[i].Result;
 					}
 
-					#if BUSENGINE_BENCHMARK
-					}
-					#endif */
-			} else if (1 == 0 && Modules == null) {
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
+			} else if (typ == 4 && Modules == null) {
 				#if BUSENGINE_BENCHMARK
 				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 				#endif
 
 					string ap;
-					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, BusEngine.Engine.SettingProject["require"]["plugins"].Count);
+					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
 					for (i = 0; i < l; ++i) {
 						ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
@@ -2982,6 +3025,8 @@ namespace BusEngine {
 							Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
 						//}
 					}
+
+					ap = null;
 
 				#if BUSENGINE_BENCHMARK
 				}
@@ -3002,9 +3047,11 @@ namespace BusEngine {
 							foreach (System.Reflection.MethodInfo method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
 								m = method.Name.ToLower();
 								if (m == stage || m == stage + "async") {
-									BusEngine.Log.Info(path);
-									BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_class") + ": {0}", type.FullName);
-									BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method") + ": {0}", method.Name);
+									if (BusEngine.Log.ConsoleStatus == true) {
+										BusEngine.Log.Info(path);
+										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_class") + ": {0}", type.FullName);
+										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method") + ": {0}", method.Name);
+									}
 
 									if (m == stage + "async" || IsAsync(method)) {
 										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Async");
