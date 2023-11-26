@@ -1934,7 +1934,7 @@ BusEngine.Tools
 
 			// инициализируем язык
 			//BusEngine.Log.ConsoleShow();
-			//new BusEngine.Localization().Load();
+			new BusEngine.Localization().Load();
 
 			// включаем консоль
 			int r_DisplayInfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_DisplayInfo"]);
@@ -2134,15 +2134,15 @@ namespace BusEngine {
 	public class Localization {
 		//[BusEngine.Tooltip("Loading a language if the desired one is not available.", "English")]
 		public string LanguageDefault = "Belarusian";
-		//[BusEngine.Tooltip("Forced language loading", "English")]
-		public string Language = "";
-		//[BusEngine.Tooltip("Provide a name for the translation file to use different files for different scenes. Example, 'level_1' - as a result, the path to the file will become: 'Assets/Localization/lang_name/level_1.cfg.", "English")]
+		public string Language;
 		public string File = "";
-		//[BusEngine.Tooltip("Format lang file. For mobiles and sites Unity Support: txt, html, htm, xml, bytes, json, csv, yaml, fnt", "English")]
 		public string Format = "cfg";
-		//[BusEngine.Tooltip("Replace Resources.load with Bundle.load?", "English")]
 		public delegate void OnLoadHandler(Localization sender, string language);
 		public event OnLoadHandler OnLoad;
+		public static event OnLoadHandler OnLoadStatic;
+		// https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/how-to-add-and-remove-items
+		internal static System.Collections.Concurrent.ConcurrentDictionary<string, System.Collections.Concurrent.ConcurrentDictionary<string, string>> GetLanguages;
+		private static string Value;
 		private static string _LanguageStatic = "Belarusian";
 		public static string LanguageStatic {
 			get {
@@ -2151,10 +2151,6 @@ namespace BusEngine {
 				_LanguageStatic = value;
 			}
 		}
-		public static event OnLoadHandler OnLoadStatic;
-		// https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/how-to-add-and-remove-items
-		internal static System.Collections.Concurrent.ConcurrentDictionary<string, System.Collections.Concurrent.ConcurrentDictionary<string, string>> GetLanguages;
-		private static string Value;
 
 		public Localization() {
 
@@ -2185,31 +2181,24 @@ namespace BusEngine {
 		} */
 
 		public static void SetLanguageStatic(string key, string value) {
-			if (GetLanguages != null) {
+			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic)) {
 				GetLanguages[LanguageStatic][key] = value;
 			}
 		}
 
 		public string GetLanguage(string key) {
-			/* if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic) && GetLanguages[LanguageStatic].TryGetValue(key, out Value)) {
+			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic) && GetLanguages[LanguageStatic].TryGetValue(key, out Value)) {
 				return Value;
-			} else { */
+			} else {
 				return key;
-			/* } */
-			/* if (GetLanguages != null) {
-				foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Concurrent.ConcurrentDictionary<string, string>> i in GetLanguages) {
-					if (i.Value.TryGetValue(key, out Value)) {
-						return Value;
-					}
-				}
 			}
-
-			return key; */
 		}
 
-		/* public void SetLanguage(string key, string value) {
-			GetLanguages[key] = value;
-		} */
+		public void SetLanguage(string key, string value) {
+			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic)) {
+				GetLanguages[LanguageStatic][key] = value;
+			}
+		}
 
 		public Localization Load() {
 			return this.Load(this.Language);
@@ -2222,11 +2211,7 @@ namespace BusEngine {
 		}
 
 		private void StartLocalization(string Language = null) {
-			int n = File.Length;
-			if (n > 0) {
-				File = "/" + File;
-			}
-			string path = BusEngine.Engine.LocalizationDirectory, files = "";
+			string path = BusEngine.Engine.LocalizationDirectory, file = "", files = "";
 
 			if (BusEngine.Engine.Platform.IndexOf("Windows", System.StringComparison.OrdinalIgnoreCase) != -1 || 1 == 1) {
 				if (!System.IO.Directory.Exists(path)) {
@@ -2244,14 +2229,22 @@ namespace BusEngine {
 				Language = System.Globalization.CultureInfo.CurrentCulture.EnglishName.ToString();
 			}
 
-			if (System.IO.File.Exists(path + Language + File + "." + Format)) {
-				files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
-				//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + File + "." + Format));
+			if (File != "") {
+				file = "/" + File.Replace("/", "");
+			}
+
+			if (Format != "") {
+				file = "." + Format;
+			}
+
+			if (System.IO.File.Exists(path + Language + file)) {
+				files = System.IO.File.ReadAllText(path + Language + file);
+				//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + file));
 			} else {
 				Language = LanguageDefault;
-				if (System.IO.File.Exists(path + Language + File + "." + Format)) {
-					files = System.IO.File.ReadAllText(path + Language + File + "." + Format);
-					//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + File + "." + Format));
+				if (System.IO.File.Exists(path + Language + file)) {
+					files = System.IO.File.ReadAllText(path + Language + file);
+					//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + file));
 				}
 			}
 
@@ -2265,6 +2258,10 @@ namespace BusEngine {
 				lines = files.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
 				l = lines.Length;
 
+				if (GetLanguages == null) {
+					GetLanguages = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Collections.Concurrent.ConcurrentDictionary<string, string>>(System.Environment.ProcessorCount, 1);
+				}
+
 				if (!GetLanguages.ContainsKey(Language)) {
 					GetLanguages[Language] = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(System.Environment.ProcessorCount, l);
 				}
@@ -2273,7 +2270,7 @@ namespace BusEngine {
 					pairs = lines[i].Split(c, 2);
 
 					if (pairs.Length == 2) {
-						//GetLanguages[Language][pairs[0].Trim()] = pairs[1].Trim();
+						GetLanguages[Language][pairs[0].Trim()] = pairs[1].Trim();
 					}
 				}
 			}
@@ -2872,7 +2869,8 @@ namespace BusEngine {
 
 	/** API BusEngine.IPlugin */
 	internal class IPlugin : System.IDisposable {
-		public static System.Collections.Generic.Dictionary<string, System.Type[]> Modules = new System.Collections.Generic.Dictionary<string, System.Type[]>(BusEngine.Engine.SettingProject["require"]["plugins"].Count);
+		public static System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]> Modules;
+		public static System.Collections.Concurrent.ConcurrentDictionary<string, string> Moduless;
 		private static string IsShutdown;
 		private bool IsAsync(System.Reflection.MethodInfo method) {
 			foreach (object o in method.GetCustomAttributes(typeof(System.Runtime.CompilerServices.AsyncStateMachineAttribute), false)) {
@@ -2881,7 +2879,8 @@ namespace BusEngine {
 
 			return false;
 		}
-		private string Stage; 
+		private string Stage;
+		private delegate int Operation();
 
 		// при запуске BusEngine до создания формы
 		public IPlugin(string stage = "Initialize") {
@@ -2892,39 +2891,127 @@ namespace BusEngine {
 			BusEngine.Log.Info( "============================ System Plugins Start ============================" );
 
 			int i, i2, i3, l = BusEngine.Engine.SettingProject["require"]["plugins"].Count;
-			string m;
+			string m, path;
 			object[] x1 = new object[0];
 			object[] x2 = new object[1];
 			object[] x3 = new object[2];
-			System.Type[] module;
+			System.Type[] t1 = new System.Type[] {};
+			System.Type[] t2 = new System.Type[] { typeof(string) };
+			System.Type[] t3 = new System.Type[] { typeof(string), typeof(string) };
 			stage = stage.ToLower();
+			
+			if (1 == 1 && Modules == null) {
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+				#endif
+
+					//BusEngine.Log.Info(System.Threading.Thread.CurrentThread.ManagedThreadId);
+
+					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, BusEngine.Engine.SettingProject["require"]["plugins"].Count, System.StringComparer.OrdinalIgnoreCase);
+
+					System.Collections.Generic.List<System.Threading.Tasks.Task> tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+
+					for (i = 0; i < l; ++i) {
+						tasks.Add(System.Threading.Tasks.Task.Factory.StartNew((object ax) => {
+							string ap = BusEngine.Engine.SettingProject["require"]["plugins"][(int)ax]["path"];
+							//BusEngine.Log.Info("{0} {1}", System.Threading.Thread.CurrentThread.ManagedThreadId, ai);
+
+							//BusEngine.Log.Info("Modules {0}", Modules.Count);
+							//BusEngine.Log.Info(Modules.ContainsKey(ap));
+
+							//if (!Modules.ContainsKey(ap)) {
+								Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
+								//BusEngine.Log.Info("Assembly {0}", System.Reflection.Assembly.LoadFile(ap));
+							//}
+
+							//BusEngine.Log.Info(Modules.ContainsKey(ap));
+						}, i, System.Threading.Tasks.TaskCreationOptions.AttachedToParent));
+					}
+
+					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks.ToArray(), wordCountTasks => {
+						BusEngine.Log.Info("Modules {0}", wordCountTasks.Length);
+						BusEngine.Log.Info("Modules {0}", tasks.Count);
+						tasks.Clear();
+						tasks = null;
+					});
+					task.Wait();
+					task.Dispose();
+
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
+			} else if (1 == 0 && Modules == null) {
+					/* BusEngine.Log.Info(System.Threading.Thread.CurrentThread.ManagedThreadId);
+
+					BusEngine.IPlugin.Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, BusEngine.Engine.SettingProject["require"]["plugins"].Count, System.StringComparer.OrdinalIgnoreCase);
+
+					#if BUSENGINE_BENCHMARK
+					using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+					#endif
+
+					System.Threading.Tasks.Task<System.Type[]>[] tasks = new System.Threading.Tasks.Task<System.Type[]>[BusEngine.Engine.SettingProject["require"]["plugins"].Count];
+
+					for (i = 0; i < l; ++i) {
+						tasks[i] = System.Threading.Tasks.Task.Factory.StartNew((ifx) => {
+							return System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][(int)ifx]["path"]).GetTypes();
+						}, i, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+					}
+
+					System.Threading.Tasks.Task.WaitAll(tasks);
+					BusEngine.Log.Info(tasks);
+
+					for (i = 0; i < l; ++i) {
+						//BusEngine.Log.Info(tasks);
+						BusEngine.IPlugin.Modules[BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]] = tasks[i].Result;
+					}
+
+					#if BUSENGINE_BENCHMARK
+					}
+					#endif */
+			} else if (1 == 0 && Modules == null) {
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+				#endif
+
+					string ap;
+					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, BusEngine.Engine.SettingProject["require"]["plugins"].Count);
+
+					for (i = 0; i < l; ++i) {
+						ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+						//if (!Modules.ContainsKey(ap)) {
+							Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
+						//}
+					}
+
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
+			}
 
 			for (i = 0; i < l; ++i) {
-				if (BusEngine.Engine.IsShutdown && stage == "shutdown" && BusEngine.IPlugin.IsShutdown != "" && BusEngine.IPlugin.IsShutdown != BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]) {
+				path = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+				if (BusEngine.Engine.IsShutdown && stage == "shutdown" && BusEngine.IPlugin.IsShutdown != "" && BusEngine.IPlugin.IsShutdown != path) {
 					continue;
 				}
 				#if BUSENGINE_BENCHMARK
-				using (new BusEngine.Benchmark(BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"] + " " + stage)) {
+				using (new BusEngine.Benchmark(path + " " + stage)) {
 				#endif
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
-					if (!Modules.TryGetValue(BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"], out module)) {
-						module = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]).GetTypes();
-						Modules[BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]] = module;
-					}
-
-					foreach (System.Type type in module) {
+					foreach (System.Type type in Modules[path]) {
 						if (type.IsSubclassOf(typeof(BusEngine.Plugin))) {
 							foreach (System.Reflection.MethodInfo method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
 								m = method.Name.ToLower();
 								if (m == stage || m == stage + "async") {
-									BusEngine.Log.Info(BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]);
+									BusEngine.Log.Info(path);
 									BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_class") + ": {0}", type.FullName);
 									BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method") + ": {0}", method.Name);
 
 									if (m == stage + "async" || IsAsync(method)) {
 										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Async");
 										// https://learn.microsoft.com/ru-ru/dotnet/api/system.threading.thread?view=net-7.0
-										System.Threading.Thread thread = new System.Threading.Thread(() => {
+										// https://www.youtube.com/watch?v=D9qcKV4j75U&list=PLWCoo5SF-qAMDIAqikhB2hvIytrMiR5TC
+										System.Threading.ThreadPool.QueueUserWorkItem((object stateInfo) => {
+										//System.Threading.Thread thread = new System.Threading.Thread(() => {
 										// https://learn.microsoft.com/ru-ru/dotnet/api/system.threading.tasks.task?view=net-7.0
 										//System.Threading.Tasks.Task.Run(() => {
 											i2 = method.GetParameters().Length;
@@ -2932,19 +3019,17 @@ namespace BusEngine {
 												method.Invoke(System.Activator.CreateInstance(type), null);
 												if (stage == "initialize") {
 													for (i3 = 0; i3 < l; ++i3) {
-														if (!Modules.TryGetValue(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"], out module)) {
-															module = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"]).GetTypes();
-														}
-														foreach (System.Type tp in module) {
+														path = BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"];
+														foreach (System.Type tp in Modules[path]) {
 															if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
-																System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
+																System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, t2, null);
 																if (md != null) {
-																	x2[0] = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+																	x2[0] = path;
 																	md.Invoke(System.Activator.CreateInstance(tp), x2);
 																}
-																md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+																md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, t3, null);
 																if (md != null) {
-																	x3[0] = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+																	x3[0] = path;
 																	x3[1] = stage;
 																	md.Invoke(System.Activator.CreateInstance(tp), x3);
 																}
@@ -2955,14 +3040,12 @@ namespace BusEngine {
 											}
 											if (stage != "initialize") {
 												for (i3 = 0; i3 < l; ++i3) {
-													if (!Modules.TryGetValue(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"], out module)) {
-														module = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"]).GetTypes();
-													}
-													foreach (System.Type tp in module) {
+													path = BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"];
+													foreach (System.Type tp in Modules[path]) {
 														if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
-															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, t3, null);
 															if (md != null) {
-																x3[0] = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+																x3[0] = path;
 																x3[1] = stage;
 																md.Invoke(System.Activator.CreateInstance(tp), x3);
 															}
@@ -2971,9 +3054,9 @@ namespace BusEngine {
 												}
 											}
 										});
-										thread.Name = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
-										thread.Priority = System.Threading.ThreadPriority.Lowest;
-										thread.Start();
+										//thread.Name = path;
+										//thread.Priority = System.Threading.ThreadPriority.Lowest;
+										//thread.Start(System.Threading.SynchronizationContext.Current);
 									} else {
 										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Sync");
 										i2 = method.GetParameters().Length;
@@ -2981,19 +3064,17 @@ namespace BusEngine {
 											method.Invoke(System.Activator.CreateInstance(type), null);
 											if (stage == "initialize") {
 												for (i3 = 0; i3 < l; ++i3) {
-													if (!Modules.TryGetValue(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"], out module)) {
-														module = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"]).GetTypes();
-													}
-													foreach (System.Type tp in module) {
+													path = BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"];
+													foreach (System.Type tp in Modules[path]) {
 														if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
-															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string) }, null);
+															System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, t2, null);
 															if (md != null) {
-																x2[0] = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+																x2[0] = path;
 																md.Invoke(System.Activator.CreateInstance(tp), x2);
 															}
-															md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+															md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, t3, null);
 															if (md != null) {
-																x3[0] = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+																x3[0] = path;
 																x3[1] = stage;
 																md.Invoke(System.Activator.CreateInstance(tp), x3);
 															}
@@ -3004,14 +3085,12 @@ namespace BusEngine {
 										}
 										if (stage != "initialize") {
 											for (i3 = 0; i3 < l; ++i3) {
-												if (!Modules.TryGetValue(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"], out module)) {
-													module = System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"]).GetTypes();
-												}
-												foreach (System.Type tp in module) {
+												path = BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"];
+												foreach (System.Type tp in Modules[path]) {
 													if (tp.IsSubclassOf(typeof(BusEngine.Plugin))) {
-														System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, new System.Type[] { typeof(string), typeof(string) }, null);
+														System.Reflection.MethodInfo md = tp.GetMethod("initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly | System.Reflection.BindingFlags.IgnoreCase, null, t3, null);
 														if (md != null) {
-															x3[0] = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+															x3[0] = path;
 															x3[1] = stage;
 															md.Invoke(System.Activator.CreateInstance(tp), x3);
 														}
@@ -3022,7 +3101,7 @@ namespace BusEngine {
 									}
 
 									if (BusEngine.Engine.IsShutdown && BusEngine.IPlugin.IsShutdown == "") {
-										BusEngine.IPlugin.IsShutdown = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+										BusEngine.IPlugin.IsShutdown = path;
 									}
 								}
 							}
@@ -3047,7 +3126,7 @@ namespace BusEngine {
 		}
 
 		~IPlugin() {
-			//BusEngine.Log.Info("IPlugin ~ {0}", Stage);
+			BusEngine.Log.Info("IPlugin ~ {0}", Stage);
 		}
 	}
 	/** API BusEngine.IPlugin */
