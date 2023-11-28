@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk1="Microsoft.NET.Sdk" ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
+    <Import Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+  </ImportGroup>
+  <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019 -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <RootNamespace>BusEngine</RootNamespace>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netstandard2.0;net471;net5.0;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>4096</FileAlignment>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <!-- Отключение публикации своего кода в nuget и т.д. -->
+    <PublishRelease>false</PublishRelease>
+    <PublishTrimmed>false</PublishTrimmed>
+
+    <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
+    <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
+    <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
+  </PropertyGroup>
+  <!-- https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props -->
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' Or '$(TargetFramework)' == 'net6.0-windows' Or '$(TargetFramework)' == 'net7.0-windows' Or '$(TargetFramework)' == 'net8.0-windows' ">
+    <!-- <NoStdLib>true</NoStdLib> -->
+    <!-- <NoStandardLib>true</NoStandardLib> -->
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <!-- <DebugType>pdbonly</DebugType> -->
+    <!-- <DebugSymbols>true</DebugSymbols> -->
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+    <UseWPF>true</UseWPF>
+    <UseAppHost>true</UseAppHost>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UsingMicrosoftNETSdk>true</UsingMicrosoftNETSdk>
+	<UsingNETSdkDefaults>true</UsingNETSdkDefaults>
+	<!-- <Sdk>Microsoft.NET.Sdk</Sdk> -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GeneratedAssemblyInfoFile>AssemblyInfo.cs</GeneratedAssemblyInfoFile>
+    <GenerateRuntimeConfigDevFile>false</GenerateRuntimeConfigDevFile>
+    <!-- <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles> -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <EnablePackageValidation>false</EnablePackageValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS;BUSENGINE_BENCHMARK</DefineConstants>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>..\..\Bin\Win_x64\</OutputPath>
+    <OutputRoot>..\..\Bin\Win_x64\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS;BUSENGINE_BENCHMARK</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <OutputPath>..\..\Bin\Win_x86\</OutputPath>
+    <OutputRoot>..\..\Bin\Win_x86\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'Android' ">
+    <DefineConstants>BUSENGINE_XAMARIN;BUSENGINE_ANDROID;BUSENGINE_BENCHMARK</DefineConstants>
+    <!-- <PlatformTarget>AnyCPU</PlatformTarget> -->
+    <OutputPath>..\..\Bin\Android\</OutputPath>
+    <OutputRoot>..\..\Bin\Android\</OutputRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <DefineConstants>BUSENGINE_WINFORMS;BUSENGINE_WINDOWS;BUSENGINE_BENCHMARK</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>..\..\Bin\Win\</OutputPath>
+    <OutputRoot>..\..\Bin\Win\</OutputRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- возможность использовать dynamic -->
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x86' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'Android' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
+    <Compile Include="**\*.cs" />
+    <None Include="*.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BusContent\Win_x64\**\*.*" Condition=" '$(Platform)' == 'x64' ">
+      <Link>..\..\Bin\Win_x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win_x86\**\*.*" Condition=" '$(Platform)' == 'x86' ">
+      <Link>..\..\Bin\Win_x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Android\**\*.*" Condition=" '$(Platform)' == 'Android' ">
+      <Link>..\..\Bin\Android\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BusContent\Win\**\*.*" Condition=" '$(Platform)' == 'AnyCPU' ">
+      <Link>..\..\Bin\Win\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  </ImportGroup>
+</Project>
