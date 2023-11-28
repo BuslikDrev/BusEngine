@@ -6,11 +6,11 @@ namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
 	public class MyPlugin : BusEngine.Plugin {
 		// настройки
-		private static int Count = 0;
 		private static bool Nap = true;
+		private static int Count = 0;
 		private static int Count2 = 0;
 		private static int FPS = 0;
-		private static int FPSSetting = 100;
+		private static int FPSSetting;
 		private static int FPSInfo = 0;
 
 		private static System.Drawing.SolidBrush myTrub;
@@ -28,6 +28,10 @@ namespace BusEngine.Game {
 			//BusEngine.UI.Canvas.WinForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			// деламем окно не поверх других окон
 			BusEngine.UI.Canvas.WinForm.TopMost = false;
+
+			if (!int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS"], out FPSSetting)) {
+				FPSSetting = 100;
+			}
 
 			// создаем объекты-кисти для закрашивания фигур
 			myTrub = new System.Drawing.SolidBrush(System.Drawing.Color.DeepPink);
@@ -53,12 +57,6 @@ namespace BusEngine.Game {
 
 			// подключаем событие мыши
 			BusEngine.UI.Canvas.WinForm.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
-
-			/* // зависимость от времени
-			System.Timers.Timer aTimer = new System.Timers.Timer(1000F/FPSSetting);
-			aTimer.Elapsed += OnTimedEvent;
-			aTimer.AutoReset = true;
-			aTimer.Enabled = true; */
 
 			// FPS
 			System.Timers.Timer fpsTimer = new System.Timers.Timer(1000);
@@ -86,9 +84,9 @@ namespace BusEngine.Game {
 			Count2++;
 
 			BusEngine.Log.Clear();
-			BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
-			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
-			BusEngine.Log.Info("Paint ============== Paint " + Count + " " + Count2);
+			BusEngine.Log.Info("FPS Setting: {0}", FPSSetting);
+			BusEngine.Log.Info("FPS: {0}", FPSInfo);
+			BusEngine.Log.Info("Paint: {0} {1}", Count, Count2);
 		}
 
 		// перед закрытием BusEngine
@@ -106,22 +104,6 @@ namespace BusEngine.Game {
 		// событие мыши
 		private static void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
 			BusEngine.UI.Canvas.WinForm.Invalidate();
-		}
-
-		// событие времени
-		private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
-			BusEngine.Log.Clear();
-			//BusEngine.Log.Info("The Elapsed event was raised at {0:HH:mm:ss.fff}", e.SignalTime);
-			//FPS++;
-			BusEngine.Log.Info("FPS ============== FPS Setting " + FPSSetting);
-			BusEngine.Log.Info("FPS ============== FPS " + FPSInfo);
-			/* foreach(System.Windows.Forms.Control c in BusEngine.UI.Canvas.WinForm.Controls) {
-				BusEngine.Log.Info("GGG " + c.Name + " GGG");
-			} */
-			//BusEngine.UI.Canvas.WinForm.Refresh();
-			BusEngine.UI.Canvas.WinForm.Invalidate();
-			//BusEngine.UI.Canvas.WinForm.Update();
-			//BusEngine.UI.Canvas.WinForm.Controls.Find().InvokePaint();
 		}
 
 		// событие FPS
@@ -222,7 +204,6 @@ namespace BusEngine.Game {
 
 			// Draw scaled, rotated rectangle to screen.
 			e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.Blue, 3), 50, 0, 100, 40);
-			//BusEngine.UI.Canvas.WinForm.Update();
 		}
 	}
 	/** API BusEngine.Plugin */
