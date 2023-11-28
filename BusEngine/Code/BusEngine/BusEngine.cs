@@ -762,9 +762,9 @@ LibVLCSharp
 				this.DisposeTimer.AutoReset = false;
 				this.DisposeTimer.Enabled = true;
 			} else {
-				System.Threading.Tasks.Task.Run(() => {
+				//System.Threading.Tasks.Task.Run(() => {
 					this.Dispose(true);
-				});
+				//});
 			}
 
 			System.GC.SuppressFinalize(this);
@@ -855,7 +855,7 @@ BusEngine.Log
 			//BusEngine.Log.Info("Generation Benchmark Dispose: {0}", System.GC.GetGeneration(_sw));
 			//BusEngine.Log.Info("Total Memory Benchmark Dispose: {0}", System.GC.GetTotalMemory(false));
 			_sw.Stop();
-			System.Threading.Tasks.Task.Run(() => {
+			//System.Threading.Tasks.Task.Run(() => {
 				BusEngine.Log.Info("Benchmark, " + BusEngine.Localization.GetLanguageStatic("text_operation") + ": [{0}] " + BusEngine.Localization.GetLanguageStatic("text_loading_speed") + ": {1}", _label, _sw.Elapsed);
 				BusEngine.Experemental.Log.File("Benchmark, " + BusEngine.Localization.GetLanguageStatic("text_operation") + ": [" + _label + "] " + BusEngine.Localization.GetLanguageStatic("text_loading_speed") + ": " + _sw.Elapsed);
 				/* System.TimeSpan ts = _sw.Elapsed;
@@ -866,7 +866,7 @@ BusEngine.Log
 				//_sw = null;
 				//BusEngine.Log.Info("Generation Benchmark Dispose2: {0}", System.GC.GetGeneration(_sw));
 				//BusEngine.Log.Info("Total Memory Benchmark Dispose2: {0}", System.GC.GetTotalMemory(false));
-			});
+			//});
 		}
 
 		~Benchmark() {
@@ -1592,10 +1592,10 @@ BusEngine.Tools
 
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
 		public class Device {
-			public static string Name { get; private set; }
-			public static string Version { get; private set; }
-			public static string Processor { get; private set; }
-			public static byte ProcessorCount { get; private set; }
+			public static readonly string Name;
+			public static readonly string Version;
+			public static readonly string Processor;
+			public static readonly byte ProcessorCount;
 			public static string UserAgent;
 			static Device() {
 				#if BUSENGINE_BENCHMARK
@@ -1761,11 +1761,22 @@ BusEngine.Tools
 
 				// получаем новые данные
 				setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(project_files[0]));
-				//System.Collections.Generic.Dictionary<string, dynamic> setting = BusEngine.Tools.Json.Decode(System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(project_files[0])));
 			}
 
 			//project_files = null;
 
+
+
+
+
+
+
+
+
+
+					System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[3];
+
+					tasks[0] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 			dynamic content;
 
 			if (setting.TryGetValue("content", out content) && content.GetType().GetProperty("Count") != null) {
@@ -1822,7 +1833,9 @@ BusEngine.Tools
 			}
 
 			//content = null;
+					}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
 
+					tasks[1] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 			dynamic console_commands;
 
 			if (setting.TryGetValue("console_commands", out console_commands) && console_commands.GetType().GetProperty("Count") != null) {
@@ -1834,6 +1847,9 @@ BusEngine.Tools
 			}
 
 			//console_commands = null;
+					}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+
+					tasks[2] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 
 			dynamic console_variables;
 
@@ -1846,6 +1862,33 @@ BusEngine.Tools
 			}
 
 			//console_variables = null;
+					}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+
+					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, wordCountTasks => {
+						foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
+							tt.Dispose();
+						}
+						System.Array.Clear(wordCountTasks, 0, wordCountTasks.Length);
+						wordCountTasks = null;
+						foreach (System.Threading.Tasks.Task tt in tasks) {
+							tt.Dispose();
+						}
+						System.Array.Clear(tasks, 0, tasks.Length);
+						tasks = null;
+					});
+					task.Wait();
+					task.Dispose();
+
+
+
+
+
+
+
+
+
+
+
 
 			dynamic info;
 
@@ -1933,11 +1976,11 @@ BusEngine.Tools
 			//settingDefault = null;
 
 			// инициализируем язык
-			//BusEngine.Log.ConsoleShow();
 			new BusEngine.Localization().Load();
 
 			// включаем консоль
-			int r_DisplayInfo = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_DisplayInfo"]);
+			int r_DisplayInfo;
+			int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_DisplayInfo"], out r_DisplayInfo);
 
 			if (r_DisplayInfo > 0) {
 				BusEngine.Log.ConsoleShow();
@@ -1949,8 +1992,6 @@ BusEngine.Tools
 					BusEngine.Log.Info("Device Processor: {0}", BusEngine.Engine.Device.Processor);
 					BusEngine.Log.Info("Device ProcessorCount: {0}", BusEngine.Engine.Device.ProcessorCount);
 					BusEngine.Log.Info("Language file: {0}", BusEngine.Localization.LanguageStatic);
-					// https://csharp.webdelphi.ru/kak-izmerit-vremya-vypolneniya-operacii-v-c/
-					//BusEngine.Log.Info("Time: {0}", BusEngine.Localization.LanguageStatic);
 				}
 			}
 
@@ -2060,8 +2101,8 @@ BusEngine.Tools
 		}
 
 		~Engine() {
-			BusEngine.Log.Info("Engine Stop ~");
-			BusEngine.Experemental.Log.File("Engine Stop ~");
+			//BusEngine.Log.Info("Engine Stop ~");
+			//BusEngine.Experemental.Log.File("Engine Stop ~");
 		}
 		/** функция остановки API BusEngine  */
 	}
@@ -2415,6 +2456,11 @@ namespace BusEngine {
 			} else {
 				BusEngine.Log.ConsoleHide();
 			}
+		}
+
+		// функция очистки консоли
+		public static void Clear() {
+			System.Console.Clear();
 		}
 
 		/** событие загрузки языка */
@@ -2899,31 +2945,30 @@ namespace BusEngine {
 			System.Type[] t2 = new System.Type[] { typeof(string) };
 			System.Type[] t3 = new System.Type[] { typeof(string), typeof(string) };
 			stage = stage.ToLower();
-			int typ = 1;
-			
+			int typ = 3;
+
 			if (typ == 1 && Modules == null) {
 				#if BUSENGINE_BENCHMARK
 				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 				#endif
 
-					string ap;
 					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
-					//System.Collections.Generic.List<System.Threading.Tasks.Task> tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
 					System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[l];
 
 					for (i = 0; i < l; ++i) {
-						int g = i;
-						tasks[g] = System.Threading.Tasks.Task.Factory.StartNew(() => {
-							ap = BusEngine.Engine.SettingProject["require"]["plugins"][g]["path"];
-							//if (!Modules.ContainsKey(ap)) {
+						string ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+						if (!Modules.ContainsKey(ap)) {
+							tasks[i] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 								Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
-							//}
-						}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+							}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+						}
 					}
 
 					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, wordCountTasks => {
-						//BusEngine.Log.Info("Modules {0}", wordCountTasks.Length);
+						BusEngine.Log.Info("Modules {0}", Modules.Count);
+						BusEngine.Log.Info("Modules {0}", wordCountTasks.Length);
+						BusEngine.Log.Info("Modules {0}", tasks.Length);
 						foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
 							tt.Dispose();
 						}
@@ -2932,15 +2977,11 @@ namespace BusEngine {
 						foreach (System.Threading.Tasks.Task tt in tasks) {
 							tt.Dispose();
 						}
-						//BusEngine.Log.Info("Modules {0}", tasks.Count);
-						//tasks.Clear();
 						System.Array.Clear(tasks, 0, tasks.Length);
 						tasks = null;
 					});
 					task.Wait();
 					task.Dispose();
-					ap = null;
-					//System.Threading.Tasks.Task.Dispose();
 
 				#if BUSENGINE_BENCHMARK
 				}
@@ -2950,36 +2991,33 @@ namespace BusEngine {
 				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 				#endif
 
-					string ap;
 					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
-					System.Collections.Generic.List<System.Threading.Tasks.Task> tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+					System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[l];
 
 					for (i = 0; i < l; ++i) {
-						int g = i;
-						tasks.Add(System.Threading.Tasks.Task.Run(() => {
-							ap = BusEngine.Engine.SettingProject["require"]["plugins"][g]["path"];
-							//if (!Modules.ContainsKey(ap)) {
+						string ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+						if (!Modules.ContainsKey(ap)) {
+							tasks[i] = System.Threading.Tasks.Task.Run(() => {
 								Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
-							//}
-						}));
+							});
+						}
 					}
 
-					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks.ToArray(), (wordCountTasks) => {
+					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, (wordCountTasks) => {
 						BusEngine.Log.Info("Modules {0}", Modules.Count);
 						BusEngine.Log.Info("Modules {0}", wordCountTasks.Length);
-						/* foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
+						BusEngine.Log.Info("Modules {0}", tasks.Length);
+						foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
 							tt.Dispose();
-						} */
+						}
 						System.Array.Clear(wordCountTasks, 0, wordCountTasks.Length);
 						wordCountTasks = null;
-						/* foreach (System.Threading.Tasks.Task tt in tasks) {
+						foreach (System.Threading.Tasks.Task tt in tasks) {
 							tt.Dispose();
-						} */
-						//BusEngine.Log.Info("Modules {0}", tasks.Count);
-						tasks.Clear();
+						}
+						System.Array.Clear(tasks, 0, tasks.Length);
 						tasks = null;
-						ap = null;
 					});
 					task.Wait();
 					task.Dispose();
@@ -2992,38 +3030,14 @@ namespace BusEngine {
 				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 				#endif
 
-					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l, System.StringComparer.OrdinalIgnoreCase);
-
-					System.Threading.Tasks.Task<dynamic>[] tasks = new System.Threading.Tasks.Task<dynamic>[l];
-
-					for (i = 0; i < l; ++i) {
-						tasks[i] = System.Threading.Tasks.Task.Factory.StartNew((ifx) => {
-							return System.Reflection.Assembly.LoadFile(BusEngine.Engine.SettingProject["require"]["plugins"][(int)ifx]["path"]).GetTypes();
-						}, i/* , System.Threading.Tasks.TaskCreationOptions.AttachedToParent */);
-					}
-
-					System.Threading.Tasks.Task.WaitAll(tasks);
-
-					for (i = 0; i < l; ++i) {
-						Modules[BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"]] = tasks[i].Result;
-					}
-
-				#if BUSENGINE_BENCHMARK
-				}
-				#endif
-			} else if (typ == 4 && Modules == null) {
-				#if BUSENGINE_BENCHMARK
-				using (new BusEngine.Benchmark("Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
-				#endif
-
 					string ap;
 					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
 					for (i = 0; i < l; ++i) {
 						ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
-						//if (!Modules.ContainsKey(ap)) {
+						if (!Modules.ContainsKey(ap)) {
 							Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
-						//}
+						}
 					}
 
 					ap = null;
@@ -3054,9 +3068,12 @@ namespace BusEngine {
 									}
 
 									if (m == stage + "async" || IsAsync(method)) {
-										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Async");
+										if (BusEngine.Log.ConsoleStatus == true) {
+											BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Async");
+										}
 										// https://learn.microsoft.com/ru-ru/dotnet/api/system.threading.thread?view=net-7.0
 										// https://www.youtube.com/watch?v=D9qcKV4j75U&list=PLWCoo5SF-qAMDIAqikhB2hvIytrMiR5TC
+										// https://dzen.ru/video/watch/628d09872d486972bd96589d
 										System.Threading.ThreadPool.QueueUserWorkItem((object stateInfo) => {
 										//System.Threading.Thread thread = new System.Threading.Thread(() => {
 										// https://learn.microsoft.com/ru-ru/dotnet/api/system.threading.tasks.task?view=net-7.0
@@ -3084,8 +3101,15 @@ namespace BusEngine {
 														}
 													}
 												}
+											} else if (i2 == 1) {
+												x2[0] = path;
+												method.Invoke(System.Activator.CreateInstance(type), x2);
+											} else if (i2 == 2) {
+												x3[0] = path;
+												x3[1] = stage;
+												method.Invoke(System.Activator.CreateInstance(type), x3);
 											}
-											if (stage != "initialize") {
+											if (stage != "initialize" && stage != "ongameupdate") {
 												for (i3 = 0; i3 < l; ++i3) {
 													path = BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"];
 													foreach (System.Type tp in Modules[path]) {
@@ -3105,7 +3129,9 @@ namespace BusEngine {
 										//thread.Priority = System.Threading.ThreadPriority.Lowest;
 										//thread.Start(System.Threading.SynchronizationContext.Current);
 									} else {
-										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Sync");
+										if (BusEngine.Log.ConsoleStatus == true) {
+											BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Sync");
+										}
 										i2 = method.GetParameters().Length;
 										if (i2 == 0) {
 											method.Invoke(System.Activator.CreateInstance(type), null);
@@ -3129,8 +3155,15 @@ namespace BusEngine {
 													}
 												}
 											}
+										} else if (i2 == 1) {
+											x2[0] = path;
+											method.Invoke(System.Activator.CreateInstance(type), x2);
+										} else if (i2 == 2) {
+											x3[0] = path;
+											x3[1] = stage;
+											method.Invoke(System.Activator.CreateInstance(type), x3);
 										}
-										if (stage != "initialize") {
+										if (stage != "initialize" && stage != "ongameupdate") {
 											for (i3 = 0; i3 < l; ++i3) {
 												path = BusEngine.Engine.SettingProject["require"]["plugins"][i3]["path"];
 												foreach (System.Type tp in Modules[path]) {
@@ -3173,7 +3206,7 @@ namespace BusEngine {
 		}
 
 		~IPlugin() {
-			BusEngine.Log.Info("IPlugin ~ {0}", Stage);
+			//BusEngine.Log.Info("IPlugin ~ {0}", Stage);
 		}
 	}
 	/** API BusEngine.IPlugin */
@@ -3553,7 +3586,7 @@ Newtonsoft.Json
 	/** API BusEngine.Tools.Json */
 	//https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/migrate-from-newtonsoft?pivots=dotnet-7-0
 	//https://www.nuget.org/packages/System.Text.Json#readme-body-tab
-	public class Json : System.IDisposable {
+	public static class Json {
 		// System.Type|object|string|int|Dictionary|List c#
 		public static string Encode(object t) {
 			try {
@@ -3583,14 +3616,6 @@ Newtonsoft.Json
 				BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_json_decode") + ": {0}", e.Message);
 				return new {};
 			}
-		}
-
-		public static void Shutdown() {}
-
-		public void Dispose() {}
-
-		~Json() {
-			BusEngine.Log.Info("Json ~");
 		}
 	}
 	/** API BusEngine.Tools.Json */
@@ -3795,6 +3820,10 @@ BusEngine.UI
 					new BusEngine.IPlugin("InitializeСanvas");
 				//});
 			//}
+
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler((o, e) => {
+				new BusEngine.IPlugin("OnGameUpdate");
+			});
 		}
 
 		public static void Shutdown() {
@@ -4550,9 +4579,9 @@ LibVLCSharp
 				this.DisposeTimer.AutoReset = false;
 				this.DisposeTimer.Enabled = true;
 			} else {
-				System.Threading.Tasks.Task.Run(() => {
+				//System.Threading.Tasks.Task.Run(() => {
 					this.Dispose(true);
-				});
+				//});
 			}
 
 			System.GC.SuppressFinalize(this);
