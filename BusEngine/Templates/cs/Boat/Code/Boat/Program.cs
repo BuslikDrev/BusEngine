@@ -23,9 +23,7 @@ namespace BusEngine.Game {
 		private static System.Drawing.Pen myWind;
 
 		// при запуске BusEngine после создания формы Canvas
-		public /* async */ override void InitializeСanvas() {
-			//BusEngine.UI.Canvas.WinForm.TransparencyKey = System.Drawing.Color.Black;
-			//BusEngine.UI.Canvas.WinForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+		public override void InitializeСanvas() {
 			// деламем окно не поверх других окон
 			BusEngine.UI.Canvas.WinForm.TopMost = false;
 
@@ -66,7 +64,7 @@ namespace BusEngine.Game {
 		}
 
 		// вызывается при отрисовки каждого кадра
-		public override void OnGameUpdate() {
+		public /* async */ override void OnGameUpdate() {
 			FPS++;
 
 			if (Count < 1 || Count < 300 && Nap == true) {
