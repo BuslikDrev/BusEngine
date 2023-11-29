@@ -61,6 +61,8 @@ namespace BusEngine.Game {
 			fpsTimer.Elapsed += OnFPS;
 			fpsTimer.AutoReset = true;
 			fpsTimer.Enabled = true;
+
+			BusEngine.Engine.GameStart();
 		}
 
 		// вызывается при отрисовки каждого кадра
@@ -101,7 +103,11 @@ namespace BusEngine.Game {
 
 		// событие мыши
 		private static void MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
-			BusEngine.UI.Canvas.WinForm.Invalidate();
+			if (BusEngine.Engine.IsGame == false) {
+				BusEngine.Engine.GameStart();
+			} else {
+				BusEngine.Engine.GameStop();
+			}
 		}
 
 		// событие FPS
@@ -112,44 +118,50 @@ namespace BusEngine.Game {
 
 		// событие отрисовки - модель 1
 		private static void Paint1(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// фон
-			e.Graphics.Clear(System.Drawing.Color.Turquoise);
+			g.Clear(System.Drawing.Color.Turquoise);
 		}
 
 		// событие отрисовки - модель 2
 		private static void Paint2(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub, 300 + Count, 125, 75, 75);
+			g.FillRectangle(myTrub, 300 + Count, 125, 75, 75);
 		}
 
 		// событие отрисовки - модель 3
 		private static void Paint3(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// труба (прямоугольник)
-			e.Graphics.FillRectangle(myTrub, 480 + Count, 125, 75, 75);
+			g.FillRectangle(myTrub, 480 + Count, 125, 75, 75);
 		}
 
 		// событие отрисовки - модель 4
 		private static void Paint4(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// палуба (прямоугольник)
-			e.Graphics.FillRectangle(myTrum, 250 + Count, 200, 350, 100);
+			g.FillRectangle(myTrum, 250 + Count, 200, 350, 100);
 		}
 
 		// событие отрисовки - модель 5
 		private static void Paint5(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// Иллюминаторы
 			// 6 окружностей
-			e.Graphics.DrawEllipse(myWind, 300 + Count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 350 + Count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 400 + Count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 450 + Count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 500 + Count, 240, 20, 20);
-			e.Graphics.DrawEllipse(myWind, 550 + Count, 240, 20, 20);
+			g.DrawEllipse(myWind, 300 + Count, 240, 20, 20);
+			g.DrawEllipse(myWind, 350 + Count, 240, 20, 20);
+			g.DrawEllipse(myWind, 400 + Count, 240, 20, 20);
+			g.DrawEllipse(myWind, 450 + Count, 240, 20, 20);
+			g.DrawEllipse(myWind, 500 + Count, 240, 20, 20);
+			g.DrawEllipse(myWind, 550 + Count, 240, 20, 20);
 		}
 
 		// событие отрисовки - модель 6
 		private static void Paint6(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// корпус (трапеция)
-			e.Graphics.FillPolygon(myCorp, new System.Drawing.Point[] {
+			g.FillPolygon(myCorp, new System.Drawing.Point[] {
 				new System.Drawing.Point(100 + Count, 300),
 				new System.Drawing.Point(700 + Count, 300),
 				new System.Drawing.Point(700 + Count, 300),
@@ -163,45 +175,46 @@ namespace BusEngine.Game {
 
 		// событие отрисовки - модель 7
 		private static void Paint7(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// Море - 12 секторов-полуокружностей
 			int xx = 50;
 			while (xx <= BusEngine.UI.Canvas.WinForm.Width - 50) {
-				e.Graphics.FillPie(mySeа, 0 + xx, 375, 50, 50, 0, -180); 
+				g.FillPie(mySeа, 0 + xx, 375, 50, 50, 0, -180); 
 				xx += 50;
 			}
 		}
 
 		// событие отрисовки - модель 8
 		private static void Paint8(object sender, System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// Translate transformation matrix.
-			//e.Graphics.TranslateTransform(0, 0);
+			//g.TranslateTransform(0, 0);
 
 			// Save translated graphics state.
-			//System.Drawing.Drawing2D.GraphicsState transState = e.Graphics.Save();
+			//System.Drawing.Drawing2D.GraphicsState transState = g.Save();
 
 			// Reset transformation matrix to identity and fill rectangle.
-			e.Graphics.FillRectangle(myRed, 0, 0, 100, 100);
-			e.Graphics.FillRectangle(myGreen, 100, 0, 100, 100);
-			e.Graphics.FillRectangle(myBlue, 200, 0, 100, 100);
+			g.FillRectangle(myRed, 0, 0, 100, 100);
+			g.FillRectangle(myGreen, 100, 0, 100, 100);
+			g.FillRectangle(myBlue, 200, 0, 100, 100);
 
 			// rectangle.
-			//if (count/3 == System.Convert.ToInt32(count/3)) {
-				//ScaleTransformFloat(e);
-			//}
+			//ScaleTransformFloat(e);
 
 			// Restore graphics state to translated state and fill second
-			//e.Graphics.Restore(transState);
+			//g.Restore(transState);
 		}
 
 		private static void ScaleTransformFloat(System.Windows.Forms.PaintEventArgs e) {
+			System.Drawing.Graphics g = e.Graphics;
 			// Set world transform of graphics object to rotate.
-			e.Graphics.RotateTransform(30.0F);
+			g.RotateTransform(30.0F);
 
 			// Then to scale, prepending to world transform.
-			e.Graphics.ScaleTransform(3.0F, 1.0F);
+			g.ScaleTransform(3.0F, 1.0F);
 
 			// Draw scaled, rotated rectangle to screen.
-			e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.Blue, 3), 50, 0, 100, 40);
+			g.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.Blue, 3), 50, 0, 100, 40);
 		}
 	}
 	/** API BusEngine.Plugin */
