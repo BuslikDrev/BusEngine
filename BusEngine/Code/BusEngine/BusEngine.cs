@@ -1599,12 +1599,12 @@ BusEngine.Tools
 		private static bool _GameStart = false;
 		public static void GameStart() {
 			if (IsGame == false && !_GameStart && BusEngine.UI.Canvas.WinForm != null) {
+				IsGame = true;
 				_GameStart = true;
 				new BusEngine.IPlugin("OnGameStart");
 				BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
 				BusEngine.UI.Canvas.WinForm.Invalidate(true);
 				_GameStart = false;
-				IsGame = true;
 			}
 		}
 		private static bool _GameStop = false;
@@ -1616,6 +1616,11 @@ BusEngine.Tools
 				_GameStop = false;
 				IsGame = false;
 			}
+		}
+
+		public static void GameUpdate() {
+			new BusEngine.IPlugin("OnGameUpdate");
+			BusEngine.UI.Canvas.WinForm.Invalidate(true);
 		}
 
 		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
