@@ -11,10 +11,11 @@ https://learn.microsoft.com/ru-ru/xamarin/android/app-fundamentals/permissions?t
 https://learn.microsoft.com/ru-ru/dotnet/csharp/fundamentals/coding-style/coding-conventions
 https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/keywords/event
 https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/
+https://learn.microsoft.com/en-us/dotnet/standard/events/how-to-handle-multiple-events-using-event-properties
 */
 
 /** дорожная карта
-- проставить нормально модификаторы доступа https://metanit.com/sharp/tutorial/3.2.php
+//- проставить нормально модификаторы доступа https://metanit.com/sharp/tutorial/3.2.php
 - максимально весь функционал сделать независимыми плагинами и установить проверки
  на наличие плагинов перед их использованием
 - создать: генерацию сцены (карты), камеру, консольные команды, консоль, настройка проекта
@@ -112,7 +113,8 @@ namespace BusEngine {
 			Setting = new System.Collections.Generic.Dictionary<string, dynamic>(5, System.StringComparer.OrdinalIgnoreCase) {
 				{"console_commands", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
 					{"sys_Spec", "1"},                    // Выбор уровня настроек графики
-					{"sys_FPS", "256"},                   // Ограничение частоты кадров в секунду
+					{"sys_FPS", "60"},                    // Ограничение частоты кадров в секунду
+					{"sys_FPSAuto", "1"},                 // Отключение зависимости от времени
 					{"sys_MemoryClearTime", "5"},         // Установка промежутка времени для освобождения оперативной памяти в секундах
 					{"sys_MemoryClearAuto", "1"},         // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
 					{"r_WaterOcean", "0"},                // Статус работы океана
@@ -127,7 +129,10 @@ namespace BusEngine {
 				}},
 				{"console_variables", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
 					{"sys_Spec", "1"},
-					{"e_WaterOcean", "0"},
+					{"sys_FPS", "60"},
+					{"sys_FPSAuto", "1"},
+					{"sys_MemoryClearTime", "5"},
+					{"sys_MemoryClearAuto", "1"},
 					{"r_WaterOcean", "0"},
 					{"r_VolumetricClouds", "1"},
 					{"r_DisplayInfo", "0"},
@@ -1587,15 +1592,58 @@ BusEngine.Tools
 		public static string LogDirectory { get; private set; }
 		public static string ToolsDirectory { get; private set; }
 		public static string Platform { get; private set; }
+		public static bool IsGame { get; private set; }
 		public static bool IsShutdown { get; private set; }
 		public static string[] Commands;
 
+		private static bool _GameStart = false;
+		public static void GameStart() {
+			if (IsGame == false && !_GameStart && BusEngine.UI.Canvas.WinForm != null) {
+				_GameStart = true;
+				new BusEngine.IPlugin("OnGameStart");
+				BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
+				BusEngine.UI.Canvas.WinForm.Invalidate(true);
+				_GameStart = false;
+				IsGame = true;
+			}
+		}
+		private static bool _GameStop = false;
+		public static void GameStop() {
+			if (IsGame == true && !_GameStop && BusEngine.UI.Canvas.WinForm != null) {
+				_GameStop = true;
+				BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
+				new BusEngine.IPlugin("OnGameStop");
+				_GameStop = false;
+				IsGame = false;
+			}
+		}
+
+		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+			new BusEngine.IPlugin("OnGameUpdate");
+			BusEngine.UI.Canvas.WinForm.Invalidate(true);
+			//BusEngine.UI.Canvas.WinForm.Update();
+			//BusEngine.UI.Canvas.WinForm.Refresh();
+		}
+
+			/* // зависимость от времени
+			System.Timers.Timer aTimer = new System.Timers.Timer(1000F/FPSSetting);
+			aTimer.Elapsed += OnTimedEvent;
+			aTimer.AutoReset = true;
+			aTimer.Enabled = true; */
+
+		/* private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
+			new BusEngine.IPlugin("OnGameUpdate");
+			BusEngine.UI.Canvas.WinForm.Invalidate(true);
+			//BusEngine.UI.Canvas.WinForm.Update();
+			//BusEngine.UI.Canvas.WinForm.Refresh();
+		} */
+
 		// определяем платформу, версию, архитектуру процессора (NET.Framework 4.7.1+)
 		public class Device {
-			public static readonly string Name;
-			public static readonly string Version;
-			public static readonly string Processor;
-			public static readonly byte ProcessorCount;
+			public static string Name { get; private set; }
+			public static string Version { get; private set; }
+			public static string Processor { get; private set; }
+			public static byte ProcessorCount { get; private set; }
 			public static string UserAgent;
 			static Device() {
 				#if BUSENGINE_BENCHMARK
@@ -1655,6 +1703,8 @@ BusEngine.Tools
 				BusEngine.Engine.Platform = "BusEngine";
 			}
 
+			IsGame = false;
+			IsShutdown = false;
 			UTF8NotBOM = new System.Text.UTF8Encoding(false);
 
 			// устанавливаем ссылку на рабочий каталог
@@ -2080,6 +2130,9 @@ BusEngine.Tools
 				_instance.Dispose();
 				_instance = null;
 			}
+
+			BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
+
 			// отключаем плагины
 			new BusEngine.IPlugin("Shutdown");
 
@@ -2933,18 +2986,20 @@ namespace BusEngine {
 			if (BusEngine.Engine.IsShutdown && stage != "Shutdown") {
 				return;
 			}
+			stage = stage.ToLower();
 			Stage = stage;
-			BusEngine.Log.Info( "============================ System Plugins Start ============================" );
+			if (stage != "ongameupdate") {
+				BusEngine.Log.Info( "============================ System Plugins Start ============================" );
+			}
 
 			int i, i2, i3, l = BusEngine.Engine.SettingProject["require"]["plugins"].Count;
 			string m, path;
-			object[] x1 = new object[0];
+			//object[] x1 = new object[0];
 			object[] x2 = new object[1];
 			object[] x3 = new object[2];
-			System.Type[] t1 = new System.Type[] {};
+			//System.Type[] t1 = new System.Type[] {};
 			System.Type[] t2 = new System.Type[] { typeof(string) };
 			System.Type[] t3 = new System.Type[] { typeof(string), typeof(string) };
-			stage = stage.ToLower();
 			int typ = 3;
 
 			if (typ == 1 && Modules == null) {
@@ -3053,7 +3108,7 @@ namespace BusEngine {
 					continue;
 				}
 				#if BUSENGINE_BENCHMARK
-				using (new BusEngine.Benchmark(path + " " + stage)) {
+				//using (new BusEngine.Benchmark(path + " " + stage)) {
 				#endif
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					foreach (System.Type type in Modules[path]) {
@@ -3061,14 +3116,14 @@ namespace BusEngine {
 							foreach (System.Reflection.MethodInfo method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly)) {
 								m = method.Name.ToLower();
 								if (m == stage || m == stage + "async") {
-									if (BusEngine.Log.ConsoleStatus == true) {
+									if (BusEngine.Log.ConsoleStatus == true && stage != "ongameupdate") {
 										BusEngine.Log.Info(path);
 										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_class") + ": {0}", type.FullName);
 										BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method") + ": {0}", method.Name);
 									}
 
 									if (m == stage + "async" || IsAsync(method)) {
-										if (BusEngine.Log.ConsoleStatus == true) {
+										if (BusEngine.Log.ConsoleStatus == true && stage != "ongameupdate") {
 											BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Async");
 										}
 										// https://learn.microsoft.com/ru-ru/dotnet/api/system.threading.thread?view=net-7.0
@@ -3129,7 +3184,7 @@ namespace BusEngine {
 										//thread.Priority = System.Threading.ThreadPriority.Lowest;
 										//thread.Start(System.Threading.SynchronizationContext.Current);
 									} else {
-										if (BusEngine.Log.ConsoleStatus == true) {
+										if (BusEngine.Log.ConsoleStatus == true && stage != "ongameupdate") {
 											BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("text_name_method_start") + ": {0}", "Sync");
 										}
 										i2 = method.GetParameters().Length;
@@ -3188,7 +3243,7 @@ namespace BusEngine {
 						}
 					}
 				#if BUSENGINE_BENCHMARK
-				}
+				//}
 				#endif
 			}
 
@@ -3196,7 +3251,9 @@ namespace BusEngine {
 			x2 = null;
 			x3 = null; */
 
-			BusEngine.Log.Info( "============================ System Plugins Stop  ============================" );
+			if (stage != "ongameupdate") {
+				BusEngine.Log.Info( "============================ System Plugins Stop  ============================" );
+			}
 
 			//System.GC.SuppressFinalize(this);
 		}
@@ -3821,9 +3878,7 @@ BusEngine.UI
 				//});
 			//}
 
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler((o, e) => {
-				new BusEngine.IPlugin("OnGameUpdate");
-			});
+
 		}
 
 		public static void Shutdown() {
