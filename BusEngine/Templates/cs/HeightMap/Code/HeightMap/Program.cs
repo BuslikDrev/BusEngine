@@ -14,14 +14,9 @@ namespace BusEngine.Game {
 		private static int FPSInfo = 0;
 
 		private static System.Drawing.Point point;
-		private static System.Threading.Tasks.Task[] tasks;
-
         private static System.Drawing.Bitmap result;
-        private static Voxel[] voxels1;
-		private static Voxel[] voxels2;
-		private static Voxel[] voxels3;
-		private static Voxel[] voxels4;
         private static System.Numerics.Vector3 lamp;
+        private static Voxel[][] voxels;
 
         private static System.Windows.Forms.TrackBar tbRoll;
         private static System.Windows.Forms.TrackBar tbPitch;
@@ -43,7 +38,7 @@ namespace BusEngine.Game {
 
 			// тест графики
 			// https://rsdn.org/article/gdi/gdiplus2mag.xml
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint1);
+			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
 
 			BusEngine.UI.Canvas.WinForm.DoubleClick += new System.EventHandler(DoubleClick);
 
@@ -56,7 +51,7 @@ namespace BusEngine.Game {
 			fpsTimer.AutoReset = true;
 			fpsTimer.Enabled = true;
 
-			BusEngine.Engine.GameStart();
+			//BusEngine.Engine.GameStart();
 
             //источник света
             lamp = System.Numerics.Vector3.Normalize(new System.Numerics.Vector3(-1, 1, -1));
@@ -64,57 +59,44 @@ namespace BusEngine.Game {
 			point = new System.Drawing.Point(0, 60);
 
 			//BusEngine.Engine.Device.ProcessorCount
-			tasks = new System.Threading.Tasks.Task[4];
+			//tasks = new System.Threading.Tasks.Task[4];
 
             //загружаем карту высот
             using (System.Drawing.Bitmap heightMap = (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(BusEngine.Engine.DataDirectory + "Textures/heightmap.png")) {
                 //создаем обертку для быстрого доступа к пикселам
                 using (System.Drawing.ImageWrapper wr = new System.Drawing.ImageWrapper(heightMap)) {
-					int light, l = 0, ll = 0;
-					float height, h1, h2, dx, dy;
+					int height, h1, h2, dx, dy, light, l = 0, ll = 0, lll = 0, limit = 0;
 					System.Collections.Generic.IEnumerator<System.Drawing.Point> e = wr.GetEnumerator();
 					while (e.MoveNext()) {
 						l++;
 					}
 
-					if (l > 200000) {
-						voxels1 = new Voxel[200000];
-						l = l - 200000;
-					} else {
-						if (l < 0) {
+					voxels = new Voxel[BusEngine.Engine.Device.ProcessorCount][];
+					limit = l / BusEngine.Engine.Device.ProcessorCount + 1;
+
+					foreach (Voxel[] voxel in voxels) {
+						lll++;
+						if (lll == voxels.Length) {
+							if (l < 0) {
+								l = 0;
+							}
+							voxels[lll-1] = new Voxel[l];
 							l = 0;
+						} else {
+							if (l > limit) {
+								voxels[lll-1] = new Voxel[limit];
+								l = l - limit;
+							} else {
+								if (l < 0) {
+									l = 0;
+								}
+								voxels[lll-1] = new Voxel[l];
+								l = 0;
+							}
 						}
-						voxels1 = new Voxel[l];
-						l = 0;
 					}
 
-					if (l > 200000) {
-						voxels2 = new Voxel[200000];
-						l = l - 200000;
-					} else {
-						if (l < 0) {
-							l = 0;
-						}
-						voxels2 = new Voxel[l];
-						l = 0;
-					}
-
-					if (l > 200000) {
-						voxels3 = new Voxel[200000];
-						l = l - 200000;
-					} else {
-						if (l < 0) {
-							l = 0;
-						}
-						voxels3 = new Voxel[l];
-						l = 0;
-					}
-
-					if (l < 0) {
-						l = 0;
-					}
-					voxels4 = new Voxel[l];
-					l = 0;
+					lll = 0;
 
                     //читаем карту высот, формируем воксели
                     foreach (System.Drawing.Point p in wr) {
@@ -134,7 +116,7 @@ namespace BusEngine.Game {
 							System.Numerics.Vector3 n = System.Numerics.Vector3.Normalize(new System.Numerics.Vector3(dx, NORMAL_Y, dy));
 
 							//считаем свет
-							light = (int)(System.Numerics.Vector3.Dot(n, lamp) * 255F);
+							light = (int)(System.Numerics.Vector3.Dot(n, lamp) * 255);
 
 							if (light < 0) {
 								light = 0;
@@ -143,35 +125,16 @@ namespace BusEngine.Game {
 							}
 
 							//создаем воксель
-							if (l == 200000 || l == 400000 || l == 600000) {
+							if (ll == limit) {
 								ll = 0;
+								lll++;
 							}
 
-							if (l < 200000) {
-								voxels1[ll] = new Voxel{
-									Pos = new System.Numerics.Vector3(p.X, height * SCALE_HEIGHT, p.Y),
-									Normal = n,
-									Light = light
-								};
-							} else if (l < 400000) {
-								voxels2[ll] = new Voxel{
-									Pos = new System.Numerics.Vector3(p.X, height * SCALE_HEIGHT, p.Y),
-									Normal = n,
-									Light = light
-								};
-							} else if (l < 600000) {
-								voxels3[ll] = new Voxel{
-									Pos = new System.Numerics.Vector3(p.X, height * SCALE_HEIGHT, p.Y),
-									Normal = n,
-									Light = light
-								};
-							} else {
-								voxels4[ll] = new Voxel{
-									Pos = new System.Numerics.Vector3(p.X, height * SCALE_HEIGHT, p.Y),
-									Normal = n,
-									Light = light
-								};
-							}
+							voxels[lll][ll] = new Voxel{
+								Pos = new System.Numerics.Vector3(p.X, height * SCALE_HEIGHT, p.Y),
+								Normal = n,
+								Light = System.Drawing.Color.FromArgb(light, light, light)
+							};
 
 							ll++;
 							l++;
@@ -184,14 +147,14 @@ namespace BusEngine.Game {
             }
 
             //задаем размер формы
-            BusEngine.UI.Canvas.WinForm.Size = new System.Drawing.Size(result.Width, 4 * result.Height / 5 + 60);
-            BusEngine.UI.Canvas.WinForm.BackColor = System.Drawing.Color.Black;
+            //BusEngine.UI.Canvas.WinForm.Size = new System.Drawing.Size(result.Width, 4 * result.Height / 5 + 60);
+            //BusEngine.UI.Canvas.WinForm.BackColor = System.Drawing.Color.White;
 
             //создаем трекбары
             tbRoll = new System.Windows.Forms.TrackBar{
 				Parent = BusEngine.UI.Canvas.WinForm,
-				Maximum = 180,
-				Minimum = -180,
+				Maximum = 360,
+				Minimum = -360,
 				Value = 0,
 				Left = 10,
 				Width = 200 
@@ -238,7 +201,7 @@ namespace BusEngine.Game {
 
 		// перед закрытием BusEngine
 		public override void Shutdown() {
-			BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint1);
+			BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
             tbRoll.ValueChanged -= new System.EventHandler(tb_ValueChangedtbRoll);
             tbPitch.ValueChanged -= new System.EventHandler(tb_ValueChangedtbPitch);
 		}
@@ -269,99 +232,52 @@ namespace BusEngine.Game {
 
         private void tb_ValueChangedtbRoll(object sender, System.EventArgs e) {
 			roll = (float)(tbRoll.Value * System.Math.PI / 180D);
-			//BusEngine.Engine.GameUpdate();
+			BusEngine.Engine.GameUpdate();
         }
 
         private void tb_ValueChangedtbPitch(object sender, System.EventArgs e) {
 			pitch = (float)(tbPitch.Value * System.Math.PI / 180D);
-			//BusEngine.Engine.GameUpdate();
+			BusEngine.Engine.GameUpdate();
         }
 
-		private static void Paint1(object sender, System.Windows.Forms.PaintEventArgs e) {
+		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
 			System.Drawing.Graphics g = e.Graphics;
 			using (new BusEngine.Benchmark("ImageWrapper")) {
-            //матрицы вращения
-            System.Numerics.Matrix4x4 rotateM0 = System.Numerics.Matrix4x4.CreateRotationY(roll);
-            System.Numerics.Matrix4x4 rotateM = System.Numerics.Matrix4x4.CreateFromYawPitchRoll(0F, pitch, 0F);
-
-            //матрица переноса
-            System.Numerics.Vector3 position = new System.Numerics.Vector3(result.Width / 2F, 0F, result.Height / 2F);
-            System.Numerics.Matrix4x4 translateM = System.Numerics.Matrix4x4.CreateTranslation(position);
-            System.Numerics.Matrix4x4 translateM0 = System.Numerics.Matrix4x4.CreateTranslation(-1F * position);
-
-            //матрица смещения относительно экрана
-            System.Numerics.Matrix4x4 screenM = System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(0, result.Height / 2f, 0F));
-
-			System.Numerics.Matrix4x4 rotate = translateM0 * rotateM0 * rotateM * translateM * screenM;
 
             //рендерим модель
             using (System.Drawing.ImageWrapper wr = new System.Drawing.ImageWrapper(result)) {
-				tasks[0] = System.Threading.Tasks.Task.Factory.StartNew(() => {
-					foreach (Voxel v in voxels1) {
+				//матрицы вращения
+				System.Numerics.Matrix4x4 rotateM0 = System.Numerics.Matrix4x4.CreateRotationY(roll);
+				System.Numerics.Matrix4x4 rotateM = System.Numerics.Matrix4x4.CreateFromYawPitchRoll(0, pitch, 0);
+
+				//матрица переноса
+				System.Numerics.Vector3 position = new System.Numerics.Vector3(result.Width / 2F, 0, result.Height / 2F);
+				System.Numerics.Matrix4x4 translateM = System.Numerics.Matrix4x4.CreateTranslation(position);
+				System.Numerics.Matrix4x4 translateM0 = System.Numerics.Matrix4x4.CreateTranslation(-1 * position);
+
+				//матрица смещения относительно экрана
+				System.Numerics.Matrix4x4 screenM = System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(0, result.Height / 2F, 0));
+
+				System.Numerics.Matrix4x4 rotate = translateM0 * rotateM0 * rotateM * translateM * screenM;
+
+				foreach (Voxel[] voxel in voxels) {
+					/* foreach (Voxel v in voxel) {
 						//переводим в мировые координаты
-						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(v.Pos, rotate);
+						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(v.Pos, (System.Numerics.Matrix4x4)rotate);
 						int x = (int)p.X;
 						int y = (int)p.Y;
-						//цвет
-						System.Drawing.Color color = System.Drawing.Color.FromArgb(v.Light, v.Light, v.Light);
 						//заносим в изображение
-						wr[x, y] = wr[x, y + 1] = color;
-					}
-				}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
-
-				tasks[1] = System.Threading.Tasks.Task.Factory.StartNew(() => {
-					foreach (Voxel v in voxels2) {
+						wr[x, y] = wr[x, y + 1] = v.Light;
+					} */
+					System.Threading.Tasks.Parallel.For(0, voxel.Length, (int i) => {
 						//переводим в мировые координаты
-						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(v.Pos, rotate);
+						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(voxel[i].Pos, (System.Numerics.Matrix4x4)rotate);
 						int x = (int)p.X;
 						int y = (int)p.Y;
-						//цвет
-						System.Drawing.Color color = System.Drawing.Color.FromArgb(v.Light, v.Light, v.Light);
 						//заносим в изображение
-						wr[x, y] = wr[x, y + 1] = color;
-					}
-				}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
-
-				tasks[2] = System.Threading.Tasks.Task.Factory.StartNew(() => {
-					foreach (Voxel v in voxels3) {
-						//переводим в мировые координаты
-						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(v.Pos, rotate);
-						int x = (int)p.X;
-						int y = (int)p.Y;
-						//цвет
-						System.Drawing.Color color = System.Drawing.Color.FromArgb(v.Light, v.Light, v.Light);
-						//заносим в изображение
-						wr[x, y] = wr[x, y + 1] = color;
-					}
-				}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
-
-				tasks[3] = System.Threading.Tasks.Task.Factory.StartNew(() => {
-					foreach (Voxel v in voxels4) {
-						//переводим в мировые координаты
-						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(v.Pos, rotate);
-						int x = (int)p.X;
-						int y = (int)p.Y;
-						//цвет
-						System.Drawing.Color color = System.Drawing.Color.FromArgb(v.Light, v.Light, v.Light);
-						//заносим в изображение
-						wr[x, y] = wr[x, y + 1] = color;
-					}
-				}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
-
-				System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, wordCountTasks => {
-					foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
-						tt.Dispose();
-					}
-					//System.Array.Clear(wordCountTasks, 0, wordCountTasks.Length);
-					//wordCountTasks = null;
-					foreach (System.Threading.Tasks.Task tt in tasks) {
-						tt.Dispose();
-					}
-					//System.Array.Clear(tasks, 0, tasks.Length);
-					//tasks = null;
-				});
-				task.Wait();
-				task.Dispose();
+						wr[x, y] = wr[x, y + 1] = voxel[i].Light;
+					});
+				}
 			}
 
             //отрисовываем
@@ -373,7 +289,7 @@ namespace BusEngine.Game {
     internal struct Voxel {
         public System.Numerics.Vector3 Pos;
         public System.Numerics.Vector3 Normal;
-        public int Light;
+        public System.Drawing.Color Light;
     }
 	/** API BusEngine.Plugin */
 }
@@ -517,9 +433,8 @@ namespace System.Drawing {
         /// </summary>
         public System.Collections.Generic.IEnumerator<System.Drawing.Point> GetEnumerator() {
 			int x, y;
-
-			for (x = 0; x < Width; ++x) {
-				for (y = 0; y < Height; ++y) {
+			for (y = 0; y < Height; y++) {
+				for (x = 0; x < Width; x++) {
                     yield return new System.Drawing.Point(x, y);
 				}
 			}
