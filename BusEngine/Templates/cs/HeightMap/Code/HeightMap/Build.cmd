@@ -181,15 +181,15 @@ IF %typestatus% == true (
 	IF %Platform% == 1 (
 		REM cd "%BusEngineFolder:"=%/Bin/Win_x64"
 		REM %cache64% install %win64% /queue:1
-		"c:\windows\explorer.exe" %win64%
+		REM "c:\windows\explorer.exe" %win64%
 	) ELSE IF %Platform% == 2 (
 		REM "%BusEngineFolder:"=%/Bin/Win_x86"
 		REM %cache% install %win86% /queue:1
-		"c:\windows\explorer.exe" %win86%
+		REM "c:\windows\explorer.exe" %win86%
 	) ELSE (
 		REM "%BusEngineFolder:"=%/Bin/Win"
 		REM %cache% install %win% /queue:1
-		"c:\windows\explorer.exe" %win%
+		REM "c:\windows\explorer.exe" %win%
 	)
 ) ELSE (
 	IF %Platform% == 1 (
@@ -197,7 +197,7 @@ IF %typestatus% == true (
 	) ELSE IF %Platform% == 2 (
 		%win86%
 	) ELSE IF %Platform% == 3 (
-		"c:\windows\explorer.exe" %android%
+		REM "c:\windows\explorer.exe" %android%
 	) ELSE (
 		%win%
 	)

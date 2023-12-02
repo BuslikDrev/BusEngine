@@ -13,16 +13,15 @@ namespace BusEngine.Game {
 		private static int FPSSetting;
 		private static int FPSInfo = 0;
 
-		private static System.Drawing.Point point;
         private static System.Drawing.Bitmap result;
         private static System.Numerics.Vector3 lamp;
         private static Voxel[][] voxels;
 
-        private static System.Windows.Forms.TrackBar tbRoll;
-        private static System.Windows.Forms.TrackBar tbPitch;
+        private static System.Windows.Forms.TrackBar tbHorizontal;
+        private static System.Windows.Forms.TrackBar tbVerticale;
 
-        private static float pitch = 0F;
-        private static float roll = 0F;
+        private static float horizontal = 0F;
+        private static float verticale = 0F;
 
         private const float SCALE_HEIGHT = 1F / 7F;
         private const float NORMAL_Y = 10F;
@@ -31,6 +30,8 @@ namespace BusEngine.Game {
 		public override void InitializeСanvas() {
 			// деламем окно не поверх других окон
 			BusEngine.UI.Canvas.WinForm.TopMost = false;
+			//BusEngine.UI.Canvas.WinForm.AutoSize = true;
+			//BusEngine.UI.Canvas.WinForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
 
 			if (!int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS"], out FPSSetting)) {
 				FPSSetting = 100;
@@ -40,10 +41,18 @@ namespace BusEngine.Game {
 			// https://rsdn.org/article/gdi/gdiplus2mag.xml
 			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
 
-			BusEngine.UI.Canvas.WinForm.DoubleClick += new System.EventHandler(DoubleClick);
-
 			// подключаем событие мыши
 			BusEngine.UI.Canvas.WinForm.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
+
+			// подключаем событие клавиатуры
+			BusEngine.UI.Canvas.WinForm.KeyDown += new System.Windows.Forms.KeyEventHandler(KeyDown);
+			BusEngine.UI.Canvas.WinForm.KeyUp += new System.Windows.Forms.KeyEventHandler(KeyUp);
+
+			// подключаем событие изменение размера окна
+			BusEngine.UI.Canvas.WinForm.SizeChanged += new System.EventHandler(SizeChanged);
+
+			// подключаем событие двойного щелчка
+			BusEngine.UI.Canvas.WinForm.DoubleClick += new System.EventHandler(DoubleClick);
 
 			// FPS
 			System.Timers.Timer fpsTimer = new System.Timers.Timer(1000);
@@ -51,15 +60,8 @@ namespace BusEngine.Game {
 			fpsTimer.AutoReset = true;
 			fpsTimer.Enabled = true;
 
-			//BusEngine.Engine.GameStart();
-
             //источник света
             lamp = System.Numerics.Vector3.Normalize(new System.Numerics.Vector3(-1, 1, -1));
-
-			point = new System.Drawing.Point(0, 60);
-
-			//BusEngine.Engine.Device.ProcessorCount
-			//tasks = new System.Threading.Tasks.Task[4];
 
             //загружаем карту высот
             using (System.Drawing.Bitmap heightMap = (System.Drawing.Bitmap)System.Drawing.Bitmap.FromFile(BusEngine.Engine.DataDirectory + "Textures/heightmap.png")) {
@@ -143,7 +145,10 @@ namespace BusEngine.Game {
                 }
 
                 //создаем результирующее изображение
-                result = new System.Drawing.Bitmap(heightMap.Width, heightMap.Height);
+                //result = new System.Drawing.Bitmap(heightMap.Width, heightMap.Height);
+				result = new System.Drawing.Bitmap(BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height);
+				BusEngine.Log.Info("FPS Settiппngresult: {0} {1}", result.Width, result.Height);
+				//result.SetResolution(48.0F, 48.0F);
             }
 
             //задаем размер формы
@@ -151,28 +156,37 @@ namespace BusEngine.Game {
             //BusEngine.UI.Canvas.WinForm.BackColor = System.Drawing.Color.White;
 
             //создаем трекбары
-            tbRoll = new System.Windows.Forms.TrackBar{
+            tbHorizontal = new System.Windows.Forms.TrackBar{
 				Parent = BusEngine.UI.Canvas.WinForm,
+				Text = "1111111111",
+				TickStyle = System.Windows.Forms.TickStyle.TopLeft,
+				AutoSize = true,
 				Maximum = 360,
 				Minimum = -360,
 				Value = 0,
-				Left = 10,
-				Width = 200 
-			};
-            tbPitch = new System.Windows.Forms.TrackBar{
-				Parent = BusEngine.UI.Canvas.WinForm,
-				Maximum = 240,
-				Minimum = 180,
-				Value = 200,
-				Left = 220,
+				Left = 0,
 				Width = 200
 			};
+            tbVerticale = new System.Windows.Forms.TrackBar{
+				Parent = BusEngine.UI.Canvas.WinForm,
+				Text = "1111111111",
+				TickStyle = System.Windows.Forms.TickStyle.BottomRight,
+				Orientation = System.Windows.Forms.Orientation.Vertical,
+				AutoSize = true,
+				Maximum = 180,
+				Minimum = 90,
+				Value = 150,
+				Left = BusEngine.UI.Canvas.WinForm.Width - 60,
+				Height = 200
+			};
 
-            tbRoll.ValueChanged += new System.EventHandler(tb_ValueChangedtbRoll);
-            tbPitch.ValueChanged += new System.EventHandler(tb_ValueChangedtbPitch);
+            tbHorizontal.ValueChanged += new System.EventHandler(tb_ValueChangedtbHorizontal);
+            tbVerticale.ValueChanged += new System.EventHandler(tb_ValueChangedtbVerticale);
 
-            tb_ValueChangedtbRoll(null, System.EventArgs.Empty);
-			tb_ValueChangedtbPitch(null, System.EventArgs.Empty);
+            tb_ValueChangedtbHorizontal(null, System.EventArgs.Empty);
+			tb_ValueChangedtbVerticale(null, System.EventArgs.Empty);
+
+			//BusEngine.Engine.GameStart();
 		}
 
 		// вызывается при отрисовки каждого кадра
@@ -202,8 +216,8 @@ namespace BusEngine.Game {
 		// перед закрытием BusEngine
 		public override void Shutdown() {
 			BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
-            tbRoll.ValueChanged -= new System.EventHandler(tb_ValueChangedtbRoll);
-            tbPitch.ValueChanged -= new System.EventHandler(tb_ValueChangedtbPitch);
+            tbHorizontal.ValueChanged -= new System.EventHandler(tb_ValueChangedtbHorizontal);
+            tbVerticale.ValueChanged -= new System.EventHandler(tb_ValueChangedtbVerticale);
 		}
 
 		// событие мыши
@@ -215,13 +229,46 @@ namespace BusEngine.Game {
 			} */
 		}
 
+		// событие клавиатуры
+		private static System.Collections.Concurrent.ConcurrentDictionary<System.Windows.Forms.Keys, System.Windows.Forms.Keys> IsKeys = new System.Collections.Concurrent.ConcurrentDictionary<System.Windows.Forms.Keys, System.Windows.Forms.Keys>(System.Environment.ProcessorCount, 10);
+		private static void KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
+			//BusEngine.UI.Canvas.WinForm.KeyDown -= new System.Windows.Forms.KeyEventHandler(KeyDown);
+			BusEngine.Log.Info("FPS Setting5: {0}", e.KeyCode);
+			IsKeys[e.KeyCode] = e.KeyCode;
+
+			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.W) && tbVerticale.Value+2 < tbVerticale.Maximum) {
+				tbVerticale.Value = tbVerticale.Value+2;
+			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.S) && tbVerticale.Value-2 > tbVerticale.Minimum) {
+				tbVerticale.Value = tbVerticale.Value-2;
+			}
+			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.D) && tbHorizontal.Value+2 < tbHorizontal.Maximum) {
+				tbHorizontal.Value = tbHorizontal.Value+2;
+			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.A) && tbHorizontal.Value-2 > tbHorizontal.Minimum) {
+				tbHorizontal.Value = tbHorizontal.Value-2;
+			}
+		}
+		private static void KeyUp(object sender, System.Windows.Forms.KeyEventArgs e) {
+			//BusEngine.UI.Canvas.WinForm.KeyDown += new System.Windows.Forms.KeyEventHandler(KeyDown);
+			BusEngine.Log.Info("FPS Setting2: {0}", e.KeyCode);
+			System.Windows.Forms.Keys b = e.KeyCode;
+			IsKeys.TryRemove(e.KeyCode, out b);
+		}
+
+		private static void SizeChanged(object sender, System.EventArgs e) {
+			BusEngine.Log.Info("FPS Settiппng: {0}", FPSSetting);
+            tbVerticale.Left = BusEngine.UI.Canvas.WinForm.Width - 60;
+			result = new System.Drawing.Bitmap(BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height);
+			BusEngine.Engine.GameUpdate();
+		}
+
         private static void DoubleClick(object sender, System.EventArgs e) {
             System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog() {
 				Title = "Сохранение 3D изображения",
 				Filter = "Image|*.png"
 			};
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 result.Save(sfd.FileName);
+			}
         }
 
 		// событие FPS
@@ -230,58 +277,68 @@ namespace BusEngine.Game {
 			FPS = 0;
 		}
 
-        private void tb_ValueChangedtbRoll(object sender, System.EventArgs e) {
-			roll = (float)(tbRoll.Value * System.Math.PI / 180D);
+        private void tb_ValueChangedtbHorizontal(object sender, System.EventArgs e) {
+			horizontal = (float)(tbHorizontal.Value * System.Math.PI / 180D);
+			//horizontal = (float)tbHorizontal.Value;
 			BusEngine.Engine.GameUpdate();
         }
 
-        private void tb_ValueChangedtbPitch(object sender, System.EventArgs e) {
-			pitch = (float)(tbPitch.Value * System.Math.PI / 180D);
-			BusEngine.Engine.GameUpdate();
+        private void tb_ValueChangedtbVerticale(object sender, System.EventArgs e) {
+			verticale = (float)(tbVerticale.Value * System.Math.PI / -180D);
+			//verticale = (float)tbVerticale.Value;
+			if (IsKeys.Count == 1) {
+				BusEngine.Engine.GameUpdate();
+			}
         }
 
 		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
 			System.Drawing.Graphics g = e.Graphics;
+
 			using (new BusEngine.Benchmark("ImageWrapper")) {
+				//рендерим модель
+				using (System.Drawing.ImageWrapper wr = new System.Drawing.ImageWrapper(result)) {
+					System.Numerics.Matrix4x4 rotate =
+					System.Numerics.Matrix4x4.CreateTranslation(0, 0, 0) *
+					System.Numerics.Matrix4x4.CreateRotationY(horizontal, new System.Numerics.Vector3(result.Width / 2F, result.Height / -2F, result.Height / 2F)) *
+					System.Numerics.Matrix4x4.CreateRotationX(verticale, new System.Numerics.Vector3(result.Width / 2F, 0, result.Height / 2F)) *
+					//System.Numerics.Matrix4x4.CreateFromYawPitchRoll(0, -90, 0) *
+					//System.Numerics.Matrix4x4.CreateTranslation(result.Width / 2F, 0, result.Height / 2F) *
+					//System.Numerics.Matrix4x4.CreateTranslation(result.Width / 2F, 0, result.Height / 2F) *
+					System.Numerics.Matrix4x4.CreateTranslation(0, result.Height / 2F, 0);
 
-            //рендерим модель
-            using (System.Drawing.ImageWrapper wr = new System.Drawing.ImageWrapper(result)) {
-				//матрицы вращения
-				System.Numerics.Matrix4x4 rotateM0 = System.Numerics.Matrix4x4.CreateRotationY(roll);
-				System.Numerics.Matrix4x4 rotateM = System.Numerics.Matrix4x4.CreateFromYawPitchRoll(0, pitch, 0);
-
-				//матрица переноса
-				System.Numerics.Vector3 position = new System.Numerics.Vector3(result.Width / 2F, 0, result.Height / 2F);
-				System.Numerics.Matrix4x4 translateM = System.Numerics.Matrix4x4.CreateTranslation(position);
-				System.Numerics.Matrix4x4 translateM0 = System.Numerics.Matrix4x4.CreateTranslation(-1 * position);
-
-				//матрица смещения относительно экрана
-				System.Numerics.Matrix4x4 screenM = System.Numerics.Matrix4x4.CreateTranslation(new System.Numerics.Vector3(0, result.Height / 2F, 0));
-
-				System.Numerics.Matrix4x4 rotate = translateM0 * rotateM0 * rotateM * translateM * screenM;
-
-				foreach (Voxel[] voxel in voxels) {
-					/* foreach (Voxel v in voxel) {
-						//переводим в мировые координаты
-						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(v.Pos, (System.Numerics.Matrix4x4)rotate);
-						int x = (int)p.X;
-						int y = (int)p.Y;
-						//заносим в изображение
-						wr[x, y] = wr[x, y + 1] = v.Light;
-					} */
-					System.Threading.Tasks.Parallel.For(0, voxel.Length, (int i) => {
-						//переводим в мировые координаты
-						System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(voxel[i].Pos, (System.Numerics.Matrix4x4)rotate);
-						int x = (int)p.X;
-						int y = (int)p.Y;
-						//заносим в изображение
-						wr[x, y] = wr[x, y + 1] = voxel[i].Light;
-					});
+					foreach (Voxel[] voxel in voxels) {
+						/* foreach (Voxel v in voxel) {
+							//переводим в мировые координаты
+							System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(v.Pos, (System.Numerics.Matrix4x4)rotate);
+							int x = (int)p.X;
+							int y = (int)p.Y;
+							//заносим в изображение
+							wr[x, y] = wr[x, y + 1] = v.Light;
+						} */
+						System.Threading.Tasks.Parallel.For(0, voxel.Length, (int i) => {
+							//переводим в мировые координаты
+							System.Numerics.Vector3 p = System.Numerics.Vector3.Transform(voxel[i].Pos, (System.Numerics.Matrix4x4)rotate);
+							int x = (int)p.X;
+							int y = (int)p.Y;
+							//заносим в изображение
+							wr[x, y] = wr[x, y + 1] = voxel[i].Light;
+						});
+					}
 				}
 			}
 
-            //отрисовываем
-            g.DrawImage(result, point);
+			//отрисовываем
+			g.DrawImage(result, 0, 0);
+
+			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.W) && tbVerticale.Value+2 < tbVerticale.Maximum) {
+				tbVerticale.Value = tbVerticale.Value+2;
+			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.S) && tbVerticale.Value-2 > tbVerticale.Minimum) {
+				tbVerticale.Value = tbVerticale.Value-2;
+			}
+			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.D) && tbHorizontal.Value+2 < tbHorizontal.Maximum) {
+				tbHorizontal.Value = tbHorizontal.Value+2;
+			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.A) && tbHorizontal.Value-2 > tbHorizontal.Minimum) {
+				tbHorizontal.Value = tbHorizontal.Value-2;
 			}
 		}
 	}
@@ -309,19 +366,19 @@ namespace System.Drawing {
         /// <summary>
         /// Ширина изображения
         /// </summary>
-        public static int Width { get; private set; }
+        public int Width { get; private set; }
         /// <summary>
         /// Высота изображения
         /// </summary>
-        public static int Height { get; private set; }
+        public int Height { get; private set; }
         /// <summary>
         /// Цвет по-умолачнию (используется при выходе координат за пределы изображения)
         /// </summary>
         public Color DefaultColor { get; set; }
 
-        private byte[] data;//буфер исходного изображения
-        private byte[] outData;//выходной буфер
-        private int stride;
+        private static byte[] data;//буфер исходного изображения
+        private static byte[] outData;//выходной буфер
+        private static int stride;
         private System.Drawing.Imaging.BitmapData bmpData;
         private System.Drawing.Bitmap BMP;
 
@@ -334,7 +391,7 @@ namespace System.Drawing {
             Height = bmp.Height;
             BMP = bmp;
 
-            bmpData = BMP.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
+            bmpData = BMP.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, /* bmp.PixelFormat */ System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
             stride = bmpData.Stride;
 
             data = new byte[stride * Height];
@@ -416,7 +473,7 @@ namespace System.Drawing {
         } */
 
         public int GetIndex(int x, int y) {
-            return (x < 0 || x >= Width || y < 0 || y >= Height ? -1 : x * 4 + y * stride);
+            return (x >= 0 && x < Width && y >= 0 && y < Height ? x * 4 + y * stride : -1);
         }
 
         /// <summary>
