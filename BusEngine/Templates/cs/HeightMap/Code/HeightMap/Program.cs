@@ -6,9 +6,6 @@ namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
 	public class MyPlugin : BusEngine.Plugin {
 		// настройки
-		private static bool Nap = true;
-		private static int Count = 0;
-		private static int Count2 = 0;
 		private static int FPS = 0;
 		private static int FPSSetting;
 		private static int FPSInfo = 0;
@@ -193,24 +190,9 @@ namespace BusEngine.Game {
 		public /* async */ override void OnGameUpdate() {
 			FPS++;
 
-			if (Count < 1 || Count < 300 && Nap == true) {
-				Nap = true;
-			} else {
-				Nap = false;
-			}
-
-			if (Nap == true) {
-				Count++;
-			} else {
-				Count--;
-			}
-
-			Count2++;
-
 			BusEngine.Log.Clear();
 			BusEngine.Log.Info("FPS Setting: {0}", FPSSetting);
 			BusEngine.Log.Info("FPS: {0}", FPSInfo);
-			BusEngine.Log.Info("Paint: {0} {1}", Count, Count2);
 		}
 
 		// перед закрытием BusEngine
@@ -230,28 +212,39 @@ namespace BusEngine.Game {
 		}
 
 		// событие клавиатуры
-		private static System.Collections.Concurrent.ConcurrentDictionary<System.Windows.Forms.Keys, System.Windows.Forms.Keys> IsKeys = new System.Collections.Concurrent.ConcurrentDictionary<System.Windows.Forms.Keys, System.Windows.Forms.Keys>(System.Environment.ProcessorCount, 10);
+		private static System.Collections.Generic.HashSet<System.Windows.Forms.Keys> IsKeys = new System.Collections.Generic.HashSet<System.Windows.Forms.Keys>();
 		private static void KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
 			//BusEngine.UI.Canvas.WinForm.KeyDown -= new System.Windows.Forms.KeyEventHandler(KeyDown);
-			BusEngine.Log.Info("FPS Setting5: {0}", e.KeyCode);
-			IsKeys[e.KeyCode] = e.KeyCode;
 
-			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.W) && tbVerticale.Value+2 < tbVerticale.Maximum) {
-				tbVerticale.Value = tbVerticale.Value+2;
-			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.S) && tbVerticale.Value-2 > tbVerticale.Minimum) {
-				tbVerticale.Value = tbVerticale.Value-2;
+			/* BusEngine.Log.Info("{0} = {1}", "Alt", e.Alt);
+			BusEngine.Log.Info("{0} = {1}", "Control", e.Control);
+			BusEngine.Log.Info("{0} = {1}", "Handled", e.Handled);
+			BusEngine.Log.Info("{0} = {1}", "KeyCode", e.KeyCode);
+			BusEngine.Log.Info("{0} = {1}", "KeyValue", e.KeyValue);
+			BusEngine.Log.Info("{0} = {1}", "KeyData", e.KeyData);
+			BusEngine.Log.Info("{0} = {1}", "Modifiers", e.Modifiers);
+			BusEngine.Log.Info("{0} = {1}", "Shift", e.Shift);
+			BusEngine.Log.Info("{0} = {1}", "SuppressKeyPress", e.SuppressKeyPress); */
+
+			IsKeys.Add(e.KeyCode);
+
+			if (IsKeys.Contains(System.Windows.Forms.Keys.W) && tbVerticale.Value < tbVerticale.Maximum) {
+				tbVerticale.Value = tbVerticale.Value+1;
 			}
-			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.D) && tbHorizontal.Value+2 < tbHorizontal.Maximum) {
+			if (IsKeys.Contains(System.Windows.Forms.Keys.S) && tbVerticale.Value > tbVerticale.Minimum) {
+				tbVerticale.Value = tbVerticale.Value-1;
+			}
+			if (IsKeys.Contains(System.Windows.Forms.Keys.D) && tbHorizontal.Value+1 < tbHorizontal.Maximum) {
 				tbHorizontal.Value = tbHorizontal.Value+2;
-			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.A) && tbHorizontal.Value-2 > tbHorizontal.Minimum) {
+			}
+			if (IsKeys.Contains(System.Windows.Forms.Keys.A) && tbHorizontal.Value-1 > tbHorizontal.Minimum) {
 				tbHorizontal.Value = tbHorizontal.Value-2;
 			}
 		}
 		private static void KeyUp(object sender, System.Windows.Forms.KeyEventArgs e) {
 			//BusEngine.UI.Canvas.WinForm.KeyDown += new System.Windows.Forms.KeyEventHandler(KeyDown);
-			BusEngine.Log.Info("FPS Setting2: {0}", e.KeyCode);
-			System.Windows.Forms.Keys b = e.KeyCode;
-			IsKeys.TryRemove(e.KeyCode, out b);
+			//BusEngine.Log.Info("FPS Setting2: {0}", e.KeyCode);
+			IsKeys.Remove(e.KeyCode);
 		}
 
 		private static void SizeChanged(object sender, System.EventArgs e) {
@@ -286,7 +279,7 @@ namespace BusEngine.Game {
         private void tb_ValueChangedtbVerticale(object sender, System.EventArgs e) {
 			verticale = (float)(tbVerticale.Value * System.Math.PI / -180D);
 			//verticale = (float)tbVerticale.Value;
-			if (IsKeys.Count == 1) {
+			if (IsKeys.Count <= 1) {
 				BusEngine.Engine.GameUpdate();
 			}
         }
@@ -297,6 +290,12 @@ namespace BusEngine.Game {
 			using (new BusEngine.Benchmark("ImageWrapper")) {
 				//рендерим модель
 				using (System.Drawing.ImageWrapper wr = new System.Drawing.ImageWrapper(result)) {
+					/* System.Numerics.Matrix4x4.CreateBillboard(
+						new System.Numerics.Vector3(0, 0, 0),
+						new System.Numerics.Vector3(0, 0, 0),
+						new System.Numerics.Vector3(0, 0, 0),
+						new System.Numerics.Vector3(100, 0, 0)
+					); */
 					System.Numerics.Matrix4x4 rotate =
 					System.Numerics.Matrix4x4.CreateTranslation(0, 0, 0) *
 					System.Numerics.Matrix4x4.CreateRotationY(horizontal, new System.Numerics.Vector3(result.Width / 2F, result.Height / -2F, result.Height / 2F)) *
@@ -330,14 +329,16 @@ namespace BusEngine.Game {
 			//отрисовываем
 			g.DrawImage(result, 0, 0);
 
-			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.W) && tbVerticale.Value+2 < tbVerticale.Maximum) {
-				tbVerticale.Value = tbVerticale.Value+2;
-			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.S) && tbVerticale.Value-2 > tbVerticale.Minimum) {
-				tbVerticale.Value = tbVerticale.Value-2;
+			if (IsKeys.Contains(System.Windows.Forms.Keys.W) && tbVerticale.Value < tbVerticale.Maximum) {
+				tbVerticale.Value = tbVerticale.Value+1;
 			}
-			if (IsKeys.ContainsKey(System.Windows.Forms.Keys.D) && tbHorizontal.Value+2 < tbHorizontal.Maximum) {
+			if (IsKeys.Contains(System.Windows.Forms.Keys.S) && tbVerticale.Value > tbVerticale.Minimum) {
+				tbVerticale.Value = tbVerticale.Value-1;
+			}
+			if (IsKeys.Contains(System.Windows.Forms.Keys.D) && tbHorizontal.Value+1 < tbHorizontal.Maximum) {
 				tbHorizontal.Value = tbHorizontal.Value+2;
-			} else if (IsKeys.ContainsKey(System.Windows.Forms.Keys.A) && tbHorizontal.Value-2 > tbHorizontal.Minimum) {
+			}
+			if (IsKeys.Contains(System.Windows.Forms.Keys.A) && tbHorizontal.Value-1 > tbHorizontal.Minimum) {
 				tbHorizontal.Value = tbHorizontal.Value-2;
 			}
 		}
