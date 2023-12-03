@@ -63,7 +63,6 @@ public class Video https://busengine.buslikdrev.by/api/cs/Video.html
 //#define BROWSER_LOG
 //#define LOG_TYPE
 //#define VIDEO_LOG
-#define CODE_ANALYSIS
 
 /** API BusEngine.Experemental */
 namespace BusEngine.Experemental {
@@ -117,6 +116,7 @@ namespace BusEngine {
 					{"sys_FPSAuto", "1"},                 // Отключение зависимости от времени
 					{"sys_MemoryClearTime", "5"},         // Установка промежутка времени для освобождения оперативной памяти в секундах
 					{"sys_MemoryClearAuto", "1"},         // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
+					{"sys_Benchmark", "1"},               // Benchmark статус
 					{"r_WaterOcean", "0"},                // Статус работы океана
 					{"r_VolumetricClouds", "1"},          // Статус работы облаков
 					{"r_DisplayInfo", "2"},               // Статус работы окна информации
@@ -133,6 +133,7 @@ namespace BusEngine {
 					{"sys_FPSAuto", "1"},
 					{"sys_MemoryClearTime", "5"},
 					{"sys_MemoryClearAuto", "1"},
+					{"sys_Benchmark", "1"},
 					{"r_WaterOcean", "0"},
 					{"r_VolumetricClouds", "1"},
 					{"r_DisplayInfo", "0"},
@@ -1619,8 +1620,10 @@ BusEngine.Tools
 		}
 
 		public static void GameUpdate() {
-			new BusEngine.IPlugin("OnGameUpdate");
-			BusEngine.UI.Canvas.WinForm.Invalidate(true);
+			if (BusEngine.UI.Canvas.WinForm != null) {
+				new BusEngine.IPlugin("OnGameUpdate");
+				BusEngine.UI.Canvas.WinForm.Invalidate(true);
+			}
 		}
 
 		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
@@ -2985,6 +2988,7 @@ namespace BusEngine {
 		}
 		private string Stage;
 		//private delegate int Operation();
+		private static BusEngine.Benchmark Benchmark;
 
 		// при запуске BusEngine до создания формы
 		public IPlugin(string stage = "Initialize") {
@@ -3113,7 +3117,10 @@ namespace BusEngine {
 					continue;
 				}
 				#if BUSENGINE_BENCHMARK
-				//using (new BusEngine.Benchmark(path + " " + stage)) {
+				int sys_Benchmark;
+				if (int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_Benchmark"], out sys_Benchmark) && sys_Benchmark > 0) {
+					Benchmark = new BusEngine.Benchmark(path + " " + stage);
+				}
 				#endif
 					// https://learn.microsoft.com/ru-ru/dotnet/framework/deployment/best-practices-for-assembly-loading
 					foreach (System.Type type in Modules[path]) {
@@ -3248,7 +3255,9 @@ namespace BusEngine {
 						}
 					}
 				#if BUSENGINE_BENCHMARK
-				//}
+				if (sys_Benchmark > 0) {
+					Benchmark.Dispose();
+				}
 				#endif
 			}
 
