@@ -108,7 +108,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'Android' ">
-      <HintPath>..\..\Bin\Win\BusEngine.dll</HintPath>
+      <HintPath>..\..\Bin\Android\BusEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'AnyCPU' ">

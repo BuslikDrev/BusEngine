@@ -1,7 +1,7 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
 /* © 2016-2024; BuslikDrev - Усе правы захаваны. */
 
-/* C# 6.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
+/* C# 5.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
 /* MSBuild 15.0+        https://en.wikipedia.org/wiki/MSBuild#Versions */
 
@@ -30,19 +30,20 @@ BusEngine.UI
 	internal class Initialize {
 		private static System.Threading.Mutex Mutex;
 
-		private /* async */ static void /* System.Threading.Tasks.Task */ Run(string[] args) {
-			#if BUSENGINE_BENCHMARK
+		private static void Run(string[] args) {
+			//#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Initialize.Run")) {
-			#endif
+			//#endif
 			// инициализируем API BusEngine
-			BusEngine.Engine.Platform = "WindowsLauncher";
-			BusEngine.Engine.Commands = args;
-			BusEngine.Engine.OnInitialize += BusEngine.Initialize.OnRun;
-			BusEngine.Engine.OnShutdown += BusEngine.Initialize.OnExit;
-			BusEngine.Engine.Initialize();
-			#if BUSENGINE_BENCHMARK
+			BusEngine.Engine.Initialize(
+				Platform: "WindowsLauncher",
+				Commands: args,
+				OnInitialize: BusEngine.Initialize.OnRun,
+				OnShutdown: BusEngine.Initialize.OnExit
+			);
+			//#if BUSENGINE_BENCHMARK
 			}
-			#endif
+			//#endif
 		}
 
 		private static void OnRun() {
@@ -57,20 +58,19 @@ BusEngine.UI
 
 			// допускаем только один запуск
 			bool createdNew;
-			Mutex = new System.Threading.Mutex(true, "81145500-44c6-41c1-816d-be751929b38d", out createdNew);
+			Mutex = new System.Threading.Mutex(true, BusEngine.Engine.SettingProject["info"]["guid"], out createdNew);
 			if (!createdNew) {
-				string title;
-				string desc;
+				string desc, title;
 
-				if (BusEngine.Localization.GetLanguageStatic("error_warning") != "error_warning") {
-					title = BusEngine.Localization.GetLanguageStatic("error_warning");
-				} else {
-					title = "Увага!";
-				}
 				if (BusEngine.Localization.GetLanguageStatic("error_is_already_running") != "error_is_already_running") {
 					desc = BusEngine.Localization.GetLanguageStatic("error_is_already_running");
 				} else {
 					desc = "Праграма ўжо запушчана.";
+				}
+				if (BusEngine.Localization.GetLanguageStatic("error_warning") != "error_warning") {
+					title = BusEngine.Localization.GetLanguageStatic("error_warning");
+				} else {
+					title = "Увага!";
 				}
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
@@ -116,7 +116,7 @@ BusEngine.UI
 		// https://www.cyberforum.ru/cmd-bat/thread940960.html
 		// https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.start?view=net-7.0
 		// https://learn.microsoft.com/ru-ru/dotnet/desktop/winforms/controls/multithreading-in-windows-forms-controls?view=netframeworkdesktop-4.8
-		//[System.STAThread] // если однопоточное приложение
+		[System.STAThread] // если однопоточное приложение
 		//[System.Security.SecurityCriticalAttribute]
 		private static void Main(string[] args) {
 			/** моя мечта
@@ -139,9 +139,7 @@ BusEngine.UI
 
 			// проверяем целостность библиотек движка
 			if (!System.IO.File.Exists(Location + "\\BusEngine.dll")) {
-				string title;
-				string desc;
-				string lang = System.Globalization.CultureInfo.CurrentCulture.EnglishName;
+				string title, desc, lang = System.Globalization.CultureInfo.CurrentCulture.EnglishName;
 
 				if (lang == "English") {
 					title = "Memory Manager";
@@ -170,12 +168,12 @@ BusEngine.UI
 					System.Runtime.ProfileOptimization.SetProfileRoot(Location);
 					System.Runtime.ProfileOptimization.StartProfile("JITCache.prof");
 
+					//https://learn.microsoft.com/ru-ru/dotnet/api/system.runtime.caching.memorycache?view=dotnet-plat-ext-7.0
 					//https://learn.microsoft.com/en-us/dotnet/api/system.runtime.gcsettings?view=netframework-4.8
 					/* System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Batch;
 					System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce; */
 
 					BusEngine.Initialize.Run(args);
-					//BusEngine.Initialize.Run(args).Wait();
 				#if RUN_LOG
 				} catch (System.AccessViolationException e) {
 					BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_audio_format") + ": {0}", e.Message);
@@ -205,16 +203,19 @@ BusEngine.UI
 
 			// размеры окна и учёт Dpi
 			// https://learn.microsoft.com/ru-ru/windows/win32/learnwin32/dpi-and-device-independent-pixels#converting-physical-pixels-to-dips
-			int r_Width;
-			this.Width = (int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_Width"], out r_Width) ? r_Width : 1280) * this.DeviceDpi / 96;
-			int r_Height;
-			this.Height = (int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_Height"], out r_Height) ? r_Height : 720) * this.DeviceDpi / 96;
+			float r_Width;
+			this.Width = (int)((float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_Width"], out r_Width) ? r_Width : 1280F) * this.DeviceDpi / 96F);
+			float r_Height;
+			this.Height = (int)((float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_Height"], out r_Height) ? r_Height : 720F) * this.DeviceDpi / 96F);
 
 			// размер экрана
 			//BusEngine.UI.Canvas.Screen.Width = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width;
 
 			// цинтровка окна
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+
+			// минимальный размер окна
+			this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
 
 			// название окна
 			this.Text = BusEngine.Engine.SettingProject["info"]["name"] + " v" + BusEngine.Engine.SettingProject["info"]["version"];
@@ -226,14 +227,18 @@ BusEngine.UI
 				this.Icon = new System.Drawing.Icon(System.Drawing.SystemIcons.Exclamation, 128, 128);
 			}
 
-			// минимальный размер окна
-			this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
-
 			// кнопка развернуть
 			this.MaximizeBox = false;
 
 			// мерцание
 			this.DoubleBuffered = true;
+			this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.UserPaint, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.FixedHeight, false);
+			this.SetStyle(System.Windows.Forms.ControlStyles.FixedWidth, false);
+			this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.SupportsTransparentBackColor, true);
 
 			// кнопка свернуть
 			//this.MinimizeBox = false;
@@ -241,25 +246,30 @@ BusEngine.UI
 			// панель управления
 			//this.ControlBox = false;
 
-			int r_Fullscreen = System.Convert.ToInt32(BusEngine.Engine.SettingProject["console_commands"]["r_Fullscreen"]);
+			int r_FullScreen;
+			int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_FullScreen"], out r_FullScreen);
 			// убираем линии, чтобы окно было полностью на весь экран
-			if (r_Fullscreen == -1 || r_Fullscreen == 1) {
+			if (r_FullScreen == -2 || r_FullScreen == -1 || r_FullScreen == 1) {
 				this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 				//this.ControlBox = false;
-			} else if (r_Fullscreen < -2 || r_Fullscreen == 0 || r_Fullscreen == 2) {
+			} else if (r_FullScreen == 0 || r_FullScreen == 2) {
 				this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			} else {
 				this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
 			}
 
 			// открываем окно на весь экран
-			if (r_Fullscreen > 0) {
+			if (r_FullScreen > 0) {
 				this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			} else {
 				this.WindowState = System.Windows.Forms.FormWindowState.Normal;
-				if (r_Fullscreen < 0) {
+				if (r_FullScreen == -4) {
 					this.MaximizeBox = true;
 				}
+			}
+
+			if (r_FullScreen == -3 || r_FullScreen == 2) {
+				this.ControlBox = false;
 			}
 
 			// cобытие нажатий клавиш
@@ -281,11 +291,14 @@ BusEngine.UI
 			this.Controls.Add(panel1); */
 
 			// фикс создания дескриптора раньше плагинов
-			System.IntPtr hWnd = this.Handle;
+			//System.IntPtr hWnd = this.Handle;
 
 			// показываем форму\включаем\запускаем\стартуем показ окна
 			//this.ShowDialog();
 			//this.Show();
+
+			//this.Padding = new System.Windows.Forms.Padding(10);
+			//this.Margin = new System.Windows.Forms.Padding(100);
 
 			//this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
 			#if BUSENGINE_BENCHMARK
@@ -293,6 +306,7 @@ BusEngine.UI
 			#endif
 
 			// подключаем API BusEngine.UI.Canvas
+			//BusEngine.UI.Canvas.Type = this.GetType();
 			BusEngine.UI.Canvas.WinForm = this;
 
 			// инициализируем API BusEngine.UI.Canvas
@@ -300,24 +314,19 @@ BusEngine.UI
 		}
 		/** функция запуска окна приложения */
 
-		// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.createparams?view=netframework-4.8
-		// Style https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
-		// ClassStyle https://learn.microsoft.com/ru-ru/windows/win32/winmsg/window-class-styles
 		/* protected override System.Windows.Forms.CreateParams CreateParams {
 			get {
 				System.Windows.Forms.CreateParams cp = base.CreateParams;
 
-				if (this.FormBorderStyle == System.Windows.Forms.FormBorderStyle.None) {
-					// рамка
-					//cp.Style |= 0x00040000;
-					//this.Padding = new System.Windows.Forms.Padding(0);
-					//this.Margin = new System.Windows.Forms.Padding(-100);
-					// тень рамки
-					//cp.ClassStyle |= 0x00000200;
-					// Update the button Style.
-					//cp.Style |= 0x00000040;
-					// Double-buffering
-					//cp.ExStyle |= 0x00800;
+				if (this.ControlBox == false) {
+					//cp.Width = 100;
+					//cp.X = 0;
+					//https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
+					cp.Style |= 0x00040000|0x00800000|0x00400000;
+					//https://learn.microsoft.com/ru-ru/windows/win32/winmsg/window-class-styles
+					//cp.ClassStyle |= 0x4000;
+					//https://learn.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
+					//cp.ExStyle |= 0x02000000|0x00040000|0x00000200|0x00000100|0x00800|0x00000001;
 				}
 
 				return cp;
