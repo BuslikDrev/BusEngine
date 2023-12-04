@@ -23,7 +23,7 @@ namespace BusEngine.Game {
 		private static float verticale = 0F;
 
 		private const float SCALE_HEIGHT = 1F / 7F;
-		private const float NORMAL_Y = 10F;
+		private const float NORMAL_Y = 5F;
 
 		// при запуске BusEngine после создания формы Canvas
 		public override void InitializeСanvas() {
@@ -327,7 +327,7 @@ namespace BusEngine.Game {
 			using (new BusEngine.Benchmark("ImageWrapper")) {
 				System.Drawing.Graphics g = e.Graphics;
 
-				//if (!IsDrawImage && IsScroll) {
+				if (!IsDrawImage && IsScroll) {
 					IsDrawImage = true;
 
 					// рендерим модель
@@ -382,7 +382,7 @@ namespace BusEngine.Game {
 					if (IsKeys.Contains(System.Windows.Forms.Keys.A) && tbHorizontal.Value-1 > tbHorizontal.Minimum) {
 						tbHorizontal.Value = tbHorizontal.Value-2;
 					}
-				//}
+				}
 
 				g.TranslateTransform(result.Width / 2F, result.Height / 2F/* , System.Drawing.Drawing2D.MatrixOrder.Prepend */);
 				g.RotateTransform(horizontalCache);
@@ -427,8 +427,8 @@ namespace System.Drawing {
 		/// </summary>
 		public Color DefaultColor { get; set; }
 
-		private byte[] data;//буфер исходного изображения
-		private byte[] outData;//выходной буфер
+		private byte[] data; //буфер исходного изображения
+		private byte[] outData; //выходной буфер
 		private int stride;
 		private System.Drawing.Imaging.BitmapData bmpData;
 		private System.Drawing.Bitmap BMP;
@@ -481,10 +481,10 @@ namespace System.Drawing {
 		/// Возвращает пиксел из исходнго изображения.
 		/// Либо заносит пиксел в выходной буфер.
 		/// </summary>
-		public Color this[int[] p] {
+		/* public Color this[int[] p] {
 			get { return this[p[0], p[1]]; }
 			set { this[p[0], p[1]] = value; }
-		}
+		} */
 
 		/// <summary>
 		/// Заносит в выходной буфер значение цвета, заданные в double.
