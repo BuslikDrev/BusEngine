@@ -327,6 +327,7 @@ namespace BusEngine.Game {
 			using (new BusEngine.Benchmark("ImageWrapper")) {
 				System.Drawing.Graphics g = e.Graphics;
 
+				// нужно найти реализацию обработки текстуры в 3D и изменять положение в пространстве непопиксельно, что ускорит в 250000 раз
 				if (!IsDrawImage && IsScroll) {
 					IsDrawImage = true;
 
@@ -427,8 +428,8 @@ namespace System.Drawing {
 		/// </summary>
 		public Color DefaultColor { get; set; }
 
-		private byte[] data; //буфер исходного изображения
-		private byte[] outData; //выходной буфер
+		private static byte[] data; // буфер исходного изображения
+		private byte[] outData; // выходной буфер
 		private int stride;
 		private System.Drawing.Imaging.BitmapData bmpData;
 		private System.Drawing.Bitmap BMP;
@@ -442,11 +443,14 @@ namespace System.Drawing {
 			Height = bmp.Height;
 			BMP = bmp;
 
+			// кросс-платформ (но в 2 раза медленее) https://habr.com/ru/articles/686578/ https://github.com/StbSharp/StbImageSharp
 			bmpData = BMP.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
 			stride = bmpData.Stride;
 
-			data = new byte[stride * Height];
-			System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, data, 0, data.Length);
+			if (data == null) {
+				data = new byte[stride * Height];
+				System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, data, 0, data.Length);
+			}
 
 			outData = copySourceToOutput ? (byte[])data.Clone() : new byte[stride * Height];
 		}
