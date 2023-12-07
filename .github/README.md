@@ -58,11 +58,7 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [DeepSpeech](https://github.com/mozilla/DeepSpeech) 0.9.3 (планируется - для возможности бесплатно распознавать голос и переводить в текст)
 
-[Silk.NET](https://github.com/dotnet/Silk.NET) 2.19.0 (планируется - для удобного использования возможностей видеокарт различных устройств)
-
-или
-
-[OpenTK](https://github.com/opentk/opentk) 3.3.3 (планируется - для удобного использования возможностей видеокарт различных устройств)
+[OpenTK](https://github.com/opentk/opentk) 3.3.3 (для использования в BusEngine.Camera, BusEngine.Layer, BusEngine.Level, BusEngine.Material, BusEngine.Model, BusEngine.Physics, BusEngine.Rendering, BusEngine.UI.Canvas, BusEngine.Vector)
 
 ## Полезные ссылки
 
