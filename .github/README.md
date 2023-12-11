@@ -60,6 +60,8 @@ BusEngine выпускается под лицензией [MIT](https://github.
 
 [OpenTK](https://github.com/opentk/opentk) 3.3.3 (для использования в BusEngine.Camera, BusEngine.Layer, BusEngine.Level, BusEngine.Material, BusEngine.Model, BusEngine.Physics, BusEngine.Rendering, BusEngine.UI.Canvas, BusEngine.Vector)
 
+[Xamarin Android](https://github.com/xamarin/xamarin-android) (для использования в BusEngine.Browser, BusEngine.UI.Canvas и компиляции приложения под Android)
+
 ## Полезные ссылки
 
 Microsoft Build Tools 2005 v2.0
