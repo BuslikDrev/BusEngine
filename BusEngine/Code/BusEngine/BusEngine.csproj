@@ -135,10 +135,10 @@
       <HintPath>BusPlugins\CefSharp\CefSharp.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Wpf">
+    <!-- <Reference Include="CefSharp.Wpf">
       <HintPath>BusPlugins\CefSharp\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
-    </Reference>
+    </Reference> -->
     <!-- <Reference Include="DeepSpeech">
       <HintPath>BusPlugins\DeepSpeech\DeepSpeechClient.dll</HintPath>
       <Private>False</Private>
@@ -159,10 +159,10 @@
       <HintPath>BusPlugins\LibVLC\LibVLCSharp.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="LibVLCSharp.WPF">
+    <!-- <Reference Include="LibVLCSharp.WPF">
       <HintPath>BusPlugins\LibVLC\LibVLCSharp.WPF.dll</HintPath>
       <Private>False</Private>
-    </Reference>
+    </Reference> -->
     <Reference Include="Newtonsoft.Json">
       <HintPath>BusPlugins\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
