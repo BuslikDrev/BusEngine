@@ -96,6 +96,24 @@
     <Reference Include="System.Windows.Forms" />
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
     <Reference Include="System.Xml" />
+    <!-- <Reference Include="System.Buffers">
+      <HintPath>BusPlugins\System\System.Buffers.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
+    <!-- <Reference Include="System.Numerics" /> -->
+    <!-- <Reference Include="System.Numerics.Vectors" /> -->
+    <!-- <Reference Include="System.Numerics">
+      <HintPath>BusPlugins\System\System.Numerics.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>BusPlugins\System\System.Numerics.Vectors.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>BusPlugins\System\System.Memory.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <!-- <Reference Include="AssetsTools.NET">
       <HintPath>BusPlugins\AssetsTools.NET\AssetsTools.NET.dll</HintPath>
       <Private>False</Private>
@@ -121,6 +139,10 @@
       <HintPath>BusPlugins\CefSharp\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <!-- <Reference Include="DeepSpeech">
+      <HintPath>BusPlugins\DeepSpeech\DeepSpeechClient.dll</HintPath>
+      <Private>False</Private>
+    </Reference> -->
     <!-- <Reference Include="FbxSharp">
       <HintPath>BusPlugins\izrik\FbxSharp.dll</HintPath>
       <Private>False</Private>
@@ -143,6 +165,18 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>BusPlugins\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>BusPlugins\OpenTK\OpenTK.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OpenTK.GLWidget">
+      <HintPath>BusPlugins\OpenTK\OpenTK.GLWidget.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>BusPlugins\OpenTK\OpenTK.GLControl.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

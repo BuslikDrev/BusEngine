@@ -1602,8 +1602,8 @@ BusEngine.Tools
 			if (IsGame == false && !_GameStart && BusEngine.UI.Canvas.WinForm != null) {
 				IsGame = true;
 				_GameStart = true;
-				new BusEngine.IPlugin("OnGameStart");
 				BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
+				new BusEngine.IPlugin("OnGameStart");
 				BusEngine.UI.Canvas.WinForm.Invalidate(true);
 				_GameStart = false;
 			}
@@ -1614,6 +1614,7 @@ BusEngine.Tools
 				_GameStop = true;
 				BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
 				new BusEngine.IPlugin("OnGameStop");
+				BusEngine.UI.Canvas.WinForm.Invalidate(true);
 				_GameStop = false;
 				IsGame = false;
 			}
@@ -1627,6 +1628,10 @@ BusEngine.Tools
 		}
 
 		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+			/* System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
+			drawFormat.FormatFlags = System.Drawing.StringFormatFlags.DirectionVertical;
+			e.Graphics.DrawString("Sample Text", new System.Drawing.Font("Arial", 16), new System.Drawing.SolidBrush(System.Drawing.Color.Black), 150.0F, 50.0F, drawFormat);
+ */
 			new BusEngine.IPlugin("OnGameUpdate");
 			BusEngine.UI.Canvas.WinForm.Invalidate(true);
 			//BusEngine.UI.Canvas.WinForm.Update();
