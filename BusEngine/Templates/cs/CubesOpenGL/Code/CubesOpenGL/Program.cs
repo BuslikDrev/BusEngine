@@ -19,9 +19,9 @@ namespace BusEngine.Game {
 		private static int FPSInfo = 0;
 		private static int cubes = 0;
 
-        private static OpenTK.GLControl glControl;
-		private static OpenTK.Vector3 position = new OpenTK.Vector3(0.0F, 0.0F, 10.0F);
-		private static OpenTK.Vector3 front = new OpenTK.Vector3(0.0F, 0.0F, -1.0F);
+		private static OpenTK.GLControl glControl;
+		private static OpenTK.Vector3 position = new OpenTK.Vector3(0.0F, 0.0F, -10.0F);
+		private static OpenTK.Vector3 front = new OpenTK.Vector3(0.0F, 0.0F, 1.0F);
 		private static OpenTK.Vector3 up = OpenTK.Vector3.UnitY; // new OpenTK.Vector3(0.0f, 1.0f, 0.0f);
 		private static OpenTK.Vector3 Orientation = new OpenTK.Vector3((float)System.Math.PI, 0F, 0F);
 		private static float speed = 0.1F;
@@ -251,9 +251,9 @@ namespace BusEngine.Game {
 
 			double y = System.Math.Cos(Orientation.Y);
 
-			front.X = (float)(System.Math.Sin(Orientation.X) * y);
-			front.Y = (float)System.Math.Sin(Orientation.Y);
-			front.Z = (float)(System.Math.Cos(Orientation.X) * y);
+			//front.X = (float)(System.Math.Sin(Orientation.X) * y);
+			//front.Y = (float)System.Math.Sin(Orientation.Y);
+			//front.Z = (float)(System.Math.Cos(Orientation.X) * y);
 
 			//front = OpenTK.Vector3.Normalize(front);
 		}
@@ -266,27 +266,27 @@ namespace BusEngine.Game {
 			Orientation.Y = System.Math.Max(System.Math.Min(Orientation.Y + y, (float)System.Math.PI / 2.0f - 0.1f), (float)-System.Math.PI / 2.0f + 0.1f);
 		}
 
-		private int CompileProgram(string vertexShader, string fragmentShader) {
-			int CompileShader(OpenTK.Graphics.OpenGL4.ShaderType type, string source) {
-				int shader = OpenTK.Graphics.OpenGL4.GL.CreateShader(type);
+		private int CompileShader(OpenTK.Graphics.OpenGL4.ShaderType type, string source) {
+			int shader = OpenTK.Graphics.OpenGL4.GL.CreateShader(type);
 
-				if (System.IO.File.Exists(source)) {
-					OpenTK.Graphics.OpenGL4.GL.ShaderSource(shader, System.IO.File.ReadAllText(source));
-				} else {
-					OpenTK.Graphics.OpenGL4.GL.ShaderSource(shader, source);
-				}
-
-				OpenTK.Graphics.OpenGL4.GL.CompileShader(shader);
-
-
-				OpenTK.Graphics.OpenGL4.GL.GetShader(shader, OpenTK.Graphics.OpenGL4.ShaderParameter.CompileStatus, out int status);
-				if (status == 0) {
-					throw new System.Exception("Failed to compile {type}: " + OpenTK.Graphics.OpenGL4.GL.GetShaderInfoLog(shader));
-				}
-
-				return shader;
+			if (System.IO.File.Exists(source)) {
+				OpenTK.Graphics.OpenGL4.GL.ShaderSource(shader, System.IO.File.ReadAllText(source));
+			} else {
+				OpenTK.Graphics.OpenGL4.GL.ShaderSource(shader, source);
 			}
 
+			OpenTK.Graphics.OpenGL4.GL.CompileShader(shader);
+
+			int success;
+			OpenTK.Graphics.OpenGL4.GL.GetShader(shader, OpenTK.Graphics.OpenGL4.ShaderParameter.CompileStatus, out success);
+			if (success == 0) {
+				throw new System.Exception("Failed to compile {type}: " + OpenTK.Graphics.OpenGL4.GL.GetShaderInfoLog(shader));
+			}
+
+			return shader;
+		}
+
+		private int CompileProgram(string vertexShader, string fragmentShader) {
 			int program = OpenTK.Graphics.OpenGL4.GL.CreateProgram();
 
 			int vert = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.VertexShader, vertexShader);
@@ -297,7 +297,8 @@ namespace BusEngine.Game {
 
 			OpenTK.Graphics.OpenGL4.GL.LinkProgram(program);
 
-			OpenTK.Graphics.OpenGL4.GL.GetProgram(program, OpenTK.Graphics.OpenGL4.GetProgramParameterName.LinkStatus, out int success);
+			int success;
+			OpenTK.Graphics.OpenGL4.GL.GetProgram(program, OpenTK.Graphics.OpenGL4.GetProgramParameterName.LinkStatus, out success);
 			if (success == 0) {
 				throw new System.Exception("Could not link program: " + OpenTK.Graphics.OpenGL4.GL.GetProgramInfoLog(program));
 			}
@@ -311,92 +312,93 @@ namespace BusEngine.Game {
 			return program;
 		}
 
-        private void glControl_Load(object sender, System.EventArgs e) {
+		private void glControl_Load(object sender, System.EventArgs e) {
 			// устанавливаем контекст GL
 			//glControl.MakeCurrent();
 
 			glControl.Resize += glControl_Resize;
 
-			//OpenTK.Graphics.OpenGL.GL.MatrixMode(OpenTK.Graphics.OpenGL.MatrixMode.Modelview);
-			//OpenTK.Graphics.OpenGL.GL.LoadIdentity();
+			OpenTK.Graphics.OpenGL.GL.MatrixMode(OpenTK.Graphics.OpenGL.MatrixMode.Modelview);
+			OpenTK.Graphics.OpenGL.GL.LoadIdentity();
+			//OpenTK.Graphics.OpenGL.GL.Ext.BeginVertexShader();
 
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DepthTest);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DepthClamp);
+			//OpenTK.Graphics.OpenGL4.GL.BeginConditionalRender(1, OpenTK.Graphics.OpenGL4.ConditionalRenderType.QueryWait);
 
-			/* OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.LineSmooth);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonSmooth);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.LineSmooth);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonSmooth);
+			// из-за Radeon - убираем возможность показа стены с двух сторон.
 			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.CullFace);
 			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DepthTest);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.StencilTest);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Dither);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Blend);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ColorLogicOp);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ScissorTest);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture1D);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture2D);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonOffsetPoint);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonOffsetLine);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance0);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane0);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance1);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane1);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance2);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane2);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance3);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane3);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance4);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane4);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance5);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane5);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance6);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance7);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution1D);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution1DExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution2D);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution2DExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Separable2D);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Separable2DExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Histogram);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.HistogramExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.MinmaxExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonOffsetFill);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.RescaleNormal);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.RescaleNormalExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture3DExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.InterlaceSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Multisample);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.MultisampleSgis);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToCoverage);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToMaskSgis);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToOne);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToOneSgis);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleCoverage);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleMaskSgis);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureColorTableSgi);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ColorTable);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ColorTableSgi);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.StencilTest);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Dither);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Blend);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ColorLogicOp);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ScissorTest);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture1D);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture2D);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonOffsetPoint);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonOffsetLine);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance0);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane0);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance1);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane1);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance2);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane2);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance3);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane3);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance4);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane4);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance5);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipPlane5);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance6);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ClipDistance7);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution1D);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution1DExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution2D);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Convolution2DExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Separable2D);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Separable2DExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Histogram);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.HistogramExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.MinmaxExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonOffsetFill);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.RescaleNormal);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.RescaleNormalExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture3DExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.InterlaceSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Multisample);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.MultisampleSgis);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToCoverage);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToMaskSgis);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToOne);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToOneSgis);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleCoverage);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleMaskSgis);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureColorTableSgi);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ColorTable);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ColorTableSgi);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PostConvolutionColorTable);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PostConvolutionColorTableSgi);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PostColorMatrixColorTable);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PostColorMatrixColorTableSgi);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture4DSgis);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PixelTexGenSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SpriteSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ReferencePlaneSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.IrInstrument1Sgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.CalligraphicFragmentSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FramezoomSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FogOffsetSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SharedTexturePaletteExt);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DebugOutputSynchronous);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncHistogramSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PixelTextureSgis);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncTexImageSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncDrawPixelsSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncReadPixelsSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLightingSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentColorMaterialSgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight0Sgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PostConvolutionColorTableSgi);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PostColorMatrixColorTable);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PostColorMatrixColorTableSgi);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture4DSgis);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PixelTexGenSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SpriteSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ReferencePlaneSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.IrInstrument1Sgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.CalligraphicFragmentSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FramezoomSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FogOffsetSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SharedTexturePaletteExt);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DebugOutputSynchronous);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncHistogramSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PixelTextureSgis);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncTexImageSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncDrawPixelsSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.AsyncReadPixelsSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLightingSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentColorMaterialSgix);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight0Sgix);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight1Sgix);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight2Sgix);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight3Sgix);
@@ -404,26 +406,26 @@ namespace BusEngine.Game {
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight5Sgix);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight6Sgix);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FragmentLight7Sgix);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FogCoordArray);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FogCoordArray);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ColorSum);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SecondaryColorArray);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureRectangle);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureCubeMap);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ProgramPointSize);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.VertexProgramPointSize);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SecondaryColorArray);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureRectangle);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureCubeMap);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.ProgramPointSize);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.VertexProgramPointSize);
 			// вершинные шейдеры будут работать в двустороннем цветовом режиме - уменьшит fps
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.VertexProgramTwoSide);
 			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DepthClamp);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureCubeMapSeamless);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PointSprite);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleShading);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.TextureCubeMapSeamless);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PointSprite);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleShading);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.RasterizerDiscard);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PrimitiveRestartFixedIndex);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.FramebufferSrgb);
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleMask);
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleMask);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PrimitiveRestart);
-			// вкоючение отладки OpenGL - ловить сообщения через спец. события - уменьшит fps
-			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DebugOutput); */
+			// включение отладки OpenGL - ловить сообщения через спец. события - уменьшит fps
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DebugOutput);
 
 			/* OpenTK.Graphics.OpenGL4.GL.Disable(OpenTK.Graphics.OpenGL4.EnableCap.LineSmooth);
 			OpenTK.Graphics.OpenGL4.GL.Disable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonSmooth);
@@ -543,7 +545,18 @@ namespace BusEngine.Game {
 			_timer.Interval = 10;
 			_timer.Start();
 
-			OpenTK.Matrix4.LookAt(position, position + front, up);
+			//OpenTK.Matrix4.LookAt(position, position + front, up);
+			
+			BusEngine.Log.Clear();
+			BusEngine.Log.Info("FPS Setting: {0}", OpenTK.Matrix4.LookAt(new OpenTK.Vector3(0.0F, 0.0F, 0.0F), new OpenTK.Vector3(0.0F, 0.0F, -1.0F), new OpenTK.Vector3(0.0F, 1.0F, 0.0F)));
+			//BusEngine.Log.Info("FPS Setting: {0}", OpenTK.Matrix4.LookAt(position, position + front, up));
+			BusEngine.Log.Info("FPS Setting: {0}", position);
+			BusEngine.Log.Info("FPS Setting: {0}", position + front);
+			BusEngine.Log.Info("FPS Setting: {0}", up);
+
+			v = new OpenTK.Vector3(0.0F, 1.0F, 0.0F);
+			p = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
+			z = 0.0F;
 
 			VAO = OpenTK.Graphics.OpenGL4.GL.GenVertexArray();
 			OpenTK.Graphics.OpenGL4.GL.BindVertexArray(VAO);
@@ -565,8 +578,6 @@ namespace BusEngine.Game {
 
 			OpenTK.Graphics.OpenGL4.GL.EnableVertexAttribArray(1);
 			OpenTK.Graphics.OpenGL4.GL.VertexAttribPointer(1, 4, OpenTK.Graphics.OpenGL4.VertexAttribPointerType.Float, false, sizeof(float) * 4, 0);
-
-			v = new OpenTK.Vector3(0.0F, 1.0F, 0.0F);
 		}
 
 		private void glControl_Resize(object sender, System.EventArgs e) {
@@ -614,7 +625,7 @@ namespace BusEngine.Game {
 
 		private static int x;
 		private static int y;
-		private static float z = 0.0F;
+		private static float z;
 		private static float left = -3.0F;
 		private static float right = 3.0F;
 		private static float top = 3.0F;
@@ -628,6 +639,8 @@ namespace BusEngine.Game {
 		private static OpenTK.Matrix4 mvp;
 		private static OpenTK.Matrix4[] mvps = new OpenTK.Matrix4[] {};
 		private static OpenTK.Vector3 v;
+		private static OpenTK.Matrix4 angle;
+		private static OpenTK.Matrix4 p;
 		private static int optimiz = 50000; // 50000 cubes
 
 		/* private float[] Matrix4ToArray(OpenTK.Matrix4 matrix) {
@@ -651,54 +664,78 @@ namespace BusEngine.Game {
 				vp = OpenTK.Matrix4.LookAt(position, position + front, up) * projection;
 
 				if (optimiz == 50000) {
+					angle = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle));
+
 					cube = 1;
-					OpenTK.Matrix4 angle = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle));
-					mvp = angle * OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F) * vp;
+					p.M41 = 0.0F;
+					p.M42 = 0.0F;
+					p.M43 = z;
+					mvp = angle * p * vp;
 					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
 					for (x = 1; x < 151; x++)  {
 						cube += 2;
-						mvp = angle * OpenTK.Matrix4.CreateTranslation(right * x, 0.0F, z) * vp;
+						p.M41 = right * x;
+						p.M42 = 0.0F;
+						p.M43 = z;
+						mvp = angle * p * vp;
 						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-						mvp = angle * OpenTK.Matrix4.CreateTranslation(left * x, 0.0F, z) * vp;
+						p.M41 = left * x;
+						p.M42 = 0.0F;
+						p.M43 = z;
+						mvp = angle * p * vp;
 						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 					}
 
 					for (y = 1; y < 85; y++)  {
 						cube += 2;
-						mvp = angle * OpenTK.Matrix4.CreateTranslation(0.0F, bottom * y, z) * vp;
+						p.M41 = 0.0F;
+						p.M42 = bottom * y;
+						p.M43 = z;
+						mvp = angle * p * vp;
 						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-						mvp = angle * OpenTK.Matrix4.CreateTranslation(0.0F, top * y, z) * vp;
+						p.M41 = 0.0F;
+						p.M42 = top * y;
+						p.M43 = z;
+						mvp = angle * p * vp;
 						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 					}
 
 					for (x = 1; x < 151; x++)  {
 						for (y = 1; y < 85; y++)  {
-							leftres = left * x;
-							bottomres = bottom * y;
-							rightres = right * x;
-							topres = top * y;
 							cube += 4;
-							mvp = angle * OpenTK.Matrix4.CreateTranslation(leftres, bottomres, z) * vp;
+							p.M41 = left * x;
+							p.M42 = bottom * y;
+							p.M43 = z;
+							mvp = angle * p * vp;
 							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-							mvp = angle * OpenTK.Matrix4.CreateTranslation(rightres, bottomres, z) * vp;
+							p.M41 = right * x;
+							p.M42 = bottom * y;
+							p.M43 = z;
+							mvp = angle * p * vp;
 							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-							mvp = angle * OpenTK.Matrix4.CreateTranslation(leftres, topres, z) * vp;
+							p.M41 = left * x;
+							p.M42 = top * y;
+							p.M43 = z;
+							mvp = angle * p * vp;
 							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-							mvp = angle * OpenTK.Matrix4.CreateTranslation(rightres, topres, z) * vp;
+							p.M41 = right * x;
+							p.M42 = top * y;
+							p.M43 = z;
+							mvp = angle * p * vp;
 							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
 							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 						}
