@@ -4,8 +4,8 @@
 //https://www.khronos.org/opengl/wiki/Geometry_Shader
 layout (TRIANGLES) in;
 layout (TRIANGLE_STRIP, max_vertices = 75) out;
-layout(location = 1) in vec4 gColors[];
 
+in vec4 gColors[];
 out vec4 fColors; 
 
 uniform mat4 VP;
