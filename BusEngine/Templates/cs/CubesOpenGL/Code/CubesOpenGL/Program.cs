@@ -274,9 +274,9 @@ namespace BusEngine.Game {
 
 			double y = System.Math.Cos(Orientation.Y);
 
-			//front.X = (float)(System.Math.Sin(Orientation.X) * y);
-			//front.Y = (float)System.Math.Sin(Orientation.Y);
-			//front.Z = (float)(System.Math.Cos(Orientation.X) * y);
+			front.X = (float)(System.Math.Sin(Orientation.X) * y);
+			front.Y = (float)System.Math.Sin(Orientation.Y);
+			front.Z = (float)(System.Math.Cos(Orientation.X) * y);
 
 			//front = OpenTK.Vector3.Normalize(front);
 		}
