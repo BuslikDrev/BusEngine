@@ -3,6 +3,9 @@
 
 // benchmark https://cc.davelozinski.com/c-sharp/for-vs-foreach-vs-while
 // OpenGL http://pm.samgtu.ru/sites/pm.samgtu.ru/files/materials/comp_graph/RedBook_OpenGL.pdf
+// Crysis
+// https://habr.com/ru/articles/350782/
+// https://habr.com/ru/articles/338998/
 
 /** API BusEngine.Game - пользовательский код */
 namespace BusEngine.Game {
@@ -20,11 +23,11 @@ namespace BusEngine.Game {
 		private static int cubes = 0;
 
 		private static OpenTK.GLControl glControl;
-		private static OpenTK.Vector3 position = new OpenTK.Vector3(0.0F, 0.0F, -10.0F);
+		private static OpenTK.Vector3 position = new OpenTK.Vector3(0.0F, 0.0F, 10.0F);
 		private static OpenTK.Vector3 front = new OpenTK.Vector3(0.0F, 0.0F, 1.0F);
 		private static OpenTK.Vector3 up = OpenTK.Vector3.UnitY; // new OpenTK.Vector3(0.0f, 1.0f, 0.0f);
 		private static OpenTK.Vector3 Orientation = new OpenTK.Vector3((float)System.Math.PI, 0F, 0F);
-		private static float speed = 0.1F;
+		private static float speed = 0.3F;
 		private static float mousespeed = 0.0025f;
 		private static bool IsKeysUpdateGL = false;
 		private static System.Collections.Generic.HashSet<System.Windows.Forms.Keys> IsKeys = new System.Collections.Generic.HashSet<System.Windows.Forms.Keys>();
@@ -40,6 +43,9 @@ namespace BusEngine.Game {
 		private OpenTK.Matrix4 projection;
 
 		private int prog;
+		private int progVP;
+		private int progP;
+		private int progA;
 
 		private static readonly OpenTK.Vector3[] VertexData = new OpenTK.Vector3[24] {
 			new OpenTK.Vector3(-1.0f, -1.0f, -1.0f),
@@ -166,6 +172,10 @@ namespace BusEngine.Game {
 			if (e == null || !IsKeysUpdateGL) {
 				IsKeysUpdateGL = true;
 
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Escape)) {
+					BusEngine.Engine.Shutdown();
+				}
+
 				if (IsKeys.Contains(System.Windows.Forms.Keys.W)) {
 					position += front * speed; 
 
@@ -208,6 +218,19 @@ namespace BusEngine.Game {
 
 				if (IsKeys.Contains(System.Windows.Forms.Keys.Space)) {
 					position = new OpenTK.Vector3(0.0F, 0.0F, 10.0F);
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.T)) {
+					x = x + 1;
+				}
+				if (IsKeys.Contains(System.Windows.Forms.Keys.G)) {
+					x = x - 1;
+				}
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Y)) {
+					y = y + 1;
+				}
+				if (IsKeys.Contains(System.Windows.Forms.Keys.H)) {
+					y = y - 1;
 				}
 			}
 		}
@@ -258,16 +281,16 @@ namespace BusEngine.Game {
 			//front = OpenTK.Vector3.Normalize(front);
 		}
 
-		private void AddRotation(float x, float y) {
-			x = x * mousespeed;
-			y = y * mousespeed;
+		private void AddRotation(float mx, float my) {
+			mx = mx * mousespeed;
+			my = my * mousespeed;
 
-			Orientation.X = (Orientation.X + x) % ((float)System.Math.PI * 2.0f);
-			Orientation.Y = System.Math.Max(System.Math.Min(Orientation.Y + y, (float)System.Math.PI / 2.0f - 0.1f), (float)-System.Math.PI / 2.0f + 0.1f);
+			Orientation.X = (Orientation.X + mx) % ((float)System.Math.PI * 2.0f);
+			Orientation.Y = System.Math.Max(System.Math.Min(Orientation.Y + my, (float)System.Math.PI / 2.0f - 0.1f), (float)-System.Math.PI / 2.0f + 0.1f);
 		}
 
 		private int CompileShader(OpenTK.Graphics.OpenGL4.ShaderType type, string source) {
-			int shader = OpenTK.Graphics.OpenGL4.GL.CreateShader(type);
+			int success, shader = OpenTK.Graphics.OpenGL4.GL.CreateShader(type);
 
 			if (System.IO.File.Exists(source)) {
 				OpenTK.Graphics.OpenGL4.GL.ShaderSource(shader, System.IO.File.ReadAllText(source));
@@ -277,7 +300,6 @@ namespace BusEngine.Game {
 
 			OpenTK.Graphics.OpenGL4.GL.CompileShader(shader);
 
-			int success;
 			OpenTK.Graphics.OpenGL4.GL.GetShader(shader, OpenTK.Graphics.OpenGL4.ShaderParameter.CompileStatus, out success);
 			if (success == 0) {
 				throw new System.Exception("Failed to compile {type}: " + OpenTK.Graphics.OpenGL4.GL.GetShaderInfoLog(shader));
@@ -286,18 +308,19 @@ namespace BusEngine.Game {
 			return shader;
 		}
 
-		private int CompileProgram(string vertexShader, string fragmentShader) {
-			int program = OpenTK.Graphics.OpenGL4.GL.CreateProgram();
+		private int CompileProgram(string vertShader, string fragShader, string geomShader) {
+			int geom, frag, vert, success, program = OpenTK.Graphics.OpenGL4.GL.CreateProgram();
 
-			int vert = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.VertexShader, vertexShader);
-			int frag = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader, fragmentShader);
+			vert = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.VertexShader, vertShader);
+			frag = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader, fragShader);
+			geom = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.GeometryShader, geomShader);
 
 			OpenTK.Graphics.OpenGL4.GL.AttachShader(program, vert);
 			OpenTK.Graphics.OpenGL4.GL.AttachShader(program, frag);
+			OpenTK.Graphics.OpenGL4.GL.AttachShader(program, geom);
 
 			OpenTK.Graphics.OpenGL4.GL.LinkProgram(program);
 
-			int success;
 			OpenTK.Graphics.OpenGL4.GL.GetProgram(program, OpenTK.Graphics.OpenGL4.GetProgramParameterName.LinkStatus, out success);
 			if (success == 0) {
 				throw new System.Exception("Could not link program: " + OpenTK.Graphics.OpenGL4.GL.GetProgramInfoLog(program));
@@ -305,9 +328,11 @@ namespace BusEngine.Game {
 
 			OpenTK.Graphics.OpenGL4.GL.DetachShader(program, vert);
 			OpenTK.Graphics.OpenGL4.GL.DetachShader(program, frag);
+			OpenTK.Graphics.OpenGL4.GL.DetachShader(program, geom);
 
 			OpenTK.Graphics.OpenGL4.GL.DeleteShader(vert);
 			OpenTK.Graphics.OpenGL4.GL.DeleteShader(frag);
+			OpenTK.Graphics.OpenGL4.GL.DeleteShader(geom);
 
 			return program;
 		}
@@ -532,9 +557,16 @@ namespace BusEngine.Game {
 			glControl_Resize(glControl, System.EventArgs.Empty);
 
 			// создаём шейдеры
-			CubeShader = CompileProgram(BusEngine.Engine.DataDirectory + "Shader/cube_vert.glsl", BusEngine.Engine.DataDirectory + "Shader/cube_frag.glsl");
+			CubeShader = CompileProgram(
+				vertShader: BusEngine.Engine.DataDirectory + "Shader/cube_vert.glsl",
+				fragShader: BusEngine.Engine.DataDirectory + "Shader/cube_frag.glsl",
+				geomShader: BusEngine.Engine.DataDirectory + "Shader/cube_geom.glsl"
+			);
 			OpenTK.Graphics.OpenGL4.GL.UseProgram(CubeShader);
 			prog = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "MVP");
+			progP = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "P");
+			progVP = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "VP");
+			progA = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "A");
 
 			// создаём таймер для работы клавиатуры и вращению блоков независимо от частоты кадров и возможности измерять скорость.
 			_timer = new System.Timers.Timer();
@@ -545,14 +577,29 @@ namespace BusEngine.Game {
 			_timer.Interval = 10;
 			_timer.Start();
 
-			//OpenTK.Matrix4.LookAt(position, position + front, up);
-			
-			BusEngine.Log.Clear();
-			BusEngine.Log.Info("FPS Setting: {0}", OpenTK.Matrix4.LookAt(new OpenTK.Vector3(0.0F, 0.0F, 0.0F), new OpenTK.Vector3(0.0F, 0.0F, -1.0F), new OpenTK.Vector3(0.0F, 1.0F, 0.0F)));
-			//BusEngine.Log.Info("FPS Setting: {0}", OpenTK.Matrix4.LookAt(position, position + front, up));
-			BusEngine.Log.Info("FPS Setting: {0}", position);
-			BusEngine.Log.Info("FPS Setting: {0}", position + front);
-			BusEngine.Log.Info("FPS Setting: {0}", up);
+			OpenTK.Matrix4.LookAt(position, position + front, up);
+
+			/* BusEngine.Log.Clear();
+			OpenTK.Matrix4 ggg = OpenTK.Matrix4.LookAt(position, position + front, up);
+OpenTK.Graphics.OpenGL.GL.MatrixMode(OpenTK.Graphics.OpenGL.MatrixMode.Modelview);
+OpenTK.Graphics.OpenGL.GL.LoadIdentity();
+OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
+			ggg.M41 = position.X;
+			ggg.M42 = position.Y;
+			ggg.M43 = position.Z;
+			ggg.M2 = position + front;
+			ggg.M3 = up;
+			BusEngine.Log.Info("<{0} {1} {2} {3}>", ggg.M11, ggg.M12, ggg.M13, ggg.M14);
+			BusEngine.Log.Info("<{0} {1} {2} {3}>", ggg.M21, ggg.M22, ggg.M23, ggg.M24);
+			BusEngine.Log.Info("<{0} {1} {2} {3}>", ggg.M31, ggg.M32, ggg.M33, ggg.M34);
+			BusEngine.Log.Info("<{0} {1} {2} {3}>", ggg.M41, ggg.M42, ggg.M43, ggg.M44);
+			BusEngine.Log.Info("{0}", "============");
+			BusEngine.Log.Info("{0}", OpenTK.Matrix4.LookAt(position, position + front, up));
+			BusEngine.Log.Info("{0}", "============");
+			BusEngine.Log.Info("{0}", position);
+			BusEngine.Log.Info("{0}", front);
+			BusEngine.Log.Info("{0}", position + front);
+			BusEngine.Log.Info("{0}", up); */
 
 			v = new OpenTK.Vector3(0.0F, 1.0F, 0.0F);
 			p = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
@@ -621,27 +668,23 @@ namespace BusEngine.Game {
 			//BusEngine.Log.Info("GPU: {0}", "NVidea GeForce GT 1030 2 GB");
 			//BusEngine.Log.Info("CPU: {0}", "AMD Athlon II x4 645");
 			//BusEngine.Log.Info("RAM: {0}", "4 GB");
+			
+			/* BusEngine.Log.Clear();
+			BusEngine.Log.Info("{0}  {1}", x, y); */
 		}
 
 		private static int x;
 		private static int y;
 		private static float z;
-		private static float left = -3.0F;
-		private static float right = 3.0F;
-		private static float top = 3.0F;
-		private static float bottom = -3.0F;
-		private static float leftres;
-		private static float rightres;
-		private static float topres;
-		private static float bottomres;
+		private static float left = -15.0F;
+		private static float right = 15.0F;
+		private static float top = 15.0F;
+		private static float bottom = -15.0F;
 		private static int cube;
 		private static OpenTK.Matrix4 vp;
-		private static OpenTK.Matrix4 mvp;
-		private static OpenTK.Matrix4[] mvps = new OpenTK.Matrix4[] {};
 		private static OpenTK.Vector3 v;
-		private static OpenTK.Matrix4 angle;
-		private static OpenTK.Matrix4 p;
-		private static int optimiz = 50000; // 50000 cubes
+		private static OpenTK.Matrix4 a;
+		private static OpenTK.Matrix4 p = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
 
 		/* private float[] Matrix4ToArray(OpenTK.Matrix4 matrix) {
 			float[] data = new float[16];
@@ -657,150 +700,105 @@ namespace BusEngine.Game {
 		} */
 
 		// вызывается при отрисовки каждого кадра
+		// 50000 кубов
 		private void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
 			//using (new BusEngine.Benchmark("OpenTK")) {
 				OpenTK.Graphics.OpenGL4.GL.Clear(OpenTK.Graphics.OpenGL4.ClearBufferMask.ColorBufferBit | OpenTK.Graphics.OpenGL4.ClearBufferMask.DepthBufferBit);
 
 				vp = OpenTK.Matrix4.LookAt(position, position + front, up) * projection;
+				OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progVP, true, ref vp);
 
-				if (optimiz == 50000) {
-					angle = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle));
+				a = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle));
+				OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progA, true, ref a);
 
-					cube = 1;
-					p.M41 = 0.0F;
+				cube = 1;
+
+				p.M41 = 0.0F;
+				p.M42 = 0.0F;
+				p.M43 = z;
+
+				OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
+				// этот способ медленный
+				//OpenTK.Graphics.OpenGL4.GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Quads, 0, IndexData.Length);
+				OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
+
+				for (x = 1; x < 81; x++)  {
+					cube += 2;
+
+					p.M41 = right * x;
 					p.M42 = 0.0F;
 					p.M43 = z;
-					mvp = angle * p * vp;
-					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
+
+					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
 					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-					for (x = 1; x < 151; x++)  {
-						cube += 2;
-						p.M41 = right * x;
-						p.M42 = 0.0F;
+					p.M41 = left * x;
+					p.M42 = 0.0F;
+					p.M43 = z;
+
+					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
+					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
+				}
+
+				for (y = 1; y < 46; y++)  {
+					cube += 2;
+
+					p.M41 = 0.0F;
+					p.M42 = bottom * y;
+					p.M43 = z;
+
+					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
+					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
+
+					p.M41 = 0.0F;
+					p.M42 = top * y;
+					p.M43 = z;
+
+					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
+					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
+				}
+
+				for (x = 1; x < 81; x++)  {
+					for (y = 1; y < 46; y++)  {
+						cube += 4;
+
+						p.M41 = left * x;
+						p.M42 = bottom * y;
 						p.M43 = z;
-						mvp = angle * p * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
+
+						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
+						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
+
+						p.M41 = right * x;
+						p.M42 = bottom * y;
+						p.M43 = z;
+
+						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
 						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
 						p.M41 = left * x;
-						p.M42 = 0.0F;
-						p.M43 = z;
-						mvp = angle * p * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-					}
-
-					for (y = 1; y < 85; y++)  {
-						cube += 2;
-						p.M41 = 0.0F;
-						p.M42 = bottom * y;
-						p.M43 = z;
-						mvp = angle * p * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-						p.M41 = 0.0F;
 						p.M42 = top * y;
 						p.M43 = z;
-						mvp = angle * p * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-					}
 
-					for (x = 1; x < 151; x++)  {
-						for (y = 1; y < 85; y++)  {
-							cube += 4;
-							p.M41 = left * x;
-							p.M42 = bottom * y;
-							p.M43 = z;
-							mvp = angle * p * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-							p.M41 = right * x;
-							p.M42 = bottom * y;
-							p.M43 = z;
-							mvp = angle * p * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-							p.M41 = left * x;
-							p.M42 = top * y;
-							p.M43 = z;
-							mvp = angle * p * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-							p.M41 = right * x;
-							p.M42 = top * y;
-							p.M43 = z;
-							mvp = angle * p * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-						}
-					}
-				} else {
-					cube = 1;
-					mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F) * vp;
-					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-					for (x = 1; x < 117; x++)  {
-						cube += 2;
-						mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(right * x, 0.0F, z) * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
+						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
 						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-						mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(left * x, 0.0F, z) * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
+						p.M41 = right * x;
+						p.M42 = top * y;
+						p.M43 = z;
+
+						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
 						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-					}
-
-					for (y = 1; y < 66; y++)  {
-						cube += 2;
-						mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(0.0F, bottom * y, z) * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-						mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(0.0F, top * y, z) * vp;
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-					}
-
-					for (x = 1; x < 117; x++)  {
-						for (y = 1; y < 66; y++)  {
-							leftres = left * x;
-							bottomres = bottom * y;
-							rightres = right * x;
-							topres = top * y;
-							cube += 4;
-							mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(leftres, bottomres, z) * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-							mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(rightres, bottomres, z) * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-							mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(leftres, topres, z) * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-							mvp = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle)) * OpenTK.Matrix4.CreateTranslation(rightres, topres, z) * vp;
-							OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(prog, true, ref mvp);
-							OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-						}
 					}
 				}
 
 				if (cube > cubes) {
-					cubes = cube;
+					cubes = cube * 36;
 				}
 
 				glControl.SwapBuffers();
 			//}
-        }
+		}
 
 		// вызывается при отрисовки каждого кадра
 		public override void OnGameUpdate() {
