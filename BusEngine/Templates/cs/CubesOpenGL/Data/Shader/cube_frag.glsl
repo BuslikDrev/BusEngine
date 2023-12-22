@@ -1,8 +1,8 @@
 #version 330 core
 
-in vec4 b;
-out vec4 a;
+in vec4 fColors;
+out vec4 Colors;
 
 void main() {
-    a = b;
+    Colors = fColors;
 }
