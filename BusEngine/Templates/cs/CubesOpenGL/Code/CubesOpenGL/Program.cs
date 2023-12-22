@@ -177,34 +177,34 @@ namespace BusEngine.Game {
 				}
 
 				if (IsKeys.Contains(System.Windows.Forms.Keys.W)) {
-					position += front * speed; 
-
 					if (IsKeys.Contains(System.Windows.Forms.Keys.ShiftKey) || IsKeys.Contains(System.Windows.Forms.Keys.LShiftKey)) {
-						position += front * 2;
+						position += front * speed * 2;
+					} else {
+						position += front * speed;
 					}
 				}
 
 				if (IsKeys.Contains(System.Windows.Forms.Keys.S)) {
-					position -= front * speed;
-
 					if (IsKeys.Contains(System.Windows.Forms.Keys.ShiftKey) || IsKeys.Contains(System.Windows.Forms.Keys.LShiftKey)) {
-						position -= front * 2;
+						position -= front * speed * 2;
+					} else {
+						position -= front * speed;
 					}
 				}
 
 				if (IsKeys.Contains(System.Windows.Forms.Keys.A)) {
-					position -= OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * speed;
-
 					if (IsKeys.Contains(System.Windows.Forms.Keys.ShiftKey) || IsKeys.Contains(System.Windows.Forms.Keys.LShiftKey)) {
-						position -= OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * 2;
+						position -= OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * speed * 2;
+					} else {
+						position -= OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * speed;
 					}
 				}
 
 				if (IsKeys.Contains(System.Windows.Forms.Keys.D)) {
-					position += OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * speed;
-
 					if (IsKeys.Contains(System.Windows.Forms.Keys.ShiftKey) || IsKeys.Contains(System.Windows.Forms.Keys.LShiftKey)) {
-						position += OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * 2;
+						position += OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * speed * 2;
+					} else {
+						position += OpenTK.Vector3.Normalize(OpenTK.Vector3.Cross(front, up)) * speed;
 					}
 				}
 
