@@ -27,7 +27,7 @@ namespace BusEngine.Game {
 		private static OpenTK.Vector3 front = new OpenTK.Vector3(0.0F, 0.0F, 1.0F);
 		private static OpenTK.Vector3 up = OpenTK.Vector3.UnitY; // new OpenTK.Vector3(0.0f, 1.0f, 0.0f);
 		private static OpenTK.Vector3 Orientation = new OpenTK.Vector3((float)System.Math.PI, 0F, 0F);
-		private static float speed = 0.3F;
+		private static float speed = 0.5F;
 		private static float mousespeed = 0.0025f;
 		private static bool IsKeysUpdateGL = false;
 		private static System.Collections.Generic.HashSet<System.Windows.Forms.Keys> IsKeys = new System.Collections.Generic.HashSet<System.Windows.Forms.Keys>();
@@ -120,6 +120,7 @@ namespace BusEngine.Game {
 			// FPS
 			System.Timers.Timer fpsTimer = new System.Timers.Timer(1000);
 			fpsTimer.Elapsed += OnFPS;
+			//fpsTimer.Interval = 1000;
 			fpsTimer.AutoReset = true;
 			fpsTimer.Enabled = true;
 
@@ -221,16 +222,19 @@ namespace BusEngine.Game {
 				}
 
 				if (IsKeys.Contains(System.Windows.Forms.Keys.T)) {
-					x = x + 1;
+					q += 10;
 				}
+
 				if (IsKeys.Contains(System.Windows.Forms.Keys.G)) {
-					x = x - 1;
+					q -= 10;
 				}
+
 				if (IsKeys.Contains(System.Windows.Forms.Keys.Y)) {
-					y = y + 1;
+					line++;
 				}
+
 				if (IsKeys.Contains(System.Windows.Forms.Keys.H)) {
-					y = y - 1;
+					line--;
 				}
 			}
 		}
@@ -668,23 +672,12 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 			//BusEngine.Log.Info("GPU: {0}", "NVidea GeForce GT 1030 2 GB");
 			//BusEngine.Log.Info("CPU: {0}", "AMD Athlon II x4 645");
 			//BusEngine.Log.Info("RAM: {0}", "4 GB");
-			
-			/* BusEngine.Log.Clear();
-			BusEngine.Log.Info("{0}  {1}", x, y); */
 		}
 
-		private static int x;
-		private static int y;
-		private static float z;
-		private static float left = -15.0F;
-		private static float right = 15.0F;
-		private static float top = 15.0F;
-		private static float bottom = -15.0F;
-		private static int cube;
-		private static OpenTK.Matrix4 vp;
+		private static int cube, q = 1, line = 1;
+		private static float x, y, z, left = -12.0F, right = 12.0F, top = 12.0F, bottom = -12.0F;
 		private static OpenTK.Vector3 v;
-		private static OpenTK.Matrix4 a;
-		private static OpenTK.Matrix4 p = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
+		private static OpenTK.Matrix4 vp, a, p = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
 
 		/* private float[] Matrix4ToArray(OpenTK.Matrix4 matrix) {
 			float[] data = new float[16];
@@ -711,90 +704,54 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 				a = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle));
 				OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progA, true, ref a);
 
-				cube = 1;
+				x = 1;
+				y = 1;
 
-				p.M41 = 0.0F;
-				p.M42 = 0.0F;
-				p.M43 = z;
-
-				OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
-				// этот способ медленный
-				//OpenTK.Graphics.OpenGL4.GL.DrawArrays(OpenTK.Graphics.OpenGL4.PrimitiveType.Quads, 0, IndexData.Length);
-				OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-				for (x = 1; x < 81; x++)  {
-					cube += 2;
-
-					p.M41 = right * x;
-					p.M42 = 0.0F;
-					p.M43 = z;
-
-					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
-					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
+				for (cube = 0; cube < q; cube++)  {
+					// левый-нижний
 					p.M41 = left * x;
-					p.M42 = 0.0F;
-					p.M43 = z;
-
-					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
-					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-				}
-
-				for (y = 1; y < 46; y++)  {
-					cube += 2;
-
-					p.M41 = 0.0F;
 					p.M42 = bottom * y;
 					p.M43 = z;
 
 					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
 					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-					p.M41 = 0.0F;
-					p.M42 = top * y;
+					// правый-нижний
+					p.M41 = right * x - right;
+					p.M42 = bottom * y;
 					p.M43 = z;
 
 					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
 					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-				}
 
-				for (x = 1; x < 81; x++)  {
-					for (y = 1; y < 46; y++)  {
-						cube += 4;
+					// левый-верхний
+					p.M41 = left * x;
+					p.M42 = top * y - top;
+					p.M43 = z;
 
-						p.M41 = left * x;
-						p.M42 = bottom * y;
-						p.M43 = z;
+					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
+					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
+					// правый-верхний
+					p.M41 = right * x - right;
+					p.M42 = top * y - top;
+					p.M43 = z;
 
-						p.M41 = right * x;
-						p.M42 = bottom * y;
-						p.M43 = z;
+					OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
+					OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
 
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-						p.M41 = left * x;
-						p.M42 = top * y;
-						p.M43 = z;
-
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
-
-						p.M41 = right * x;
-						p.M42 = top * y;
-						p.M43 = z;
-
-						OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progP, true, ref p);
-						OpenTK.Graphics.OpenGL4.GL.DrawElements(OpenTK.Graphics.OpenGL4.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL4.DrawElementsType.UnsignedInt, 0);
+					// убираем второй массив
+					if (y >= line) {
+						x++;
+						y = 1;
+					} else {
+						y++;
 					}
 				}
 
-				if (cube > cubes) {
-					cubes = cube * 36;
-				}
+				//if (cube > cubes) {
+					cubes = cube * 4 * 16;
+				//}
 
 				glControl.SwapBuffers();
 			//}
