@@ -11,41 +11,34 @@
 namespace BusEngine.Game {
 	/** API BusEngine.Plugin */
 	public class MyPlugin : BusEngine.Plugin {
-		// при запуске BusEngine после создания формы Canvas
-		public override void Initialize() {
-
-		}
-
 		// настройки
-		private static int FPS = 0;
-		private static int FPSSetting;
-		private static int FPSInfo = 0;
-		private static int cubes = 0;
+		private static int FPS = 60, cubes = 0;
+		private static float FPSSetting, FPSDelta = 1F, FPSInfo = 60F;
 
 		private static OpenTK.GLControl glControl;
-		private static OpenTK.Vector3 position = new OpenTK.Vector3(0.0F, 0.0F, 10.0F);
+		private static OpenTK.Vector3 position = new OpenTK.Vector3(0.0F, 5.0F, 10.0F);
 		private static OpenTK.Vector3 front = new OpenTK.Vector3(0.0F, 0.0F, 1.0F);
 		private static OpenTK.Vector3 up = OpenTK.Vector3.UnitY; // new OpenTK.Vector3(0.0f, 1.0f, 0.0f);
 		private static OpenTK.Vector3 Orientation = new OpenTK.Vector3((float)System.Math.PI, 0F, 0F);
-		private static float speed = 0.5F;
+		private static float speed = 0.1F;
 		private static float mousespeed = 0.0025f;
-		private static bool IsKeysUpdateGL = false;
 		private static System.Collections.Generic.HashSet<System.Windows.Forms.Keys> IsKeys = new System.Collections.Generic.HashSet<System.Windows.Forms.Keys>();
 		private static OpenTK.Vector2 lastPos;
+		private static int lastWheel;
+		private static bool F1, F2, F3, F4, Pause;
 
-		private System.Timers.Timer _timer = null;
-		private float _angle = 0.0f;
-		private int CubeShader;
-		private int VAO;
-		private int EBO;
-		private int PositionBuffer;
-		private int ColorBuffer;
-		private OpenTK.Matrix4 projection;
+		private static float _angle = 0.0f;
+		private static int CubeShader;
+		private static int VAO;
+		private static int EBO;
+		private static int PositionBuffer;
+		private static int ColorBuffer;
+		private static OpenTK.Matrix4 projection;
 
-		private int prog;
-		private int progVP;
-		private int progP;
-		private int progA;
+		private static int prog;
+		private static int progVP;
+		private static int progP;
+		private static int progA;
 
 		private static readonly OpenTK.Vector3[] VertexData = new OpenTK.Vector3[24] {
 			new OpenTK.Vector3(-1.0f, -1.0f, -1.0f),
@@ -79,13 +72,18 @@ namespace BusEngine.Game {
 			new OpenTK.Vector3(1.0f, -1.0f, 1.0f),
 		};
 
-		private static readonly int[] IndexData = new int[36] {
-			 0,  1,  2,  2,  3,  0,
-			 4,  5,  6,  6,  7,  4,
-			 8,  9, 10, 10, 11,  8,
-			12, 13, 14, 14, 15, 12,
-			16, 17, 18, 18, 19, 16,
-			20, 21, 22, 22, 23, 20,
+		private static int[] IndexData = new int[] {
+			0, 1, 2, 2, 3, 0,
+
+			4, 5, 6, 6, 7, 4,
+
+			8,  9, 10, 10, 11, 8,
+
+			12, 13, 14,	14, 15, 12,
+
+			16, 17, 18,	18, 19, 16,
+
+			20, 21, 22,	22, 23, 20,
 		};
 
 		private static readonly OpenTK.Graphics.Color4[] ColorData = new OpenTK.Graphics.Color4[] {
@@ -107,15 +105,12 @@ namespace BusEngine.Game {
 		}; */
 
 		// при запуске BusEngine после создания формы Canvas
-		public override unsafe void InitializeСanvas() {
+		public override void InitializeСanvas() {
 			// деламем окно не поверх других окон
 			BusEngine.UI.Canvas.WinForm.TopMost = false;
-
-			// подключаем событие рисования
-			BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
-
-			// скрываем иконку
-			//BusEngine.UI.Canvas.WinForm.Cursor = new System.Windows.Forms.Cursor(new System.Drawing.Bitmap(16, 16).GetHicon());
+			BusEngine.UI.Canvas.WinForm.KeyPreview = false;
+			//BusEngine.UI.Canvas.WinForm.IsMdiContainer = true;
+			//BusEngine.UI.Canvas.WinForm.Paint += Paint;
 
 			// FPS
 			System.Timers.Timer fpsTimer = new System.Timers.Timer(1000);
@@ -124,13 +119,23 @@ namespace BusEngine.Game {
 			fpsTimer.AutoReset = true;
 			fpsTimer.Enabled = true;
 
-			if (!int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS"], out FPSSetting)) {
-				FPSSetting = 100;
+			if (!float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS"], out FPSSetting)) {
+				FPSSetting = 60F;
 			}
-			//BusEngine.UI.Canvas.WinForm.Location = new System.Drawing.Point(-100, -100);
-			BusEngine.UI.Canvas.WinForm.SuspendLayout();
 
-			glControl = new OpenTK.GLControl();
+			glControl = new OpenTK.GLControl(new OpenTK.Graphics.GraphicsMode(
+				color: new OpenTK.Graphics.ColorFormat(0, 0, 0, 1),
+				depth: 32,
+				stencil: 32,
+				samples: 1000,
+				accum: new OpenTK.Graphics.ColorFormat(0, 0, 0, 1),
+				buffers: 2,
+				stereo: true
+			));
+
+			//((System.ComponentModel.ISupportInitialize)glControl).BeginInit();
+			//BusEngine.UI.Canvas.WinForm.SuspendLayout();
+
 			glControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 
 			int r_Width;
@@ -138,6 +143,7 @@ namespace BusEngine.Game {
 			if (r_Width < BusEngine.UI.Canvas.WinForm.Width) {
 				r_Width = BusEngine.UI.Canvas.WinForm.Width;
 			}
+
 			int r_Height;
 			int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_Height"], out r_Height);
 			if (r_Height < BusEngine.UI.Canvas.WinForm.Height) {
@@ -147,36 +153,86 @@ namespace BusEngine.Game {
 			glControl.Size = new System.Drawing.Size(r_Width, r_Height);
 			glControl.VSync = BusEngine.Engine.SettingProject["console_commands"]["sys_VSync"] == "1";
 			glControl.Location = new System.Drawing.Point((r_Width - BusEngine.UI.Canvas.WinForm.Width) / -2, 1);
-
+            glControl.Visible  = true;
+            glControl.Enabled  = true;
 			// подключаем событие клавиатуры
-			glControl.KeyDown += KeyDownGL;
-			glControl.KeyUp += KeyUpGL;
+			/* glControl.KeyDown += new System.Windows.Forms.KeyEventHandler(KeyDown);
+			glControl.KeyUp += new System.Windows.Forms.KeyEventHandler(KeyUp); */
+			glControl.KeyDown += new System.Windows.Forms.KeyEventHandler(KeyDown);
+			glControl.KeyUp += new System.Windows.Forms.KeyEventHandler(KeyUp);
+
 			// подключаем событие мыши
-			glControl.MouseMove += MouseMoveGL;
-			glControl.MouseLeave += MouseLeaveGL;
+			//glControl.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
+			glControl.MouseLeave += new System.EventHandler(MouseLeave);
+			glControl.MouseWheel += new System.Windows.Forms.MouseEventHandler(MouseWheel);
+			//BusEngine.UI.Canvas.WinForm.MouseMove += new System.Windows.Forms.MouseEventHandler(MouseMove);
+			//BusEngine.UI.Canvas.WinForm.MouseLeave += new System.EventHandler(MouseLeave);
+			//BusEngine.UI.Canvas.WinForm.MouseWheel += new System.Windows.Forms.MouseEventHandler(MouseWheel);
 			// подключаем событие загрузки окна OpenTK
-			glControl.Load += glControl_Load;
+			glControl.Load += new System.EventHandler(Load);
+			// подключаем событие изменение размера окна
+			glControl.Resize += new System.EventHandler(Resize);
+			// подключаем событие рисования
+			//glControl.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
+			//BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
 
+			//glControl.TabIndex = 0;
+			glControl.TabStop = false;
 			BusEngine.UI.Canvas.WinForm.Controls.Add(glControl);
+			//BusEngine.UI.Canvas.WinForm.Focus();
+			//glControl.Focus();
+			
+			//BusEngine.UI.Canvas.WinForm.TabIndex = 1;
+			/* BusEngine.UI.Canvas.WinForm.Focus(); */
 
-			BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
-			BusEngine.UI.Canvas.WinForm.PerformLayout();
+			//((System.ComponentModel.ISupportInitialize)(glControl)).EndInit();
+			//BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
+			//BusEngine.UI.Canvas.WinForm.PerformLayout();
+
+			//glControl.PerformContextUpdate();
+
+			//BusEngine.Log.Info(OpenTK.Input.KeyboardDevice());
+			//OpenTK.Input.KeyboardDevice.Item(OpenTK.Input.Key.Ctrl);
 
 			BusEngine.Engine.GameStart();
 		}
 
-		public static void KeyDownGL(object sender, System.Windows.Forms.KeyEventArgs e) {
+		public static void KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
 			if (e != null) {
+				BusEngine.Log.Info("ss {0}", e.KeyCode);
 				IsKeys.Add(e.KeyCode);
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Pause)) {
+					if (Pause) {
+						BusEngine.Engine.GameStart();
+						Pause = false;
+						IsKeys.Remove(System.Windows.Forms.Keys.Pause);
+					}
+				}
+			} else {
+				// фикс некоторых кнопок
+				OpenTK.Input.KeyboardState keyboard = OpenTK.Input.Keyboard.GetState();
+
+				//BusEngine.Log.Info("KeyboardState {0}", keyboard.IsAnyKeyDown);
+				if (keyboard.IsKeyDown(OpenTK.Input.Key.Up)) {
+					IsKeys.Add(System.Windows.Forms.Keys.Up);
+				}
+				if (keyboard.IsKeyDown(OpenTK.Input.Key.Down)) {
+					IsKeys.Add(System.Windows.Forms.Keys.Down);
+				}
+				if (keyboard.IsKeyDown(OpenTK.Input.Key.Left)) {
+					IsKeys.Add(System.Windows.Forms.Keys.Left);
+				}
+				if (keyboard.IsKeyDown(OpenTK.Input.Key.Right)) {
+					IsKeys.Add(System.Windows.Forms.Keys.Right);
+				}
 			}
 
-			if (e == null || !IsKeysUpdateGL) {
-				IsKeysUpdateGL = true;
+			if (IsKeys.Contains(System.Windows.Forms.Keys.Escape)) {
+				BusEngine.Engine.Shutdown();
+			}
 
-				if (IsKeys.Contains(System.Windows.Forms.Keys.Escape)) {
-					BusEngine.Engine.Shutdown();
-				}
-
+			if (e == null) {
 				if (IsKeys.Contains(System.Windows.Forms.Keys.W)) {
 					if (IsKeys.Contains(System.Windows.Forms.Keys.ShiftKey) || IsKeys.Contains(System.Windows.Forms.Keys.LShiftKey)) {
 						position += front * speed * 2;
@@ -209,16 +265,35 @@ namespace BusEngine.Game {
 					}
 				}
 
-				if (IsKeys.Contains(System.Windows.Forms.Keys.Down)) {
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Up)) {
 					position += up * speed;
 				}
 
-				if (IsKeys.Contains(System.Windows.Forms.Keys.Up)) {
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Down)) {
 					position -= up * speed;
 				}
 
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Left)) {
+					lastPos.X = OpenTK.Input.Mouse.GetState().X + mousespeed * 2000;
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Right)) {
+					lastPos.X = OpenTK.Input.Mouse.GetState().X - mousespeed * 2000;
+				}
+
 				if (IsKeys.Contains(System.Windows.Forms.Keys.Space)) {
-					position = new OpenTK.Vector3(0.0F, 0.0F, 10.0F);
+					position = new OpenTK.Vector3(0.0F, 5.0F, 10.0F);
+					//front = new OpenTK.Vector3(0.0F, 0.0F, 1.0F);
+					//up = OpenTK.Vector3.UnitY;
+					//vp = OpenTK.Matrix4.CreateRotationX(OpenTK.MathHelper.DegreesToRadians(90)) * OpenTK.Matrix4.LookAt(position, position + front, up) * projection;
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.Pause)) {
+					IsKeys.Remove(System.Windows.Forms.Keys.Pause);
+					if (!Pause) {
+						Pause = true;
+						BusEngine.Engine.GameStop();
+					}
 				}
 
 				if (IsKeys.Contains(System.Windows.Forms.Keys.T)) {
@@ -236,46 +311,130 @@ namespace BusEngine.Game {
 				if (IsKeys.Contains(System.Windows.Forms.Keys.H)) {
 					line--;
 				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.NumPad4) && p.M11 >= 0.09F) {
+					p.M11 = (float)System.Math.Round(p.M11 + 0.1F, 1);
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.NumPad1) && p.M11 > 0.1F) {
+					p.M11 = (float)System.Math.Round(p.M11 - 0.1F, 1);
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.NumPad5) && p.M43 >= 0.09F) {
+					p.M43 = (float)System.Math.Round(p.M43 + 0.1F, 1);
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.NumPad2) && p.M43 > 0.1F) {
+					p.M43 = (float)System.Math.Round(p.M43 - 0.1F, 1);
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.NumPad6) && p.M44 >= 0.09F) {
+					p.M44 = (float)System.Math.Round(p.M44 + 0.1F, 1);
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.NumPad3) && p.M44 > 0.1F) {
+					p.M44 = (float)System.Math.Round(p.M44 - 0.1F, 1);
+				}
+
+				// из-за Radeon - убираем возможность показа стены с двух сторон.
+				// https://ravesli.com/urok-22-otsechenie-granej-v-opengl/
+				if (IsKeys.Contains(System.Windows.Forms.Keys.F1)) {
+					IsKeys.Remove(System.Windows.Forms.Keys.F1);
+					if (!F1) {
+						F1 = true;
+						OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.CullFace);
+					} else {
+						OpenTK.Graphics.OpenGL4.GL.Disable(OpenTK.Graphics.OpenGL4.EnableCap.CullFace);
+						F1 = false;
+					}
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.F2)) {
+					IsKeys.Remove(System.Windows.Forms.Keys.F2);
+					if (!F2) {
+						F2 = true;
+						OpenTK.Graphics.OpenGL4.GL.CullFace(OpenTK.Graphics.OpenGL4.CullFaceMode.Front);
+					} else {
+						OpenTK.Graphics.OpenGL4.GL.CullFace(OpenTK.Graphics.OpenGL4.CullFaceMode.Back);
+						F2 = false;
+					}
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.F3)) {
+					IsKeys.Remove(System.Windows.Forms.Keys.F3);
+					if (!F3) {
+						F3 = true;
+						OpenTK.Graphics.OpenGL4.GL.PolygonMode(OpenTK.Graphics.OpenGL4.MaterialFace.FrontAndBack, OpenTK.Graphics.OpenGL4.PolygonMode.Line);
+					} else {
+						OpenTK.Graphics.OpenGL4.GL.PolygonMode(OpenTK.Graphics.OpenGL4.MaterialFace.FrontAndBack, OpenTK.Graphics.OpenGL4.PolygonMode.Fill);
+						F3 = false;
+					}
+				}
+
+				if (IsKeys.Contains(System.Windows.Forms.Keys.F4)) {
+					IsKeys.Remove(System.Windows.Forms.Keys.F4);
+					if (!F4) {
+						F4 = true;
+						OpenTK.Graphics.OpenGL4.GL.FrontFace(OpenTK.Graphics.OpenGL4.FrontFaceDirection.Ccw);
+					} else {
+						OpenTK.Graphics.OpenGL4.GL.FrontFace(OpenTK.Graphics.OpenGL4.FrontFaceDirection.Cw);
+						F4 = false;
+					}
+				}
 			}
 		}
 
-		private static void KeyUpGL(object sender, System.Windows.Forms.KeyEventArgs e) {
+		private static void KeyUp(object sender, System.Windows.Forms.KeyEventArgs e) {
 			IsKeys.Remove(e.KeyCode);
-			IsKeysUpdateGL = false;
 		}
 
-		/* private void Move(float x, float y, float z) {
-			OpenTK.Vector3 offset = new OpenTK.Vector3();
-			OpenTK.Vector3 forward = new OpenTK.Vector3((float)System.Math.Sin((float)Orientation.X), 0, (float)System.Math.Cos((float)Orientation.X));
-
-			offset += x * new OpenTK.Vector3(-forward.Z, 0, forward.X);
-			offset += y * forward;
-			offset.Y += z;
-
-			offset.NormalizeFast();
-			offset = OpenTK.Vector3.Multiply(offset, mousespeed);
-
-			position += offset;
-		} */
-
-		private void MouseLeaveGL(object sender, System.EventArgs e) {
+		private static void MouseLeave(object sender, System.EventArgs e) {
 			// если очень долго крутить в одну сторону, то будет ошибка (для теста использовать мышьку и болгарку).
-			var mouse = OpenTK.Input.Mouse.GetState();
+			OpenTK.Input.MouseState mouse = OpenTK.Input.Mouse.GetState();
 
 			OpenTK.Input.Mouse.SetPosition(BusEngine.UI.Canvas.WinForm.DesktopLocation.X + BusEngine.UI.Canvas.WinForm.Width/2.0f, BusEngine.UI.Canvas.WinForm.DesktopLocation.Y + BusEngine.UI.Canvas.WinForm.Height/2.0f);
 
 			lastPos = new OpenTK.Vector2(mouse.X, mouse.Y);
 		}
 
-		private void MouseMoveGL(object sender, System.EventArgs e) {
-			var mouse = OpenTK.Input.Mouse.GetState();
+		private void MouseWheel(object sender, System.EventArgs e) {
+			// если очень долго крутить в одну сторону, то будет ошибка (для теста использовать мышьку и болгарку).
+			OpenTK.Input.MouseState mouse = OpenTK.Input.Mouse.GetState();
+
+			if (lastWheel < mouse.Wheel) {
+				speed += 0.1F;
+			} else {
+				speed -= 0.1F;
+			}
+
+			if (System.Math.Round(speed, 1) < 0.1F) {
+				speed = 0.1F;
+			}
+
+			lastWheel = mouse.Wheel;
+		}
+
+		private static void MouseMove(object sender, System.EventArgs e) {
+			OpenTK.Input.MouseState mouse = OpenTK.Input.Mouse.GetState();
 
 			OpenTK.Vector2 delta = lastPos - new OpenTK.Vector2(mouse.X, mouse.Y);
+
+			/* if (lastWheel < mouse.Scroll.Y) {
+				speed += 0.1F;
+			} else {
+				speed -= 0.1F;
+			}
+
+			if (speed < 0.1F) {
+				speed = 0.1F;
+			}
+
+			lastWheel = (int)mouse.Scroll.Y; */
 
 			AddRotation(delta.X, delta.Y);
 
 			lastPos = new OpenTK.Vector2(mouse.X, mouse.Y);
-
+			//BusEngine.Log.Info("MouseState: {0}", mouse);
 			double y = System.Math.Cos(Orientation.Y);
 
 			front.X = (float)(System.Math.Sin(Orientation.X) * y);
@@ -285,12 +444,12 @@ namespace BusEngine.Game {
 			//front = OpenTK.Vector3.Normalize(front);
 		}
 
-		private void AddRotation(float mx, float my) {
+		private static void AddRotation(float mx, float my) {
 			mx = mx * mousespeed;
 			my = my * mousespeed;
 
 			Orientation.X = (Orientation.X + mx) % ((float)System.Math.PI * 2.0f);
-			Orientation.Y = System.Math.Max(System.Math.Min(Orientation.Y + my, (float)System.Math.PI / 2.0f - 0.1f), (float)-System.Math.PI / 2.0f + 0.1f);
+			Orientation.Y = System.Math.Max(System.Math.Min(Orientation.Y + my, (float)System.Math.PI / 2.0f - 0.001f), (float)-System.Math.PI / 2.0f + 0.001f);
 		}
 
 		private int CompileShader(OpenTK.Graphics.OpenGL4.ShaderType type, string source) {
@@ -315,8 +474,8 @@ namespace BusEngine.Game {
 		private int CompileProgram(string vertShader, string fragShader, string geomShader) {
 			int geom, frag, vert, success, program = OpenTK.Graphics.OpenGL4.GL.CreateProgram();
 
-			vert = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.VertexShader, vertShader);
-			frag = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.FragmentShader, fragShader);
+			vert = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.VertexShaderArb, vertShader);
+			frag = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.FragmentShaderArb, fragShader);
 			geom = CompileShader(OpenTK.Graphics.OpenGL4.ShaderType.GeometryShader, geomShader);
 
 			OpenTK.Graphics.OpenGL4.GL.AttachShader(program, vert);
@@ -341,11 +500,10 @@ namespace BusEngine.Game {
 			return program;
 		}
 
-		private void glControl_Load(object sender, System.EventArgs e) {
+		private void Load(object sender, System.EventArgs e) {
 			// устанавливаем контекст GL
 			//glControl.MakeCurrent();
-
-			glControl.Resize += glControl_Resize;
+			//glControl.Focus();
 
 			OpenTK.Graphics.OpenGL.GL.MatrixMode(OpenTK.Graphics.OpenGL.MatrixMode.Modelview);
 			OpenTK.Graphics.OpenGL.GL.LoadIdentity();
@@ -356,8 +514,19 @@ namespace BusEngine.Game {
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.LineSmooth);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.PolygonSmooth);
 			// из-за Radeon - убираем возможность показа стены с двух сторон.
-			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.CullFace);
+			// https://ravesli.com/urok-22-otsechenie-granej-v-opengl/
+			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.CullFace);
+			//OpenTK.Graphics.OpenGL4.GL.CullFace(OpenTK.Graphics.OpenGL4.CullFaceMode.Front);
+			//OpenTK.Graphics.OpenGL4.GL.FrontFace(OpenTK.Graphics.OpenGL4.FrontFaceDirection.Cw);
+
 			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.DepthTest);
+
+			// режим каркаса включён
+			OpenTK.Graphics.OpenGL4.GL.PolygonMode(OpenTK.Graphics.OpenGL4.MaterialFace.FrontAndBack, OpenTK.Graphics.OpenGL4.PolygonMode.Line);
+			// режим каркаса отключён
+			OpenTK.Graphics.OpenGL4.GL.PolygonMode(OpenTK.Graphics.OpenGL4.MaterialFace.FrontAndBack, OpenTK.Graphics.OpenGL4.PolygonMode.Fill);
+			//OpenTK.Graphics.OpenGL4.GL.PolygonMode(OpenTK.Graphics.OpenGL4.MaterialFace.FrontAndBack, OpenTK.Graphics.OpenGL4.PolygonMode.Line);
+			
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.StencilTest);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Dither);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Blend);
@@ -395,8 +564,8 @@ namespace BusEngine.Game {
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.RescaleNormalExt);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Texture3DExt);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.InterlaceSgix);
-			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Multisample);
-			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.MultisampleSgis);
+			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.Multisample);
+			OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.MultisampleSgis);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToCoverage);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToMaskSgis);
 			//OpenTK.Graphics.OpenGL4.GL.Enable(OpenTK.Graphics.OpenGL4.EnableCap.SampleAlphaToOne);
@@ -558,28 +727,7 @@ namespace BusEngine.Game {
 			// вкоючение отладки OpenGL - ловить сообщения через спец. события - уменьшит fps
 			OpenTK.Graphics.OpenGL4.GL.Disable(OpenTK.Graphics.OpenGL4.EnableCap.DebugOutput); */
 
-			glControl_Resize(glControl, System.EventArgs.Empty);
-
-			// создаём шейдеры
-			CubeShader = CompileProgram(
-				vertShader: BusEngine.Engine.DataDirectory + "Shader/cube_vert.glsl",
-				fragShader: BusEngine.Engine.DataDirectory + "Shader/cube_frag.glsl",
-				geomShader: BusEngine.Engine.DataDirectory + "Shader/cube_geom.glsl"
-			);
-			OpenTK.Graphics.OpenGL4.GL.UseProgram(CubeShader);
-			prog = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "MVP");
-			progP = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "P");
-			progVP = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "VP");
-			progA = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "A");
-
-			// создаём таймер для работы клавиатуры и вращению блоков независимо от частоты кадров и возможности измерять скорость.
-			_timer = new System.Timers.Timer();
-			_timer.Elapsed += (ts, te) => {
-				BusEngine.Game.MyPlugin.KeyDownGL(null, null);
-				_angle += 0.3F;
-			};
-			_timer.Interval = 10;
-			_timer.Start();
+			//Resize(glControl, System.EventArgs.Empty);
 
 			OpenTK.Matrix4.LookAt(position, position + front, up);
 
@@ -614,24 +762,38 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 
 			EBO = OpenTK.Graphics.OpenGL4.GL.GenBuffer();
 			OpenTK.Graphics.OpenGL4.GL.BindBuffer(OpenTK.Graphics.OpenGL4.BufferTarget.ElementArrayBuffer, EBO);
-			OpenTK.Graphics.OpenGL4.GL.BufferData(OpenTK.Graphics.OpenGL4.BufferTarget.ElementArrayBuffer, IndexData.Length * sizeof(int), IndexData, OpenTK.Graphics.OpenGL4.BufferUsageHint.StaticDraw);
+			OpenTK.Graphics.OpenGL4.GL.BufferData(OpenTK.Graphics.OpenGL4.BufferTarget.ElementArrayBuffer, IndexData.Length * sizeof(int), IndexData, OpenTK.Graphics.OpenGL4.BufferUsageHint.DynamicRead);
 
 			PositionBuffer = OpenTK.Graphics.OpenGL4.GL.GenBuffer();
 			OpenTK.Graphics.OpenGL4.GL.BindBuffer(OpenTK.Graphics.OpenGL4.BufferTarget.ArrayBuffer, PositionBuffer);
-			OpenTK.Graphics.OpenGL4.GL.BufferData(OpenTK.Graphics.OpenGL4.BufferTarget.ArrayBuffer, VertexData.Length * sizeof(float) * 3, VertexData, OpenTK.Graphics.OpenGL4.BufferUsageHint.StaticDraw);
+			OpenTK.Graphics.OpenGL4.GL.BufferData(OpenTK.Graphics.OpenGL4.BufferTarget.ArrayBuffer, VertexData.Length * sizeof(float) * 3, VertexData, OpenTK.Graphics.OpenGL4.BufferUsageHint.DynamicRead);
 
 			OpenTK.Graphics.OpenGL4.GL.EnableVertexAttribArray(0);
 			OpenTK.Graphics.OpenGL4.GL.VertexAttribPointer(0, 3, OpenTK.Graphics.OpenGL4.VertexAttribPointerType.Float, false, sizeof(float) * 3, 0);
 
 			ColorBuffer = OpenTK.Graphics.OpenGL4.GL.GenBuffer();
 			OpenTK.Graphics.OpenGL4.GL.BindBuffer(OpenTK.Graphics.OpenGL4.BufferTarget.ArrayBuffer, ColorBuffer);
-			OpenTK.Graphics.OpenGL4.GL.BufferData(OpenTK.Graphics.OpenGL4.BufferTarget.ArrayBuffer, ColorData.Length * sizeof(float) * 4, ColorData, OpenTK.Graphics.OpenGL4.BufferUsageHint.StaticDraw);
+			OpenTK.Graphics.OpenGL4.GL.BufferData(OpenTK.Graphics.OpenGL4.BufferTarget.ArrayBuffer, ColorData.Length * sizeof(float) * 4, ColorData, OpenTK.Graphics.OpenGL4.BufferUsageHint.DynamicRead);
 
 			OpenTK.Graphics.OpenGL4.GL.EnableVertexAttribArray(1);
 			OpenTK.Graphics.OpenGL4.GL.VertexAttribPointer(1, 4, OpenTK.Graphics.OpenGL4.VertexAttribPointerType.Float, false, sizeof(float) * 4, 0);
+
+			OpenTK.Graphics.OpenGL4.GL.BindVertexArray(0);
+
+			// создаём шейдеры
+			CubeShader = CompileProgram(
+				vertShader: BusEngine.Engine.DataDirectory + "Shader/cube_vert.glsl",
+				fragShader: BusEngine.Engine.DataDirectory + "Shader/cube_frag.glsl",
+				geomShader: BusEngine.Engine.DataDirectory + "Shader/cube_geom.glsl"
+			);
+			OpenTK.Graphics.OpenGL4.GL.UseProgram(CubeShader);
+			prog = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "MVP");
+			progP = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "P");
+			progVP = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "VP");
+			progA = OpenTK.Graphics.OpenGL4.GL.GetUniformLocation(CubeShader, "A");
 		}
 
-		private void glControl_Resize(object sender, System.EventArgs e) {
+		private void Resize(object sender, System.EventArgs e) {
 			// устанавливаем контекст GL
 			//glControl.MakeCurrent();
 
@@ -646,7 +808,7 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 			}
 
 			OpenTK.Graphics.OpenGL4.GL.Viewport(0, 0, Width, Height);
-			glControl.MaximumSize = new System.Drawing.Size(Width, Height);
+			//glControl.MaximumSize = new System.Drawing.Size(Width, Height);
 
 			float sys_FOV;
 			float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FOV"], out sys_FOV);
@@ -658,12 +820,16 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 
 		// событие FPS
 		private static void OnFPS(object source, System.Timers.ElapsedEventArgs e) {
-			FPSInfo = FPS;
-			FPS = 0;
+			if (FPS > 0) {
+				FPSInfo = FPS;
+			} else {
+				FPSInfo = FPSSetting;
+			}
 
 			BusEngine.Log.Clear();
 			//BusEngine.Log.Info("FPS Setting: {0}", FPSSetting);
 			BusEngine.Log.Info("FPS: {0}", FPSInfo);
+			BusEngine.Log.Info("mytime: {0}", mytime);
 			BusEngine.Log.Info("Cubes Count: {0}", cubes);
 			BusEngine.Log.Info("VSync: {0}", BusEngine.Engine.SettingProject["console_commands"]["sys_VSync"] == "1");
 			BusEngine.Log.Info("Resolution Display: {0} X {1}", System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height);
@@ -672,9 +838,12 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 			//BusEngine.Log.Info("GPU: {0}", "NVidea GeForce GT 1030 2 GB");
 			//BusEngine.Log.Info("CPU: {0}", "AMD Athlon II x4 645");
 			//BusEngine.Log.Info("RAM: {0}", "4 GB");
+
+			FPS = 0;
+			mytime = 0;
 		}
 
-		private static int cube, q = 1, line = 1;
+		private static int cube, q = 8000, line = 75;
 		private static float x, y, z, left = -12.0F, right = 12.0F, top = 12.0F, bottom = -12.0F;
 		private static OpenTK.Vector3 v;
 		private static OpenTK.Matrix4 vp, a, p = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
@@ -692,13 +861,51 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 			return data;
 		} */
 
+		private static long timeNow;
+		private static long mytime;
+
 		// вызывается при отрисовки каждого кадра
-		// 50000 кубов
-		private void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+		public override void OnGameStart() {
+			// скрываем иконку
+			BusEngine.UI.Canvas.WinForm.Cursor = new System.Windows.Forms.Cursor(new System.Drawing.Bitmap(16, 16).GetHicon());
+
+			FPS = (int)FPSSetting;
+
+			BusEngine.Game.MyPlugin.MouseLeave(null, null);
+		}
+
+		// вызывается при отрисовки каждого кадра
+		public override void OnGameStop() {
+			BusEngine.UI.Canvas.WinForm.Cursor = null;
+		}
+
+		// вызывается при отрисовки каждого кадра
+		// 500000 кубов
+		public override void OnGameUpdate() {
+			FPS++;
+			FPSDelta = FPSSetting / FPSInfo;
+			//glControl.MakeCurrent();
+			//glControl.Focus();
+			//BusEngine.Log.Info("mc: {0}", System.DateTime.Now.Millisecond);
+			//BusEngine.Log.Info("Ticks: {0}", System.DateTime.Now.Ticks / 10000);
+
+			// fix работы мыши и клавиатуры - вызов каждые 20 мс
+			if (System.DateTime.Now.Ticks - timeNow > 10000) {
+				mytime++;
+				timeNow = System.DateTime.Now.Ticks;
+
+				//BusEngine.Log.Info("mytime: {0}", FPSDelta);
+				_angle += 0.3F * FPSDelta;
+				BusEngine.Game.MyPlugin.MouseMove(null, null);
+				BusEngine.Game.MyPlugin.KeyDown(null, null);
+			}
+
 			//using (new BusEngine.Benchmark("OpenTK")) {
 				OpenTK.Graphics.OpenGL4.GL.Clear(OpenTK.Graphics.OpenGL4.ClearBufferMask.ColorBufferBit | OpenTK.Graphics.OpenGL4.ClearBufferMask.DepthBufferBit);
+				//OpenTK.Graphics.OpenGL4.GL.CullFace(OpenTK.Graphics.OpenGL4.CullFaceMode.Front);
+				//OpenTK.Graphics.OpenGL4.GL.FrontFace(OpenTK.Graphics.OpenGL4.FrontFaceDirection.Cw);
 
-				vp = OpenTK.Matrix4.LookAt(position, position + front, up) * projection;
+				vp = OpenTK.Matrix4.CreateRotationX(OpenTK.MathHelper.DegreesToRadians(90)) * OpenTK.Matrix4.LookAt(position, position + front, up) * projection;
 				OpenTK.Graphics.OpenGL4.GL.UniformMatrix4(progVP, true, ref vp);
 
 				a = OpenTK.Matrix4.CreateFromAxisAngle(v, OpenTK.MathHelper.DegreesToRadians(_angle));
@@ -706,6 +913,8 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 
 				x = 1;
 				y = 1;
+
+				OpenTK.Graphics.OpenGL4.GL.BindVertexArray(VAO);
 
 				for (cube = 0; cube < q; cube++)  {
 					// левый-нижний
@@ -749,6 +958,8 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 					}
 				}
 
+				OpenTK.Graphics.OpenGL4.GL.BindVertexArray(0);
+
 				//if (cube > cubes) {
 					cubes = cube * 4 * 16;
 				//}
@@ -757,14 +968,9 @@ OpenTK.Graphics.OpenGL.GL.LoadMatrix(ref ggg);
 			//}
 		}
 
-		// вызывается при отрисовки каждого кадра
-		public override void OnGameUpdate() {
-			FPS++;
-		}
-
 		// перед закрытием BusEngine
 		public override void Shutdown() {
-			BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
+			BusEngine.Engine.GameStop();
 		}
 	}
 	/** API BusEngine.Plugin */
