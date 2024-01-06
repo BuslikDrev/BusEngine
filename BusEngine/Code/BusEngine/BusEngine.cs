@@ -115,7 +115,10 @@ namespace BusEngine {
 					{"sys_VSync", "1"},                   // Вертикальная синхронизация
 					{"sys_FPS", "100"},                   // Частота монитора для регулировки еденицы измерения (скорости)
 					{"sys_FPSAuto", "1"},                 // Отключение зависимости от времени
+					{"sys_DoubleBuffered", "1"},          // Двойная буферизация
+					{"sys_TripleBuffered", "1"},          // Тройная буферизация
 					{"sys_FOV", "60"},                    // Угол обзора - в градусах
+					{"sys_ShaderCopyGeom", "16"},         // Количество копий для геометрического шейдера
 					{"sys_MemoryClearTime", "5"},         // Установка промежутка времени для освобождения оперативной памяти в секундах
 					{"sys_MemoryClearAuto", "1"},         // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
 					{"sys_Benchmark", "1"},               // Benchmark статус
@@ -134,6 +137,8 @@ namespace BusEngine {
 					{"sys_VSync", "1"},
 					{"sys_FPS", "100"},
 					{"sys_FPSAuto", "1"},
+					{"sys_DoubleBuffered", "1"},
+					{"sys_TripleBuffered", "1"},
 					{"sys_FOV", "60"},
 					{"sys_MemoryClearTime", "5"},
 					{"sys_MemoryClearAuto", "1"},
@@ -1358,6 +1363,116 @@ BusEngine.Tools.Json
 	}
 	/*BusEngine.engine.settingEngine = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingEngine) + @";*/
 	BusEngine.engine.settingProject = " + BusEngine.Tools.Json.Encode(BusEngine.Engine.SettingProject) + @";
+
+	var elementReady = function(parent, selector) {
+		return new Promise(function(resolve) {
+			var el = parent.querySelector(selector);
+
+			if (el) {
+				resolve(el);
+			}
+
+			new MutationObserver(function(mutationRecords, observer) {
+				var element = parent.querySelector(selector);
+
+				if (element) {
+					console.log('MutationObserver', element);
+					resolve(element);
+					observer.disconnect();
+				}
+			}).observe(parent, {
+				childList: true,
+				subtree: true,
+			});
+		});
+	};
+
+	// fix requestPointerLock Chromium
+	/* HTMLElement.prototype.requestPointerLock = function() {
+		console.log('event requestPointerLock', window.event);
+
+		if (window.event && window.event.constructor.name == 'PointerEvent') {
+			this.style['cursor'] = 'none';
+
+			Object.defineProperty(document, 'pointerLockElement', {
+				value: this,
+				writable: true,
+				configurable: true,
+				enumerable: true,
+			});
+
+			console.log('requestPointerLock');
+
+			document.dispatchEvent(new CustomEvent('pointerlockchange'));
+		} else {
+			document.dispatchEvent(new CustomEvent('pointerlockerror'));
+		}
+	};
+
+	HTMLElement.prototype.exitPointerLock = function() {
+		console.log('event exitPointerLock', window.event);
+
+		document.pointerLockElement.style['cursor'] = null;
+
+		Object.defineProperty(document, 'pointerLockElement', {
+			value: null,
+			writable: true,
+			configurable: true,
+			enumerable: true,
+		});
+
+		console.log('exitPointerLock');
+
+		document.dispatchEvent(new CustomEvent('pointerlockchange'));
+	}; */
+
+	Object.defineProperty(HTMLElement.prototype, 'requestPointerLock', {
+		value: function() {
+			console.log('event requestPointerLock', window.event);
+
+			if (window.event && window.event.constructor.name == 'PointerEvent') {
+				//this.style['cursor'] = 'none';
+
+				Object.defineProperty(document, 'pointerLockElement', {
+					value: this,
+					writable: true,
+					configurable: true,
+					enumerable: true,
+				});
+
+				console.log('requestPointerLock');
+
+				document.dispatchEvent(new CustomEvent('pointerlockchange'));
+			} else {
+				document.dispatchEvent(new CustomEvent('pointerlockerror'));
+			}
+		},
+		writable: true,
+		configurable: true,
+		enumerable: true,
+	});
+
+	Object.defineProperty(document, 'exitPointerLock', {
+		value: function() {
+			console.log('event exitPointerLock', window.event);
+
+			document.pointerLockElement.style['cursor'] = null;
+
+			Object.defineProperty(document, 'pointerLockElement', {
+				value: null,
+				writable: true,
+				configurable: true,
+				enumerable: true,
+			});
+
+			console.log('exitPointerLock');
+
+			document.dispatchEvent(new CustomEvent('pointerlockchange'));
+		},
+		writable: true,
+		configurable: true,
+		enumerable: true,
+	});
 ");
 
 						#if BROWSER_LOG
@@ -1392,7 +1507,7 @@ BusEngine.Tools.Json
 				//browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
 
 				// https://cefsharp.github.io/api/109.1.x/html/P_CefSharp_WinForms_ChromiumWebBrowser_UseParentFormMessageInterceptor.htm
-				browser.UseParentFormMessageInterceptor = false;
+				//browser.UseParentFormMessageInterceptor = false;
 
 				// подключаем браузер к нашей программе
 				/* BusEngine.Log.Info("1 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
@@ -1402,6 +1517,9 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("1 TopLevel: {0}", BusEngine.UI.Canvas.WinForm.TopLevel);
 				BusEngine.Log.Info("1 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
 				BusEngine.Log.Info("1 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
+
+				browser.TabIndex = 0;
+				//browser.BringToFront();
 
 				BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
 
@@ -1413,7 +1531,9 @@ BusEngine.Tools.Json
 				BusEngine.Log.Info("2 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
 				BusEngine.Log.Info("2 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
 
-				browser.BringToFront();
+
+			//browser.ResumeLayout(false);
+			//browser.PerformLayout();
 
 				/* BusEngine.Log.Info("3 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
 				BusEngine.Log.Info("3 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
@@ -2887,132 +3007,258 @@ BusEngine.Log
 */
 	/** API BusEngine.Model */
 	public class Model : System.IDisposable {
-        public float[] model;
+		public OpenTK.Vector3[] VertexData = new OpenTK.Vector3[] {};
+		public System.Collections.Generic.List<float> TexCoord = new System.Collections.Generic.List<float>();
+		public int[] IndexData;
+		public System.Collections.Generic.List<int> TexIndex = new System.Collections.Generic.List<int>();
+		public System.Collections.Generic.List<int> NormIndex = new System.Collections.Generic.List<int>();
+ 
+		private System.Collections.Generic.List<float> _model = new System.Collections.Generic.List<float>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _IndexData = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _texIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _normIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
+		private System.Collections.Generic.List<OpenTK.Vector3> _VertexDatas = new System.Collections.Generic.List<OpenTK.Vector3>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _texCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _normCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
+		private const string WHITESPACE_RE = @"\s+";
 
-        public System.Collections.Generic.List<float> vertCoord = new System.Collections.Generic.List<float>();
-        public System.Collections.Generic.List<float> texCoord = new System.Collections.Generic.List<float>();
+		public float[] Load(string filePath) {
+			if (!System.IO.File.Exists(filePath)) {
+				System.Windows.Forms.MessageBox.Show("Failed to open the file: " + filePath);
 
-        public System.Collections.Generic.List<int> vertIndex = new System.Collections.Generic.List<int>();
-        public System.Collections.Generic.List<int> texIndex = new System.Collections.Generic.List<int>();
-        public System.Collections.Generic.List<int> normIndex = new System.Collections.Generic.List<int>();
+				return new float[] {0};
+			}
  
-        private System.Collections.Generic.List<float> _model = new System.Collections.Generic.List<float>();
- 
-        private System.Collections.Generic.List<System.Collections.Generic.List<int>> _vertIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-        private System.Collections.Generic.List<System.Collections.Generic.List<int>> _texIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-        private System.Collections.Generic.List<System.Collections.Generic.List<int>> _normIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
- 
-        private System.Collections.Generic.List<System.Collections.Generic.List<float>> _vertCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
-        private System.Collections.Generic.List<System.Collections.Generic.List<float>> _texCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
-        private System.Collections.Generic.List<System.Collections.Generic.List<float>> _normCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
+			using (var sr = new System.IO.StreamReader(filePath)) {
+				int i, j, index;
+				float x, y, z;
+				string data = sr.ReadToEnd();
+				string[] lines = data.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+				for (i = 0; i < lines.Length; i++) {
+					if (lines[i].StartsWith("#")) {
+						continue;
+					}
 
-        private const string WHITESPACE_RE = @"\s+";
+					string line = lines[i].Trim();
+					System.Collections.Generic.List<string> values = new System.Collections.Generic.List<string>(System.Text.RegularExpressions.Regex.Split(line, WHITESPACE_RE));
 
-        public void LoadModel(string filePath) {
-            if (!System.IO.File.Exists(filePath)) {
-                System.Windows.Forms.MessageBox.Show("Failed to open the file: " + filePath);
-                return;
-            }
+					if (values.Count == 0) {
+						continue;
+					}
  
-            using (var sr = new System.IO.StreamReader(filePath)) {
-                string data = sr.ReadToEnd();
-                string[] lines = data.Split(new char[] { '\n' });
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    if (lines[i].StartsWith("#")) continue;
-                    string line = lines[i].Trim();
-                    System.Collections.Generic.List<string> values = new System.Collections.Generic.List<string>(System.Text.RegularExpressions.Regex.Split(line, WHITESPACE_RE));
-                    if (values.Count == 0) continue;
+					if (values[0] == "v") {
+						float.TryParse(values[1], out x);
+						float.TryParse(values[2], out y);
+						float.TryParse(values[3], out z);
+						_VertexDatas.Add(new OpenTK.Vector3(x, y, z));
+					} else if (values[0] == "vt") {
+						float.TryParse(values[1], out x);
+						float.TryParse(values[2], out y);
+						_texCoords.Add(new System.Collections.Generic.List<float>() { x, y });
+					} else if (values[0] == "vn") {
+						float.TryParse(values[1], out x);
+						float.TryParse(values[2], out y);
+						float.TryParse(values[3], out z);
+						_normCoords.Add(new System.Collections.Generic.List<float>() { x, y, z });
+					} else if (values[0] == "f") {
+						System.Collections.Generic.List<int> face_i = new System.Collections.Generic.List<int>();
+						System.Collections.Generic.List<int> tex_i = new System.Collections.Generic.List<int>();
+						System.Collections.Generic.List<int> norm_i = new System.Collections.Generic.List<int>();
  
-                    if (values[0] == "v")
-                    {
-                        float x = float.Parse(values[1], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        float y = float.Parse(values[2], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        float z = float.Parse(values[3], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        _vertCoords.Add(new System.Collections.Generic.List<float>() { x, y, z });
-                    }
-                    if (values[0] == "vt")
-                    {
-                        float u = float.Parse(values[1], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        float v = float.Parse(values[2], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        _texCoords.Add(new System.Collections.Generic.List<float>() { u, v });
-                    }
-                    if (values[0] == "vn")
-                    {
-                        float x = float.Parse(values[1], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        float y = float.Parse(values[2], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        float z = float.Parse(values[3], System.Globalization.CultureInfo.CurrentCulture.NumberFormat);
-                        _normCoords.Add(new System.Collections.Generic.List<float>() { x, y, z });
-                    }
-                    if (values[0] == "f") {
-                        System.Collections.Generic.List<int> face_i = new System.Collections.Generic.List<int>();
-                        System.Collections.Generic.List<int> tex_i = new System.Collections.Generic.List<int>();
-                        System.Collections.Generic.List<int> norm_i = new System.Collections.Generic.List<int>();
+						for (j = 1; j < 4; j++) {
+							string[] w = values[j].Split(new char[] { '/' });
+
+							face_i.Add(int.Parse(w[0]) - 1);
+							tex_i.Add(int.Parse(w[1]) - 1);
+							norm_i.Add(int.Parse(w[2]) - 1);
+						}
+
+						_IndexData.Add(face_i);
+						_texIndex.Add(tex_i);
+						_normIndex.Add(norm_i);
+					}
+				}
  
-                        for (int j = 1; j < 4; j++) {
-                            string[] w = values[j].Split(new char[] { '/' });
-                            face_i.Add(int.Parse(w[0]) - 1);
-                            tex_i.Add(int.Parse(w[1]) - 1);
-                            norm_i.Add(int.Parse(w[2]) - 1);
-                        }
-                        _vertIndex.Add(face_i);
-                        _texIndex.Add(tex_i);
-                        _normIndex.Add(norm_i);
-                    }
-                }
+				for (i = 0; i < _IndexData.Count; i++) {
+					for (j = 0; j < _IndexData[i].Count; j++) {
+						IndexData[IndexData.Length] = _IndexData[i][j];
+					}
+				}
  
-                for (int i = 0; i < _vertIndex.Count; i++) {
-                    for (int j = 0; j < _vertIndex[i].Count; j++) {
-                        vertIndex.Add(_vertIndex[i][j]);
-                    }
-                }
+				for (i = 0; i < _texIndex.Count; i++) {
+					for (j = 0; j < _texIndex[i].Count; j++) {
+						TexIndex.Add(_texIndex[i][j]);
+					}
+				}
  
-                for (int i = 0; i < _texIndex.Count; i++) {
-                    for (int j = 0; j < _texIndex[i].Count; j++) {
-                        texIndex.Add(_texIndex[i][j]);
-                    }
-                }
+				for (i = 0; i < _normIndex.Count; i++) {
+					for (j = 0; j < _normIndex[i].Count; j++) {
+						NormIndex.Add(_normIndex[i][j]);
+					}
+				}
+
+				for (i = 0; i < IndexData.Length; i++) {
+					index = IndexData[i];
+					//_model.Add(_VertexDatas[index]);
+					VertexData[VertexData.Length] = _VertexDatas[index];
+				}
  
-                for (int i = 0; i < _normIndex.Count; i++) {
-                    for (int j = 0; j < _normIndex[i].Count; j++) {
-                        normIndex.Add(_normIndex[i][j]);
-                    }
-                }
+				/* for (i = 0; i < TexIndex.Count; i++) {
+					index = TexIndex[i];
+					System.Collections.Generic.List<float> coords = _texCoords[index];
+					for (j = 0; j < coords.Count; j++) {
+						_model.Add(coords[j]);
+						TexCoord.Add(coords[j]);
+					}
+				}
  
-                for (int i = 0; i < vertIndex.Count; i++) {
-                    int index = vertIndex[i];
-                    System.Collections.Generic.List<float> coords = _vertCoords[index];
-                    for (int j = 0; j < coords.Count; j++) {
-                        _model.Add(coords[j]);
-                        vertCoord.Add(coords[j]);
-                    }
-                }
- 
-                for (int i = 0; i < texIndex.Count; i++) {
-                    int index = texIndex[i];
-                    System.Collections.Generic.List<float> coords = _texCoords[index];
-                    for (int j = 0; j < coords.Count; j++) {
-                        _model.Add(coords[j]);
-                        texCoord.Add(coords[j]);
-                    }
-                }
- 
-                for (int i = 0; i < normIndex.Count; i++) {
-                    int index = normIndex[i];
-                    System.Collections.Generic.List<float> coords = _normCoords[index];
-                    for (int j = 0; j < coords.Count; j++) {
-                        _model.Add(coords[j]);
-                    }
-                }
-                model = _model.ToArray();
-            }
-        }
+				for (i = 0; i < NormIndex.Count; i++) {
+					index = NormIndex[i];
+					System.Collections.Generic.List<float> coords = _normCoords[index];
+					for (j = 0; j < coords.Count; j++) {
+						_model.Add(coords[j]);
+					}
+				} */
+
+				return _model.ToArray();
+			}
+		}
 
 		public void Dispose() {
 
 		}
 
 		~Model() {
+			BusEngine.Log.Info("Model ~");
+		}
+	}
+
+	public class Model2 : System.IDisposable {
+		public System.Collections.Generic.List<float> VertexData = new System.Collections.Generic.List<float>();
+		public System.Collections.Generic.List<float> TexCoord = new System.Collections.Generic.List<float>();
+		public System.Collections.Generic.List<int> IndexData = new System.Collections.Generic.List<int>();
+		public System.Collections.Generic.List<int> TexIndex = new System.Collections.Generic.List<int>();
+		public System.Collections.Generic.List<int> NormIndex = new System.Collections.Generic.List<int>();
+ 
+		private System.Collections.Generic.List<float> _model = new System.Collections.Generic.List<float>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _IndexData = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _texIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _normIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _VertexDatas = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _texCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
+		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _normCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
+		private const string WHITESPACE_RE = @"\s+";
+
+		public float[] Load(string filePath) {
+			if (!System.IO.File.Exists(filePath)) {
+				System.Windows.Forms.MessageBox.Show("Failed to open the file: " + filePath);
+
+				return new float[] {0};
+			}
+ 
+			using (var sr = new System.IO.StreamReader(filePath)) {
+				int i, j, index;
+				float x, y, z;
+				string data = sr.ReadToEnd();
+				string[] lines = data.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+				for (i = 0; i < lines.Length; i++) {
+					if (lines[i].StartsWith("#")) {
+						continue;
+					}
+
+					string line = lines[i].Trim();
+					System.Collections.Generic.List<string> values = new System.Collections.Generic.List<string>(System.Text.RegularExpressions.Regex.Split(line, WHITESPACE_RE));
+
+					if (values.Count == 0) {
+						continue;
+					}
+ 
+					if (values[0] == "v") {
+						float.TryParse(values[1], out x);
+						float.TryParse(values[2], out y);
+						float.TryParse(values[3], out z);
+						_VertexDatas.Add(new System.Collections.Generic.List<float>() { x, y, z });
+					} else if (values[0] == "vt") {
+						float.TryParse(values[1], out x);
+						float.TryParse(values[2], out y);
+						_texCoords.Add(new System.Collections.Generic.List<float>() { x, y });
+					} else if (values[0] == "vn") {
+						float.TryParse(values[1], out x);
+						float.TryParse(values[2], out y);
+						float.TryParse(values[3], out z);
+						_normCoords.Add(new System.Collections.Generic.List<float>() { x, y, z });
+					} else if (values[0] == "f") {
+						System.Collections.Generic.List<int> face_i = new System.Collections.Generic.List<int>();
+						System.Collections.Generic.List<int> tex_i = new System.Collections.Generic.List<int>();
+						System.Collections.Generic.List<int> norm_i = new System.Collections.Generic.List<int>();
+ 
+						for (j = 1; j < 4; j++) {
+							string[] w = values[j].Split(new char[] { '/' });
+
+							face_i.Add(int.Parse(w[0]) - 1);
+							tex_i.Add(int.Parse(w[1]) - 1);
+							norm_i.Add(int.Parse(w[2]) - 1);
+						}
+
+						_IndexData.Add(face_i);
+						_texIndex.Add(tex_i);
+						_normIndex.Add(norm_i);
+					}
+				}
+ 
+				for (i = 0; i < _IndexData.Count; i++) {
+					for (j = 0; j < _IndexData[i].Count; j++) {
+						IndexData.Add(_IndexData[i][j]);
+					}
+				}
+ 
+				for (i = 0; i < _texIndex.Count; i++) {
+					for (j = 0; j < _texIndex[i].Count; j++) {
+						TexIndex.Add(_texIndex[i][j]);
+					}
+				}
+ 
+				for (i = 0; i < _normIndex.Count; i++) {
+					for (j = 0; j < _normIndex[i].Count; j++) {
+						NormIndex.Add(_normIndex[i][j]);
+					}
+				}
+
+				for (i = 0; i < IndexData.Count; i++) {
+					index = IndexData[i];
+					System.Collections.Generic.List<float> coords = _VertexDatas[index];
+					for (j = 0; j < coords.Count; j++) {
+						_model.Add(coords[j]);
+						VertexData.Add(coords[j]);
+					}
+				}
+ 
+				for (i = 0; i < TexIndex.Count; i++) {
+					index = TexIndex[i];
+					System.Collections.Generic.List<float> coords = _texCoords[index];
+					for (j = 0; j < coords.Count; j++) {
+						_model.Add(coords[j]);
+						TexCoord.Add(coords[j]);
+					}
+				}
+ 
+				for (i = 0; i < NormIndex.Count; i++) {
+					index = NormIndex[i];
+					System.Collections.Generic.List<float> coords = _normCoords[index];
+					for (j = 0; j < coords.Count; j++) {
+						_model.Add(coords[j]);
+					}
+				}
+
+				return _model.ToArray();
+			}
+		}
+
+		public void Dispose() {
+
+		}
+
+		~Model2() {
 			BusEngine.Log.Info("Model ~");
 		}
 	}
@@ -4127,7 +4373,7 @@ LibVLCSharp
 			} set {}
 		}
 		// авто удаление объектов по времени
-		public double DisposeAuto = 500;
+		public double DisposeAuto = 1000;
 
 		/** событие запуска видео */
 		private void OnPlaying(object o, object e) {
@@ -4790,7 +5036,7 @@ LibVLCSharp
 			if (!this.IsPlay && (this.IsStop || this.IsEnd) && this.IsDispose) {
 				((System.ComponentModel.ISupportInitialize)(_winForm)).BeginInit();
 				BusEngine.UI.Canvas.WinForm.SuspendLayout();
-				//BusEngine.UI.Canvas.WinForm.Controls.Remove(_winForm);
+				BusEngine.UI.Canvas.WinForm.Controls.Remove(_winForm);
 				((System.ComponentModel.ISupportInitialize)(_winForm)).EndInit();
 				BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
 				if (this.OnDuratingTimer != null) {
@@ -4816,9 +5062,9 @@ LibVLCSharp
 					this.DisposeTimer.Dispose();
 				}
 				if (this.OnDispose != null) {
-					this.OnDispose.Invoke(this, this.Url);
+					//this.OnDispose.Invoke(this, this.Url);
 					// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.control.invoke?view=windowsdesktop-7.0
-					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+					BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
 				}
 			}
 		}
