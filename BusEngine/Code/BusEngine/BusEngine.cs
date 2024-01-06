@@ -113,7 +113,7 @@ namespace BusEngine {
 				{"console_commands", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
 					{"sys_Spec", "1"},                    // Выбор уровня настроек графики
 					{"sys_VSync", "1"},                   // Вертикальная синхронизация
-					{"sys_FPS", "100"},                   // Частота монитора для регулировки еденицы измерения (скорости)
+					{"sys_FPS", "100"},                   // Частота монитора для регулировки единицы измерения (скорости)
 					{"sys_FPSAuto", "1"},                 // Отключение зависимости от времени
 					{"sys_DoubleBuffered", "1"},          // Двойная буферизация
 					{"sys_TripleBuffered", "1"},          // Тройная буферизация
@@ -1431,7 +1431,7 @@ BusEngine.Tools.Json
 			console.log('event requestPointerLock', window.event);
 
 			if (window.event && window.event.constructor.name == 'PointerEvent') {
-				//this.style['cursor'] = 'none';
+				this.style['cursor'] = 'none';
 
 				Object.defineProperty(document, 'pointerLockElement', {
 					value: this,
