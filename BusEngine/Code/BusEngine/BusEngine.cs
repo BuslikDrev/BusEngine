@@ -1319,7 +1319,7 @@ BusEngine.Tools.Json
 
 				// применяем наши настройки до запуска браузера
 				CefSharp.Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
-				//settings.Dispose();
+				settings.Dispose();
 
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
@@ -1395,6 +1395,35 @@ BusEngine.Tools.Json
 				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
 				browser.FrameLoadStart += (object b, CefSharp.FrameLoadStartEventArgs e) => {
 					if (e.Frame.IsMain) {
+						using (CefSharp.DevTools.DevToolsClient devToolsClient = CefSharp.DevToolsExtensions.GetDevToolsClient(browser)) {
+							System.Collections.Generic.List<CefSharp.DevTools.Emulation.UserAgentBrandVersion> brandsList = new System.Collections.Generic.List<CefSharp.DevTools.Emulation.UserAgentBrandVersion>();
+
+							CefSharp.DevTools.Emulation.UserAgentBrandVersion uab = new CefSharp.DevTools.Emulation.UserAgentBrandVersion();
+
+							uab.Brand = "Chromium";
+							uab.Version = "109.0.5414.87";
+
+							brandsList.Add(uab);
+
+							uab = new CefSharp.DevTools.Emulation.UserAgentBrandVersion();
+							uab.Brand = "BusEngine";
+							uab.Version = BusEngine.Engine.SettingProject["require"]["engine"];
+
+							brandsList.Add(uab);
+
+							CefSharp.DevTools.Emulation.UserAgentMetadata ua = new CefSharp.DevTools.Emulation.UserAgentMetadata();
+
+							ua.Brands = brandsList;
+							ua.Architecture = BusEngine.Engine.Device.Processor;
+							ua.Model = BusEngine.Engine.Platform;
+							ua.Platform = BusEngine.Engine.Device.Name;
+							ua.PlatformVersion = BusEngine.Engine.Device.Version;
+							ua.FullVersion = BusEngine.Engine.SettingProject["require"]["engine"];
+							ua.Mobile = true;
+
+							devToolsClient.Emulation.SetUserAgentOverrideAsync(BusEngine.Engine.Device.UserAgent, null, null, ua);
+						}
+
 						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, @"
 	if (!('BusEngine' in window)) {
 		window.BusEngine = {};
