@@ -1193,26 +1193,77 @@ BusEngine.Tools.Json
 					UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "userdata")
 				} */;
 
+
 				// консольные команды хромиум
-				//settings.ChromeRuntime = true;
+				settings.ChromeRuntime = false;
 				settings.CommandLineArgsDisabled = false;
-				//settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
-				//settings.CefCommandLineArgs.Add("disable-gpu-vsync");
-				//settings.CefCommandLineArgs.Add("disable-gpu");
-				//settings.CefCommandLineArgs.Add("disable-speech-synthesis-api");
+
 				//settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
 
 				// воспроизводим аудио автоматом
 				settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
+
+				// включаем систему распознавания голоса и т.д.
 				settings.CefCommandLineArgs.Add("enable-media-stream");
 				settings.CefCommandLineArgs.Add("enable-speech-input");
-				settings.CefCommandLineArgs.Add("ignore-certificate-errors");
+				settings.CefCommandLineArgs.Add("enable-speech-synthesis-api");
+
+				// отключение требования сертификатов
+				// settings.CefCommandLineArgs.Add("ignore-certificate-errors");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#in-process-gpu
+				//settings.CefCommandLineArgs.Add("in-process-gpu");
+				//System.Environment.SetEnvironmentVariable("in-process-gpu", "1");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu
+				settings.CefCommandLineArgs.Add("enable-gpu");
+				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu
+				//settings.CefCommandLineArgs.Add("disable-gpu");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-vsync
+				//settings.CefCommandLineArgs.Add("enable-gpu-vsync");
+				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu-vsync
+				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-shader-disk-cache
+				settings.CefCommandLineArgs.Add("enable-gpu-shader-disk-cache");
+				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu-shader-disk-cache
+				//settings.CefCommandLineArgs.Add("disable-gpu-shader-disk-cache");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-rasterization
+				settings.CefCommandLineArgs.Add("enable-gpu-rasterization");
+				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu-rasterization
+				//settings.CefCommandLineArgs.Add("disable-gpu-rasterization");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-memory-buffer-compositor-resources
+				settings.CefCommandLineArgs.Add("enable-gpu-memory-buffer-compositor-resources");
+				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu-memory-buffer-compositor-resources
+				//settings.CefCommandLineArgs.Add("disable-gpu-memory-buffer-compositor-resources");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-memory-buffer-video-frames
+				settings.CefCommandLineArgs.Add("enable-gpu-memory-buffer-video-frames");
+				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu-memory-buffer-video-frames
+				//settings.CefCommandLineArgs.Add("disable-gpu-memory-buffer-video-frames");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#use-angle
+				//System.Environment.SetEnvironmentVariable("use-angle", "default"); // default, d3d9, d3d11, warp, gl, gles
+				// https://peter.sh/experiments/chromium-command-line-switches/#use-gl
+				//System.Environment.SetEnvironmentVariable("use-gl", "desktop"); // desktop, egl, Swiftshader
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#use-vulkan
+				//System.Environment.SetEnvironmentVariable("use-vulkan", "1");
+				// https://peter.sh/experiments/chromium-command-line-switches/#enable-features
+				//System.Environment.SetEnvironmentVariable("enable-features", "Vulkan");
+
+				// https://peter.sh/experiments/chromium-command-line-switches/#trace-startup-file
+				System.Environment.SetEnvironmentVariable("trace-startup-file", BusEngine.Engine.LogDirectory + "Browser/trace_event.log");
 
 				// настройка имён файлов
 				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cef_log.txt");
 				settings.RootCachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
 				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
 				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\userdata");
+
 				string subprocess = BusEngine.Engine.NameProject + " Browser.exe";
 				foreach (string currentFile in System.IO.Directory.EnumerateFiles(BusEngine.Engine.ExeDirectory, "CefSharp.BrowserSubprocess.exe", System.IO.SearchOption.AllDirectories)) {
 					subprocess = System.IO.Path.GetDirectoryName(currentFile) + "\\" + subprocess;
@@ -1272,6 +1323,8 @@ BusEngine.Tools.Json
 
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
+
+				browser.BrowserSettings.WindowlessFrameRate = 120;
 
 				if (url != null && !BusEngine.Browser.ValidURLStatic(url, out uriResult)) {
 					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
