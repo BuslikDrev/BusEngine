@@ -1458,7 +1458,6 @@ BusEngine.Tools.Json
 				var element = parent.querySelector(selector);
 
 				if (element) {
-					console.log('MutationObserver', element);
 					resolve(element);
 					observer.disconnect();
 				}
@@ -1471,19 +1470,21 @@ BusEngine.Tools.Json
 
 	// fix requestPointerLock Chromium
 	/* HTMLElement.prototype.requestPointerLock = function() {
-		console.log('event requestPointerLock', window.event);
-
 		if (window.event && window.event.constructor.name == 'PointerEvent') {
+			window.event.stopPropagation();
+
 			this.style['cursor'] = 'none';
 
-			Object.defineProperty(document, 'pointerLockElement', {
+			this.addEventListener('mousemove', function(e) {
+				e.stopImmediatePropagation();
+			});
+
+			Object.defineProperty(HTMLDocument.prototype, 'pointerLockElement', {
 				value: this,
 				writable: true,
 				configurable: true,
 				enumerable: true,
 			});
-
-			console.log('requestPointerLock');
 
 			document.dispatchEvent(new CustomEvent('pointerlockchange'));
 		} else {
@@ -1491,38 +1492,40 @@ BusEngine.Tools.Json
 		}
 	};
 
-	HTMLElement.prototype.exitPointerLock = function() {
-		console.log('event exitPointerLock', window.event);
-
+	HTMLDocument.prototype.exitPointerLock = function() {
 		document.pointerLockElement.style['cursor'] = null;
 
-		Object.defineProperty(document, 'pointerLockElement', {
+		document.pointerLockElement.removeEventListener('mousemove', function(e) {
+			e.stopImmediatePropagation();
+		});
+
+		Object.defineProperty(HTMLDocument.prototype, 'pointerLockElement', {
 			value: null,
 			writable: true,
 			configurable: true,
 			enumerable: true,
 		});
 
-		console.log('exitPointerLock');
-
 		document.dispatchEvent(new CustomEvent('pointerlockchange'));
 	}; */
 
-	Object.defineProperty(HTMLElement.prototype, 'requestPointerLock', {
+	/* Object.defineProperty(HTMLElement.prototype, 'requestPointerLock', {
 		value: function() {
-			console.log('event requestPointerLock', window.event);
-
 			if (window.event && window.event.constructor.name == 'PointerEvent') {
-				this.style['cursor'] = 'none';
+				window.event.stopPropagation();
 
-				Object.defineProperty(document, 'pointerLockElement', {
+				//this.style['cursor'] = 'none';
+
+				document.addEventListener('mousemove', function(e) {
+					e.stopImmediatePropagation();
+				});
+
+				Object.defineProperty(HTMLDocument.prototype, 'pointerLockElement', {
 					value: this,
 					writable: true,
 					configurable: true,
 					enumerable: true,
 				});
-
-				console.log('requestPointerLock');
 
 				document.dispatchEvent(new CustomEvent('pointerlockchange'));
 			} else {
@@ -1534,27 +1537,27 @@ BusEngine.Tools.Json
 		enumerable: true,
 	});
 
-	Object.defineProperty(document, 'exitPointerLock', {
+	Object.defineProperty(HTMLDocument.prototype, 'exitPointerLock', {
 		value: function() {
-			console.log('event exitPointerLock', window.event);
-
 			document.pointerLockElement.style['cursor'] = null;
 
-			Object.defineProperty(document, 'pointerLockElement', {
+			document.removeEventListener('mousemove', function(e) {
+				e.stopImmediatePropagation();
+			});
+
+			Object.defineProperty(HTMLDocument.prototype, 'pointerLockElement', {
 				value: null,
 				writable: true,
 				configurable: true,
 				enumerable: true,
 			});
 
-			console.log('exitPointerLock');
-
 			document.dispatchEvent(new CustomEvent('pointerlockchange'));
 		},
 		writable: true,
 		configurable: true,
 		enumerable: true,
-	});
+	}); */
 ");
 
 						#if BROWSER_LOG
