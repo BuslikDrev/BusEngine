@@ -38,6 +38,7 @@
 
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_2.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_3.jpg)
+![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_4.jpg)
 
 ## Предварительная мощность OpenGL
 
