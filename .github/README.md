@@ -11,12 +11,16 @@
 [![Maximum C# Version](https://img.shields.io/badge/C%23%20%28CSharp%29-%20%3C%3D%20v5.0-blueviolet.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history#c-version-50)
 [![Minimum .NET Framework Version](https://img.shields.io/badge/.NET%20Framework-%20%3E%3D%20v4.7.1-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
 [![Minimum Visual C++ Version](https://img.shields.io/badge/Visual%20C++-%20%3E%3D%202015-purple.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+[![Minimum OpenGL Version](https://img.shields.io/badge/OpenGL-%20%3E%3D%203.3-cornflowerblue.svg?cacheSeconds=31536000)](https://registry.khronos.org/OpenGL/index_gl.php)
+[![Minimum DirectX Version](https://img.shields.io/badge/DirectX-%20%3E%3D%2011.0-forestgreen.svg?cacheSeconds=31536000)](https://ru.wikipedia.org/wiki/DirectX)
 
 ### Рекомендуемые требования для успешной работы
 [![Minimum MSBuild Tools Version](https://img.shields.io/badge/MSBuild%20Tools-%20%3E%3D%20v15.8-orange.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/visualstudio/releasenotes/vs2017-relnotes-history#installing-the-earlier-release)
 [![Maximum C# Version](https://img.shields.io/badge/C%23%20%28CSharp%29-%20%3C%3D%20v7.3-blueviolet.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history#c-version-73)
 [![Minimum .NET Framework Version](https://img.shields.io/badge/.NET%20Framework-%20%3E%3D%20v4.8.0-blue.svg?cacheSeconds=31536000)](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
 [![Minimum Visual C++ Version](https://img.shields.io/badge/Visual%20C++-%20%3E%3D%202015-purple.svg?cacheSeconds=31536000)](https://learn.microsoft.com/ru-ru/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+[![Minimum OpenGL Version](https://img.shields.io/badge/OpenGL-%20%3E%3D%203.3-cornflowerblue.svg?cacheSeconds=31536000)](https://registry.khronos.org/OpenGL/index_gl.php)
+[![Minimum DirectX Version](https://img.shields.io/badge/DirectX-%20%3E%3D%2011.0-forestgreen.svg?cacheSeconds=31536000)](https://ru.wikipedia.org/wiki/DirectX)
 
 ## Описание
 
