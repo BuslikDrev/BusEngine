@@ -12,6 +12,13 @@ https://learn.microsoft.com/ru-ru/dotnet/csharp/fundamentals/coding-style/coding
 https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/keywords/event
 https://learn.microsoft.com/ru-ru/dotnet/standard/collections/thread-safe/
 https://learn.microsoft.com/en-us/dotnet/standard/events/how-to-handle-multiple-events-using-event-properties
+https://habr.com/ru/companies/ruvds/articles/784776/
+Проверить скорость и взять лучшее для работы с DirectX, если это пойдёт на повышение FPS.
+https://github.com/CanTalat-Yakan/3DEngine
+https://github.com/amerkoleci/Vortice.Windows
+сертификат для программы
+https://learn.microsoft.com/ru-ru/windows/win32/appxpkg/how-to-create-a-package-signing-certificate
+https://professorweb.ru/my/csharp/base_net/level2/2_6.php
 */
 
 /** дорожная карта
@@ -1813,7 +1820,7 @@ BusEngine.Tools
 				_GameStart = true;
 				BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
 				new BusEngine.IPlugin("OnGameStart");
-				BusEngine.UI.Canvas.WinForm.Invalidate(false);
+				BusEngine.UI.Canvas.WinForm.Invalidate(true);
 				_GameStart = false;
 			}
 		}
@@ -1833,6 +1840,7 @@ BusEngine.Tools
 			if (BusEngine.UI.Canvas.WinForm != null) {
 				new BusEngine.IPlugin("OnGameUpdate");
 				BusEngine.UI.Canvas.WinForm.Invalidate(false);
+				//BusEngine.UI.Canvas.WinForm.Refresh();
 			}
 		}
 
@@ -1841,8 +1849,9 @@ BusEngine.Tools
 			drawFormat.FormatFlags = System.Drawing.StringFormatFlags.DirectionVertical;
 			e.Graphics.DrawString("Sample Text", new System.Drawing.Font("Arial", 16), new System.Drawing.SolidBrush(System.Drawing.Color.Black), 150.0F, 50.0F, drawFormat);
  */
-			new BusEngine.IPlugin("OnGameUpdate");
-			BusEngine.UI.Canvas.WinForm.Invalidate(false);
+			//new BusEngine.IPlugin("OnGameUpdate");
+			//BusEngine.UI.Canvas.WinForm.Invalidate(false);
+			BusEngine.Engine.GameUpdate();
 			//BusEngine.UI.Canvas.WinForm.Update();
 			//BusEngine.UI.Canvas.WinForm.Refresh();
 		}
