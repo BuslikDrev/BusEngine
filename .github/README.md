@@ -46,17 +46,17 @@
 
 ## Предварительная мощность OpenGL
 
-Без текстур, без освещения, без теней, без тумана - ничего нет.
+Без текстур, без освещения, без теней, без тумана - ничего нет. Отрисовка 6 000 000+ треугольных полигонов, 31252 (х16 в geom shader) или 20000 (х25 в geom shader) модели куба:
 
-- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 60+ FPS (1280х720 HD, 1920х1080 Full HD, 2560х1440 2K)
-- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 50+ FPS (3840х2160 4K)
-- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 40+ FPS (7680х4320 8K)
-- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 35+ FPS (15360х8640 16K)
-- NVidia GeForce GTX 1650 4 GB GDDR5 - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 140+ FPS (1280х720 HD, 1920х1080 Full HD, 2560х1440 2K)
-- Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 40+ FPS (1280х720 HD, 1920х1080 Full HD)
-- Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x25), отрисовка 6 000 000+ треугольных полигонов, 70+ FPS (1280х720 HD, 1920х1080 Full HD)
-- AMD Radeon 550X (RX 640) 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 11+ FPS (1280х720 HD, 1920х1080 Full HD)
-- AMD Ryzen 5 5500u (RX Vega 7) - умножение полигонов c помощью geom shader (x16), отрисовка 6 000 000+ треугольных полигонов, 22+ FPS (1280х720 HD, 1920х1080 Full HD)
+- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 60+ FPS (1280х720 HD, 1920х1080 Full HD, 2560х1440 2K)
+- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 50+ FPS (3840х2160 4K)
+- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 40+ FPS (7680х4320 8K)
+- NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 35+ FPS (15360х8640 16K)
+- NVidia GeForce GTX 1650 4 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 140+ FPS (1280х720 HD, 1920х1080 Full HD, 2560х1440 2K)
+- Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x16), 40+ FPS (1280х720 HD, 1920х1080 Full HD)
+- Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x25), 70+ FPS (1280х720 HD, 1920х1080 Full HD)
+- AMD Radeon 550X (RX 640) 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 11+ FPS (1280х720 HD, 1920х1080 Full HD)
+- AMD Ryzen 5 5500u (RX Vega 7) - умножение полигонов c помощью geom shader (x16), 22+ FPS (1280х720 HD, 1920х1080 Full HD)
 
 ## Лицензии
 
