@@ -1,7 +1,7 @@
-/* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
-/* © 2016-2023; BuslikDrev - Усе правы захаваны. */
-'use strict';
-'use asm';
+/*  Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ )
+	© 2016-2021; BuslikDrev - Усе правы захаваныя.
+	Спецыяльна для сайта: "OpenCart.pro" ( https://opencart.pro/ ) */
+
 var busApp = {
 	'setting':{
 		browser:{name:'', version:0},
@@ -17,14 +17,13 @@ var busApp = {
 		description:'',
 		description_notification:'',
 		offline:'OffLine - not internet!',
-		offline_link:'offline.html',
+		offline_link:'/',
 		online:'OnLine - Yes internet!',
 		appinstalled:'App installed!',
 		delay:5000,
 		closeTime:30000000,
 		cache_status:false,
 		cache_resources:[],
-		cache_resources_exception:"",
 		cache_max_ages:604800,
 		cache_token:1,
 		notification_status:false,
@@ -219,16 +218,17 @@ var busApp = {
 							if ('setAppBadge' in window.navigator) {
 								window.navigator.setAppBadge(parseFloat(busApp.setting['version']));
 							}
-							busApp.close('bus-app');
+							//busApp.close('bus-app');
 							beforeinstallprompt.prompt();
 							beforeinstallprompt.userChoice.then(function() {
 								beforeinstallprompt = null;
+
+								if (busApp.setting['start_url']) {
+									window.location.href = busApp.setting['start_url'];
+								} else {
+									window.location.href = window.location.href;
+								}
 							});
-							if (busApp.setting['start_url']) {
-								window.location.href = busApp.setting['start_url'];
-							} else {
-								window.location.href = window.location.href;
-							}
 						}
 					});
 				} else {
@@ -427,7 +427,7 @@ var busApp = {
 				}
 
 				window.navigator.serviceWorker.register('bus_app_install.js?v=' + busApp.setting['cache_token']/* , {
-					scope: './BusEngine/',
+					scope: './',
 					//updateViaCache: 'none', // imports, all, none
 				} */).then(function (registration) {
 					/* if (typeof registration.update === 'function') {
@@ -456,10 +456,6 @@ var busApp = {
 						if (busApp.setting['debug'] == 1) {
 							console.log('Bus_app state: ', serviceWorker);
 						}
-
-						serviceWorker.addEventListener('error', function(e) {
-							console.log('Bus_app serviceWorker error: ', e);
-						});
 
 						serviceWorker.addEventListener('statechange', function(e) {
 							if (1 == 1 || busApp.setting['debug'] == 1) {
@@ -1622,8 +1618,16 @@ var busApp = {
 };
 
 // запуск скрипта
-if (!('readyState' in document) || document.readyState == 'complete') {
-	busApp.start();
-} else {
+if (document.readyState == 'loading') {
+	//document.addEventListener('DOMContentLoaded', busApp.start, {once:true, passive:true});
 	window.addEventListener('load', busApp.start, {once:true, passive:true});
+}
+if (document.readyState == 'interactive') {
+	window.addEventListener('load', busApp.start, {once:true, passive:true});
+}
+if (document.readyState == 'complete') {
+	window.addEventListener('pagehide', busApp.start, {once:true, passive:true});
+	window.addEventListener('scroll', busApp.start, {once:true, passive:true});
+	window.addEventListener('mouseover', busApp.start, {once:true, passive:true});
+	window.addEventListener('touchstart', busApp.start, {once:true, passive:true});
 }
