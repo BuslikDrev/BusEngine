@@ -129,6 +129,8 @@ namespace BusEngine {
 					{"sys_MemoryClearTime", "5"},         // Установка промежутка времени для освобождения оперативной памяти в секундах
 					{"sys_MemoryClearAuto", "1"},         // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
 					{"sys_Benchmark", "1"},               // Benchmark статус
+					{"sys_DistanceMin", "0,01"},          // Дальность прорисовки min в метрах
+					{"sys_DistanceMax", "1000"},          // Дальность прорисовки max в метрах
 					{"r_WaterOcean", "0"},                // Статус работы океана
 					{"r_VolumetricClouds", "1"},          // Статус работы облаков
 					{"r_DisplayInfo", "2"},               // Статус работы окна информации
@@ -138,6 +140,7 @@ namespace BusEngine {
 					{"google_api_key", ""},               // Секретный ключ API приложения Google
 					{"google_default_client_id", ""},     // ID пользователя API приложения Google
 					{"google_default_client_secret", ""}, // Секретный ключ пользователя API приложения Google
+					{"g_texture_filtering", "0"},         // фильтрация текстур 0 - отключено, 1 - линейная, 2 - билинейная, 3 трилинейная, 4 - анизотропная, 5 - 2х анизотропная, 6 - 4х анизотропная, 7 - 8х анизотропная, 8 - 16х анизотропная
 				}},
 				{"console_variables", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
 					{"sys_Spec", "1"},
@@ -150,6 +153,8 @@ namespace BusEngine {
 					{"sys_MemoryClearTime", "5"},
 					{"sys_MemoryClearAuto", "1"},
 					{"sys_Benchmark", "1"},
+					{"sys_DistanceMin", "0,01"},
+					{"sys_DistanceMax", "1000"},
 					{"r_WaterOcean", "0"},
 					{"r_VolumetricClouds", "1"},
 					{"r_DisplayInfo", "0"},
@@ -911,6 +916,11 @@ BusEngine.Tools.Json
 	/** API BusEngine.Browser */
 	public class Browser : System.IDisposable {
 		private CefSharp.WinForms.ChromiumWebBrowser browser;
+		public CefSharp.WinForms.ChromiumWebBrowser Control {
+			get {
+				return browser;
+			} private set {}
+		}
 		private string Url;
 		public delegate void OnPostMessageHandler(Browser o, string e);
 		public event OnPostMessageHandler OnPostMessage;
@@ -978,6 +988,14 @@ BusEngine.Tools.Json
 		public CefSharp.IDownloadHandler Download(string path, CefSharp.IDownloadHandler downloadHandler) {
 			return downloadHandler;
 		} */
+		private CefSharp.IRequestContext _Context;
+		public CefSharp.IRequestContext Context {
+			get {
+				return _Context;
+			} private set {
+				_Context = value;
+			}
+		}
 
 		public Browser() {
 
@@ -1216,16 +1234,23 @@ BusEngine.Tools.Json
 				settings.CefCommandLineArgs.Add("enable-speech-synthesis-api");
 
 				// отключение требования сертификатов
-				// settings.CefCommandLineArgs.Add("ignore-certificate-errors");
+				//settings.CefCommandLineArgs.Add("ignore-certificate-errors");
+
+				// отключение корс проверок
+				// https://peter.sh/experiments/chromium-command-line-switches/#disable-web-security
+				//settings.CefCommandLineArgs.Add("disable-web-security");
+
+				//settings.CefCommandLineArgs.Add("user-data-dir");
+				//System.Environment.SetEnvironmentVariable("user-data-dir", BusEngine.Engine.LogDirectory + "Browser\\userdata");
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#in-process-gpu
 				//settings.CefCommandLineArgs.Add("in-process-gpu");
 				//System.Environment.SetEnvironmentVariable("in-process-gpu", "1");
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu
-				settings.CefCommandLineArgs.Add("enable-gpu");
+				//settings.CefCommandLineArgs.Add("enable-gpu");
 				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu
-				//settings.CefCommandLineArgs.Add("disable-gpu");
+				settings.CefCommandLineArgs.Add("disable-gpu");
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-vsync
 				//settings.CefCommandLineArgs.Add("enable-gpu-vsync");
@@ -1392,7 +1417,7 @@ BusEngine.Tools.Json
 					#endif
 				}; */
 				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_StatusMessageEventArgs.htm
-				/* browser.StatusMessage += (object s, CefSharp.StatusMessageEventArgs e) => {
+				/* browser.StatusMessage += (object s, CefSharp.Status-MessageEventArgs e) => {
 					//CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, "if (!('BusEngine' in window)) {window.BusEngine = {};} window.BusEngine.PostMessage = ('CefSharp' in window ? CefSharp.PostMessage : function(m) {}); CefSharp = null;");
 					#if BROWSER_LOG
 					BusEngine.Log.Info("StatusMessage! {0}", e.Value);
@@ -1613,7 +1638,8 @@ BusEngine.Tools.Json
 				browser.TabIndex = 0;
 				//browser.BringToFront();
 
-				BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
+				Context = browser.RequestContext;
+				//BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
 
 				/* BusEngine.Log.Info("2 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
 				BusEngine.Log.Info("2 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
@@ -1722,6 +1748,359 @@ BusEngine.Log
 
 /** API BusEngine */
 namespace BusEngine {
+/*
+Зависит от плагинов:
+*/
+	/** API BusEngine.Color */
+    [System.Serializable]
+    public struct Color : System.IEquatable<Color> {
+        public float R;
+        public float G;
+        public float B;
+        public float A;
+
+        public Color(float r, float g, float b, float a) {
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
+
+        public Color(byte r, byte g, byte b, byte a) {
+            R = r / (float)System.Byte.MaxValue;
+            G = g / (float)System.Byte.MaxValue;
+            B = b / (float)System.Byte.MaxValue;
+            A = a / (float)System.Byte.MaxValue;
+        }
+
+        public int ToArgb() {
+            uint value = (uint)(A * System.Byte.MaxValue) << 24 | (uint)(R * System.Byte.MaxValue) << 16 | (uint)(G * System.Byte.MaxValue) << 8 | (uint)(B * System.Byte.MaxValue);
+
+            return unchecked((int)value);
+        }
+
+        public static bool operator ==(Color left, Color right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Color left, Color right) {
+            return !left.Equals(right);
+        }
+
+        public static implicit operator Color(System.Drawing.Color color) {
+            return new Color(color.R, color.G, color.B, color.A);
+        }
+
+        public static explicit operator System.Drawing.Color(BusEngine.Color color) {
+            return System.Drawing.Color.FromArgb((int)(color.A * System.Byte.MaxValue), (int)(color.R * System.Byte.MaxValue), (int)(color.G * System.Byte.MaxValue), (int)(color.B * System.Byte.MaxValue));
+        }
+
+        public override bool Equals(object obj) {
+            if (!(obj is Color)) {
+                return false;
+            }
+
+            return Equals((Color)obj);
+        }
+
+        public override int GetHashCode() {
+            return ToArgb();
+        }
+
+        public override string ToString() {
+            return System.String.Format("{{(R, G, B, A) = ({0}, {1}, {2}, {3})}}", R.ToString(), G.ToString(), B.ToString(), A.ToString());
+        }
+
+        public static Color FromSrgb(Color srgb) {
+            float r, g, b;
+
+            if (srgb.R <= 0.04045f) {
+                r = srgb.R / 12.92f;
+            } else {
+                r = (float)System.Math.Pow((srgb.R + 0.055f) / (1.0f + 0.055f), 2.4f);
+            }
+
+            if (srgb.G <= 0.04045f) {
+                g = srgb.G / 12.92f;
+            } else {
+                g = (float)System.Math.Pow((srgb.G + 0.055f) / (1.0f + 0.055f), 2.4f);
+            }
+
+            if (srgb.B <= 0.04045f) {
+                b = srgb.B / 12.92f;
+            } else {
+                b = (float)System.Math.Pow((srgb.B + 0.055f) / (1.0f + 0.055f), 2.4f);
+            }
+
+            return new Color(r, g, b, srgb.A);
+        }
+
+        public static Color ToSrgb(Color rgb) {
+            float r, g, b;
+
+            if (rgb.R <= 0.0031308) {
+                r = 12.92f * rgb.R;
+            } else {
+                r = (1.0f + 0.055f) * (float)System.Math.Pow(rgb.R, 1.0f / 2.4f) - 0.055f;
+            }
+
+            if (rgb.G <= 0.0031308) {
+                g = 12.92f * rgb.G;
+            } else {
+                g = (1.0f + 0.055f) * (float)System.Math.Pow(rgb.G, 1.0f / 2.4f) - 0.055f;
+            }
+
+            if (rgb.B <= 0.0031308) {
+                b = 12.92f * rgb.B;
+            } else {
+                b = (1.0f + 0.055f) * (float)System.Math.Pow(rgb.B, 1.0f / 2.4f) - 0.055f;
+            }
+
+            return new Color(r, g, b, rgb.A);
+        }
+
+        public static Color FromHsl(Vector4 hsl) {
+            var hue = hsl.X * 360.0f;
+            var saturation = hsl.Y;
+            var lightness = hsl.Z;
+            var C = (1.0f - System.Math.Abs(2.0f * lightness - 1.0f)) * saturation;
+            var h = hue / 60.0f;
+            var X = C * (1.0f - System.Math.Abs(h % 2.0f - 1.0f));
+            float r, g, b;
+
+            if (0.0f <= h && h < 1.0f) {
+                r = C;
+                g = X;
+                b = 0.0f;
+            } else if (1.0f <= h && h < 2.0f) {
+                r = X;
+                g = C;
+                b = 0.0f;
+            } else if (2.0f <= h && h < 3.0f) {
+                r = 0.0f;
+                g = C;
+                b = X;
+            } else if (3.0f <= h && h < 4.0f) {
+                r = 0.0f;
+                g = X;
+                b = C;
+            } else if (4.0f <= h && h < 5.0f) {
+                r = X;
+                g = 0.0f;
+                b = C;
+            } else if (5.0f <= h && h < 6.0f) {
+                r = C;
+                g = 0.0f;
+                b = X;
+            } else {
+                r = 0.0f;
+                g = 0.0f;
+                b = 0.0f;
+            }
+
+            var m = lightness - (C / 2.0f);
+            return new Color(r + m, g + m, b + m, hsl.W);
+        }
+
+        public static Vector4 ToHsl(Color rgb) {
+            var M = System.Math.Max(rgb.R, System.Math.Max(rgb.G, rgb.B));
+            var m = System.Math.Min(rgb.R, System.Math.Min(rgb.G, rgb.B));
+            var C = M - m;
+            float h = 0.0f;
+
+            if (M == rgb.R) {
+                h = ((rgb.G - rgb.B) / C);
+            } else if (M == rgb.G) {
+                h = ((rgb.B - rgb.R) / C) + 2.0f;
+            } else if (M == rgb.B) {
+                h = ((rgb.R - rgb.G) / C) + 4.0f;
+            }
+
+            var hue = h / 6.0f;
+
+            if (hue < 0.0f) {
+                hue += 1.0f;
+            }
+
+            var lightness = (M + m) / 2.0f;
+            var saturation = 0.0f;
+
+            if (0.0f != lightness && lightness != 1.0f) {
+                saturation = C / (1.0f - System.Math.Abs(2.0f * lightness - 1.0f));
+            }
+
+            return new Vector4(hue, saturation, lightness, rgb.A);
+        }
+
+        public static Color FromHsv(Vector4 hsv) {
+            var hue = hsv.X * 360.0f;
+            var saturation = hsv.Y;
+            var value = hsv.Z;
+            var C = value * saturation;
+            var h = hue / 60.0f;
+            var X = C * (1.0f - System.Math.Abs(h % 2.0f - 1.0f));
+            float r, g, b;
+
+            if (0.0f <= h && h < 1.0f)            {
+                r = C;
+                g = X;
+                b = 0.0f;
+            }            else if (1.0f <= h && h < 2.0f)            {
+                r = X;
+                g = C;
+                b = 0.0f;
+            }            else if (2.0f <= h && h < 3.0f)            {
+                r = 0.0f;
+                g = C;
+                b = X;
+            }            else if (3.0f <= h && h < 4.0f)            {
+                r = 0.0f;
+                g = X;
+                b = C;
+            }            else if (4.0f <= h && h < 5.0f)            {
+                r = X;
+                g = 0.0f;
+                b = C;
+            }            else if (5.0f <= h && h < 6.0f)            {
+                r = C;
+                g = 0.0f;
+                b = X;
+            }            else            {
+                r = 0.0f;
+                g = 0.0f;
+                b = 0.0f;
+            }
+
+            var m = value - C;
+            return new Color(r + m, g + m, b + m, hsv.W);
+        }
+
+        public static Vector4 ToHsv(Color rgb) {
+            var M = System.Math.Max(rgb.R, System.Math.Max(rgb.G, rgb.B));
+            var m = System.Math.Min(rgb.R, System.Math.Min(rgb.G, rgb.B));
+            var C = M - m;
+            float h = 0.0f;
+
+            if (M == rgb.R) {
+                h = ((rgb.G - rgb.B) / C) % 6.0f;
+            } else if (M == rgb.G) {
+                h = ((rgb.B - rgb.R) / C) + 2.0f;
+            } else if (M == rgb.B) {
+                h = ((rgb.R - rgb.G) / C) + 4.0f;
+            }
+
+            var hue = (h * 60.0f) / 360.0f;
+
+            var saturation = 0.0f;
+            if (0.0f != M) {
+                saturation = C / M;
+            }
+
+            return new Vector4(hue, saturation, M, rgb.A);
+        }
+
+        public static Color FromXyz(Vector4 xyz) {
+            var r = 0.41847f * xyz.X + -0.15866f * xyz.Y + -0.082835f * xyz.Z;
+            var g = -0.091169f * xyz.X + 0.25243f * xyz.Y + 0.015708f * xyz.Z;
+            var b = 0.00092090f * xyz.X + -0.0025498f * xyz.Y + 0.17860f * xyz.Z;
+            return new Color(r, g, b, xyz.W);
+        }
+
+        public static Vector4 ToXyz(Color rgb) {
+            var x = (0.49f * rgb.R + 0.31f * rgb.G + 0.20f * rgb.B) / 0.17697f;
+            var y = (0.17697f * rgb.R + 0.81240f * rgb.G + 0.01063f * rgb.B) / 0.17697f;
+            var z = (0.00f * rgb.R + 0.01f * rgb.G + 0.99f * rgb.B) / 0.17697f;
+            return new Vector4(x, y, z, rgb.A);
+        }
+
+        public static Color FromYcbcr(Vector4 ycbcr) {
+            var r = 1.0f * ycbcr.X + 0.0f * ycbcr.Y + 1.402f * ycbcr.Z;
+            var g = 1.0f * ycbcr.X + -0.344136f * ycbcr.Y + -0.714136f * ycbcr.Z;
+            var b = 1.0f * ycbcr.X + 1.772f * ycbcr.Y + 0.0f * ycbcr.Z;
+            return new Color(r, g, b, ycbcr.W);
+        }
+
+        public static Vector4 ToYcbcr(Color rgb) {
+            var y = 0.299f * rgb.R + 0.587f * rgb.G + 0.114f * rgb.B;
+            var u = -0.168736f * rgb.R + -0.331264f * rgb.G + 0.5f * rgb.B;
+            var v = 0.5f * rgb.R + -0.418688f * rgb.G + -0.081312f * rgb.B;
+            return new Vector4(y, u, v, rgb.A);
+        }
+
+        public static Color FromHcy(Vector4 hcy) {
+            var hue = hcy.X * 360.0f;
+            var C = hcy.Y;
+            var luminance = hcy.Z;
+
+            var h = hue / 60.0f;
+            var X = C * (1.0f - System.Math.Abs(h % 2.0f - 1.0f));
+
+            float r, g, b;
+            if (0.0f <= h && h < 1.0f) {
+                r = C;
+                g = X;
+                b = 0.0f;
+            } else if (1.0f <= h && h < 2.0f) {
+                r = X;
+                g = C;
+                b = 0.0f;
+            } else if (2.0f <= h && h < 3.0f) {
+                r = 0.0f;
+                g = C;
+                b = X;
+            } else if (3.0f <= h && h < 4.0f) {
+                r = 0.0f;
+                g = X;
+                b = C;
+            } else if (4.0f <= h && h < 5.0f) {
+                r = X;
+                g = 0.0f;
+                b = C;
+            } else if (5.0f <= h && h < 6.0f) {
+                r = C;
+                g = 0.0f;
+                b = X;
+            } else {
+                r = 0.0f;
+                g = 0.0f;
+                b = 0.0f;
+            }
+
+            var m = luminance - (0.30f * r + 0.59f * g + 0.11f * b);
+            return new Color(r + m, g + m, b + m, hcy.W);
+        }
+
+        public static Vector4 ToHcy(Color rgb) {
+            var M = System.Math.Max(rgb.R, System.Math.Max(rgb.G, rgb.B));
+            var m = System.Math.Min(rgb.R, System.Math.Min(rgb.G, rgb.B));
+            var C = M - m;
+
+            float h = 0.0f;
+            if (M == rgb.R) {
+                h = ((rgb.G - rgb.B) / C) % 6.0f;
+            } else if (M == rgb.G) {
+                h = ((rgb.B - rgb.R) / C) + 2.0f;
+            } else if (M == rgb.B) {
+                h = ((rgb.R - rgb.G) / C) + 4.0f;
+            }
+
+            var hue = (h * 60.0f) / 360.0f;
+
+            var luminance = 0.30f * rgb.R + 0.59f * rgb.G + 0.11f * rgb.B;
+
+            return new Vector4(hue, C, luminance, rgb.A);
+        }
+
+        public bool Equals(Color other) {
+            return this.R == other.R && this.G == other.G && this.B == other.B && this.A == other.A;
+        }
+    }
+	/** API BusEngine.Color */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
 	
 /* TValue this[TKey key]
 		{
@@ -1818,9 +2197,9 @@ BusEngine.Tools
 			if (IsGame == false && !_GameStart && BusEngine.UI.Canvas.WinForm != null) {
 				IsGame = true;
 				_GameStart = true;
-				BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
+				BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
 				new BusEngine.IPlugin("OnGameStart");
-				BusEngine.UI.Canvas.WinForm.Invalidate(true);
+				BusEngine.UI.Canvas.WinForm.Invalidate(false);
 				_GameStart = false;
 			}
 		}
@@ -1828,7 +2207,7 @@ BusEngine.Tools
 		public static void GameStop() {
 			if (IsGame == true && !_GameStop && BusEngine.UI.Canvas.WinForm != null) {
 				_GameStop = true;
-				BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(BusEngine.Engine.Paint);
+				BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
 				new BusEngine.IPlugin("OnGameStop");
 				BusEngine.UI.Canvas.WinForm.Invalidate(false);
 				_GameStop = false;
@@ -1836,11 +2215,24 @@ BusEngine.Tools
 			}
 		}
 
+		private static int _timefps = 0;
+		private static int FPSSetting = 100;
 		public static void GameUpdate() {
-			if (BusEngine.UI.Canvas.WinForm != null) {
+			if (BusEngine.Engine._timefps == 0 && BusEngine.UI.Canvas.WinForm != null) {
 				new BusEngine.IPlugin("OnGameUpdate");
 				BusEngine.UI.Canvas.WinForm.Invalidate(false);
 				//BusEngine.UI.Canvas.WinForm.Refresh();
+
+				BusEngine.Engine._timefps = 1400000000 / BusEngine.Engine.FPSSetting;
+			} else {
+				// заменить на загрузку данных в файл
+				int time = BusEngine.Engine._timefps;
+				while (time > 0) {
+					time -= 1;
+				}
+				BusEngine.Engine._timefps = time;
+
+				BusEngine.Engine.GameUpdate();
 			}
 		}
 
@@ -2044,27 +2436,13 @@ BusEngine.Tools
 				setting = BusEngine.Tools.Json.Decode(System.IO.File.ReadAllText(project_files[0]));
 			}
 
-			//project_files = null;
-
-
-
-
-
-
-
-
-
-
-					System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[3];
-
-					tasks[0] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 			dynamic content;
 
 			if (setting.TryGetValue("content", out content) && content.GetType().GetProperty("Count") != null) {
 				foreach (dynamic i in content) {
 					if (i is object) {
-						string n = i.Name.ToString();
-						string v = i.Value.ToString();
+						string n = i.Name;
+						string v = i.Value;
 
 						settingDefault["content"][n] = v;
 
@@ -2113,71 +2491,33 @@ BusEngine.Tools
 				}
 			}
 
-			//content = null;
-					}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
-
-					tasks[1] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 			dynamic console_commands;
 
 			if (setting.TryGetValue("console_commands", out console_commands) && console_commands.GetType().GetProperty("Count") != null) {
 				foreach (dynamic i in console_commands) {
 					if (i is object) {
-						settingDefault["console_commands"][i.Name.ToString()] = i.Value.ToString();
+						settingDefault["console_commands"][i.Name] = i.Value.ToString();
 					}
 				}
 			}
-
-			//console_commands = null;
-					}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
-
-					tasks[2] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 
 			dynamic console_variables;
 
 			if (setting.TryGetValue("console_variables", out console_variables) && console_variables.GetType().GetProperty("Count") != null) {
 				foreach (dynamic i in console_variables) {
 					if (i is object) {
-						settingDefault["console_variables"][i.Name.ToString()] = i.Value.ToString();
+						settingDefault["console_variables"][i.Name] = i.Value.ToString();
 					}
 				}
 			}
-
-			//console_variables = null;
-					}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
-
-					System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, wordCountTasks => {
-						foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
-							tt.Dispose();
-						}
-						System.Array.Clear(wordCountTasks, 0, wordCountTasks.Length);
-						wordCountTasks = null;
-						foreach (System.Threading.Tasks.Task tt in tasks) {
-							tt.Dispose();
-						}
-						System.Array.Clear(tasks, 0, tasks.Length);
-						tasks = null;
-					});
-					task.Wait();
-					task.Dispose();
-
-
-
-
-
-
-
-
-
-
-
 
 			dynamic info;
 
 			if (setting.TryGetValue("info", out info) && info.GetType().GetProperty("Count") != null) {
 				foreach (dynamic i in info) {
 					if (i is object) {
-						string n = i.Name.ToString();
-						string v = i.Value.ToString();
+						string n = i.Name;
+						string v = i.Value;
 
 						if (n == "icon") {
 							settingDefault["info"][n] = (v)
@@ -2205,8 +2545,6 @@ BusEngine.Tools
 				settingDefault["info"]["guid"] = ((System.Runtime.InteropServices.GuidAttribute)assembly.GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false)[0]).Value;
 			}
 
-			//info = null;
-
 			dynamic require;
 
 			if (setting.TryGetValue("require", out require) && require.GetType().GetProperty("Count") != null) {
@@ -2232,8 +2570,8 @@ BusEngine.Tools
 							if (require["plugins"][i]["path"] != "") {
 								settingDefault["require"]["plugins"].Add(new System.Collections.Generic.Dictionary<string, object>(4) {
 									{"path", System.Convert.ToString(require["plugins"][i]["path"])},
-									{"guid", (require["plugins"][i].ContainsKey("guid") && require["plugins"][i]["guid"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["guid"]) : "")},
-									{"type", (require["plugins"][i].ContainsKey("type") && require["plugins"][i]["type"].Type.ToString() == "String" ? System.Convert.ToString(require["plugins"][i]["type"]) : "")},
+									{"guid", (require["plugins"][i].ContainsKey("guid") && require["plugins"][i]["guid"] is string ? System.Convert.ToString(require["plugins"][i]["guid"]) : "")},
+									{"type", (require["plugins"][i].ContainsKey("type") && require["plugins"][i]["type"] is string ? require["plugins"][i]["type"] : "")},
 									{"platforms", (require["plugins"][i].ContainsKey("platforms") && require["plugins"][i]["platforms"].GetType().GetProperty("Count") != null ? require["plugins"][i]["platforms"] : settingDefault["require"]["plugins"][i]["platforms"])}
 								});
 							}
@@ -2243,13 +2581,42 @@ BusEngine.Tools
 			}
 
 			if (settingDefault["require"]["engine"] == "") {
-				settingDefault["require"]["engine"] = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+				settingDefault["require"]["engine"] = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 			}
 
-			//require = null;
+			/* project_files = null;
+			content = null;
+			console_commands = null;
+			console_variables = null;
+			info = null;
+			require = null;
+			setting.Clear();
+			setting = null; */
 
-			//setting.Clear();
-			//setting = null;
+			// события и синхронизация (увеличиваем потребление RAM)
+			System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[3];
+
+			tasks[0] = System.Threading.Tasks.Task.Factory.StartNew(() => {
+			}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+			tasks[1] = System.Threading.Tasks.Task.Factory.StartNew(() => {
+			}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+			tasks[2] = System.Threading.Tasks.Task.Factory.StartNew(() => {
+			}, System.Threading.Tasks.TaskCreationOptions.AttachedToParent);
+
+			System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, wordCountTasks => {
+				foreach (System.Threading.Tasks.Task tt in wordCountTasks) {
+					tt.Dispose();
+				}
+				System.Array.Clear(wordCountTasks, 0, wordCountTasks.Length);
+				wordCountTasks = null;
+				foreach (System.Threading.Tasks.Task tt in tasks) {
+					tt.Dispose();
+				}
+				System.Array.Clear(tasks, 0, tasks.Length);
+				tasks = null;
+			});
+			task.Wait();
+			task.Dispose();
 
 			//BusEngine.Engine.SettingEngine = settingDefault;
 			BusEngine.Engine.SettingProject = settingDefault;
@@ -2285,7 +2652,7 @@ BusEngine.Tools
 				if (!int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_MemoryClearTime"], out sys_MemoryClearTime) || sys_MemoryClearTime < 1) {
 					sys_MemoryClearTime = 1;
 				}
-				BusEngine.Engine.Timer = new System.Timers.Timer(sys_MemoryClearTime*1000);
+				BusEngine.Engine.Timer = new System.Timers.Timer(sys_MemoryClearTime * 1000);
 				System.Timers.ElapsedEventHandler onTime = null;
 				onTime = (o, e) => {
 					if (BusEngine.Engine.IsShutdown) {
@@ -2303,6 +2670,12 @@ BusEngine.Tools
 				BusEngine.Engine.Timer.AutoReset = true;
 				BusEngine.Engine.Timer.Enabled = true;
 			}
+
+			int FPSSetting;
+			if (!int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS"], out FPSSetting)) {
+				FPSSetting = 100;
+			}
+			BusEngine.Engine.FPSSetting = FPSSetting;
 
 			#if BUSENGINE_BENCHMARK
 			}
@@ -3098,124 +3471,334 @@ namespace BusEngine {
 /*
 Зависит от плагинов:
 BusEngine.Log
+BusEngine.Shader
 */
 	/** API BusEngine.Model */
 	public class Model : System.IDisposable {
-		public OpenTK.Vector3[] VertexData = new OpenTK.Vector3[] {};
-		public System.Collections.Generic.List<float> TexCoord = new System.Collections.Generic.List<float>();
+		public float[] VertexData;
+		public float[] TexCoord;
+		public float[] NormCoord;
 		public int[] IndexData;
-		public System.Collections.Generic.List<int> TexIndex = new System.Collections.Generic.List<int>();
-		public System.Collections.Generic.List<int> NormIndex = new System.Collections.Generic.List<int>();
- 
-		private System.Collections.Generic.List<float> _model = new System.Collections.Generic.List<float>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _IndexData = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _texIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _normIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-		private System.Collections.Generic.List<OpenTK.Vector3> _VertexDatas = new System.Collections.Generic.List<OpenTK.Vector3>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _texCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _normCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
-		private const string WHITESPACE_RE = @"\s+";
+		public int[] TexIndex;
+		public int[] NormIndex;
 
-		public float[] Load(string filePath) {
-			if (!System.IO.File.Exists(filePath)) {
-				System.Windows.Forms.MessageBox.Show("Failed to open the file: " + filePath);
+		public string Url = "";
+		public string Name = "";
+		public BusEngine.Shader Shader;
+		public string Animation = "";
+		public int Program;
+		public float X = 0.0F;
+		public float Y = 0.0F;
+		public float Z = 0.0F;
+		public float Height;
+		public float Width;
+		public float Length;
+		public BusEngine.Material Material;
+		public static OpenTK.Matrix4 vp, a, p = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
+		public int ColorBuffer, VAO, VBO, EBO, progA, progP, progVP, progtime, progmouse, progscroll, progresolution;
 
-				return new float[] {0};
+		// цвет точек квадратных полигонов
+		private static readonly BusEngine.Color[] ColorData = new BusEngine.Color[] { };
+
+		public Model() {
+			
+		}
+
+		public Model(string url = "", string name = "", BusEngine.Shader shader = null, string animation = "") {
+			Url = url;
+			Name = name;
+			Shader = shader;
+
+			if (Shader != null) {
+				this.Program = Shader.Program;
+			}
+		}
+
+		public bool Load() {
+			return Load(Url);
+		}
+
+		public bool Load(string url = "") {
+			return import(url);
+		}
+
+		private bool export(string url) {
+			if (!System.IO.File.Exists(url)) {
+				System.ConsoleColor cc = System.Console.ForegroundColor;
+				System.Console.ForegroundColor = System.ConsoleColor.Red;
+				BusEngine.Log.Info("Failed to open the file: " + url);
+				System.Console.ForegroundColor = cc;
+
+				return false;
+			} else {
+				return false;
+			}
+		}
+
+		private bool import(string url) {
+			if (!System.IO.File.Exists(url)) {
+				System.ConsoleColor cc = System.Console.ForegroundColor;
+				System.Console.ForegroundColor = System.ConsoleColor.Red;
+				BusEngine.Log.Info("Failed to open the file: " + url);
+				System.Console.ForegroundColor = cc;
+
+				return false;
 			}
  
-			using (var sr = new System.IO.StreamReader(filePath)) {
-				int i, j, index;
+			using (System.IO.StreamReader sr = new System.IO.StreamReader(url)) {
+				int i, ii, l, ll;
 				float x, y, z;
-				string data = sr.ReadToEnd();
-				string[] lines = data.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+				string[] lines = sr.ReadToEnd().Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+
+				//24
+				VertexData = new float[0];
+				TexCoord = new float[0];
+				NormCoord = new float[0];
+
+				//36 - если полигон треугольник, 24 - если квадрат
+				IndexData = new int[0];
+				TexIndex = new int[0];
+				NormIndex = new int[0];
+ 
 				for (i = 0; i < lines.Length; i++) {
 					if (lines[i].StartsWith("#")) {
 						continue;
 					}
 
 					string line = lines[i].Trim();
-					System.Collections.Generic.List<string> values = new System.Collections.Generic.List<string>(System.Text.RegularExpressions.Regex.Split(line, WHITESPACE_RE));
+					System.Collections.Generic.List<string> values = new System.Collections.Generic.List<string>(System.Text.RegularExpressions.Regex.Split(line, @"\s+"));
 
-					if (values.Count == 0) {
+					l = values.Count;
+
+					if (l == 0) {
 						continue;
 					}
  
 					if (values[0] == "v") {
+						System.Array.Resize(ref VertexData, VertexData.Length + 3);
+
 						float.TryParse(values[1], out x);
+						VertexData[VertexData.Length - 3] = x;
 						float.TryParse(values[2], out y);
+						VertexData[VertexData.Length - 2] = y;
 						float.TryParse(values[3], out z);
-						_VertexDatas.Add(new OpenTK.Vector3(x, y, z));
+						VertexData[VertexData.Length - 1] = z;
 					} else if (values[0] == "vt") {
+						System.Array.Resize(ref TexCoord, TexCoord.Length + 2);
+
 						float.TryParse(values[1], out x);
+						TexCoord[TexCoord.Length - 2] = x;
 						float.TryParse(values[2], out y);
-						_texCoords.Add(new System.Collections.Generic.List<float>() { x, y });
+						TexCoord[TexCoord.Length - 1] = y;
 					} else if (values[0] == "vn") {
+						System.Array.Resize(ref NormCoord, NormCoord.Length + 3);
+
 						float.TryParse(values[1], out x);
+						NormCoord[NormCoord.Length - 3] = x;
 						float.TryParse(values[2], out y);
+						NormCoord[NormCoord.Length - 2] = y;
 						float.TryParse(values[3], out z);
-						_normCoords.Add(new System.Collections.Generic.List<float>() { x, y, z });
+						NormCoord[NormCoord.Length - 1] = z;
 					} else if (values[0] == "f") {
-						System.Collections.Generic.List<int> face_i = new System.Collections.Generic.List<int>();
-						System.Collections.Generic.List<int> tex_i = new System.Collections.Generic.List<int>();
-						System.Collections.Generic.List<int> norm_i = new System.Collections.Generic.List<int>();
- 
-						for (j = 1; j < 4; j++) {
-							string[] w = values[j].Split(new char[] { '/' });
+						for (ii = 1; ii < l; ii++) {
+							string[] w = values[ii].Split(new char[] {'/'});
 
-							face_i.Add(int.Parse(w[0]) - 1);
-							tex_i.Add(int.Parse(w[1]) - 1);
-							norm_i.Add(int.Parse(w[2]) - 1);
+							System.Array.Resize(ref IndexData, IndexData.Length + 1);
+							int.TryParse(w[0], out ll);
+							IndexData[IndexData.Length - 1] = ll - 1;
+
+							System.Array.Resize(ref TexIndex, TexIndex.Length + 1);
+							int.TryParse(w[1], out ll);
+							TexIndex[TexIndex.Length - 1] = ll - 1;
+
+							System.Array.Resize(ref NormIndex, NormIndex.Length + 1);
+							int.TryParse(w[2], out ll);
+							NormIndex[NormIndex.Length - 1] = ll - 1;
 						}
-
-						_IndexData.Add(face_i);
-						_texIndex.Add(tex_i);
-						_normIndex.Add(norm_i);
-					}
-				}
- 
-				for (i = 0; i < _IndexData.Count; i++) {
-					for (j = 0; j < _IndexData[i].Count; j++) {
-						IndexData[IndexData.Length] = _IndexData[i][j];
-					}
-				}
- 
-				for (i = 0; i < _texIndex.Count; i++) {
-					for (j = 0; j < _texIndex[i].Count; j++) {
-						TexIndex.Add(_texIndex[i][j]);
-					}
-				}
- 
-				for (i = 0; i < _normIndex.Count; i++) {
-					for (j = 0; j < _normIndex[i].Count; j++) {
-						NormIndex.Add(_normIndex[i][j]);
 					}
 				}
 
-				for (i = 0; i < IndexData.Length; i++) {
-					index = IndexData[i];
-					//_model.Add(_VertexDatas[index]);
-					VertexData[VertexData.Length] = _VertexDatas[index];
+				foreach (int index in IndexData) {
+					IndexData[index] = index;
 				}
- 
-				/* for (i = 0; i < TexIndex.Count; i++) {
-					index = TexIndex[i];
-					System.Collections.Generic.List<float> coords = _texCoords[index];
-					for (j = 0; j < coords.Count; j++) {
-						_model.Add(coords[j]);
-						TexCoord.Add(coords[j]);
-					}
-				}
- 
-				for (i = 0; i < NormIndex.Count; i++) {
-					index = NormIndex[i];
-					System.Collections.Generic.List<float> coords = _normCoords[index];
-					for (j = 0; j < coords.Count; j++) {
-						_model.Add(coords[j]);
-					}
-				} */
 
-				return _model.ToArray();
+
+
+				//texture1 = texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/test0.png");
+				//texture1 = texture(BusEngine.Engine.DataDirectory + "Textures/Cloud/1.png");
+				/* texture1 = texture(BusEngine.Engine.DataDirectory + "Textures/Vulcan/1.jpg");
+				OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture0);
+				OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture1);
+
+				//texture2 = texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/hex.png");
+				texture2 = texture(BusEngine.Engine.DataDirectory + "Textures/Vulcan/2.jpg");
+				OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture1);
+				OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture2); */
+
+				/* texture3 = texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/white_marble1.png");
+				OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture2);
+				OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture3);
+
+				texture4 = texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/roof/texture3.jpg");
+				OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture3);
+				OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture4);
+
+				texture5 = texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/black_marble1.png");
+				OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture4);
+				OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture5);
+
+				texture6 = texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/green_marble1.png");
+				OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture5);
+				OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture6);
+
+				texture7 = texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/roof/height3.png");
+				OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture6);
+				OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture7); */
+
+				// создаём шейдеры
+
+				OpenTK.Graphics.OpenGL.GL.UseProgram(Program);
+
+				progA = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "A");
+				progP = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "P");
+				progVP = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "VP");
+
+				progtime = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_time");
+				progmouse = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_mouse");
+				progscroll = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_scroll");
+				progresolution = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_resolution");
+
+				OpenTK.Graphics.OpenGL.GL.Uniform2(progresolution, new OpenTK.Vector2(BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height));
+
+				OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_texture1"), 0);
+				OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_texture2"), 1);
+				OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_texture3"), 2);
+				OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_texture4"), 3);
+				OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_texture5"), 4);
+				OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_texture6"), 5);
+				OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "u_texture7"), 6);
+
+				//OpenTK.Graphics.OpenGL.GL.Arb.CompileShaderInclude(Program, 0, new string[3] {BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/hg_sdf.glsl", BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/", "hg_sdf.glsl"}, new int[0] {});
+
+
+
+				BusEngine.Log.Info("Program 5555555555: {0}", Program);
+				BusEngine.Log.Info("IndexData 5555555555: {0} {1}", IndexData.Length, IndexData);
+				BusEngine.Log.Info("VertexData 5555555555: {0}", VertexData.Length);
+
+				// Vertex Arrays Object (VAO)
+				//VAO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+				VAO = OpenTK.Graphics.OpenGL.GL.GenVertexArray();
+				//OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, VAO);
+				OpenTK.Graphics.OpenGL.GL.BindVertexArray(VAO);
+				//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(VAO);
+				//OpenTK.Graphics.OpenGL.GL.DeleteVertexArray(VAO);
+
+				// 24 Vertex Buffer Object (VBO)
+				VBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+				//VBO = OpenTK.Graphics.OpenGL.GL.GenVertexArray();
+				OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, VBO);
+				OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, VertexData.Length * sizeof(float) * 3, VertexData, OpenTK.Graphics.OpenGL.BufferUsageHint.StaticDraw);
+				OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(0, 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 3, 0);
+				OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(0);
+
+				// 24
+				ColorBuffer = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+				OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, ColorBuffer);
+				OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, ColorData.Length * sizeof(float) * 4, ColorData, OpenTK.Graphics.OpenGL.BufferUsageHint.StaticDraw);
+				OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(1, 4, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 4, 0);
+				OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(1);
+
+				// 36
+				EBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+				OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer, EBO);
+				OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer, IndexData.Length * sizeof(int), IndexData, OpenTK.Graphics.OpenGL.BufferUsageHint.StaticDraw);
+
+				BusEngine.Log.Info("VAO: {0}", VAO);
+				BusEngine.Log.Info("VBO: {0}", VBO);
+				BusEngine.Log.Info("EBO: {0}", EBO);
+				BusEngine.Log.Info("ColorBuffer: {0}", ColorBuffer);
+
+				/* BusEngine.Log.Info("IndexData h: {0}", 36 * sizeof(int));
+				BusEngine.Log.Info("VertexData h: {0}", 24 * sizeof(float) * 3);
+
+				BusEngine.Log.Info("IndexData h: {0}", 24 * sizeof(int));
+				BusEngine.Log.Info("VertexData h: {0}", 8 * sizeof(float) * 3 * 2); */
 			}
+
+			return true;
+		}
+
+		private int texture(string path) {
+			int id;
+			//OpenTK.Graphics.OpenGL.GL.GenTextures(1, out id);
+			id = OpenTK.Graphics.OpenGL.GL.GenTexture();
+
+			OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture1);
+			OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, id);
+
+			/* OpenTK.Graphics.ES10.GL.TexParameter(OpenTK.Graphics.ES10.All.Texture2D, OpenTK.Graphics.ES10.All.TextureMinFilter, (int)OpenTK.Graphics.ES10.All.Linear);
+			OpenTK.Graphics.ES10.GL.TexParameter(OpenTK.Graphics.ES10.All.Texture2D, OpenTK.Graphics.ES10.All.TextureMagFilter, (int)OpenTK.Graphics.ES10.All.Linear); */
+
+			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapS, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToBorder);
+			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapT, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToBorder);
+			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMinFilter, (int)OpenTK.Graphics.OpenGL.TextureMinFilter.Nearest);
+			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMagFilter, (int)OpenTK.Graphics.OpenGL.TextureMagFilter.Linear);
+
+			//BusEngine.Log.Info("sssssssssss: {0}", id);
+
+			if (System.IO.File.Exists(path)) {
+				using (System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(path, false)) {
+					System.Drawing.Imaging.BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+					OpenTK.Graphics.OpenGL.GL.TexImage2D(
+						OpenTK.Graphics.OpenGL.TextureTarget.Texture2D,
+						0,
+						OpenTK.Graphics.OpenGL.PixelInternalFormat.Rgba,
+						bitmap.Width,
+						bitmap.Height,
+						0,
+						OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
+						OpenTK.Graphics.OpenGL.PixelType.UnsignedByte,
+						data.Scan0
+					);
+
+					OpenTK.Graphics.OpenGL.GL.GenerateMipmap(OpenTK.Graphics.OpenGL.GenerateMipmapTarget.Texture2D);
+
+					bitmap.UnlockBits(data);
+				}
+			}
+
+			return id;
+		}
+
+		public void SwapBuffers() {
+			// отправляем настройки расположения модели
+			OpenTK.Graphics.OpenGL.GL.UniformMatrix4(progP, true, ref p);
+
+			// рисуем модель
+			//OpenTK.Graphics.OpenGL.BeginMode.Points
+			//OpenTK.Graphics.OpenGL.BeginMode.Lines
+			//OpenTK.Graphics.OpenGL.BeginMode.LineLoop
+			//OpenTK.Graphics.OpenGL.BeginMode.LineStrip
+			//OpenTK.Graphics.OpenGL.BeginMode.Triangles
+			//OpenTK.Graphics.OpenGL.BeginMode.TriangleStrip
+			//OpenTK.Graphics.OpenGL.BeginMode.TriangleFan
+			//OpenTK.Graphics.OpenGL.BeginMode.Quads
+			//OpenTK.Graphics.OpenGL.BeginMode.QuadStrip
+			//OpenTK.Graphics.OpenGL.BeginMode.Polygon
+			//OpenTK.Graphics.OpenGL.BeginMode.Patches
+			//OpenTK.Graphics.OpenGL.BeginMode.LinesAdjacency
+			//OpenTK.Graphics.OpenGL.BeginMode.LineStripAdjacency
+			//OpenTK.Graphics.OpenGL.BeginMode.TrianglesAdjacency
+			//OpenTK.Graphics.OpenGL.BeginMode.TriangleStripAdjacency
+			//OpenTK.Graphics.OpenGL.GL.DrawElements(OpenTK.Graphics.OpenGL.BeginMode.Triangles, IndexData.Length, OpenTK.Graphics.OpenGL.DrawElementsType.UnsignedInt, 0);
+			//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 0, VertexData.Length);
+			OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 0, 72);
+			//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Triangles, 0, VertexData.Length);
+			//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 0, 12);
+			//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 24, 12);
+			//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 48, 12);
 		}
 
 		public void Dispose() {
@@ -3226,137 +3809,31 @@ BusEngine.Log
 			BusEngine.Log.Info("Model ~");
 		}
 	}
+	/** API BusEngine.Model */
+}
+/** API BusEngine */
 
-	public class Model2 : System.IDisposable {
-		public System.Collections.Generic.List<float> VertexData = new System.Collections.Generic.List<float>();
-		public System.Collections.Generic.List<float> TexCoord = new System.Collections.Generic.List<float>();
-		public System.Collections.Generic.List<int> IndexData = new System.Collections.Generic.List<int>();
-		public System.Collections.Generic.List<int> TexIndex = new System.Collections.Generic.List<int>();
-		public System.Collections.Generic.List<int> NormIndex = new System.Collections.Generic.List<int>();
- 
-		private System.Collections.Generic.List<float> _model = new System.Collections.Generic.List<float>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _IndexData = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _texIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<int>> _normIndex = new System.Collections.Generic.List<System.Collections.Generic.List<int>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _VertexDatas = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _texCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
-		private System.Collections.Generic.List<System.Collections.Generic.List<float>> _normCoords = new System.Collections.Generic.List<System.Collections.Generic.List<float>>();
-		private const string WHITESPACE_RE = @"\s+";
-
-		public float[] Load(string filePath) {
-			if (!System.IO.File.Exists(filePath)) {
-				System.Windows.Forms.MessageBox.Show("Failed to open the file: " + filePath);
-
-				return new float[] {0};
-			}
- 
-			using (var sr = new System.IO.StreamReader(filePath)) {
-				int i, j, index;
-				float x, y, z;
-				string data = sr.ReadToEnd();
-				string[] lines = data.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
-				for (i = 0; i < lines.Length; i++) {
-					if (lines[i].StartsWith("#")) {
-						continue;
-					}
-
-					string line = lines[i].Trim();
-					System.Collections.Generic.List<string> values = new System.Collections.Generic.List<string>(System.Text.RegularExpressions.Regex.Split(line, WHITESPACE_RE));
-
-					if (values.Count == 0) {
-						continue;
-					}
- 
-					if (values[0] == "v") {
-						float.TryParse(values[1], out x);
-						float.TryParse(values[2], out y);
-						float.TryParse(values[3], out z);
-						_VertexDatas.Add(new System.Collections.Generic.List<float>() { x, y, z });
-					} else if (values[0] == "vt") {
-						float.TryParse(values[1], out x);
-						float.TryParse(values[2], out y);
-						_texCoords.Add(new System.Collections.Generic.List<float>() { x, y });
-					} else if (values[0] == "vn") {
-						float.TryParse(values[1], out x);
-						float.TryParse(values[2], out y);
-						float.TryParse(values[3], out z);
-						_normCoords.Add(new System.Collections.Generic.List<float>() { x, y, z });
-					} else if (values[0] == "f") {
-						System.Collections.Generic.List<int> face_i = new System.Collections.Generic.List<int>();
-						System.Collections.Generic.List<int> tex_i = new System.Collections.Generic.List<int>();
-						System.Collections.Generic.List<int> norm_i = new System.Collections.Generic.List<int>();
- 
-						for (j = 1; j < 4; j++) {
-							string[] w = values[j].Split(new char[] { '/' });
-
-							face_i.Add(int.Parse(w[0]) - 1);
-							tex_i.Add(int.Parse(w[1]) - 1);
-							norm_i.Add(int.Parse(w[2]) - 1);
-						}
-
-						_IndexData.Add(face_i);
-						_texIndex.Add(tex_i);
-						_normIndex.Add(norm_i);
-					}
-				}
- 
-				for (i = 0; i < _IndexData.Count; i++) {
-					for (j = 0; j < _IndexData[i].Count; j++) {
-						IndexData.Add(_IndexData[i][j]);
-					}
-				}
- 
-				for (i = 0; i < _texIndex.Count; i++) {
-					for (j = 0; j < _texIndex[i].Count; j++) {
-						TexIndex.Add(_texIndex[i][j]);
-					}
-				}
- 
-				for (i = 0; i < _normIndex.Count; i++) {
-					for (j = 0; j < _normIndex[i].Count; j++) {
-						NormIndex.Add(_normIndex[i][j]);
-					}
-				}
-
-				for (i = 0; i < IndexData.Count; i++) {
-					index = IndexData[i];
-					System.Collections.Generic.List<float> coords = _VertexDatas[index];
-					for (j = 0; j < coords.Count; j++) {
-						_model.Add(coords[j]);
-						VertexData.Add(coords[j]);
-					}
-				}
- 
-				for (i = 0; i < TexIndex.Count; i++) {
-					index = TexIndex[i];
-					System.Collections.Generic.List<float> coords = _texCoords[index];
-					for (j = 0; j < coords.Count; j++) {
-						_model.Add(coords[j]);
-						TexCoord.Add(coords[j]);
-					}
-				}
- 
-				for (i = 0; i < NormIndex.Count; i++) {
-					index = NormIndex[i];
-					System.Collections.Generic.List<float> coords = _normCoords[index];
-					for (j = 0; j < coords.Count; j++) {
-						_model.Add(coords[j]);
-					}
-				}
-
-				return _model.ToArray();
-			}
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+    /** API BusEngine.Object */
+	public class Object : System.IDisposable {
+		public Object() {
+			
 		}
 
 		public void Dispose() {
 
 		}
 
-		~Model2() {
-			BusEngine.Log.Info("Model ~");
+		~Object() {
+			BusEngine.Log.Info("Object ~");
 		}
 	}
-	/** API BusEngine.Model */
+    /** API BusEngine.Object */
 }
 /** API BusEngine */
 
@@ -3771,6 +4248,246 @@ BusEngine.Log
 		}
 	}
 	/** API BusEngine.Rendering */
+}
+/** API BusEngine */
+
+/** API BusEngine */
+namespace BusEngine {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+    /** API BusEngine.Shader */
+	public class Shader : System.IDisposable {
+		public string Vert = "";
+		public string Vertex = "";
+		public string Tesc = "";
+		public string Tescontrol = "";
+		public string Tess = "";
+		public string Tessellation = "";
+		public string Geom = "";
+		public string Geometry = "";
+		public string Frag = "";
+		public string Fragment = "";
+		public string Comp = "";
+		public string Compute = "";
+		public string Incl = "";
+		public string Include = "";
+		public int Program;
+
+		public Shader(string vert = "", string vertex = "", string tesc = "", string tescontrol = "", string tess = "", string tessellation = "", string geom = "", string geometry = "", string frag = "", string fragment = "", string comp = "", string compute = "", string incl = "", string include = "") {
+			if (!string.IsNullOrWhiteSpace(vert)) {
+				Vert = vert;
+				Vertex = vert;
+			}
+			if (!string.IsNullOrWhiteSpace(vertex)) {
+				Vert = vertex;
+				Vertex = vertex;
+			}
+
+			if (!string.IsNullOrWhiteSpace(tesc)) {
+				Tesc = tesc;
+				Tescontrol = tesc;
+			}
+			if (!string.IsNullOrWhiteSpace(tescontrol)) {
+				Tesc = tescontrol;
+				Tescontrol = tescontrol;
+			}
+
+			if (!string.IsNullOrWhiteSpace(tess)) {
+				Tess = tess;
+				Tessellation = tess;
+			}
+			if (!string.IsNullOrWhiteSpace(tessellation)) {
+				Tess = tessellation;
+				Tessellation = tessellation;
+			}
+
+			if (!string.IsNullOrWhiteSpace(geom)) {
+				Geom = geom;
+				Geometry = geom;
+			}
+			if (!string.IsNullOrWhiteSpace(geometry)) {
+				Geom = geometry;
+				Geometry = geometry;
+			}
+
+			if (!string.IsNullOrWhiteSpace(frag)) {
+				Frag = frag;
+				Fragment = frag;
+			}
+			if (!string.IsNullOrWhiteSpace(fragment)) {
+				Frag = fragment;
+				Fragment = fragment;
+			}
+
+			if (!string.IsNullOrWhiteSpace(comp)) {
+				Comp = comp;
+				Compute = comp;
+			}
+			if (!string.IsNullOrWhiteSpace(compute)) {
+				Comp = compute;
+				Compute = compute;
+			}
+
+			if (!string.IsNullOrWhiteSpace(incl)) {
+				Incl = incl;
+				Include = incl;
+			}
+			if (!string.IsNullOrWhiteSpace(include)) {
+				Incl = include;
+				Include = include;
+			}
+
+			Program = this.GenProgram(
+				vertex: Vertex,
+				tescontrol: Tescontrol,
+				tessellation: Tessellation,
+				geometry: Geometry,
+				fragment: Fragment,
+				compute: Compute, 
+				include: Include
+			);
+		}
+
+		private int CompileShader(OpenTK.Graphics.OpenGL.ShaderType type, string source = "") {
+			int success, shader = OpenTK.Graphics.OpenGL.GL.CreateShader(type);
+
+			if (System.IO.File.Exists(source)) {
+				OpenTK.Graphics.OpenGL.GL.ShaderSource(shader, System.IO.File.ReadAllText(source));
+			} else {
+				OpenTK.Graphics.OpenGL.GL.ShaderSource(shader, source);
+			}
+
+			OpenTK.Graphics.OpenGL.GL.CompileShader(shader);
+
+			OpenTK.Graphics.OpenGL.GL.GetShader(shader, OpenTK.Graphics.OpenGL.ShaderParameter.CompileStatus, out success);
+			if (success == 0) {
+				throw new System.Exception("Failed to compile {type}: " + OpenTK.Graphics.OpenGL.GL.GetShaderInfoLog(shader));
+			}
+
+			return shader;
+		}
+
+		private int GenProgram(string vertex = "", string tescontrol = "", string tessellation = "", string geometry = "", string fragment = "", string compute = "", string include = "") {
+			int vert = 0, tesc = 0, tess = 0, geom = 0, frag = 0, comp = 0, incl = 0, success = 0, program = OpenTK.Graphics.OpenGL.GL.CreateProgram();
+
+			// для управления вершинами полигона
+			if (!string.IsNullOrWhiteSpace(vertex)) {
+				BusEngine.Log.Info("vertex");
+				vert = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.VertexShader, vertex);
+				OpenTK.Graphics.OpenGL.GL.AttachShader(program, vert);
+			} else {
+				vertex = "";
+			}
+
+			if (!string.IsNullOrWhiteSpace(tescontrol)) {
+				BusEngine.Log.Info("tescontrol");
+				tesc = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessControlShader, tescontrol);
+				OpenTK.Graphics.OpenGL.GL.AttachShader(program, tesc);
+			} else {
+				tescontrol = "";
+			}
+
+			// для создания дополнительных полигонов в целях сглаживания краёв
+			if (!string.IsNullOrWhiteSpace(tessellation)) {
+				BusEngine.Log.Info("tessellation");
+				tess = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessEvaluationShader, tessellation);
+				OpenTK.Graphics.OpenGL.GL.AttachShader(program, tess);
+			} else {
+				tessellation = "";
+			}
+
+			// для управления группой треугольных полигонов (в зависимости от видеокарты до 128 вершин = 42 полигона), увеличение полигонов через этот шейдер - повышает производительность
+			if (!string.IsNullOrWhiteSpace(geometry)) {
+				BusEngine.Log.Info("geometry");
+				geom = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.GeometryShader, geometry);
+				OpenTK.Graphics.OpenGL.GL.AttachShader(program, geom);
+			} else {
+				geometry = "";
+			}
+
+			// для управления каждым пикселем экрана (управление тенями, освещением, отражением, цветом, текстурами и т.д.)
+			if (!string.IsNullOrWhiteSpace(fragment)) {
+				BusEngine.Log.Info("fragment");
+				frag = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.FragmentShader, fragment);
+				OpenTK.Graphics.OpenGL.GL.AttachShader(program, frag);
+			} else {
+				fragment = "";
+			}
+
+			// для инных вычеслений (генерация частиц, изображений) https://steps3d.narod.ru/tutorials/compute-shaders-tutorial.html
+			if (!string.IsNullOrWhiteSpace(compute)) {
+				BusEngine.Log.Info("compute");
+				comp = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, compute);
+				OpenTK.Graphics.OpenGL.GL.AttachShader(program, comp);
+			} else {
+				compute = "";
+			}
+
+			// для подключения разлчных функций
+			if (!string.IsNullOrWhiteSpace(include)) {
+				BusEngine.Log.Info("include");
+				incl = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, include);
+				OpenTK.Graphics.OpenGL.GL.AttachShader(program, incl);
+			} else {
+				include = "";
+			}
+
+			OpenTK.Graphics.OpenGL.GL.LinkProgram(program);
+			OpenTK.Graphics.OpenGL.GL.GetProgram(program, OpenTK.Graphics.OpenGL.GetProgramParameterName.LinkStatus, out success);
+
+			if (success == 0) {
+				throw new System.Exception("Could not link program: " + OpenTK.Graphics.OpenGL.GL.GetProgramInfoLog(program));
+			}
+
+			if (vertex != "") {
+				OpenTK.Graphics.OpenGL.GL.DetachShader(program, vert);
+				OpenTK.Graphics.OpenGL.GL.DeleteShader(vert);
+			}
+
+			if (tescontrol != "") {
+				OpenTK.Graphics.OpenGL.GL.DetachShader(program, tesc);
+				OpenTK.Graphics.OpenGL.GL.DeleteShader(tesc);
+			}
+
+			if (tessellation != "") {
+				OpenTK.Graphics.OpenGL.GL.DetachShader(program, tess);
+				OpenTK.Graphics.OpenGL.GL.DeleteShader(tess);
+			}
+
+			if (geometry != "") {
+				OpenTK.Graphics.OpenGL.GL.DetachShader(program, geom);
+				OpenTK.Graphics.OpenGL.GL.DeleteShader(geom);
+			}
+
+			if (fragment != "") {
+				OpenTK.Graphics.OpenGL.GL.DetachShader(program, frag);
+				OpenTK.Graphics.OpenGL.GL.DeleteShader(frag);
+			}
+
+			if (compute != "") {
+				OpenTK.Graphics.OpenGL.GL.DetachShader(program, comp);
+				OpenTK.Graphics.OpenGL.GL.DeleteShader(comp);
+			}
+
+			if (include != "") {
+				OpenTK.Graphics.OpenGL.GL.DetachShader(program, incl);
+				OpenTK.Graphics.OpenGL.GL.DeleteShader(incl);
+			}
+
+			return program;
+		}
+
+		public void Dispose() {
+
+		}
+
+		~Shader() {
+			BusEngine.Log.Info("Shader ~");
+		}
+	}
+    /** API BusEngine.Shader */
 }
 /** API BusEngine */
 
@@ -4391,20 +5108,2155 @@ BusEngine.UI
 namespace BusEngine {
 /*
 Зависит от плагинов:
-BusEngine.Log
-https://habr.com/ru/articles/274605/
-https://habr.com/ru/articles/312078/
+BusEngine.Vector2
+BusEngine.Vector3
+BusEngine.Vector4
 */
+
+    [System.Serializable]
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public struct Quaternion : System.IEquatable<Quaternion> {
+        public Vector3 Xyz;
+        public float W;
+
+        public Quaternion(Vector3 v, float w) {
+            Xyz = v;
+            W = w;
+        }
+
+        public Quaternion(float x, float y, float z, float w) : this(new Vector3(x, y, z), w) { }
+
+        public Quaternion(float rotationX, float rotationY, float rotationZ) {
+            rotationX *= 0.5f;
+            rotationY *= 0.5f;
+            rotationZ *= 0.5f;
+
+            float c1 = (float)System.Math.Cos(rotationX);
+            float c2 = (float)System.Math.Cos(rotationY);
+            float c3 = (float)System.Math.Cos(rotationZ);
+            float s1 = (float)System.Math.Sin(rotationX);
+            float s2 = (float)System.Math.Sin(rotationY);
+            float s3 = (float)System.Math.Sin(rotationZ);
+
+            W = c1 * c2 * c3 - s1 * s2 * s3;
+            Xyz.X = s1 * c2 * c3 + c1 * s2 * s3;
+            Xyz.Y = c1 * s2 * c3 - s1 * c2 * s3;
+            Xyz.Z = c1 * c2 * s3 + s1 * s2 * c3;
+        }
+
+        public Quaternion(Vector3 eulerAngles) : this(eulerAngles.X, eulerAngles.Y, eulerAngles.Z) { }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public float X { get { return Xyz.X; } set { Xyz.X = value; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public float Y { get { return Xyz.Y; } set { Xyz.Y = value; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public float Z { get { return Xyz.Z; } set { Xyz.Z = value; } }
+
+        public void ToAxisAngle(out Vector3 axis, out float angle) {
+            Vector4 result = ToAxisAngle();
+            axis = result.Xyz;
+            angle = result.W;
+        }
+
+        public Vector4 ToAxisAngle() {
+            Quaternion q = this;
+            if (System.Math.Abs(q.W) > 1.0f) {
+                q.Normalize();
+            }
+
+            Vector4 result = new Vector4();
+
+            result.W = 2.0f * (float)System.Math.Acos(q.W); // angle
+            float den = (float)System.Math.Sqrt(1.0 - q.W * q.W);
+            if (den > 0.0001f) {
+                result.Xyz = q.Xyz / den;
+            } else {
+                // This occurs when the angle is zero.
+                // Not a problem: just set an arbitrary normalized axis.
+                result.Xyz = Vector3.UnitX;
+            }
+
+            return result;
+        }
+
+        public float Length {
+            get {
+                return (float)System.Math.Sqrt(W * W + Xyz.LengthSquared);
+            }
+        }
+
+        public float LengthSquared {
+            get {
+                return W * W + Xyz.LengthSquared;
+            }
+        }
+
+        public Quaternion Normalized() {
+            Quaternion q = this;
+            q.Normalize();
+            return q;
+        }
+
+        public void Invert() {
+            Invert(ref this, out this);
+        }
+
+        public Quaternion Inverted() {
+            var q = this;
+            q.Invert();
+            return q;
+        }
+
+        public void Normalize() {
+            float scale = 1.0f / this.Length;
+            Xyz *= scale;
+            W *= scale;
+        }
+
+        public void Conjugate() {
+            Xyz = -Xyz;
+        }
+
+        public static readonly Quaternion Identity = new Quaternion(0, 0, 0, 1);
+
+        public static Quaternion Add(Quaternion left, Quaternion right) {
+            return new Quaternion(
+                left.Xyz + right.Xyz,
+                left.W + right.W);
+        }
+
+        public static void Add(ref Quaternion left, ref Quaternion right, out Quaternion result) {
+            result = new Quaternion(
+                left.Xyz + right.Xyz,
+                left.W + right.W);
+        }
+
+        public static Quaternion Sub(Quaternion left, Quaternion right) {
+            return  new Quaternion(
+                left.Xyz - right.Xyz,
+                left.W - right.W);
+        }
+
+        public static void Sub(ref Quaternion left, ref Quaternion right, out Quaternion result) {
+            result = new Quaternion(
+                left.Xyz - right.Xyz,
+                left.W - right.W);
+        }
+
+        public static Quaternion Multiply(Quaternion left, Quaternion right) {
+            Quaternion result;
+            Multiply(ref left, ref right, out result);
+            return result;
+        }
+
+        public static void Multiply(ref Quaternion left, ref Quaternion right, out Quaternion result) {
+            result = new Quaternion(
+                right.W * left.Xyz + left.W * right.Xyz + Vector3.Cross(left.Xyz, right.Xyz),
+                left.W * right.W - Vector3.Dot(left.Xyz, right.Xyz));
+        }
+
+        public static void Multiply(ref Quaternion quaternion, float scale, out Quaternion result) {
+            result = new Quaternion(quaternion.X * scale, quaternion.Y * scale, quaternion.Z * scale, quaternion.W * scale);
+        }
+
+        public static Quaternion Multiply(Quaternion quaternion, float scale) {
+            return new Quaternion(quaternion.X * scale, quaternion.Y * scale, quaternion.Z * scale, quaternion.W * scale);
+        }
+
+        public static Quaternion Conjugate(Quaternion q) {
+            return new Quaternion(-q.Xyz, q.W);
+        }
+
+        public static void Conjugate(ref Quaternion q, out Quaternion result) {
+            result = new Quaternion(-q.Xyz, q.W);
+        }
+
+        public static Quaternion Invert(Quaternion q) {
+            Quaternion result;
+            Invert(ref q, out result);
+            return result;
+        }
+
+        public static void Invert(ref Quaternion q, out Quaternion result) {
+            float lengthSq = q.LengthSquared;
+            if (lengthSq != 0.0) {
+                float i = 1.0f / lengthSq;
+                result = new Quaternion(q.Xyz * -i, q.W * i);
+            } else {
+                result = q;
+            }
+        }
+
+        public static Quaternion Normalize(Quaternion q) {
+            Quaternion result;
+            Normalize(ref q, out result);
+            return result;
+        }
+
+        public static void Normalize(ref Quaternion q, out Quaternion result) {
+            float scale = 1.0f / q.Length;
+            result = new Quaternion(q.Xyz * scale, q.W * scale);
+        }
+
+        public static Quaternion FromAxisAngle(Vector3 axis, float angle) {
+            if (axis.LengthSquared == 0.0f) {
+                return Identity;
+            }
+
+            Quaternion result = Identity;
+
+            angle *= 0.5f;
+            axis.Normalize();
+            result.Xyz = axis * (float)System.Math.Sin(angle);
+            result.W = (float)System.Math.Cos(angle);
+
+            return Normalize(result);
+        }
+
+        public static Quaternion FromEulerAngles(float pitch, float yaw, float roll) {
+            return new Quaternion(pitch, yaw, roll);
+        }
+
+        public static Quaternion FromEulerAngles(Vector3 eulerAngles) {
+            return new Quaternion(eulerAngles);
+        }
+
+        public static void FromEulerAngles(ref Vector3 eulerAngles, out Quaternion result) {
+
+            float c1 = (float)System.Math.Cos(eulerAngles.X * 0.5f);
+            float c2 = (float)System.Math.Cos(eulerAngles.Y * 0.5f);
+            float c3 = (float)System.Math.Cos(eulerAngles.Z * 0.5f);
+            float s1 = (float)System.Math.Sin(eulerAngles.X * 0.5f);
+            float s2 = (float)System.Math.Sin(eulerAngles.Y * 0.5f);
+            float s3 = (float)System.Math.Sin(eulerAngles.Z * 0.5f);
+
+            result.W = c1 * c2 * c3 - s1 * s2 * s3;
+            result.Xyz.X = s1 * c2 * c3 + c1 * s2 * s3;
+            result.Xyz.Y = c1 * s2 * c3 - s1 * c2 * s3;
+            result.Xyz.Z = c1 * c2 * s3 + s1 * s2 * c3;
+        }
+
+        /* public static Quaternion FromMatrix(Matrix3 matrix) {
+            Quaternion result;
+            FromMatrix(ref matrix, out result);
+            return result;
+        }
+
+        public static void FromMatrix(ref Matrix3 matrix, out Quaternion result) {
+            float trace = matrix.Trace;
+
+            if (trace > 0) {
+                float s = (float)System.Math.Sqrt(trace + 1) * 2;
+                float invS = 1f / s;
+
+                result.W = s * 0.25f;
+                result.Xyz.X = (matrix.Row2.Y - matrix.Row1.Z) * invS;
+                result.Xyz.Y = (matrix.Row0.Z - matrix.Row2.X) * invS;
+                result.Xyz.Z = (matrix.Row1.X - matrix.Row0.Y) * invS;
+            } else {
+                float m00 = matrix.Row0.X, m11 = matrix.Row1.Y, m22 = matrix.Row2.Z;
+
+                if (m00 > m11 && m00 > m22) {
+                    float s = (float)System.Math.Sqrt(1 + m00 - m11 - m22) * 2;
+                    float invS = 1f / s;
+
+                    result.W = (matrix.Row2.Y - matrix.Row1.Z) * invS;
+                    result.Xyz.X = s * 0.25f;
+                    result.Xyz.Y = (matrix.Row0.Y + matrix.Row1.X) * invS;
+                    result.Xyz.Z = (matrix.Row0.Z + matrix.Row2.X) * invS;
+                } else if (m11 > m22) {
+                    float s = (float)System.Math.Sqrt(1 + m11 - m00 - m22) * 2;
+                    float invS = 1f / s;
+
+                    result.W = (matrix.Row0.Z - matrix.Row2.X) * invS;
+                    result.Xyz.X = (matrix.Row0.Y + matrix.Row1.X) * invS;
+                    result.Xyz.Y = s * 0.25f;
+                    result.Xyz.Z = (matrix.Row1.Z + matrix.Row2.Y) * invS;
+                } else {
+                    float s = (float)System.Math.Sqrt(1 + m22 - m00 - m11) * 2;
+                    float invS = 1f / s;
+
+                    result.W = (matrix.Row1.X - matrix.Row0.Y) * invS;
+                    result.Xyz.X = (matrix.Row0.Z + matrix.Row2.X) * invS;
+                    result.Xyz.Y = (matrix.Row1.Z + matrix.Row2.Y) * invS;
+                    result.Xyz.Z = s * 0.25f;
+                }
+            }
+        } */
+
+        public static Quaternion Slerp(Quaternion q1, Quaternion q2, float blend) {
+            // if either input is zero, return the other.
+            if (q1.LengthSquared == 0.0f) {
+                if (q2.LengthSquared == 0.0f) {
+                    return Identity;
+                }
+                return q2;
+            } else if (q2.LengthSquared == 0.0f) {
+                return q1;
+            }
+
+
+            float cosHalfAngle = q1.W * q2.W + Vector3.Dot(q1.Xyz, q2.Xyz);
+
+            if (cosHalfAngle >= 1.0f || cosHalfAngle <= -1.0f) {
+                // angle = 0.0f, so just return one input.
+                return q1;
+            } else if (cosHalfAngle < 0.0f) {
+                q2.Xyz = -q2.Xyz;
+                q2.W = -q2.W;
+                cosHalfAngle = -cosHalfAngle;
+            }
+
+            float blendA;
+            float blendB;
+            if (cosHalfAngle < 0.99f) {
+                // do proper slerp for big angles
+                float halfAngle = (float)System.Math.Acos(cosHalfAngle);
+                float sinHalfAngle = (float)System.Math.Sin(halfAngle);
+                float oneOverSinHalfAngle = 1.0f / sinHalfAngle;
+                blendA = (float)System.Math.Sin(halfAngle * (1.0f - blend)) * oneOverSinHalfAngle;
+                blendB = (float)System.Math.Sin(halfAngle * blend) * oneOverSinHalfAngle;
+            } else {
+                // do lerp if angle is really small.
+                blendA = 1.0f - blend;
+                blendB = blend;
+            }
+
+            Quaternion result = new Quaternion(blendA * q1.Xyz + blendB * q2.Xyz, blendA * q1.W + blendB * q2.W);
+            if (result.LengthSquared > 0.0f) {
+                return Normalize(result);
+            } else {
+                return Identity;
+            }
+        }
+
+        public static Quaternion operator +(Quaternion left, Quaternion right) {
+            left.Xyz += right.Xyz;
+            left.W += right.W;
+            return left;
+        }
+
+        public static Quaternion operator -(Quaternion left, Quaternion right) {
+            left.Xyz -= right.Xyz;
+            left.W -= right.W;
+            return left;
+        }
+
+        public static Quaternion operator *(Quaternion left, Quaternion right) {
+            Multiply(ref left, ref right, out left);
+            return left;
+        }
+
+        public static Quaternion operator *(Quaternion quaternion, float scale) {
+            Multiply(ref quaternion, scale, out quaternion);
+            return quaternion;
+        }
+
+        public static Quaternion operator *(float scale, Quaternion quaternion) {
+            return new Quaternion(quaternion.X * scale, quaternion.Y * scale, quaternion.Z * scale, quaternion.W * scale);
+        }
+
+        public static bool operator ==(Quaternion left, Quaternion right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Quaternion left, Quaternion right) {
+            return !left.Equals(right);
+        }
+
+        public override string ToString() {
+            return System.String.Format("V: {0}, W: {1}", Xyz, W);
+        }
+
+        public override bool Equals(object other) {
+            if (other is Quaternion == false) {
+                return false;
+            }
+            return this == (Quaternion)other;
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return (this.Xyz.GetHashCode() * 397) ^ this.W.GetHashCode();
+            }
+        }
+
+        public bool Equals(Quaternion other) {
+            return Xyz == other.Xyz && W == other.W;
+        }
+    }
+
 	/** API BusEngine.Vector */
-	public class Vector : System.IDisposable {
-		public void Dispose() {
+    [System.Serializable]
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public struct Vector2 : System.IEquatable<Vector2> {
+        public float X;
+        public float Y;
+        public Vector2(float value) {
+            X = value;
+            Y = value;
+        }
 
-		}
+        public Vector2(float x, float y) {
+            X = x;
+            Y = y;
+        }
 
-		~Vector() {
-			BusEngine.Log.Info("Vector ~");
-		}
+        public float this[int index] {
+            get {
+                if (index == 0) {
+                    return X;
+                } else if (index == 1) {
+                    return Y;
+                }
+                throw new System.IndexOutOfRangeException("You tried to access this vector at index: " + index);
+            } set {
+                if (index == 0) {
+                    X = value;
+                } else if (index == 1) {
+                    Y = value;
+                } else {
+                    throw new System.IndexOutOfRangeException("You tried to set this vector at index: " + index);
+                }
+            }
+        }
+
+        public float Length {
+            get {
+                return (float)System.Math.Sqrt(X * X + Y * Y);
+            }
+        }
+
+        public float LengthFast {
+            get {
+                return 1.0f / BusEngine.Vector3.InverseSqrtFast(X * X + Y * Y);
+            }
+        }
+
+        public float LengthSquared {
+            get {
+                return X * X + Y * Y;
+            }
+        }
+
+        public Vector2 PerpendicularRight {
+            get {
+                return new Vector2(Y, -X);
+            }
+        }
+
+        public Vector2 PerpendicularLeft {
+            get {
+                return new Vector2(-Y, X);
+            }
+        }
+
+        public Vector2 Normalized() {
+            Vector2 v = this;
+            v.Normalize();
+            return v;
+        }
+
+        public void Normalize() {
+            float scale = 1.0f / this.Length;
+            X *= scale;
+            Y *= scale;
+        }
+
+        public void NormalizeFast() {
+            float scale = BusEngine.Vector3.InverseSqrtFast(X * X + Y * Y);
+            X *= scale;
+            Y *= scale;
+        }
+
+        public static readonly Vector2 UnitX = new Vector2(1, 0);
+        public static readonly Vector2 UnitY = new Vector2(0, 1);
+        public static readonly Vector2 Zero = new Vector2(0, 0);
+        public static readonly Vector2 One = new Vector2(1, 1);
+        public static readonly int SizeInBytes = System.Runtime.InteropServices.Marshal.SizeOf(new Vector2());
+        public static Vector2 Add(Vector2 a, Vector2 b) {
+            Add(ref a, ref b, out a);
+            return a;
+        }
+
+        public static void Add(ref Vector2 a, ref Vector2 b, out Vector2 result) {
+            result.X = a.X + b.X;
+            result.Y = a.Y + b.Y;
+        }
+
+        public static Vector2 Subtract(Vector2 a, Vector2 b) {
+            Subtract(ref a, ref b, out a);
+            return a;
+        }
+
+        public static void Subtract(ref Vector2 a, ref Vector2 b, out Vector2 result) {
+            result.X = a.X - b.X;
+            result.Y = a.Y - b.Y;
+        }
+
+        public static Vector2 Multiply(Vector2 vector, float scale) {
+            Multiply(ref vector, scale, out vector);
+            return vector;
+        }
+
+        public static void Multiply(ref Vector2 vector, float scale, out Vector2 result) {
+            result.X = vector.X * scale;
+            result.Y = vector.Y * scale;
+        }
+
+        public static Vector2 Multiply(Vector2 vector, Vector2 scale) {
+            Multiply(ref vector, ref scale, out vector);
+            return vector;
+        }
+
+        public static void Multiply(ref Vector2 vector, ref Vector2 scale, out Vector2 result) {
+            result.X = vector.X * scale.X;
+            result.Y = vector.Y * scale.Y;
+        }
+
+        public static Vector2 Divide(Vector2 vector, float scale) {
+            Divide(ref vector, scale, out vector);
+            return vector;
+        }
+
+        public static void Divide(ref Vector2 vector, float scale, out Vector2 result) {
+            result.X = vector.X / scale;
+            result.Y = vector.Y / scale;
+        }
+
+        public static Vector2 Divide(Vector2 vector, Vector2 scale) {
+            Divide(ref vector, ref scale, out vector);
+            return vector;
+        }
+
+        public static void Divide(ref Vector2 vector, ref Vector2 scale, out Vector2 result) {
+            result.X = vector.X / scale.X;
+            result.Y = vector.Y / scale.Y;
+        }
+
+        public static Vector2 ComponentMin(Vector2 a, Vector2 b) {
+            a.X = a.X < b.X ? a.X : b.X;
+            a.Y = a.Y < b.Y ? a.Y : b.Y;
+            return a;
+        }
+
+        public static void ComponentMin(ref Vector2 a, ref Vector2 b, out Vector2 result) {
+            result.X = a.X < b.X ? a.X : b.X;
+            result.Y = a.Y < b.Y ? a.Y : b.Y;
+        }
+
+        public static Vector2 ComponentMax(Vector2 a, Vector2 b) {
+            a.X = a.X > b.X ? a.X : b.X;
+            a.Y = a.Y > b.Y ? a.Y : b.Y;
+            return a;
+        }
+
+        public static void ComponentMax(ref Vector2 a, ref Vector2 b, out Vector2 result) {
+            result.X = a.X > b.X ? a.X : b.X;
+            result.Y = a.Y > b.Y ? a.Y : b.Y;
+        }
+
+        public static Vector2 MagnitudeMin(Vector2 left, Vector2 right) {
+            return left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        public static void MagnitudeMin(ref Vector2 left, ref Vector2 right, out Vector2 result) {
+            result = left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        public static Vector2 MagnitudeMax(Vector2 left, Vector2 right) {
+            return left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        public static void MagnitudeMax(ref Vector2 left, ref Vector2 right, out Vector2 result) {
+            result = left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        [System.Obsolete("Use MagnitudeMin() instead.")]
+        public static Vector2 Min(Vector2 left, Vector2 right) {
+            return left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        [System.Obsolete("Use MagnitudeMax() instead.")]
+        public static Vector2 Max(Vector2 left, Vector2 right) {
+            return left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        public static Vector2 Clamp(Vector2 vec, Vector2 min, Vector2 max) {
+            vec.X = vec.X < min.X ? min.X : vec.X > max.X ? max.X : vec.X;
+            vec.Y = vec.Y < min.Y ? min.Y : vec.Y > max.Y ? max.Y : vec.Y;
+            return vec;
+        }
+
+        public static void Clamp(ref Vector2 vec, ref Vector2 min, ref Vector2 max, out Vector2 result) {
+            result.X = vec.X < min.X ? min.X : vec.X > max.X ? max.X : vec.X;
+            result.Y = vec.Y < min.Y ? min.Y : vec.Y > max.Y ? max.Y : vec.Y;
+        }
+
+        public static float Distance(Vector2 vec1, Vector2 vec2) {
+            float result;
+            Distance(ref vec1, ref vec2, out result);
+            return result;
+        }
+
+        public static void Distance(ref Vector2 vec1, ref Vector2 vec2, out float result) {
+            result = (float)System.Math.Sqrt((vec2.X - vec1.X) * (vec2.X - vec1.X) + (vec2.Y - vec1.Y) * (vec2.Y - vec1.Y));
+        }
+
+        public static float DistanceSquared(Vector2 vec1, Vector2 vec2) {
+            float result;
+            DistanceSquared(ref vec1, ref vec2, out result);
+            return result;
+        }
+
+        public static void DistanceSquared(ref Vector2 vec1, ref Vector2 vec2, out float result) {
+            result = (vec2.X - vec1.X) * (vec2.X - vec1.X) + (vec2.Y - vec1.Y) * (vec2.Y - vec1.Y);
+        }
+
+        public static Vector2 Normalize(Vector2 vec) {
+            float scale = 1.0f / vec.Length;
+            vec.X *= scale;
+            vec.Y *= scale;
+            return vec;
+        }
+
+        public static void Normalize(ref Vector2 vec, out Vector2 result) {
+            float scale = 1.0f / vec.Length;
+            result.X = vec.X * scale;
+            result.Y = vec.Y * scale;
+        }
+
+        public static Vector2 NormalizeFast(Vector2 vec) {
+            float scale = BusEngine.Vector3.InverseSqrtFast(vec.X * vec.X + vec.Y * vec.Y);
+            vec.X *= scale;
+            vec.Y *= scale;
+            return vec;
+        }
+
+        public static void NormalizeFast(ref Vector2 vec, out Vector2 result) {
+            float scale = BusEngine.Vector3.InverseSqrtFast(vec.X * vec.X + vec.Y * vec.Y);
+            result.X = vec.X * scale;
+            result.Y = vec.Y * scale;
+        }
+
+        public static float Dot(Vector2 left, Vector2 right) {
+            return left.X * right.X + left.Y * right.Y;
+        }
+
+        public static void Dot(ref Vector2 left, ref Vector2 right, out float result) {
+            result = left.X * right.X + left.Y * right.Y;
+        }
+
+        public static float PerpDot(Vector2 left, Vector2 right) {
+            return left.X * right.Y - left.Y * right.X;
+        }
+
+        public static void PerpDot(ref Vector2 left, ref Vector2 right, out float result) {
+            result = left.X * right.Y - left.Y * right.X;
+        }
+
+        public static Vector2 Lerp(Vector2 a, Vector2 b, float blend) {
+            a.X = blend * (b.X - a.X) + a.X;
+            a.Y = blend * (b.Y - a.Y) + a.Y;
+            return a;
+        }
+
+        public static void Lerp(ref Vector2 a, ref Vector2 b, float blend, out Vector2 result) {
+            result.X = blend * (b.X - a.X) + a.X;
+            result.Y = blend * (b.Y - a.Y) + a.Y;
+        }
+
+        public static Vector2 BaryCentric(Vector2 a, Vector2 b, Vector2 c, float u, float v) {
+            return a + u * (b - a) + v * (c - a);
+        }
+
+        public static void BaryCentric(ref Vector2 a, ref Vector2 b, ref Vector2 c, float u, float v, out Vector2 result) {
+            result = a; // copy
+
+            Vector2 temp = b; // copy
+            Subtract(ref temp, ref a, out temp);
+            Multiply(ref temp, u, out temp);
+            Add(ref result, ref temp, out result);
+
+            temp = c; // copy
+            Subtract(ref temp, ref a, out temp);
+            Multiply(ref temp, v, out temp);
+            Add(ref result, ref temp, out result);
+        }
+
+        public static Vector2 Transform(Vector2 vec, BusEngine.Quaternion quat) {
+            Vector2 result;
+            Transform(ref vec, ref quat, out result);
+            return result;
+        }
+
+        public static void Transform(ref Vector2 vec, ref BusEngine.Quaternion quat, out Vector2 result) {
+            BusEngine.Quaternion v = new BusEngine.Quaternion(vec.X, vec.Y, 0, 0), i, t;
+            BusEngine.Quaternion.Invert(ref quat, out i);
+            BusEngine.Quaternion.Multiply(ref quat, ref v, out t);
+            BusEngine.Quaternion.Multiply(ref t, ref i, out v);
+
+            result.X = v.X;
+            result.Y = v.Y;
+        }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Yx { get { return new Vector2(Y, X); } set { Y = value.X; X = value.Y; } }
+
+        public static Vector2 operator +(Vector2 left, Vector2 right) {
+            left.X += right.X;
+            left.Y += right.Y;
+            return left;
+        }
+
+        public static Vector2 operator -(Vector2 left, Vector2 right) {
+            left.X -= right.X;
+            left.Y -= right.Y;
+            return left;
+        }
+
+        public static Vector2 operator -(Vector2 vec) {
+            vec.X = -vec.X;
+            vec.Y = -vec.Y;
+            return vec;
+        }
+
+        public static Vector2 operator *(Vector2 vec, float scale) {
+            vec.X *= scale;
+            vec.Y *= scale;
+            return vec;
+        }
+
+        public static Vector2 operator *(float scale, Vector2 vec) {
+            vec.X *= scale;
+            vec.Y *= scale;
+            return vec;
+        }
+
+        public static Vector2 operator *(Vector2 vec, Vector2 scale) {
+            vec.X *= scale.X;
+            vec.Y *= scale.Y;
+            return vec;
+        }
+
+        public static Vector2 operator /(Vector2 vec, float scale) {
+            vec.X /= scale;
+            vec.Y /= scale;
+            return vec;
+        }
+
+        public static bool operator ==(Vector2 left, Vector2 right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Vector2 left, Vector2 right) {
+            return !left.Equals(right);
+        }
+
+        private static string listSeparator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+
+        public override string ToString() {
+            return System.String.Format("({0}{2} {1})", X, Y, listSeparator);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return (this.X.GetHashCode() * 397) ^ this.Y.GetHashCode();
+            }
+        }
+
+        public override bool Equals(object obj) {
+            if (!(obj is Vector2)) {
+                return false;
+            }
+            return this.Equals((Vector2)obj);
+        }
+
+        public bool Equals(Vector2 other) {
+            return X == other.X && Y == other.Y;
+        }
+    }
+
+    [System.Serializable]
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public struct Vector3 : System.IEquatable<Vector3> {
+        internal static float InverseSqrtFast(float x) {
+            unsafe {
+                float xhalf = 0.5f * x;
+                int i = *(int*)&x;              // Read bits as integer.
+                i = 0x5f375a86 - (i >> 1);      // Make an initial guess for Newton-Raphson approximation
+                x = *(float*)&i;                // Convert bits back to float
+                x = x * (1.5f - xhalf * x * x); // Perform left single Newton-Raphson step.
+                return x;
+            }
+        }
+
+        public float X;
+        public float Y;
+        public float Z;
+
+        public Vector3(float value) {
+            X = value;
+            Y = value;
+            Z = value;
+        }
+
+        public Vector3(float x, float y, float z) {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
+        public Vector3(Vector2 v) {
+            X = v.X;
+            Y = v.Y;
+            Z = 0.0f;
+        }
+
+        public Vector3(Vector3 v) {
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+        }
+
+        public Vector3(Vector4 v) {
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+        }
+
+        public float this[int index] {
+            get {
+                if (index == 0) {
+                    return X;
+                } else if (index == 1) {
+                    return Y;
+                } else if (index == 2) {
+                    return Z;
+                }
+                throw new System.IndexOutOfRangeException("You tried to access this vector at index: " + index);
+            } set {
+                if (index == 0) {
+                    X = value;
+                } else if (index == 1) {
+                    Y = value;
+                } else if (index == 2) {
+                    Z = value;
+                } else {
+                    throw new System.IndexOutOfRangeException("You tried to set this vector at index: " + index);
+                }
+            }
+        }
+
+        public float Length {
+            get {
+                return (float)System.Math.Sqrt(X * X + Y * Y + Z * Z);
+            }
+        }
+
+        public float LengthFast {
+            get {
+                return 1.0f / BusEngine.Vector3.InverseSqrtFast(X * X + Y * Y + Z * Z);
+            }
+        }
+
+        public float LengthSquared {
+            get {
+                return X * X + Y * Y + Z * Z;
+            }
+        }
+
+        public Vector3 Normalized() {
+            Vector3 v = this;
+            v.Normalize();
+            return v;
+        }
+
+        public void Normalize() {
+            float scale = 1.0f / this.Length;
+            X *= scale;
+            Y *= scale;
+            Z *= scale;
+        }
+
+        public void NormalizeFast() {
+            float scale = BusEngine.Vector3.InverseSqrtFast(X * X + Y * Y + Z * Z);
+            X *= scale;
+            Y *= scale;
+            Z *= scale;
+        }
+
+        public static readonly Vector3 UnitX = new Vector3(1, 0, 0);
+        public static readonly Vector3 UnitY = new Vector3(0, 1, 0);
+        public static readonly Vector3 UnitZ = new Vector3(0, 0, 1);
+        public static readonly Vector3 Zero = new Vector3(0, 0, 0);
+        public static readonly Vector3 One = new Vector3(1, 1, 1);
+        public static readonly int SizeInBytes = System.Runtime.InteropServices.Marshal.SizeOf(new Vector3());
+
+        public static Vector3 Add(Vector3 a, Vector3 b) {
+            Add(ref a, ref b, out a);
+            return a;
+        }
+
+        public static void Add(ref Vector3 a, ref Vector3 b, out Vector3 result) {
+            result.X = a.X + b.X;
+            result.Y = a.Y + b.Y;
+            result.Z = a.Z + b.Z;
+        }
+
+        public static Vector3 Subtract(Vector3 a, Vector3 b) {
+            Subtract(ref a, ref b, out a);
+            return a;
+        }
+
+        public static void Subtract(ref Vector3 a, ref Vector3 b, out Vector3 result) {
+            result.X = a.X - b.X;
+            result.Y = a.Y - b.Y;
+            result.Z = a.Z - b.Z;
+        }
+
+        public static Vector3 Multiply(Vector3 vector, float scale) {
+            Multiply(ref vector, scale, out vector);
+            return vector;
+        }
+
+        public static void Multiply(ref Vector3 vector, float scale, out Vector3 result) {
+            result.X = vector.X * scale;
+            result.Y = vector.Y * scale;
+            result.Z = vector.Z * scale;
+        }
+
+        public static Vector3 Multiply(Vector3 vector, Vector3 scale) {
+            Multiply(ref vector, ref scale, out vector);
+            return vector;
+        }
+
+        public static void Multiply(ref Vector3 vector, ref Vector3 scale, out Vector3 result) {
+            result.X = vector.X * scale.X;
+            result.Y = vector.Y * scale.Y;
+            result.Z = vector.Z * scale.Z;
+        }
+
+        public static Vector3 Divide(Vector3 vector, float scale) {
+            Divide(ref vector, scale, out vector);
+            return vector;
+        }
+
+        public static void Divide(ref Vector3 vector, float scale, out Vector3 result) {
+            result.X = vector.X / scale;
+            result.Y = vector.Y / scale;
+            result.Z = vector.Z / scale;
+        }
+
+        public static Vector3 Divide(Vector3 vector, Vector3 scale) {
+            Divide(ref vector, ref scale, out vector);
+            return vector;
+        }
+
+        public static void Divide(ref Vector3 vector, ref Vector3 scale, out Vector3 result) {
+            result.X = vector.X / scale.X;
+            result.Y = vector.Y / scale.Y;
+            result.Z = vector.Z / scale.Z;
+        }
+
+        public static Vector3 ComponentMin(Vector3 a, Vector3 b) {
+            a.X = a.X < b.X ? a.X : b.X;
+            a.Y = a.Y < b.Y ? a.Y : b.Y;
+            a.Z = a.Z < b.Z ? a.Z : b.Z;
+            return a;
+        }
+
+        public static void ComponentMin(ref Vector3 a, ref Vector3 b, out Vector3 result) {
+            result.X = a.X < b.X ? a.X : b.X;
+            result.Y = a.Y < b.Y ? a.Y : b.Y;
+            result.Z = a.Z < b.Z ? a.Z : b.Z;
+        }
+
+        public static Vector3 ComponentMax(Vector3 a, Vector3 b) {
+            a.X = a.X > b.X ? a.X : b.X;
+            a.Y = a.Y > b.Y ? a.Y : b.Y;
+            a.Z = a.Z > b.Z ? a.Z : b.Z;
+            return a;
+        }
+
+        public static void ComponentMax(ref Vector3 a, ref Vector3 b, out Vector3 result) {
+            result.X = a.X > b.X ? a.X : b.X;
+            result.Y = a.Y > b.Y ? a.Y : b.Y;
+            result.Z = a.Z > b.Z ? a.Z : b.Z;
+        }
+
+        public static Vector3 MagnitudeMin(Vector3 left, Vector3 right) {
+            return left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        public static void MagnitudeMin(ref Vector3 left, ref Vector3 right, out Vector3 result) {
+            result = left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        public static Vector3 MagnitudeMax(Vector3 left, Vector3 right) {
+            return left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        public static void MagnitudeMax(ref Vector3 left, ref Vector3 right, out Vector3 result) {
+            result = left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        [System.Obsolete("Use MagnitudeMin() instead.")]
+        public static Vector3 Min(Vector3 left, Vector3 right) {
+            return left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        [System.Obsolete("Use MagnitudeMax() instead.")]
+        public static Vector3 Max(Vector3 left, Vector3 right) {
+            return left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        public static Vector3 Clamp(Vector3 vec, Vector3 min, Vector3 max) {
+            vec.X = vec.X < min.X ? min.X : vec.X > max.X ? max.X : vec.X;
+            vec.Y = vec.Y < min.Y ? min.Y : vec.Y > max.Y ? max.Y : vec.Y;
+            vec.Z = vec.Z < min.Z ? min.Z : vec.Z > max.Z ? max.Z : vec.Z;
+            return vec;
+        }
+
+        public static void Clamp(ref Vector3 vec, ref Vector3 min, ref Vector3 max, out Vector3 result) {
+            result.X = vec.X < min.X ? min.X : vec.X > max.X ? max.X : vec.X;
+            result.Y = vec.Y < min.Y ? min.Y : vec.Y > max.Y ? max.Y : vec.Y;
+            result.Z = vec.Z < min.Z ? min.Z : vec.Z > max.Z ? max.Z : vec.Z;
+        }
+
+        public static float Distance(Vector3 vec1, Vector3 vec2) {
+            float result;
+            Distance(ref vec1, ref vec2, out result);
+            return result;
+        }
+
+        public static void Distance(ref Vector3 vec1, ref Vector3 vec2, out float result) {
+            result = (float)System.Math.Sqrt((vec2.X - vec1.X) * (vec2.X - vec1.X) + (vec2.Y - vec1.Y) * (vec2.Y - vec1.Y) + (vec2.Z - vec1.Z) * (vec2.Z - vec1.Z));
+        }
+
+        public static float DistanceSquared(Vector3 vec1, Vector3 vec2) {
+            float result;
+            DistanceSquared(ref vec1, ref vec2, out result);
+            return result;
+        }
+
+        public static void DistanceSquared(ref Vector3 vec1, ref Vector3 vec2, out float result) {
+            result = (vec2.X - vec1.X) * (vec2.X - vec1.X) + (vec2.Y - vec1.Y) * (vec2.Y - vec1.Y) + (vec2.Z - vec1.Z) * (vec2.Z - vec1.Z);
+        }
+
+        public static Vector3 Normalize(Vector3 vec) {
+            float scale = 1.0f / vec.Length;
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            return vec;
+        }
+
+        public static void Normalize(ref Vector3 vec, out Vector3 result) {
+            float scale = 1.0f / vec.Length;
+            result.X = vec.X * scale;
+            result.Y = vec.Y * scale;
+            result.Z = vec.Z * scale;
+        }
+
+        public static Vector3 NormalizeFast(Vector3 vec) {
+            float scale = BusEngine.Vector3.InverseSqrtFast(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z);
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            return vec;
+        }
+
+        public static void NormalizeFast(ref Vector3 vec, out Vector3 result) {
+            float scale = BusEngine.Vector3.InverseSqrtFast(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z);
+            result.X = vec.X * scale;
+            result.Y = vec.Y * scale;
+            result.Z = vec.Z * scale;
+        }
+
+        public static float Dot(Vector3 left, Vector3 right) {
+            return left.X * right.X + left.Y * right.Y + left.Z * right.Z;
+        }
+
+        public static void Dot(ref Vector3 left, ref Vector3 right, out float result) {
+            result = left.X * right.X + left.Y * right.Y + left.Z * right.Z;
+        }
+
+        public static Vector3 Cross(Vector3 left, Vector3 right) {
+            Vector3 result;
+            Cross(ref left, ref right, out result);
+            return result;
+        }
+
+        public static void Cross(ref Vector3 left, ref Vector3 right, out Vector3 result) {
+            result.X = left.Y * right.Z - left.Z * right.Y;
+            result.Y = left.Z * right.X - left.X * right.Z;
+            result.Z = left.X * right.Y - left.Y * right.X;
+        }
+
+        public static Vector3 Lerp(Vector3 a, Vector3 b, float blend) {
+            a.X = blend * (b.X - a.X) + a.X;
+            a.Y = blend * (b.Y - a.Y) + a.Y;
+            a.Z = blend * (b.Z - a.Z) + a.Z;
+            return a;
+        }
+
+        public static void Lerp(ref Vector3 a, ref Vector3 b, float blend, out Vector3 result) {
+            result.X = blend * (b.X - a.X) + a.X;
+            result.Y = blend * (b.Y - a.Y) + a.Y;
+            result.Z = blend * (b.Z - a.Z) + a.Z;
+        }
+
+        public static Vector3 BaryCentric(Vector3 a, Vector3 b, Vector3 c, float u, float v) {
+            return a + u * (b - a) + v * (c - a);
+        }
+
+        public static void BaryCentric(ref Vector3 a, ref Vector3 b, ref Vector3 c, float u, float v, out Vector3 result) {
+            result = a; // copy
+
+            Vector3 temp = b; // copy
+            Subtract(ref temp, ref a, out temp);
+            Multiply(ref temp, u, out temp);
+            Add(ref result, ref temp, out result);
+
+            temp = c; // copy
+            Subtract(ref temp, ref a, out temp);
+            Multiply(ref temp, v, out temp);
+            Add(ref result, ref temp, out result);
+        }
+
+        /* public static Vector3 TransformVector(Vector3 vec, Matrix4 mat) {
+            Vector3 result;
+            TransformVector(ref vec, ref mat, out result);
+            return result;
+        }
+
+        public static void TransformVector(ref Vector3 vec, ref Matrix4 mat, out Vector3 result) {
+            result.X = vec.X * mat.Row0.X + vec.Y * mat.Row1.X + vec.Z * mat.Row2.X;
+            result.Y = vec.X * mat.Row0.Y + vec.Y * mat.Row1.Y + vec.Z * mat.Row2.Y;
+            result.Z = vec.X * mat.Row0.Z + vec.Y * mat.Row1.Z + vec.Z * mat.Row2.Z;
+        }
+
+        public static Vector3 TransformNormal(Vector3 norm, Matrix4 mat) {
+            Vector3 result;
+            TransformNormal(ref norm, ref mat, out result);
+            return result;
+        }
+
+        public static void TransformNormal(ref Vector3 norm, ref Matrix4 mat, out Vector3 result) {
+            Matrix4 Inverse = Matrix4.Invert(mat);
+            Vector3.TransformNormalInverse(ref norm, ref Inverse, out result);
+        }
+
+        public static Vector3 TransformNormalInverse(Vector3 norm, Matrix4 invMat) {
+            Vector3 result;
+            TransformNormalInverse(ref norm, ref invMat, out result);
+            return result;
+        }
+
+        public static void TransformNormalInverse(ref Vector3 norm, ref Matrix4 invMat, out Vector3 result) {
+            result.X = norm.X * invMat.Row0.X + norm.Y * invMat.Row0.Y + norm.Z * invMat.Row0.Z;
+            result.Y = norm.X * invMat.Row1.X + norm.Y * invMat.Row1.Y + norm.Z * invMat.Row1.Z;
+            result.Z = norm.X * invMat.Row2.X + norm.Y * invMat.Row2.Y + norm.Z * invMat.Row2.Z;
+        }
+
+        public static Vector3 TransformPosition(Vector3 pos, Matrix4 mat) {
+            Vector3 result;
+            TransformPosition(ref pos, ref mat, out result);
+            return result;
+        }
+
+        public static void TransformPosition(ref Vector3 pos, ref Matrix4 mat, out Vector3 result) {
+            result.X = pos.X * mat.Row0.X + pos.Y * mat.Row1.X + pos.Z * mat.Row2.X + mat.Row3.X;
+            result.Y = pos.X * mat.Row0.Y + pos.Y * mat.Row1.Y + pos.Z * mat.Row2.Y + mat.Row3.Y;
+            result.Z = pos.X * mat.Row0.Z + pos.Y * mat.Row1.Z + pos.Z * mat.Row2.Z + mat.Row3.Z;
+        }
+
+        public static Vector3 Transform(Vector3 vec, Matrix3 mat) {
+            Vector3 result;
+            Transform(ref vec, ref mat, out result);
+            return result;
+        }
+
+        public static void Transform(ref Vector3 vec, ref Matrix3 mat, out Vector3 result) {
+            result.X = vec.X * mat.Row0.X + vec.Y * mat.Row1.X + vec.Z * mat.Row2.X;
+            result.Y = vec.X * mat.Row0.Y + vec.Y * mat.Row1.Y + vec.Z * mat.Row2.Y;
+            result.Z = vec.X * mat.Row0.Z + vec.Y * mat.Row1.Z + vec.Z * mat.Row2.Z;
+        }
+
+        public static Vector3 Transform(Vector3 vec, BusEngine.Quaternion quat) {
+            Vector3 result;
+            Transform(ref vec, ref quat, out result);
+            return result;
+        }
+
+        public static void Transform(ref Vector3 vec, ref BusEngine.Quaternion quat, out Vector3 result) {
+            // Since vec.W == 0, we can optimize quat * vec * quat^-1 as follows:
+            // vec + 2.0 * cross(quat.xyz, cross(quat.xyz, vec) + quat.w * vec)
+            Vector3 xyz = quat.Xyz, temp, temp2;
+            Cross(ref xyz, ref vec, out temp);
+            Multiply(ref vec, quat.W, out temp2);
+            Add(ref temp, ref temp2, out temp);
+            Cross(ref xyz, ref temp, out temp2);
+            Multiply(ref temp2, 2f, out temp2);
+            Add(ref vec, ref temp2, out result);
+        }
+
+        [System.Obsolete("This function erroneously does a vector * matrix multiplication instead of the intended matrix * vector multiplication. Use TransformColumn() if proper right-handed multiplication is wanted, or TransformRow() for the existing behavior.")]
+        public static Vector3 Transform(Matrix3 mat, Vector3 vec) {
+			Vector3 result;
+            Transform(ref vec, ref mat, out result);
+            return result;
+        }
+
+        [System.Obsolete("Use TransformColumn() instead.")]
+        public static void Transform(ref Matrix3 mat, ref Vector3 vec, out Vector3 result) {
+            TransformColumn(ref mat, ref vec, out result);
+        }
+
+        public static Vector3 TransformColumn(Matrix3 mat, Vector3 vec) {
+			Vector3 result;
+            TransformColumn(ref mat, ref vec, out result);
+            return result;
+        }
+
+        public static void TransformColumn(ref Matrix3 mat, ref Vector3 vec, out Vector3 result) {
+            result.X = mat.Row0.X * vec.X + mat.Row0.Y * vec.Y + mat.Row0.Z * vec.Z;
+            result.Y = mat.Row1.X * vec.X + mat.Row1.Y * vec.Y + mat.Row1.Z * vec.Z;
+            result.Z = mat.Row2.X * vec.X + mat.Row2.Y * vec.Y + mat.Row2.Z * vec.Z;
+        }
+
+        public static Vector3 TransformRow(Vector3 vec, Matrix3 mat) {
+			Vector3 result;
+            TransformColumn(ref mat, ref vec, out result);
+            return result;
+        }
+
+        public static void TransformRow(ref Vector3 vec, ref Matrix3 mat, out Vector3 result) {
+            result.X = vec.X * mat.Row0.X + vec.Y * mat.Row1.X + vec.Z * mat.Row2.X;
+            result.Y = vec.X * mat.Row0.Y + vec.Y * mat.Row1.Y + vec.Z * mat.Row2.Y;
+            result.Z = vec.X * mat.Row0.Z + vec.Y * mat.Row1.Z + vec.Z * mat.Row2.Z;
+        }
+
+        public static Vector3 TransformPerspective(Vector3 vec, Matrix4 mat) {
+            Vector3 result;
+            TransformPerspective(ref vec, ref mat, out result);
+            return result;
+        }
+
+        public static void TransformPerspective(ref Vector3 vec, ref Matrix4 mat, out Vector3 result) {
+            Vector4 v = new Vector4(vec.X, vec.Y, vec.Z, 1);
+            Vector4.Transform(ref v, ref mat, out v);
+            result.X = v.X / v.W;
+            result.Y = v.Y / v.W;
+            result.Z = v.Z / v.W;
+        }
+
+        public static float CalculateAngle(Vector3 first, Vector3 second) {
+            float result;
+            CalculateAngle(ref first, ref second, out result);
+            return result;
+        }
+
+        public static void CalculateAngle(ref Vector3 first, ref Vector3 second, out float result) {
+            float temp;
+            Vector3.Dot(ref first, ref second, out temp);
+            result = (float)System.Math.Acos(MathHelper.Clamp(temp / (first.Length * second.Length), -1.0, 1.0));
+        }
+
+        public static Vector3 Project(Vector3 vector, float x, float y, float width, float height, float minZ, float maxZ, Matrix4 worldViewProjection) {
+            Vector4 result;
+            result.X = vector.X * worldViewProjection.M11 + vector.Y * worldViewProjection.M21 + vector.Z * worldViewProjection.M31 + worldViewProjection.M41;
+            result.Y = vector.X * worldViewProjection.M12 + vector.Y * worldViewProjection.M22 + vector.Z * worldViewProjection.M32 + worldViewProjection.M42;
+            result.Z = vector.X * worldViewProjection.M13 + vector.Y * worldViewProjection.M23 + vector.Z * worldViewProjection.M33 + worldViewProjection.M43;
+            result.W = vector.X * worldViewProjection.M14 + vector.Y * worldViewProjection.M24 + vector.Z * worldViewProjection.M34 + worldViewProjection.M44;
+
+            result /= result.W;
+
+            result.X = x + (width * ((result.X + 1.0f) / 2.0f));
+            result.Y = y + (height * ((result.Y + 1.0f) / 2.0f));
+            result.Z = minZ + ((maxZ - minZ) * ((result.Z + 1.0f) / 2.0f));
+
+            return new Vector3(result.X, result.Y, result.Z);
+        }
+
+        public static Vector3 Unproject(Vector3 vector, float x, float y, float width, float height, float minZ, float maxZ, Matrix4 inverseWorldViewProjection) {
+            float X = (vector.X - x) / width * 2.0f - 1.0f;
+            float Y = (vector.Y - y) / height * 2.0f - 1.0f;
+            float Z = (vector.Z / (maxZ - minZ)) * 2.0f - 1.0f;
+
+            Vector3 result;
+            result.X = X * inverseWorldViewProjection.M11 + Y * inverseWorldViewProjection.M21 + Z * inverseWorldViewProjection.M31 + inverseWorldViewProjection.M41;
+            result.Y = X * inverseWorldViewProjection.M12 + Y * inverseWorldViewProjection.M22 + Z * inverseWorldViewProjection.M32 + inverseWorldViewProjection.M42;
+            result.Z = X * inverseWorldViewProjection.M13 + Y * inverseWorldViewProjection.M23 + Z * inverseWorldViewProjection.M33 + inverseWorldViewProjection.M43;
+            float W = X * inverseWorldViewProjection.M14 + Y * inverseWorldViewProjection.M24 + Z * inverseWorldViewProjection.M34 + inverseWorldViewProjection.M44;
+
+            result /= W;
+
+            return result;
+        } */
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Xy { get { return new Vector2(X, Y); } set { X = value.X; Y = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Xz { get { return new Vector2(X, Z); } set { X = value.X; Z = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Yx { get { return new Vector2(Y, X); } set { Y = value.X; X = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Yz { get { return new Vector2(Y, Z); } set { Y = value.X; Z = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Zx { get { return new Vector2(Z, X); } set { Z = value.X; X = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Zy { get { return new Vector2(Z, Y); } set { Z = value.X; Y = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Xzy { get { return new Vector3(X, Z, Y); } set { X = value.X; Z = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Yxz { get { return new Vector3(Y, X, Z); } set { Y = value.X; X = value.Y; Z = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Yzx { get { return new Vector3(Y, Z, X); } set { Y = value.X; Z = value.Y; X = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zxy { get { return new Vector3(Z, X, Y); } set { Z = value.X; X = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zyx { get { return new Vector3(Z, Y, X); } set { Z = value.X; Y = value.Y; X = value.Z; } }
+
+        public static Vector3 operator +(Vector3 left, Vector3 right) {
+            left.X += right.X;
+            left.Y += right.Y;
+            left.Z += right.Z;
+            return left;
+        }
+
+        public static Vector3 operator -(Vector3 left, Vector3 right) {
+            left.X -= right.X;
+            left.Y -= right.Y;
+            left.Z -= right.Z;
+            return left;
+        }
+
+        public static Vector3 operator -(Vector3 vec) {
+            vec.X = -vec.X;
+            vec.Y = -vec.Y;
+            vec.Z = -vec.Z;
+            return vec;
+        }
+
+        public static Vector3 operator *(Vector3 vec, float scale) {
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            return vec;
+        }
+
+        public static Vector3 operator *(float scale, Vector3 vec) {
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            return vec;
+        }
+
+        public static Vector3 operator *(Vector3 vec, Vector3 scale) {
+            vec.X *= scale.X;
+            vec.Y *= scale.Y;
+            vec.Z *= scale.Z;
+            return vec;
+        }
+
+        /* public static Vector3 operator *(Vector3 vec, Matrix3 mat) {
+            Vector3 result;
+            Vector3.TransformRow(ref vec, ref mat, out result);
+            return result;
+        }
+
+        public static Vector3 operator *(Matrix3 mat, Vector3 vec) {
+            Vector3 result;
+            Vector3.TransformColumn(ref mat, ref vec, out result);
+            return result;
+        }
+
+        public static Vector3 operator *(BusEngine.Quaternion quat, Vector3 vec) {
+            Vector3 result;
+            Vector3.Transform(ref vec, ref quat, out result);
+            return result;
+        } */
+
+        public static Vector3 operator /(Vector3 vec, float scale) {
+            vec.X /= scale;
+            vec.Y /= scale;
+            vec.Z /= scale;
+            return vec;
+        }
+
+        public static bool operator ==(Vector3 left, Vector3 right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Vector3 left, Vector3 right) {
+            return !left.Equals(right);
+        }
+
+        private static string listSeparator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+
+        public override string ToString() {
+            return System.String.Format("({0}{3} {1}{3} {2})", X, Y, Z, listSeparator);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                var hashCode = this.X.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.Y.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.Z.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public override bool Equals(object obj) {
+            if (!(obj is Vector3)) {
+                return false;
+            }
+            return this.Equals((Vector3)obj);
+        }
+
+        public bool Equals(Vector3 other) {
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
 	}
+
+    [System.Serializable]
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public struct Vector4 : System.IEquatable<Vector4> {
+        public float X;
+        public float Y;
+        public float Z;
+        public float W;
+        public static readonly Vector4 UnitX = new Vector4(1, 0, 0, 0);
+        public static readonly Vector4 UnitY = new Vector4(0, 1, 0, 0);
+        public static readonly Vector4 UnitZ = new Vector4(0, 0, 1, 0);
+        public static readonly Vector4 UnitW = new Vector4(0, 0, 0, 1);
+        public static readonly Vector4 Zero = new Vector4(0, 0, 0, 0);
+        public static readonly Vector4 One = new Vector4(1, 1, 1, 1);
+        public static readonly int SizeInBytes = System.Runtime.InteropServices.Marshal.SizeOf(new Vector4());
+
+        public Vector4(float value) {
+            X = value;
+            Y = value;
+            Z = value;
+            W = value;
+        }
+
+        public Vector4(float x, float y, float z, float w) {
+            X = x;
+            Y = y;
+            Z = z;
+            W = w;
+        }
+
+        public Vector4(Vector2 v) {
+            X = v.X;
+            Y = v.Y;
+            Z = 0.0f;
+            W = 0.0f;
+        }
+
+        public Vector4(Vector3 v) {
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+            W = 0.0f;
+        }
+
+        public Vector4(Vector3 v, float w) {
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+            W = w;
+        }
+
+        public Vector4(Vector4 v) {
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
+            W = v.W;
+        }
+
+        public float this[int index] {
+            get {
+                if (index == 0) {
+                    return X;
+                } else if (index == 1) {
+                    return Y;
+                } else if (index == 2) {
+                    return Z;
+                } else if (index == 3) {
+                    return W;
+                }
+                throw new System.IndexOutOfRangeException("You tried to access this vector at index: " + index);
+            } set {
+                if (index == 0) {
+                    X = value;
+                } else if (index == 1) {
+                    Y = value;
+                } else if (index == 2) {
+                    Z = value;
+                } else if (index == 3) {
+                    W = value;
+                } else {
+                    throw new System.IndexOutOfRangeException("You tried to set this vector at index: " + index);
+                }
+            }
+        }
+
+        public float Length {
+            get {
+                return (float)System.Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
+            }
+        }
+
+        public float LengthFast {
+            get {
+                return 1.0f / BusEngine.Vector3.InverseSqrtFast(X * X + Y * Y + Z * Z + W * W);
+            }
+        }
+
+        public float LengthSquared {
+            get {
+                return X * X + Y * Y + Z * Z + W * W;
+            }
+        }
+
+        public Vector4 Normalized() {
+            Vector4 v = this;
+            v.Normalize();
+            return v;
+        }
+
+        public void Normalize() {
+            float scale = 1.0f / this.Length;
+            X *= scale;
+            Y *= scale;
+            Z *= scale;
+            W *= scale;
+        }
+
+        public void NormalizeFast() {
+            float scale = BusEngine.Vector3.InverseSqrtFast(X * X + Y * Y + Z * Z + W * W);
+            X *= scale;
+            Y *= scale;
+            Z *= scale;
+            W *= scale;
+        }
+
+        public static Vector4 Add(Vector4 a, Vector4 b) {
+            Add(ref a, ref b, out a);
+            return a;
+        }
+
+        public static void Add(ref Vector4 a, ref Vector4 b, out Vector4 result) {
+            result.X = a.X + b.X;
+            result.Y = a.Y + b.Y;
+            result.Z = a.Z + b.Z;
+            result.W = a.W + b.W;
+        }
+
+        public static Vector4 Subtract(Vector4 a, Vector4 b) {
+            Subtract(ref a, ref b, out a);
+            return a;
+        }
+
+        public static void Subtract(ref Vector4 a, ref Vector4 b, out Vector4 result) {
+            result.X = a.X - b.X;
+            result.Y = a.Y - b.Y;
+            result.Z = a.Z - b.Z;
+            result.W = a.W - b.W;
+        }
+
+        public static Vector4 Multiply(Vector4 vector, float scale) {
+            Multiply(ref vector, scale, out vector);
+            return vector;
+        }
+
+        public static void Multiply(ref Vector4 vector, float scale, out Vector4 result) {
+            result.X = vector.X * scale;
+            result.Y = vector.Y * scale;
+            result.Z = vector.Z * scale;
+            result.W = vector.W * scale;
+        }
+
+        public static Vector4 Multiply(Vector4 vector, Vector4 scale) {
+            Multiply(ref vector, ref scale, out vector);
+            return vector;
+        }
+
+        public static void Multiply(ref Vector4 vector, ref Vector4 scale, out Vector4 result) {
+            result.X = vector.X * scale.X;
+            result.Y = vector.Y * scale.Y;
+            result.Z = vector.Z * scale.Z;
+            result.W = vector.W * scale.W;
+        }
+
+        public static Vector4 Divide(Vector4 vector, float scale) {
+            Divide(ref vector, scale, out vector);
+            return vector;
+        }
+
+        public static void Divide(ref Vector4 vector, float scale, out Vector4 result) {
+            result.X = vector.X / scale;
+            result.Y = vector.Y / scale;
+            result.Z = vector.Z / scale;
+            result.W = vector.W / scale;
+        }
+
+        public static Vector4 Divide(Vector4 vector, Vector4 scale) {
+            Divide(ref vector, ref scale, out vector);
+            return vector;
+        }
+
+        public static void Divide(ref Vector4 vector, ref Vector4 scale, out Vector4 result) {
+            result.X = vector.X / scale.X;
+            result.Y = vector.Y / scale.Y;
+            result.Z = vector.Z / scale.Z;
+            result.W = vector.W / scale.W;
+        }
+
+        [System.Obsolete("Use ComponentMin() instead.")]
+        public static Vector4 Min(Vector4 a, Vector4 b) {
+            a.X = a.X < b.X ? a.X : b.X;
+            a.Y = a.Y < b.Y ? a.Y : b.Y;
+            a.Z = a.Z < b.Z ? a.Z : b.Z;
+            a.W = a.W < b.W ? a.W : b.W;
+            return a;
+        }
+
+        [System.Obsolete("Use ComponentMin() instead.")]
+        public static void Min(ref Vector4 a, ref Vector4 b, out Vector4 result) {
+            result.X = a.X < b.X ? a.X : b.X;
+            result.Y = a.Y < b.Y ? a.Y : b.Y;
+            result.Z = a.Z < b.Z ? a.Z : b.Z;
+            result.W = a.W < b.W ? a.W : b.W;
+        }
+
+        [System.Obsolete("Use ComponentMax() instead.")]
+        public static Vector4 Max(Vector4 a, Vector4 b) {
+            a.X = a.X > b.X ? a.X : b.X;
+            a.Y = a.Y > b.Y ? a.Y : b.Y;
+            a.Z = a.Z > b.Z ? a.Z : b.Z;
+            a.W = a.W > b.W ? a.W : b.W;
+            return a;
+        }
+
+        [System.Obsolete("Use ComponentMax() instead.")]
+        public static void Max(ref Vector4 a, ref Vector4 b, out Vector4 result) {
+            result.X = a.X > b.X ? a.X : b.X;
+            result.Y = a.Y > b.Y ? a.Y : b.Y;
+            result.Z = a.Z > b.Z ? a.Z : b.Z;
+            result.W = a.W > b.W ? a.W : b.W;
+        }
+
+        public static Vector4 ComponentMin(Vector4 a, Vector4 b) {
+            a.X = a.X < b.X ? a.X : b.X;
+            a.Y = a.Y < b.Y ? a.Y : b.Y;
+            a.Z = a.Z < b.Z ? a.Z : b.Z;
+            a.W = a.W < b.W ? a.W : b.W;
+            return a;
+        }
+
+        public static void ComponentMin(ref Vector4 a, ref Vector4 b, out Vector4 result) {
+            result.X = a.X < b.X ? a.X : b.X;
+            result.Y = a.Y < b.Y ? a.Y : b.Y;
+            result.Z = a.Z < b.Z ? a.Z : b.Z;
+            result.W = a.W < b.W ? a.W : b.W;
+        }
+
+        public static Vector4 ComponentMax(Vector4 a, Vector4 b) {
+            a.X = a.X > b.X ? a.X : b.X;
+            a.Y = a.Y > b.Y ? a.Y : b.Y;
+            a.Z = a.Z > b.Z ? a.Z : b.Z;
+            a.W = a.W > b.W ? a.W : b.W;
+            return a;
+        }
+
+        public static void ComponentMax(ref Vector4 a, ref Vector4 b, out Vector4 result) {
+            result.X = a.X > b.X ? a.X : b.X;
+            result.Y = a.Y > b.Y ? a.Y : b.Y;
+            result.Z = a.Z > b.Z ? a.Z : b.Z;
+            result.W = a.W > b.W ? a.W : b.W;
+        }
+
+        public static Vector4 MagnitudeMin(Vector4 left, Vector4 right) {
+            return left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        public static void MagnitudeMin(ref Vector4 left, ref Vector4 right, out Vector4 result) {
+            result = left.LengthSquared < right.LengthSquared ? left : right;
+        }
+
+        public static Vector4 MagnitudeMax(Vector4 left, Vector4 right) {
+            return left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        public static void MagnitudeMax(ref Vector4 left, ref Vector4 right, out Vector4 result) {
+            result = left.LengthSquared >= right.LengthSquared ? left : right;
+        }
+
+        public static Vector4 Clamp(Vector4 vec, Vector4 min, Vector4 max) {
+            vec.X = vec.X < min.X ? min.X : vec.X > max.X ? max.X : vec.X;
+            vec.Y = vec.Y < min.Y ? min.Y : vec.Y > max.Y ? max.Y : vec.Y;
+            vec.Z = vec.Z < min.Z ? min.Z : vec.Z > max.Z ? max.Z : vec.Z;
+            vec.W = vec.W < min.W ? min.W : vec.W > max.W ? max.W : vec.W;
+            return vec;
+        }
+
+        public static void Clamp(ref Vector4 vec, ref Vector4 min, ref Vector4 max, out Vector4 result) {
+            result.X = vec.X < min.X ? min.X : vec.X > max.X ? max.X : vec.X;
+            result.Y = vec.Y < min.Y ? min.Y : vec.Y > max.Y ? max.Y : vec.Y;
+            result.Z = vec.Z < min.Z ? min.Z : vec.Z > max.Z ? max.Z : vec.Z;
+            result.W = vec.W < min.W ? min.W : vec.W > max.W ? max.W : vec.W;
+        }
+
+        public static Vector4 Normalize(Vector4 vec) {
+            float scale = 1.0f / vec.Length;
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            vec.W *= scale;
+            return vec;
+        }
+
+        public static void Normalize(ref Vector4 vec, out Vector4 result) {
+            float scale = 1.0f / vec.Length;
+            result.X = vec.X * scale;
+            result.Y = vec.Y * scale;
+            result.Z = vec.Z * scale;
+            result.W = vec.W * scale;
+        }
+
+        public static Vector4 NormalizeFast(Vector4 vec) {
+            float scale = BusEngine.Vector3.InverseSqrtFast(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z + vec.W * vec.W);
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            vec.W *= scale;
+            return vec;
+        }
+
+        public static void NormalizeFast(ref Vector4 vec, out Vector4 result) {
+            float scale = BusEngine.Vector3.InverseSqrtFast(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z + vec.W * vec.W);
+            result.X = vec.X * scale;
+            result.Y = vec.Y * scale;
+            result.Z = vec.Z * scale;
+            result.W = vec.W * scale;
+        }
+
+        public static float Dot(Vector4 left, Vector4 right) {
+            return left.X * right.X + left.Y * right.Y + left.Z * right.Z + left.W * right.W;
+        }
+
+        public static void Dot(ref Vector4 left, ref Vector4 right, out float result) {
+            result = left.X * right.X + left.Y * right.Y + left.Z * right.Z + left.W * right.W;
+        }
+
+        public static Vector4 Lerp(Vector4 a, Vector4 b, float blend) {
+            a.X = blend * (b.X - a.X) + a.X;
+            a.Y = blend * (b.Y - a.Y) + a.Y;
+            a.Z = blend * (b.Z - a.Z) + a.Z;
+            a.W = blend * (b.W - a.W) + a.W;
+            return a;
+        }
+
+        public static void Lerp(ref Vector4 a, ref Vector4 b, float blend, out Vector4 result) {
+            result.X = blend * (b.X - a.X) + a.X;
+            result.Y = blend * (b.Y - a.Y) + a.Y;
+            result.Z = blend * (b.Z - a.Z) + a.Z;
+            result.W = blend * (b.W - a.W) + a.W;
+        }
+
+        public static Vector4 BaryCentric(Vector4 a, Vector4 b, Vector4 c, float u, float v) {
+            return a + u * (b - a) + v * (c - a);
+        }
+
+        public static void BaryCentric(ref Vector4 a, ref Vector4 b, ref Vector4 c, float u, float v, out Vector4 result) {
+            result = a; // copy
+
+            Vector4 temp = b; // copy
+            Subtract(ref temp, ref a, out temp);
+            Multiply(ref temp, u, out temp);
+            Add(ref result, ref temp, out result);
+
+            temp = c; // copy
+            Subtract(ref temp, ref a, out temp);
+            Multiply(ref temp, v, out temp);
+            Add(ref result, ref temp, out result);
+        }
+
+        /* public static Vector4 Transform(Vector4 vec, Matrix4 mat) {
+            Vector4 result;
+            Transform(ref vec, ref mat, out result);
+            return result;
+        }
+
+        public static void Transform(ref Vector4 vec, ref Matrix4 mat, out Vector4 result) {
+            result = new Vector4(
+                vec.X * mat.Row0.X + vec.Y * mat.Row1.X + vec.Z * mat.Row2.X + vec.W * mat.Row3.X,
+                vec.X * mat.Row0.Y + vec.Y * mat.Row1.Y + vec.Z * mat.Row2.Y + vec.W * mat.Row3.Y,
+                vec.X * mat.Row0.Z + vec.Y * mat.Row1.Z + vec.Z * mat.Row2.Z + vec.W * mat.Row3.Z,
+                vec.X * mat.Row0.W + vec.Y * mat.Row1.W + vec.Z * mat.Row2.W + vec.W * mat.Row3.W
+			);
+        } */
+
+        public static Vector4 Transform(Vector4 vec, BusEngine.Quaternion quat) {
+            Vector4 result;
+            Transform(ref vec, ref quat, out result);
+            return result;
+        }
+
+        public static void Transform(ref Vector4 vec, ref BusEngine.Quaternion quat, out Vector4 result) {
+            BusEngine.Quaternion v = new BusEngine.Quaternion(vec.X, vec.Y, vec.Z, vec.W), i, t;
+            BusEngine.Quaternion.Invert(ref quat, out i);
+            BusEngine.Quaternion.Multiply(ref quat, ref v, out t);
+            BusEngine.Quaternion.Multiply(ref t, ref i, out v);
+
+            result.X = v.X;
+            result.Y = v.Y;
+            result.Z = v.Z;
+            result.W = v.W;
+        }
+
+        /* public static Vector4 Transform(Matrix4 mat, Vector4 vec) {
+            Vector4 result;
+            Transform(ref mat, ref vec, out result);
+            return result;
+        }
+
+        public static void Transform(ref Matrix4 mat, ref Vector4 vec, out Vector4 result) {
+            result = new Vector4(
+                mat.Row0.X * vec.X + mat.Row0.Y * vec.Y + mat.Row0.Z * vec.Z + mat.Row0.W * vec.W,
+                mat.Row1.X * vec.X + mat.Row1.Y * vec.Y + mat.Row1.Z * vec.Z + mat.Row1.W * vec.W,
+                mat.Row2.X * vec.X + mat.Row2.Y * vec.Y + mat.Row2.Z * vec.Z + mat.Row2.W * vec.W,
+                mat.Row3.X * vec.X + mat.Row3.Y * vec.Y + mat.Row3.Z * vec.Z + mat.Row3.W * vec.W
+			);
+        } */
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Xy { get { return new Vector2(X, Y); } set { X = value.X; Y = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Xz { get { return new Vector2(X, Z); } set { X = value.X; Z = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Xw { get { return new Vector2(X, W); } set { X = value.X; W = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Yx { get { return new Vector2(Y, X); } set { Y = value.X; X = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Yz { get { return new Vector2(Y, Z); } set { Y = value.X; Z = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Yw { get { return new Vector2(Y, W); } set { Y = value.X; W = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Zx { get { return new Vector2(Z, X); } set { Z = value.X; X = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Zy { get { return new Vector2(Z, Y); } set { Z = value.X; Y = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Zw { get { return new Vector2(Z, W); } set { Z = value.X; W = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Wx { get { return new Vector2(W, X); } set { W = value.X; X = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Wy { get { return new Vector2(W, Y); } set { W = value.X; Y = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector2 Wz { get { return new Vector2(W, Z); } set { W = value.X; Z = value.Y; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Xyz { get { return new Vector3(X, Y, Z); } set { X = value.X; Y = value.Y; Z = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Xyw { get { return new Vector3(X, Y, W); } set { X = value.X; Y = value.Y; W = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Xzy { get { return new Vector3(X, Z, Y); } set { X = value.X; Z = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Xzw { get { return new Vector3(X, Z, W); } set { X = value.X; Z = value.Y; W = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Xwy { get { return new Vector3(X, W, Y); } set { X = value.X; W = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Xwz { get { return new Vector3(X, W, Z); } set { X = value.X; W = value.Y; Z = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Yxz { get { return new Vector3(Y, X, Z); } set { Y = value.X; X = value.Y; Z = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Yxw { get { return new Vector3(Y, X, W); } set { Y = value.X; X = value.Y; W = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Yzx { get { return new Vector3(Y, Z, X); } set { Y = value.X; Z = value.Y; X = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Yzw { get { return new Vector3(Y, Z, W); } set { Y = value.X; Z = value.Y; W = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Ywx { get { return new Vector3(Y, W, X); } set { Y = value.X; W = value.Y; X = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Ywz { get { return new Vector3(Y, W, Z); } set { Y = value.X; W = value.Y; Z = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zxy { get { return new Vector3(Z, X, Y); } set { Z = value.X; X = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zxw { get { return new Vector3(Z, X, W); } set { Z = value.X; X = value.Y; W = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zyx { get { return new Vector3(Z, Y, X); } set { Z = value.X; Y = value.Y; X = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zyw { get { return new Vector3(Z, Y, W); } set { Z = value.X; Y = value.Y; W = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zwx { get { return new Vector3(Z, W, X); } set { Z = value.X; W = value.Y; X = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Zwy { get { return new Vector3(Z, W, Y); } set { Z = value.X; W = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Wxy { get { return new Vector3(W, X, Y); } set { W = value.X; X = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Wxz { get { return new Vector3(W, X, Z); } set { W = value.X; X = value.Y; Z = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Wyx { get { return new Vector3(W, Y, X); } set { W = value.X; Y = value.Y; X = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Wyz { get { return new Vector3(W, Y, Z); } set { W = value.X; Y = value.Y; Z = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Wzx { get { return new Vector3(W, Z, X); } set { W = value.X; Z = value.Y; X = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector3 Wzy { get { return new Vector3(W, Z, Y); } set { W = value.X; Z = value.Y; Y = value.Z; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Xywz { get { return new Vector4(X, Y, W, Z); } set { X = value.X; Y = value.Y; W = value.Z; Z = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Xzyw { get { return new Vector4(X, Z, Y, W); } set { X = value.X; Z = value.Y; Y = value.Z; W = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Xzwy { get { return new Vector4(X, Z, W, Y); } set { X = value.X; Z = value.Y; W = value.Z; Y = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Xwyz { get { return new Vector4(X, W, Y, Z); } set { X = value.X; W = value.Y; Y = value.Z; Z = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Xwzy { get { return new Vector4(X, W, Z, Y); } set { X = value.X; W = value.Y; Z = value.Z; Y = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Yxzw { get { return new Vector4(Y, X, Z, W); } set { Y = value.X; X = value.Y; Z = value.Z; W = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Yxwz { get { return new Vector4(Y, X, W, Z); } set { Y = value.X; X = value.Y; W = value.Z; Z = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Yyzw { get { return new Vector4(Y, Y, Z, W); } set { X = value.X; Y = value.Y; Z = value.Z; W = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Yywz { get { return new Vector4(Y, Y, W, Z); } set { X = value.X; Y = value.Y; W = value.Z; Z = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Yzxw { get { return new Vector4(Y, Z, X, W); } set { Y = value.X; Z = value.Y; X = value.Z; W = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Yzwx { get { return new Vector4(Y, Z, W, X); } set { Y = value.X; Z = value.Y; W = value.Z; X = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Ywxz { get { return new Vector4(Y, W, X, Z); } set { Y = value.X; W = value.Y; X = value.Z; Z = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Ywzx { get { return new Vector4(Y, W, Z, X); } set { Y = value.X; W = value.Y; Z = value.Z; X = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Zxyw { get { return new Vector4(Z, X, Y, W); } set { Z = value.X; X = value.Y; Y = value.Z; W = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Zxwy { get { return new Vector4(Z, X, W, Y); } set { Z = value.X; X = value.Y; W = value.Z; Y = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Zyxw { get { return new Vector4(Z, Y, X, W); } set { Z = value.X; Y = value.Y; X = value.Z; W = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Zywx { get { return new Vector4(Z, Y, W, X); } set { Z = value.X; Y = value.Y; W = value.Z; X = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Zwxy { get { return new Vector4(Z, W, X, Y); } set { Z = value.X; W = value.Y; X = value.Z; Y = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Zwyx { get { return new Vector4(Z, W, Y, X); } set { Z = value.X; W = value.Y; Y = value.Z; X = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Zwzy { get { return new Vector4(Z, W, Z, Y); } set { X = value.X; W = value.Y; Z = value.Z; Y = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Wxyz { get { return new Vector4(W, X, Y, Z); } set { W = value.X; X = value.Y; Y = value.Z; Z = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Wxzy { get { return new Vector4(W, X, Z, Y); } set { W = value.X; X = value.Y; Z = value.Z; Y = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Wyxz { get { return new Vector4(W, Y, X, Z); } set { W = value.X; Y = value.Y; X = value.Z; Z = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Wyzx { get { return new Vector4(W, Y, Z, X); } set { W = value.X; Y = value.Y; Z = value.Z; X = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Wzxy { get { return new Vector4(W, Z, X, Y); } set { W = value.X; Z = value.Y; X = value.Z; Y = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Wzyx { get { return new Vector4(W, Z, Y, X); } set { W = value.X; Z = value.Y; Y = value.Z; X = value.W; } }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public Vector4 Wzyw { get { return new Vector4(W, Z, Y, W); } set { X = value.X; Z = value.Y; Y = value.Z; W = value.W; } }
+
+        public static Vector4 operator +(Vector4 left, Vector4 right) {
+            left.X += right.X;
+            left.Y += right.Y;
+            left.Z += right.Z;
+            left.W += right.W;
+            return left;
+        }
+
+        public static Vector4 operator -(Vector4 left, Vector4 right) {
+            left.X -= right.X;
+            left.Y -= right.Y;
+            left.Z -= right.Z;
+            left.W -= right.W;
+            return left;
+        }
+
+        public static Vector4 operator -(Vector4 vec) {
+            vec.X = -vec.X;
+            vec.Y = -vec.Y;
+            vec.Z = -vec.Z;
+            vec.W = -vec.W;
+            return vec;
+        }
+
+        public static Vector4 operator *(Vector4 vec, float scale) {
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            vec.W *= scale;
+            return vec;
+        }
+
+        public static Vector4 operator *(float scale, Vector4 vec) {
+            vec.X *= scale;
+            vec.Y *= scale;
+            vec.Z *= scale;
+            vec.W *= scale;
+            return vec;
+        }
+
+        public static Vector4 operator *(Vector4 vec, Vector4 scale) {
+            vec.X *= scale.X;
+            vec.Y *= scale.Y;
+            vec.Z *= scale.Z;
+            vec.W *= scale.W;
+            return vec;
+        }
+
+        /* public static Vector4 operator *(Vector4 vec, Matrix4 mat) {
+            Vector4 result;
+            Vector4.Transform(ref vec, ref mat, out result);
+            return result;
+        }
+
+        public static Vector4 operator *(Matrix4 mat, Vector4 vec) {
+            Vector4 result;
+            Vector4.Transform(ref mat, ref vec, out result);
+            return result;
+        } */
+
+        public static Vector4 operator *(BusEngine.Quaternion quat, Vector4 vec) {
+            Vector4 result;
+            Vector4.Transform(ref vec, ref quat, out result);
+            return result;
+        }
+
+        public static Vector4 operator /(Vector4 vec, float scale) {
+            vec.X /= scale;
+            vec.Y /= scale;
+            vec.Z /= scale;
+            vec.W /= scale;
+            return vec;
+        }
+
+        public static bool operator ==(Vector4 left, Vector4 right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Vector4 left, Vector4 right) {
+            return !left.Equals(right);
+        }
+
+        //[System.CLSCompliant(false)]
+        unsafe public static explicit operator float*(Vector4 v) {
+            return &v.X;
+        }
+
+        public static explicit operator System.IntPtr(Vector4 v) {
+            unsafe {
+                return (System.IntPtr)(&v.X);
+            }
+        }
+
+        private static string listSeparator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+
+        public override string ToString() {
+            return System.String.Format("({0}{4} {1}{4} {2}{4} {3})", X, Y, Z, W, listSeparator);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                var hashCode = this.X.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.Y.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.Z.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.W.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public override bool Equals(object obj) {
+            if (!(obj is Vector4)) {
+                return false;
+            }
+            return this.Equals((Vector4)obj);
+        }
+
+        public bool Equals(Vector4 other) {
+            return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+        }
+    }
 	/** API BusEngine.Vector */
 }
 /** API BusEngine */

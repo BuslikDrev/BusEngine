@@ -19,7 +19,7 @@
     <!-- Отключение публикации своего кода в nuget и т.д. -->
     <PublishRelease>false</PublishRelease>
     <PublishTrimmed>false</PublishTrimmed>
-
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
     <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
     <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
