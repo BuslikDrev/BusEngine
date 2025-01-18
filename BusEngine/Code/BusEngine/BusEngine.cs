@@ -3481,26 +3481,11 @@ BusEngine.Log
 BusEngine.Shader
 */
 	/** API BusEngine.Model */
-	[System.Serializable]
 	public class Model : System.IDisposable {
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
-		System.Runtime.Serialization.Formatters.Binary.BinaryFormatter binarySerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
-		System.Xml.Serialization.XmlSerializer xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(Model));
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		private bool BufferStatus = false;
 		//private OpenTK.Graphics.OpenGL.BeginMode BeginMode;
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		private OpenTK.Graphics.OpenGL.PrimitiveType PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public static int[] VAOs = new int[0];
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		private bool Loaded;
 
 		public static int Count { get; private set; }
@@ -3517,45 +3502,23 @@ BusEngine.Shader
 		public int[] NormIndex;
 
 		public string Mode { get; set; }
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public OpenTK.Platform.IWindowInfo Context;
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public string Url = "";
 		public string Name = "";
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public BusEngine.Shader Shader;
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public string Animation = "";
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public int Program;
 
 		public float X { get { return P.Row3.X; } set { P.Row3.X = value;} }
 		public float Y { get { return P.Row3.Y; } set { P.Row3.Y = value;} }
 		public float Z { get { return P.Row3.Z; } set { P.Row3.Z = value;} }
 
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public float Height;
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public float Width;
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public float Length;
 
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public BusEngine.Material Material;
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		public OpenTK.Matrix4 VP, A = OpenTK.Matrix4.CreateFromAxisAngle(new OpenTK.Vector3(1.0F, 0.0F, 0.0F), OpenTK.MathHelper.Pi / 180.0F * -90), P = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
-		[System.NonSerialized]
-		[System.Xml.Serialization.XmlIgnore]
 		private int CBO, VAO, VBO, EBO, progA, progPp, progVP, progtime, progmouse, progscroll, progresolution;
 		private int sys_CacheModel;
 
@@ -3655,12 +3618,12 @@ BusEngine.Shader
 					Loaded = true;
 				}
 			} else {
-				//using (System.IO.StreamReader sr = new System.IO.StreamReader(url)) {
+				using (System.IO.StreamReader sr = new System.IO.StreamReader(new System.IO.BufferedStream(System.IO.File.OpenRead(url), 1024*1024))) {
+					char[] split = new char[1] {'/'};
 					int i = 0, ii, l, vi = 0;
 					float x, y, z;
 					string line;
 					string[] values;
-					//string[] lines = sr.ReadToEnd().Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
 
 					// временные вершины - точки
 					System.Collections.Generic.List<BusEngine.Vector3> VertexDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
@@ -3668,8 +3631,7 @@ BusEngine.Shader
 					System.Collections.Generic.List<BusEngine.Vector3> NormDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
 					System.Collections.Generic.List<string> index = new System.Collections.Generic.List<string>();
 
-					
-					/* while (true) {
+					while (true) {
 						line = sr.ReadLine();
 						if (line == null) {
 							break;
@@ -3677,10 +3639,9 @@ BusEngine.Shader
 
 						if (line.StartsWith("#")) {
 							continue;
-						} */
+						}
 
 						values = System.Text.RegularExpressions.Regex.Split(line, @"\s+");
-						//System.Collections.Generic.List<string> values = new System.Collections.Generic.List<string>(System.Text.RegularExpressions.Regex.Split(line, @"\s+"));
 
 						l = values.Length;
 
@@ -3718,15 +3679,15 @@ BusEngine.Shader
 					}
 
 					if (i > 5) {
-						Mode = "Polygon";
+						Mode = "polygon";
 					} else if (i == 5) {
 						Mode = "quads";
 					} else if (i == 4) {
 						Mode = "triangles";
 					} else if (i == 3) {
-						Mode = "Lines";
+						Mode = "lines";
 					} else if (i == 2) {
-						Mode = "Points";
+						Mode = "points";
 					}
 
 					// перегоняем вершины и цвет/текстуры
@@ -3798,7 +3759,7 @@ BusEngine.Shader
 							}
 						}
 
-						values = index[i].Split(new char[] {'/'});
+						values = index[i].Split(split);
 
 						int.TryParse(values[0], out ii);
 						ii--;
@@ -3818,8 +3779,13 @@ BusEngine.Shader
 				}
 
 				// сохраняем в формат движка .bem
+			#if BUSENGINE_BENCHMARK
+			using (new BusEngine.Benchmark("BusEngine.Model SetCache "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+			#endif
 				SetCache(path);
-
+			#if BUSENGINE_BENCHMARK
+			}
+			#endif
 				Loaded = true;
 			}
 
@@ -3829,37 +3795,37 @@ BusEngine.Shader
 			} else if (Mode == "lines") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.Lines;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Lines;
-			} else if (Mode == "lineLoop") {
+			} else if (Mode == "lineloop") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.LineLoop;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop;
-			} else if (Mode == "lineStrip") {
+			} else if (Mode == "linestrip") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.LineStrip;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.LineStrip;
-			} else if (Mode == "linesAdjacency") {
+			} else if (Mode == "linesadjacency") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.LinesAdjacency;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.LinesAdjacency;
-			} else if (Mode == "lineStripAdjacency") {
+			} else if (Mode == "linestripadjacency") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.LineStripAdjacency;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.LineStripAdjacency;
 			} else if (Mode == "triangles") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.Triangles;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
-			} else if (Mode == "triangleStrip") {
+			} else if (Mode == "trianglestrip") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.TriangleStrip;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStrip;
-			} else if (Mode == "triangleFan") {
+			} else if (Mode == "trianglefan") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.TriangleFan;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.TriangleFan;
-			} else if (Mode == "trianglesAdjacency") {
+			} else if (Mode == "trianglesadjacency") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.TrianglesAdjacency;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.TrianglesAdjacency;
-			} else if (Mode == "triangleStripAdjacency") {
+			} else if (Mode == "trianglestripadjacency") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.TriangleStripAdjacency;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.TriangleStripAdjacency;
 			} else if (Mode == "quads") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.Quads;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Quads;
-			} else if (Mode == "quadStrip") {
+			} else if (Mode == "quadstrip") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.QuadStrip;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.QuadStrip;
 			} else if (Mode == "polygon") {
@@ -3888,89 +3854,316 @@ BusEngine.Shader
 			#endif
 		}
 
+		// загружаем во формат движка .bem
 		private async void SetCache(string path) {
 			if (sys_CacheModel > 0) {
-				if (!System.IO.File.Exists(path)) {
-					//System.IO.File.Delete(path);
-					//System.IO.File.Copy(url, path);
-				}
-
-				using (System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.OpenOrCreate)) {
+				// https://ru.stackoverflow.com/questions/1325622/c-%D1%83%D1%81%D0%BA%D0%BE%D1%80%D0%B8%D1%82%D1%8C-%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D1%8C-%D0%B2-%D1%84%D0%B0%D0%B9%D0%BB
+				using (System.IO.StreamWriter sw = new System.IO.StreamWriter(path)) {
 					if (sys_CacheModel == 2) {
-						binarySerializer.Serialize(fs, this);
-						//await;
-					} else if (sys_CacheModel == 3) {
-						xmlSerializer.Serialize(fs, this);
+						sw.WriteLine("v0.4.0.0");
+						sw.WriteLine("Name");
+						sw.WriteLine(Name);
+						sw.WriteLine("Mode");
+						sw.WriteLine(Mode);
+
+						sw.WriteLine("ColorData");
+						foreach (BusEngine.Color r in ColorData) {
+							sw.WriteLine((r.R + "|" + r.G + "|" + r.B + "|" + r.A).Replace(",", "."));
+						}
+
+						sw.WriteLine("VertexData");
+						foreach (BusEngine.Vector3 r in VertexData) {
+							sw.WriteLine((r.X + "|" + r.Y + "|" + r.Z).Replace(",", "."));
+						}
+
+						sw.WriteLine("TexData");
+						foreach (BusEngine.Vector2 r in TexData) {
+							sw.WriteLine((r.X + "|" + r.Y).Replace(",", "."));
+						}
+
+						sw.WriteLine("NormData");
+						foreach (BusEngine.Vector3 r in NormData) {
+							sw.WriteLine((r.X + "|" + r.Y + "|" + r.Z).Replace(",", "."));
+						}
+
+						sw.WriteLine("VertexIndex");
+						sw.Write(string.Join(System.Environment.NewLine, VertexIndex) + System.Environment.NewLine);
+						sw.WriteLine("TexIndex");
+						sw.Write(string.Join(System.Environment.NewLine, TexIndex) + System.Environment.NewLine);
+						sw.WriteLine("NormIndex");
+						sw.Write(string.Join(System.Environment.NewLine, NormIndex));
 					} else {
-						string write;
+						int i;
+						float[] ColorDataNew = new float[ColorData.Length * 4];
+						float[] VertexDataNew = new float[VertexData.Length * 3];
+						float[] TexDataNew = new float[TexData.Length * 2];
+						float[] NormDataNew = new float[NormData.Length * 3];
 
-						write = Name + System.Environment.NewLine;
-						write += Mode + System.Environment.NewLine;
-						write += string.Join("/", ColorData) + System.Environment.NewLine;
-						write += string.Join("/", VertexData) + System.Environment.NewLine;
-						write += string.Join("/", TexData) + System.Environment.NewLine;
-						write += string.Join("/", NormData) + System.Environment.NewLine;
-						write += string.Join("/", VertexIndex) + System.Environment.NewLine;
-						write += string.Join(",", TexIndex) + System.Environment.NewLine;
-						write += string.Join("/", NormIndex);
+						i = 0;
+						foreach (BusEngine.Color result in ColorData) {
+							ColorDataNew[i++] = result.R;
+							ColorDataNew[i++] = result.G;
+							ColorDataNew[i++] = result.B;
+							ColorDataNew[i++] = result.A;
+						}
 
-						byte[] result = System.Text.Encoding.Default.GetBytes(write);
+						i = 0;
+						foreach (BusEngine.Vector3 result in VertexData) {
+							VertexDataNew[i++] = result.X;
+							VertexDataNew[i++] = result.Y;
+							VertexDataNew[i++] = result.Z;
+						}
 
-						await fs.WriteAsync(result, 0, result.Length);
+						i = 0;
+						foreach (BusEngine.Vector2 result in TexData) {
+							TexDataNew[i++] = result.X;
+							TexDataNew[i++] = result.Y;
+						}
+
+						i = 0;
+						foreach (BusEngine.Vector3 result in NormData) {
+							NormDataNew[i++] = result.X;
+							NormDataNew[i++] = result.Y;
+							NormDataNew[i++] = result.Z;
+						}
+
+						byte[] buffer = new byte[
+							4 + Name.Length * 2 +
+							4 + Mode.Length * 2 +
+							4 + ColorDataNew.Length * 4 +
+							4 + VertexDataNew.Length * 4 +
+							4 + TexDataNew.Length * 4 +
+							4 + NormDataNew.Length * 4 +
+							4 + VertexIndex.Length * 4 +
+							4 + TexIndex.Length * 4 +
+							4 + NormIndex.Length * 4
+						];
+
+						i = 0;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Name.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(Name.ToCharArray(), 0, buffer, i, Name.Length * 2);
+						i += Name.Length * 2;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Mode.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(Mode.ToCharArray(), 0, buffer, i, Mode.Length * 2);
+						i += Mode.Length * 2;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(ColorDataNew.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(ColorDataNew, 0, buffer, i, ColorDataNew.Length * 4);
+						i += ColorDataNew.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexDataNew.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(VertexDataNew, 0, buffer, i, VertexDataNew.Length * 4);
+						i += VertexDataNew.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(TexDataNew.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(TexDataNew, 0, buffer, i, TexDataNew.Length * 4);
+						i += TexDataNew.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormDataNew.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(NormDataNew, 0, buffer, i, NormDataNew.Length * 4);
+						i += NormDataNew.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexIndex.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(VertexIndex, 0, buffer, i, VertexIndex.Length * 4);
+						i += VertexIndex.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(TexIndex.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(TexIndex, 0, buffer, i, TexIndex.Length * 4);
+						i += TexIndex.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormIndex.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(NormIndex, 0, buffer, i, NormIndex.Length * 4);
+
+						await sw.BaseStream.WriteAsync(buffer, 0, buffer.Length);
 					}
 				}
 			}
 		}
 
+		// загружаем из формата движка .bem
 		private void GetCache(string path) {
 			if (sys_CacheModel > 0) {
-				// загружаем из формата движка .bem
-				using (System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.OpenOrCreate)) {
+				using (System.IO.StreamReader sr = new System.IO.StreamReader(new System.IO.BufferedStream(System.IO.File.OpenRead(path), 1024*1024))) {
 					if (sys_CacheModel == 2) {
-						BusEngine.Model model = binarySerializer.Deserialize(fs) as BusEngine.Model;
+						char[] split = new char[1] {'|'};
+						int i, l, ii;
+						float x, y, z, w;
+						string line = "", type = "";
+						string[] result;
 
-						Name = model.Name;
-						Mode = model.Mode;
-						ColorData = model.ColorData;
-						VertexData = model.VertexData;
-						TexData = model.TexData;
-						NormData = model.NormData;
-						VertexIndex = model.VertexIndex;
-						TexIndex = model.TexIndex;
-						NormIndex = model.NormIndex;
-					} else if (sys_CacheModel == 3) {
-						BusEngine.Model model = xmlSerializer.Deserialize(fs) as BusEngine.Model;
+						System.Collections.Generic.List<BusEngine.Color> ColorDataNew = new System.Collections.Generic.List<BusEngine.Color>();
+						System.Collections.Generic.List<BusEngine.Vector3> VertexDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
+						System.Collections.Generic.List<BusEngine.Vector2> TexDataNew = new System.Collections.Generic.List<BusEngine.Vector2>();
+						System.Collections.Generic.List<BusEngine.Vector3> NormDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
+						System.Collections.Generic.List<int> VertexIndexNew = new System.Collections.Generic.List<int>();
+						System.Collections.Generic.List<int> TexIndexNew = new System.Collections.Generic.List<int>();
+						System.Collections.Generic.List<int> NormIndexNew = new System.Collections.Generic.List<int>();
 
-						Name = model.Name;
-						Mode = model.Mode;
-						ColorData = model.ColorData;
-						VertexData = model.VertexData;
-						TexData = model.TexData;
-						NormData = model.NormData;
-						VertexIndex = model.VertexIndex;
-						TexIndex = model.TexIndex;
-						NormIndex = model.NormIndex;
-					} else {
-						byte[] result = new byte[fs.Length];
-						System.Text.UTF8Encoding temp = new System.Text.UTF8Encoding(true);
-						int readLen;
-						string read = "";
-						while ((readLen = fs.Read(result, 0, result.Length)) > 0) {
-							read += temp.GetString(result, 0, readLen);
+						while (true) {
+							line = sr.ReadLine();
+							if (line == null) {
+								break;
+							}
+
+							if (line == "Name" || line == "Mode" || line == "ColorData" || line == "VertexData" || line == "TexData" || line == "NormData" || line == "VertexIndex" || line == "TexIndex" || line == "NormIndex") {
+								type = line;
+								continue;
+							}
+
+							if (type == "Name") {
+								Name = line;
+							} else if (type == "Mode") {
+								Mode = line;
+							} else if (type == "ColorData") {
+								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
+
+								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
+								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
+								float.TryParse(result[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
+								float.TryParse(result[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out w);
+
+								ColorDataNew.Add(new BusEngine.Color(x, y, z, w));
+							} else if (type == "VertexData") {
+								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
+
+								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
+								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
+								float.TryParse(result[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
+
+								VertexDataNew.Add(new BusEngine.Vector3(x, y, z));
+							} else if (type == "TexData") {
+								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
+
+								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
+								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
+
+								TexDataNew.Add(new BusEngine.Vector2(x, y));
+							} else if (type == "NormData") {
+								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
+
+								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
+								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
+								float.TryParse(result[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
+
+								NormDataNew.Add(new BusEngine.Vector3(x, y, z));
+							} else if (type == "VertexIndex") {
+								int.TryParse(line, out ii);
+
+								VertexIndexNew.Add(ii);
+							} else if (type == "TexIndex") {
+								int.TryParse(line, out ii);
+
+								TexIndexNew.Add(ii);
+							} else if (type == "NormIndex") {
+								int.TryParse(line, out ii);
+
+								NormIndexNew.Add(ii);
+							}
 						}
 
-						string[] reads = read.Split(new string[] {"\r\n", "\n\r", "\n"}, System.StringSplitOptions.RemoveEmptyEntries);
+						l = VertexIndexNew.Count;
 
-						/* Name = reads[0];
-						Mode = reads[1];
-						ColorData = System.Array.ConvertAll(reads[3], new System.Converter<string, BusEngine.Color>(BusEngine.Color.ToSrgb));
-						BusEngine.Log.Info("rrrrrrrrrr {0}", ColorData);
-						VertexData = System.Array.ConvertAll(reads[3], float.Parse);
-						TexData = System.Array.ConvertAll(reads[4], float.Parse);
-						NormData = System.Array.ConvertAll(reads[5], float.Parse);
-						VertexIndex = System.Array.ConvertAll(reads[6], int.Parse);
-						TexIndex = System.Array.ConvertAll(reads[7], int.Parse);
-						NormIndex = System.Array.ConvertAll(reads[8], int.Parse); */
+						ColorData = new BusEngine.Color[l];
+						VertexData = new BusEngine.Vector3[l];
+						TexData = new BusEngine.Vector2[l];
+						NormData = new BusEngine.Vector3[l];
+						VertexIndex = new int[l];
+						TexIndex = new int[l];
+						NormIndex = new int[l];
+
+						for (i = 0; i < l; i++) {
+							ColorData[i] = ColorDataNew[i];
+							VertexData[i] = VertexDataNew[i];
+							TexData[i] = TexDataNew[i];
+							NormData[i] = NormDataNew[i];
+							VertexIndex[i] = VertexIndexNew[i];
+							TexIndex[i] = TexIndexNew[i];
+							NormIndex[i] = NormIndexNew[i];
+						}
+					} else {
+						int p = 0, i, l;
+
+						byte[] text, buffer = new byte[sr.BaseStream.Length];
+
+						sr.BaseStream.Read(buffer, 0, buffer.Length);
+
+						l = System.BitConverter.ToInt32(buffer, p);
+						p += 4;
+						text = new byte[l];
+						for (i = 0; i < l; i++) {
+							text[i] = buffer[p];
+							p +=2;
+						}
+						Name = System.Text.Encoding.UTF8.GetString(text);
+
+						l = System.BitConverter.ToInt32(buffer, p);
+						p += 4;
+						text = new byte[l];
+						for (i = 0; i < l; i++) {
+							text[i] = buffer[p];
+							p +=2;
+						}
+						Mode = System.Text.Encoding.UTF8.GetString(text);
+
+						l = System.BitConverter.ToInt32(buffer, p) / 4;
+						ColorData = new BusEngine.Color[l];
+						for (i = 0; i < l; i++) {
+							ColorData[i] = new BusEngine.Color(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
+						}
+						p += 4;
+
+						l = System.BitConverter.ToInt32(buffer, p) / 3;
+						VertexData = new BusEngine.Vector3[l];
+						for (i = 0; i < l; i++) {
+							VertexData[i] = new BusEngine.Vector3(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
+						}
+						p += 4;
+
+						l = System.BitConverter.ToInt32(buffer, p) / 2;
+						TexData = new BusEngine.Vector2[l];
+						for (i = 0; i < l; i++) {
+							TexData[i] = new BusEngine.Vector2(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
+						}
+						p += 4;
+
+						l = System.BitConverter.ToInt32(buffer, p) / 3;
+						NormData = new BusEngine.Vector3[l];
+						for (i = 0; i < l; i++) {
+							NormData[i] = new BusEngine.Vector3(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
+						}
+						p += 4;
+
+						l = System.BitConverter.ToInt32(buffer, p);
+						VertexIndex = new int[l];
+						for (i = 0; i < l; i++) {
+							VertexIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
+						}
+						p += 4;
+
+						l = System.BitConverter.ToInt32(buffer, p);
+						TexIndex = new int[l];
+						for (i = 0; i < l; i++) {
+							p -= 4;
+							TexIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
+						}
+						p += 4;
+
+						l = System.BitConverter.ToInt32(buffer, p);
+						NormIndex = new int[l];
+						for (i = 0; i < l; i++) {
+							NormIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
+						}
 					}
 				}
 			}
@@ -4135,7 +4328,7 @@ BusEngine.Shader
 				}
 
 				// Element Buffer Object (EBO)
-				if (VertexIndex != null) {
+				if (1 == 0 && VertexIndex != null) {
 					EBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
 					//OpenTK.Graphics.OpenGL.BufferTarget.ParameterBuffer
 					//OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer
@@ -4688,7 +4881,7 @@ namespace BusEngine {
 BusEngine.Log
 */
     /** API BusEngine.Shader */
-	public class Shader2 : System.IDisposable {
+	public class Shader {
 		public string Vert = "";
 		public string Vertex = "";
 		public string Tesc = "";
@@ -4703,82 +4896,7 @@ BusEngine.Log
 		public string Compute = "";
 		public string Incl = "";
 		public string Include = "";
-		public int Program;
-
-		public Shader2(string vert = "", string vertex = "", string tesc = "", string tescontrol = "", string tess = "", string tessellation = "", string geom = "", string geometry = "", string frag = "", string fragment = "", string comp = "", string compute = "", string incl = "", string include = "") {
-			if (!string.IsNullOrWhiteSpace(vert)) {
-				Vert = vert;
-				Vertex = vert;
-			}
-			if (!string.IsNullOrWhiteSpace(vertex)) {
-				Vert = vertex;
-				Vertex = vertex;
-			}
-
-			if (!string.IsNullOrWhiteSpace(tesc)) {
-				Tesc = tesc;
-				Tescontrol = tesc;
-			}
-			if (!string.IsNullOrWhiteSpace(tescontrol)) {
-				Tesc = tescontrol;
-				Tescontrol = tescontrol;
-			}
-
-			if (!string.IsNullOrWhiteSpace(tess)) {
-				Tess = tess;
-				Tessellation = tess;
-			}
-			if (!string.IsNullOrWhiteSpace(tessellation)) {
-				Tess = tessellation;
-				Tessellation = tessellation;
-			}
-
-			if (!string.IsNullOrWhiteSpace(geom)) {
-				Geom = geom;
-				Geometry = geom;
-			}
-			if (!string.IsNullOrWhiteSpace(geometry)) {
-				Geom = geometry;
-				Geometry = geometry;
-			}
-
-			if (!string.IsNullOrWhiteSpace(frag)) {
-				Frag = frag;
-				Fragment = frag;
-			}
-			if (!string.IsNullOrWhiteSpace(fragment)) {
-				Frag = fragment;
-				Fragment = fragment;
-			}
-
-			if (!string.IsNullOrWhiteSpace(comp)) {
-				Comp = comp;
-				Compute = comp;
-			}
-			if (!string.IsNullOrWhiteSpace(compute)) {
-				Comp = compute;
-				Compute = compute;
-			}
-
-			if (!string.IsNullOrWhiteSpace(incl)) {
-				Incl = incl;
-				Include = incl;
-			}
-			if (!string.IsNullOrWhiteSpace(include)) {
-				Incl = include;
-				Include = include;
-			}
-
-			Program = this.GenProgram(
-				vertex: Vertex,
-				tescontrol: Tescontrol,
-				tessellation: Tessellation,
-				geometry: Geometry,
-				fragment: Fragment,
-				compute: Compute, 
-				include: Include
-			);
-		}
+		public int Program { get; private set; }
 
 		private int CompileShader(OpenTK.Graphics.OpenGL.ShaderType type, string source = "") {
 			int success, shader = OpenTK.Graphics.OpenGL.GL.CreateShader(type);
@@ -4804,7 +4922,7 @@ BusEngine.Log
 
 			// для управления вершинами полигона
 			if (!string.IsNullOrWhiteSpace(vertex)) {
-				BusEngine.Log.Info("vertex");
+				//BusEngine.Log.Info("vertex");
 				vert = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.VertexShader, vertex);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, vert);
 			} else {
@@ -4812,7 +4930,7 @@ BusEngine.Log
 			}
 
 			if (!string.IsNullOrWhiteSpace(tescontrol)) {
-				BusEngine.Log.Info("tescontrol");
+				//BusEngine.Log.Info("tescontrol");
 				tesc = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessControlShader, tescontrol);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, tesc);
 			} else {
@@ -4821,7 +4939,7 @@ BusEngine.Log
 
 			// для создания дополнительных полигонов в целях сглаживания краёв
 			if (!string.IsNullOrWhiteSpace(tessellation)) {
-				BusEngine.Log.Info("tessellation");
+				//BusEngine.Log.Info("tessellation");
 				tess = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessEvaluationShader, tessellation);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, tess);
 			} else {
@@ -4830,7 +4948,7 @@ BusEngine.Log
 
 			// для управления группой треугольных полигонов (в зависимости от видеокарты до 128 вершин = 42 полигона), увеличение полигонов через этот шейдер - повышает производительность
 			if (!string.IsNullOrWhiteSpace(geometry)) {
-				BusEngine.Log.Info("geometry");
+				//BusEngine.Log.Info("geometry");
 				geom = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.GeometryShader, geometry);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, geom);
 			} else {
@@ -4839,7 +4957,7 @@ BusEngine.Log
 
 			// для управления каждым пикселем экрана (управление тенями, освещением, отражением, цветом, текстурами и т.д.)
 			if (!string.IsNullOrWhiteSpace(fragment)) {
-				BusEngine.Log.Info("fragment");
+				//BusEngine.Log.Info("fragment");
 				frag = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.FragmentShader, fragment);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, frag);
 			} else {
@@ -4848,7 +4966,7 @@ BusEngine.Log
 
 			// для инных вычеслений (генерация частиц, изображений) https://steps3d.narod.ru/tutorials/compute-shaders-tutorial.html
 			if (!string.IsNullOrWhiteSpace(compute)) {
-				BusEngine.Log.Info("compute");
+				//BusEngine.Log.Info("compute");
 				comp = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, compute);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, comp);
 			} else {
@@ -4857,7 +4975,7 @@ BusEngine.Log
 
 			// для подключения разлчных функций
 			if (!string.IsNullOrWhiteSpace(include)) {
-				BusEngine.Log.Info("include");
+				//BusEngine.Log.Info("include");
 				incl = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, include);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, incl);
 			} else {
@@ -4909,11 +5027,88 @@ BusEngine.Log
 			return program;
 		}
 
+		public Shader() {}
+
+		public Shader(string vert = "", string vertex = "", string tesc = "", string tescontrol = "", string tess = "", string tessellation = "", string geom = "", string geometry = "", string frag = "", string fragment = "", string comp = "", string compute = "", string incl = "", string include = "") : this() {
+			if (!string.IsNullOrWhiteSpace(vert)) {
+				this.Vert = vert;
+				this.Vertex = vert;
+			}
+			if (!string.IsNullOrWhiteSpace(vertex)) {
+				this.Vert = vertex;
+				this.Vertex = vertex;
+			}
+
+			if (!string.IsNullOrWhiteSpace(tesc)) {
+				this.Tesc = tesc;
+				this.Tescontrol = tesc;
+			}
+			if (!string.IsNullOrWhiteSpace(tescontrol)) {
+				this.Tesc = tescontrol;
+				this.Tescontrol = tescontrol;
+			}
+
+			if (!string.IsNullOrWhiteSpace(tess)) {
+				this.Tess = tess;
+				this.Tessellation = tess;
+			}
+			if (!string.IsNullOrWhiteSpace(tessellation)) {
+				this.Tess = tessellation;
+				this.Tessellation = tessellation;
+			}
+
+			if (!string.IsNullOrWhiteSpace(geom)) {
+				this.Geom = geom;
+				this.Geometry = geom;
+			}
+			if (!string.IsNullOrWhiteSpace(geometry)) {
+				this.Geom = geometry;
+				this.Geometry = geometry;
+			}
+
+			if (!string.IsNullOrWhiteSpace(frag)) {
+				this.Frag = frag;
+				this.Fragment = frag;
+			}
+			if (!string.IsNullOrWhiteSpace(fragment)) {
+				this.Frag = fragment;
+				this.Fragment = fragment;
+			}
+
+			if (!string.IsNullOrWhiteSpace(comp)) {
+				this.Comp = comp;
+				this.Compute = comp;
+			}
+			if (!string.IsNullOrWhiteSpace(compute)) {
+				this.Comp = compute;
+				this.Compute = compute;
+			}
+
+			if (!string.IsNullOrWhiteSpace(incl)) {
+				this.Incl = incl;
+				this.Include = incl;
+			}
+			if (!string.IsNullOrWhiteSpace(include)) {
+				this.Incl = include;
+				this.Include = include;
+			}
+
+			this.Program = this.GenProgram(
+				vertex: Vertex,
+				tescontrol: Tescontrol,
+				tessellation: Tessellation,
+				geometry: Geometry,
+				fragment: Fragment,
+				compute: Compute, 
+				include: Include
+			);
+		}
+
 		public void Dispose() {
 
 		}
 
-		~Shader2() {
+		~Shader() {
 			BusEngine.Log.Info("Shader ~");
 		}
 	}
