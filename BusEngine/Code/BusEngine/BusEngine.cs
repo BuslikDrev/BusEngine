@@ -4103,7 +4103,7 @@ BusEngine.Shader
 						text = new byte[l];
 						for (i = 0; i < l; i++) {
 							text[i] = buffer[p];
-							p +=2;
+							p += 2;
 						}
 						Name = System.Text.Encoding.UTF8.GetString(text);
 
@@ -4112,7 +4112,7 @@ BusEngine.Shader
 						text = new byte[l];
 						for (i = 0; i < l; i++) {
 							text[i] = buffer[p];
-							p +=2;
+							p += 2;
 						}
 						Mode = System.Text.Encoding.UTF8.GetString(text);
 
@@ -4154,7 +4154,6 @@ BusEngine.Shader
 						l = System.BitConverter.ToInt32(buffer, p);
 						TexIndex = new int[l];
 						for (i = 0; i < l; i++) {
-							p -= 4;
 							TexIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
 						}
 						p += 4;
