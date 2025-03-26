@@ -122,7 +122,7 @@ namespace BusEngine {
 
 		public ProjectDefault() {
 			Setting = new System.Collections.Generic.Dictionary<string, dynamic>(5, System.StringComparer.OrdinalIgnoreCase) {
-				{"console_commands", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
+				{"console_commands", new System.Collections.Generic.Dictionary<string, string>(30, System.StringComparer.OrdinalIgnoreCase) {
 					{"sys_Spec", "1"},                    // Выбор уровня настроек графики
 					{"sys_VSync", "1"},                   // Вертикальная синхронизация
 					{"sys_FPS", "100"},                   // Частота монитора для регулировки единицы измерения (скорости)
@@ -148,7 +148,7 @@ namespace BusEngine {
 					{"google_default_client_secret", ""}, // Секретный ключ пользователя API приложения Google
 					{"g_texture_filtering", "0"},         // фильтрация текстур 0 - отключено, 1 - линейная, 2 - билинейная, 3 трилинейная, 4 - анизотропная, 5 - 2х анизотропная, 6 - 4х анизотропная, 7 - 8х анизотропная, 8 - 16х анизотропная
 				}},
-				{"console_variables", new System.Collections.Generic.Dictionary<string, string>(20, System.StringComparer.OrdinalIgnoreCase) {
+				{"console_variables", new System.Collections.Generic.Dictionary<string, string>(30, System.StringComparer.OrdinalIgnoreCase) {
 					{"sys_Spec", "1"},
 					{"sys_VSync", "1"},
 					{"sys_FPS", "100"},
@@ -3478,30 +3478,45 @@ namespace BusEngine {
 /*
 Зависит от плагинов:
 BusEngine.Log
+BusEngine.Material
+BusEngine.Matrix
 BusEngine.Shader
+BusEngine.Texturer
+BusEngine.Vector
+OpenTK
 */
 	/** API BusEngine.Model */
 	public class Model : System.IDisposable {
 		private bool BufferStatus = false;
-		//private OpenTK.Graphics.OpenGL.BeginMode BeginMode;
-		private OpenTK.Graphics.OpenGL.PrimitiveType PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
-		public static int[] VAOs = new int[0];
+		//private OpenTK.Graphics.OpenGL.BeginMode BeginMode = OpenTK.Graphics.OpenGL.BeginMode.Triangles;
+		//private OpenTK.Graphics.OpenGL.PrimitiveType PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+		private OpenTK.Graphics.OpenGL.PrimitiveType[] PrimitiveType;
+		public int[] VAOs;
+		public int[][] TIs;
 		private bool Loaded;
 
 		public static int Count { get; private set; }
 		public static int TrianglesCount { get; private set; }
 		public static int QuadsCount { get; private set; }
 		public static int PolygonsCount { get; private set; }
+		public static int TexturesCount { get; private set; }
 
-		public BusEngine.Color[] ColorData;
-		public BusEngine.Vector3[] VertexData;
-		public BusEngine.Vector2[] TexData;
-		public BusEngine.Vector3[] NormData;
-		public int[] VertexIndex;
-		public int[] TexIndex;
-		public int[] NormIndex;
+		public BusEngine.Color[][] ColorData;
+		public BusEngine.Vector3[][] VertexData;
+		public BusEngine.Vector2[][] TexData;
+		public BusEngine.Vector3[][] NormData;
+		public int[][] VertexIndex;
+		public int[][] TexIndex;
+		public int[][] NormIndex;
 
-		public string Mode { get; set; }
+		private float[] ColorDataDefault;
+		private float[] VertexDataDefault;
+		private float[] TexDataDefault;
+		private float[] NormDataDefault;
+		public string[] Mode;
+		public string[] Groups;
+		public string[] Textures;
+
 		public OpenTK.Platform.IWindowInfo Context;
 		public string Url = "";
 		public string Name = "";
@@ -3517,9 +3532,10 @@ BusEngine.Shader
 		public float Width;
 		public float Length;
 
-		public BusEngine.Material Material;
+		//public BusEngine.Material Material;
+		public string Material;
 		public OpenTK.Matrix4 VP, A = OpenTK.Matrix4.CreateFromAxisAngle(new OpenTK.Vector3(1.0F, 0.0F, 0.0F), OpenTK.MathHelper.Pi / 180.0F * -90), P = OpenTK.Matrix4.CreateTranslation(0.0F, 0.0F, 0.0F);
-		private int CBO, VAO, VBO, EBO, progA, progPp, progVP, progtime, progmouse, progscroll, progresolution;
+		private int VAO, CBO, VBO, TBO, NBO, EBO, progColorDefault, progTex, progA, progPp, progVP, progtime, progmouse, progscroll, progresolution;
 		private int sys_CacheModel;
 
 		public Model() {
@@ -3537,9 +3553,15 @@ BusEngine.Shader
 			Url = url;
 			Name = name;
 			Shader = shader;
+			VAOs = new int[0];
+			TIs = new int[0][];
+			PrimitiveType = new OpenTK.Graphics.OpenGL.PrimitiveType[1];
+			Mode = new string[1];
+			Groups = new string[1];
+			Textures = new string[1];
 
-			if (Shader.GetType().GetField("Program") != null || Shader.GetType().GetProperty("Program") != null) {
-				this.Program = Shader.Program;
+			if (shader != null) {
+				this.Program = shader.GenProgram();
 			}
 
 			// поворот
@@ -3598,10 +3620,10 @@ BusEngine.Shader
 			#endif
 
 			string filename = System.IO.Path.GetFileNameWithoutExtension(url);
-			string path = System.IO.Path.GetDirectoryName(url) + '/' + filename + ".bem";
+			string path = System.IO.Path.GetDirectoryName(url) + '/';
 
 			if (System.IO.Path.GetFileName(url) == filename + ".bem") {
-				url = path;
+				url = path + filename + ".bem";
 			}
 
 			if (!System.IO.File.Exists(url)) {
@@ -3611,29 +3633,128 @@ BusEngine.Shader
 				System.Console.ForegroundColor = cc;
 
 				Loaded = false;
-			} else if (sys_CacheModel > 0 && System.IO.File.Exists(path)) {
-				GetCache(path);
+			} else if (sys_CacheModel > 0 && System.IO.File.Exists(path + filename + ".bem")) {
+				GetCache(path + filename + ".bem");
 
 				if (VertexData != null) {
 					Loaded = true;
 				}
 			} else {
 				using (System.IO.StreamReader sr = new System.IO.StreamReader(new System.IO.BufferedStream(System.IO.File.OpenRead(url), 1024*1024))) {
-					char[] split = new char[1] {'/'};
-					int i = 0, ii, l, vi = 0;
+					int g = 0, vi = 0, ti = 0, ni = 0, i, ii = 0, l, all = 0;
 					float x, y, z;
-					string line;
-					string[] values;
+					string line, key = "";
+					string[] values, val;
 
-					// временные вершины - точки
 					System.Collections.Generic.List<BusEngine.Vector3> VertexDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
 					System.Collections.Generic.List<BusEngine.Vector2> TexDataNew = new System.Collections.Generic.List<BusEngine.Vector2>();
 					System.Collections.Generic.List<BusEngine.Vector3> NormDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
 					System.Collections.Generic.List<string> index = new System.Collections.Generic.List<string>();
 
+					ColorData = new BusEngine.Color[1][];
+					VertexData = new BusEngine.Vector3[1][];
+					TexData = new BusEngine.Vector2[1][];
+					NormData = new BusEngine.Vector3[1][];
+					VertexIndex = new int[1][];
+					TexIndex = new int[1][];
+					NormIndex = new int[1][];
+
 					while (true) {
 						line = sr.ReadLine();
 						if (line == null) {
+							// конец
+							if (VertexDataNew.Count > 0) {
+								if (all > 4) {
+									Mode[g] = "polygon";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Polygon;
+								} else if (all == 4) {
+									Mode[g] = "quads";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Quads;
+								} else if (all == 3) {
+									Mode[g] = "triangles";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+								} else if (all == 2) {
+									Mode[g] = "lines";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Lines;
+								} else if (all == 1) {
+									Mode[g] = "points";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Points;
+								} else {
+									Mode[g] = "triangles";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+								}
+
+								all = index.Count;
+
+								// перегоняем вершины и цвет/текстуры
+								ColorData[g] = new BusEngine.Color[all];
+								VertexData[g] = new BusEngine.Vector3[all];
+								TexData[g] = new BusEngine.Vector2[all];
+								NormData[g] = new BusEngine.Vector3[all];
+
+								// индексы вершин
+								VertexIndex[g] = new int[all];
+								TexIndex[g] = new int[all];
+								NormIndex[g] = new int[all];
+
+								for (i = 0; i < all; i++) {
+									if (Mode[g] == "triangles") {
+										if ((i % 2) == 0) {
+											ColorData[g][i] = new BusEngine.Color(210, 210, 210, 255);
+										} else {
+											ColorData[g][i] = new BusEngine.Color(140, 140, 140, 255);
+										}
+										if ((i % 4) == 0) {
+											ColorData[g][i] = new BusEngine.Color(255, 0, 0, 255);
+										}
+									} else {
+										//ColorData[g][i] = new BusEngine.Color(210, 210, 210, 255);
+									}
+
+									val = index[i].Split('/');
+
+									int.TryParse(val[0], out ii);
+									ii -= (1 + vi);
+									VertexData[g][i] = new BusEngine.Vector3(VertexDataNew[ii].X, VertexDataNew[ii].Y, VertexDataNew[ii].Z);
+									VertexIndex[g][i] = ii;
+
+									int.TryParse(val[1], out ii);
+									ii -= (1 + ti);
+									TexData[g][i] = new BusEngine.Vector2(TexDataNew[ii].X, TexDataNew[ii].Y);
+									TexIndex[g][i] = ii;
+
+									int.TryParse(val[2], out ii);
+									ii -= (1 + ni);
+									NormData[g][i] = new BusEngine.Vector3(NormDataNew[ii].X, NormDataNew[ii].Y, NormDataNew[ii].Z);
+									NormIndex[g][i] = ii;
+								}
+
+								if (Mode[g] == "quads") {
+									QuadsCount += all/4;
+								} else if (Mode[g] == "triangles") {
+									TrianglesCount += all/3;
+								} else {
+									PolygonsCount += all/4;
+								}
+
+								/* System.Array.Resize(ref this.PrimitiveType, this.PrimitiveType.Length + 1);
+								System.Array.Resize(ref this.Mode, this.Mode.Length + 1);
+								System.Array.Resize(ref this.Groups, this.Groups.Length + 1);
+								System.Array.Resize(ref this.ColorData, this.ColorData.Length + 1);
+								System.Array.Resize(ref this.VertexData, this.VertexData.Length + 1);
+								System.Array.Resize(ref this.TexData, this.TexData.Length + 1);
+								System.Array.Resize(ref this.NormData, this.NormData.Length + 1);
+								System.Array.Resize(ref this.VertexIndex, this.VertexIndex.Length + 1);
+								System.Array.Resize(ref this.TexIndex, this.TexIndex.Length + 1);
+								System.Array.Resize(ref this.NormIndex, this.NormIndex.Length + 1); */
+
+								VertexDataNew.Clear();
+								TexDataNew.Clear();
+								NormDataNew.Clear();
+								index.Clear();
+								g++;
+							}
+
 							break;
 						}
 
@@ -3641,7 +3762,8 @@ BusEngine.Shader
 							continue;
 						}
 
-						values = System.Text.RegularExpressions.Regex.Split(line, @"\s+");
+						//values = System.Text.RegularExpressions.Regex.Split(line, @"\s+");
+						values = line.Split(' ');
 
 						l = values.Length;
 
@@ -3649,147 +3771,214 @@ BusEngine.Shader
 							continue;
 						}
 
-						if (values[0] == "0") {
-							Name = values[1];
+						if (values[0] == "o") {
+							// конец
+							if (VertexDataNew.Count > 0) {
+								if (all > 4) {
+									Mode[g] = "polygon";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Polygon;
+								} else if (all == 4) {
+									Mode[g] = "quads";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Quads;
+								} else if (all == 3) {
+									Mode[g] = "triangles";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+								} else if (all == 2) {
+									Mode[g] = "lines";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Lines;
+								} else if (all == 1) {
+									Mode[g] = "points";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Points;
+								} else {
+									Mode[g] = "triangles";
+									PrimitiveType[g] = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+								}
+
+								all = index.Count;
+
+								// перегоняем вершины и цвет/текстуры
+								ColorData[g] = new BusEngine.Color[all];
+								VertexData[g] = new BusEngine.Vector3[all];
+								TexData[g] = new BusEngine.Vector2[all];
+								NormData[g] = new BusEngine.Vector3[all];
+
+								// индексы вершин
+								VertexIndex[g] = new int[all];
+								TexIndex[g] = new int[all];
+								NormIndex[g] = new int[all];
+
+								for (i = 0; i < all; i++) {
+									if (Mode[g] == "triangles") {
+										if ((i % 2) == 0) {
+											ColorData[g][i] = new BusEngine.Color(210, 210, 210, 255);
+										} else {
+											ColorData[g][i] = new BusEngine.Color(140, 140, 140, 255);
+										}
+										if ((i % 4) == 0) {
+											ColorData[g][i] = new BusEngine.Color(255, 0, 0, 255);
+										}
+									}
+
+									val = index[i].Split('/');
+
+									int.TryParse(val[0], out ii);
+									ii -= (1 + vi);
+									VertexData[g][i] = new BusEngine.Vector3(VertexDataNew[ii].X, VertexDataNew[ii].Y, VertexDataNew[ii].Z);
+									VertexIndex[g][i] = ii;
+
+									int.TryParse(val[1], out ii);
+									ii -= (1 + ti);
+									TexData[g][i] = new BusEngine.Vector2(TexDataNew[ii].X, TexDataNew[ii].Y);
+									TexIndex[g][i] = ii;
+
+									int.TryParse(val[2], out ii);
+									ii -= (1 + ni);
+									NormData[g][i] = new BusEngine.Vector3(NormDataNew[ii].X, NormDataNew[ii].Y, NormDataNew[ii].Z);
+									NormIndex[g][i] = ii;
+								}
+
+								if (Mode[g] == "quads") {
+									QuadsCount += all/4;
+								} else if (Mode[g] == "triangles") {
+									TrianglesCount += all/3;
+								} else {
+									PolygonsCount += all/4;
+								}
+
+								System.Array.Resize(ref this.PrimitiveType, this.PrimitiveType.Length + 1);
+								System.Array.Resize(ref this.Mode, this.Mode.Length + 1);
+								System.Array.Resize(ref this.Groups, this.Groups.Length + 1);
+								System.Array.Resize(ref this.ColorData, this.ColorData.Length + 1);
+								System.Array.Resize(ref this.VertexData, this.VertexData.Length + 1);
+								System.Array.Resize(ref this.TexData, this.TexData.Length + 1);
+								System.Array.Resize(ref this.NormData, this.NormData.Length + 1);
+								System.Array.Resize(ref this.VertexIndex, this.VertexIndex.Length + 1);
+								System.Array.Resize(ref this.TexIndex, this.TexIndex.Length + 1);
+								System.Array.Resize(ref this.NormIndex, this.NormIndex.Length + 1);
+
+								vi += VertexDataNew.Count;
+								ti += TexDataNew.Count;
+								ni += NormDataNew.Count;
+
+								VertexDataNew.Clear();
+								TexDataNew.Clear();
+								NormDataNew.Clear();
+								index.Clear();
+
+								g++;
+							}
+
+							// начало
+							if (Name == "") {
+								Name += values[1] + " ";
+							}
+
+							Groups[g] = values[1];
+						} else if (values[0] == "mtllib") {
+							//BusEngine.Log.Info("mtllib {0}");
+							if (Material == "") {
+								Material = values[1];
+							}
 						} else if (values[0] == "v") {
+							//BusEngine.Log.Info("v {0}");
 							float.TryParse(values[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
 							float.TryParse(values[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
 							float.TryParse(values[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
 
 							VertexDataNew.Add(new BusEngine.Vector3(x, y, z));
 						} else if (values[0] == "vt") {
+							//BusEngine.Log.Info("vt {0}");
 							float.TryParse(values[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
 							float.TryParse(values[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
 
 							TexDataNew.Add(new BusEngine.Vector2(x, y));
 						} else if (values[0] == "vn") {
+							//BusEngine.Log.Info("vn {0}");
 							float.TryParse(values[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
 							float.TryParse(values[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
 							float.TryParse(values[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
 
 							NormDataNew.Add(new BusEngine.Vector3(x, y, z));
 						} else if (values[0] == "f") {
-							i = l;
+							//BusEngine.Log.Info("f {0}");
 
 							for (ii = 1; ii < l; ii++) {
 								index.Add(values[ii]);
-								vi++;
 							}
+
+							all = l - 1;
 						}
 					}
 
-					if (i > 5) {
-						Mode = "polygon";
-					} else if (i == 5) {
-						Mode = "quads";
-					} else if (i == 4) {
-						Mode = "triangles";
-					} else if (i == 3) {
-						Mode = "lines";
-					} else if (i == 2) {
-						Mode = "points";
-					}
-
-					// перегоняем вершины и цвет/текстуры
-					if (Mode == "triangles") {
-						ColorData = new BusEngine.Color[vi];
-					} else {
-						ColorData = new BusEngine.Color[24] {
-							new BusEngine.Color(192, 192, 192, 255),
-							new BusEngine.Color(192, 192, 192, 255),
-							new BusEngine.Color(192, 192, 192, 255),
-							new BusEngine.Color(192, 192, 192, 255),
-							//new BusEngine.Color(192, 192, 192, 255),
-							//new BusEngine.Color(192, 192, 192, 255),
-
-							new BusEngine.Color(240, 255, 240, 255),
-							new BusEngine.Color(240, 255, 240, 255),
-							new BusEngine.Color(240, 255, 240, 255),
-							new BusEngine.Color(240, 255, 240, 255),
-							//new BusEngine.Color(240, 255, 240, 255),
-							//new BusEngine.Color(240, 255, 240, 255),
-
-							new BusEngine.Color(255, 228, 181, 255),
-							new BusEngine.Color(255, 228, 181, 255),
-							new BusEngine.Color(255, 228, 181, 255),
-							new BusEngine.Color(255, 228, 181, 255),
-							//new BusEngine.Color(255, 228, 181, 255),
-							//new BusEngine.Color(255, 228, 181, 255),
-
-							new BusEngine.Color(205, 92, 92, 255),
-							new BusEngine.Color(205, 92, 92, 255),
-							new BusEngine.Color(205, 92, 92, 255),
-							new BusEngine.Color(205, 92, 92, 255),
-							//new BusEngine.Color(205, 92, 92, 255),
-							//new BusEngine.Color(205, 92, 92, 255),
-
-							new BusEngine.Color(219, 112, 147, 255),
-							new BusEngine.Color(219, 112, 147, 255),
-							new BusEngine.Color(219, 112, 147, 255),
-							new BusEngine.Color(219, 112, 147, 255),
-							//new BusEngine.Color(219, 112, 147, 255),
-							//new BusEngine.Color(219, 112, 147, 255),
-
-							new BusEngine.Color(34, 139, 34, 255),
-							new BusEngine.Color(34, 139, 34, 255),
-							new BusEngine.Color(34, 139, 34, 255),
-							new BusEngine.Color(34, 139, 34, 255),
-							//new BusEngine.Color(34, 139, 34, 255),
-							//new BusEngine.Color(34, 139, 34, 255),
-						};
-					}
-					VertexData = new BusEngine.Vector3[vi];
-					TexData = new BusEngine.Vector2[vi];
-					NormData = new BusEngine.Vector3[vi];
-
-					// индексы вершин
-					VertexIndex = new int[vi];
-					TexIndex = new int[vi];
-					NormIndex = new int[vi];
-
-					for (i = 0, l = index.Count; i < l; i++) {
-						if (Mode == "triangles") {
-							if ((i % 2) == 0) {
-								ColorData[i] = new BusEngine.Color(210, 210, 210, 255);
-							} else {
-								ColorData[i] = new BusEngine.Color(140, 140, 140, 255);
-							}
-							if ((i % 4) == 0) {
-								ColorData[i] = new BusEngine.Color(255, 0, 0, 255);
-							}
-						}
-
-						values = index[i].Split(split);
-
-						int.TryParse(values[0], out ii);
-						ii--;
-						VertexData[i] = new BusEngine.Vector3(VertexDataNew[ii].X, VertexDataNew[ii].Y, VertexDataNew[ii].Z);
-						VertexIndex[i] = ii;
-
-						int.TryParse(values[1], out ii);
-						ii--;
-						TexData[i] = new BusEngine.Vector2(TexDataNew[ii].X, TexDataNew[ii].Y);
-						TexIndex[i] = ii;
-
-						int.TryParse(values[2], out ii);
-						ii--;
-						NormData[i] = new BusEngine.Vector3(NormDataNew[ii].X, NormDataNew[ii].Y, NormDataNew[ii].Z);
-						NormIndex[i] = ii;
-					}
+					System.Array.Resize(ref VAOs, VAOs.Length + g);
+					System.Array.Resize(ref TIs, TIs.Length + g);
 				}
 
+				if (System.IO.File.Exists(path + this.Material)) {
+					this.Material = path + this.Material;
+				} else if (!System.IO.File.Exists(this.Material)) {
+					this.Material = "";
+				}
+
+				/* if (1 == 2 && this.Material != "") {
+					using (System.IO.StreamReader sr = new System.IO.StreamReader(new System.IO.BufferedStream(System.IO.File.OpenRead(this.Material), 1024*1024))) {
+						int g = 0, vi = 0, ti = 0, ni = 0, i, ii, l, all = 0;
+						float x, y, z;
+						string line, key = "";
+						string[] values, val;
+
+						System.Collections.Generic.List<BusEngine.Vector3> VertexDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
+						System.Collections.Generic.List<BusEngine.Vector2> TexDataNew = new System.Collections.Generic.List<BusEngine.Vector2>();
+						System.Collections.Generic.List<BusEngine.Vector3> NormDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
+						System.Collections.Generic.List<string> index = new System.Collections.Generic.List<string>();
+
+						ColorData = new BusEngine.Color[1][];
+						VertexData = new BusEngine.Vector3[1][];
+						TexData = new BusEngine.Vector2[1][];
+						NormData = new BusEngine.Vector3[1][];
+						VertexIndex = new int[1][];
+						TexIndex = new int[1][];
+						NormIndex = new int[1][];
+
+						while (true) {
+							line = sr.ReadLine();
+							if (line == null) {
+
+								break;
+							}
+
+							if (line.StartsWith("#")) {
+								continue;
+							}
+
+							//values = System.Text.RegularExpressions.Regex.Split(line, @"\s+");
+							values = line.Split(' ');
+
+							l = values.Length;
+
+							if (l == 0) {
+								continue;
+							}
+
+							if (values[0] == "o") {
+								
+							}
+						}
+					}
+				} */
+
 				// сохраняем в формат движка .bem
-			#if BUSENGINE_BENCHMARK
-			using (new BusEngine.Benchmark("BusEngine.Model SetCache "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
-			#endif
-				SetCache(path);
-			#if BUSENGINE_BENCHMARK
-			}
-			#endif
+				#if BUSENGINE_BENCHMARK
+				using (new BusEngine.Benchmark("BusEngine.Model SetCache "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+				#endif
+				SetCache(path + filename + ".bem");
+				#if BUSENGINE_BENCHMARK
+				}
+				#endif
 				Loaded = true;
 			}
 
-			if (Mode == "points") {
+			/* if (Mode == "points") {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.Points;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Points;
 			} else if (Mode == "lines") {
@@ -3837,17 +4026,9 @@ BusEngine.Shader
 			} else {
 				//BeginMode = OpenTK.Graphics.OpenGL.BeginMode.Triangles;
 				PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
-			}
+			} */
 
 			Count += 1;
-
-			if (Mode == "quads") {
-				QuadsCount += VertexData.Length/4;
-			} else if (Mode == "triangles") {
-				TrianglesCount += VertexData.Length/3;
-			} else {
-				PolygonsCount += VertexData.Length/4;
-			}
 
 			#if BUSENGINE_BENCHMARK
 			}
@@ -3858,7 +4039,7 @@ BusEngine.Shader
 		private async void SetCache(string path) {
 			if (sys_CacheModel > 0) {
 				// https://ru.stackoverflow.com/questions/1325622/c-%D1%83%D1%81%D0%BA%D0%BE%D1%80%D0%B8%D1%82%D1%8C-%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D1%8C-%D0%B2-%D1%84%D0%B0%D0%B9%D0%BB
-				using (System.IO.StreamWriter sw = new System.IO.StreamWriter(path)) {
+				/* using (System.IO.StreamWriter sw = new System.IO.StreamWriter(path)) {
 					if (sys_CacheModel == 2) {
 						sw.WriteLine("v0.4.0.0");
 						sw.WriteLine("Name");
@@ -3987,14 +4168,14 @@ BusEngine.Shader
 
 						await sw.BaseStream.WriteAsync(buffer, 0, buffer.Length);
 					}
-				}
+				} */
 			}
 		}
 
 		// загружаем из формата движка .bem
 		private void GetCache(string path) {
 			if (sys_CacheModel > 0) {
-				using (System.IO.StreamReader sr = new System.IO.StreamReader(new System.IO.BufferedStream(System.IO.File.OpenRead(path), 1024*1024))) {
+				/* using (System.IO.StreamReader sr = new System.IO.StreamReader(new System.IO.BufferedStream(System.IO.File.OpenRead(path), 1024*1024))) {
 					if (sys_CacheModel == 2) {
 						char[] split = new char[1] {'|'};
 						int i, l, ii;
@@ -4164,51 +4345,132 @@ BusEngine.Shader
 							NormIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
 						}
 					}
-				}
+				} */
 			}
 		}
 
-		private int Texture(string path) {
+		// https://www.cyberforum.ru/opengl/thread3134052.html
+		// http://dreamstatecoding.blogspot.com/2017/02/opengl-4-with-opentk-in-c-part-11-mipmap.html
+		private int Texture(string path, int unit, int id = 0) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model Texture "+ Url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
 
-			int id;
-			//OpenTK.Graphics.OpenGL.GL.GenTextures(1, out id);
-			id = OpenTK.Graphics.OpenGL.GL.GenTexture();
-
-			OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture1);
-			OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, id);
-
-			/* OpenTK.Graphics.ES10.GL.TexParameter(OpenTK.Graphics.ES10.All.Texture2D, OpenTK.Graphics.ES10.All.TextureMinFilter, (int)OpenTK.Graphics.ES10.All.Linear);
-			OpenTK.Graphics.ES10.GL.TexParameter(OpenTK.Graphics.ES10.All.Texture2D, OpenTK.Graphics.ES10.All.TextureMagFilter, (int)OpenTK.Graphics.ES10.All.Linear); */
-
-			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapS, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToBorder);
-			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapT, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.ClampToBorder);
-			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMinFilter, (int)OpenTK.Graphics.OpenGL.TextureMinFilter.Nearest);
-			//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMagFilter, (int)OpenTK.Graphics.OpenGL.TextureMagFilter.Linear);
-
-			//OpenTK.Graphics.OpenGL.GL.GetSamplerParameter(id, OpenTK.Graphics.OpenGL.SamplerParameter.TextureMagFilter, new float[1] {(int)OpenTK.Graphics.OpenGL.TextureMagFilter.Linear});
-			//OpenTK.Graphics.OpenGL.GL.BindSampler(0, id);
+			if (id == 0) {
+				OpenTK.Graphics.OpenGL.GL.GenTextures(unit, out id);
+				//id = OpenTK.Graphics.OpenGL.GL.GenTexture();
+			}
 
 			if (System.IO.File.Exists(path)) {
 				using (System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(path, false)) {
-					System.Drawing.Imaging.BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+					byte[] dataByte, outData;
+					bitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipX);
+					bitmap.SetResolution(16.0F, 16.0F);
+					System.Drawing.Rectangle ract = new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height);
+					System.Drawing.Imaging.BitmapData data = bitmap.LockBits(ract, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+					System.IntPtr ptr = data.Scan0;
+					int bytes  = System.Math.Abs(data.Stride) * bitmap.Height;
 
-					OpenTK.Graphics.OpenGL.GL.TexImage2D(
+					dataByte = new byte[bytes];
+					int index = 100 * 4 + 100 * System.Math.Abs(data.Stride);
+
+BusEngine.Log.Info("tttt {0} {1}", index, System.Math.Abs(data.Stride));
+
+					outData = 1 == 0 ? (byte[])dataByte.Clone() : dataByte;
+
+					System.Runtime.InteropServices.Marshal.Copy(ptr, outData, 0, bytes);
+
+					if (unit == 0) {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture0);
+					} else if (unit == 1) {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture1);
+					} else if (unit == 2) {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture2);
+					} else if (unit == 3) {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture3);
+					} else if (unit == 4) {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture4);
+					} else if (unit == 5) {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture5);
+					} else if (unit == 6) {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture6);
+					} else {
+						OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture7);
+					}
+
+					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, id);
+
+					//OpenTK.Graphics.OpenGL.GL.CreateTextures(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, 1, out id);
+					//OpenTK.Graphics.OpenGL.GL.Ext.TextureImage2D(
+					OpenTK.Graphics.OpenGL.GL.CompressedTexImage2D(
+					//OpenTK.Graphics.OpenGL.GL.TexImage2D(
+						//id,
 						OpenTK.Graphics.OpenGL.TextureTarget.Texture2D,
 						0,
-						OpenTK.Graphics.OpenGL.PixelInternalFormat.Rgba,
+						//OpenTK.Graphics.OpenGL.ExtDirectStateAccess.TransposeProgramMatrixExt,
+						OpenTK.Graphics.OpenGL.InternalFormat.CompressedSrgbAlphaBptcUnorm,
 						bitmap.Width,
 						bitmap.Height,
 						0,
-						OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
-						OpenTK.Graphics.OpenGL.PixelType.UnsignedByte,
-						data.Scan0
+						bytes,
+						outData
 					);
+					
+					//OpenTK.Graphics.OpenGL.ArbTextureCompressionBptc.CompressedSrgbAlphaBptcUnormArb;
 
+					/* //OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.DetailTextureLevelSgis, 1);
+					//OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.DetailTextureModeSgis, 1);
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureBaseLevel, 1);
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMaxLevel, 8);
+					float[] borderColor = { 1.0f, 1.0f, 0.0f, 1.0f };
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureBorderColor, borderColor);
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapS, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapT, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMinFilter, (int)OpenTK.Graphics.OpenGL.TextureMinFilter.LinearMipmapLinear);
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMagFilter, (int)OpenTK.Graphics.OpenGL.TextureMinFilter.LinearMipmapLinear);
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.GenerateMipmap, 8);
+
+					//OpenTK.Graphics.OpenGL.GL.GenerateTextureMipmap(id);
 					OpenTK.Graphics.OpenGL.GL.GenerateMipmap(OpenTK.Graphics.OpenGL.GenerateMipmapTarget.Texture2D);
 
+					//OpenTK.Graphics.OpenGL.GL.GetSamplerParameter(id, OpenTK.Graphics.OpenGL.SamplerParameter.TextureMagFilter, new float[1] {(int)OpenTK.Graphics.OpenGL.TextureMagFilter.Linear});
+
+					//OpenTK.Graphics.OpenGL.GL.BindSampler(id, unit);
+
+					float maxAnisotropy;
+					OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAnisotropy);
+					maxAnisotropy = 1.0f;
+					OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, (OpenTK.Graphics.OpenGL.TextureParameterName)OpenTK.Graphics.OpenGL.ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, maxAnisotropy); */
+
+					//OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.DetailTextureLevelSgis, 1);
+					//OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.DetailTextureModeSgis, 1);
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureBaseLevel, 0);
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMaxLevel, 16);
+					float[] borderColor = { 1.0f, 1.0f, 0.0f, 1.0f };
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureBorderColor, borderColor);
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapS, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapT, (int)OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMinFilter, (int)OpenTK.Graphics.OpenGL.TextureMinFilter.LinearMipmapLinear);
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMagFilter, (int)OpenTK.Graphics.OpenGL.TextureMinFilter.LinearMipmapLinear);
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.GenerateMipmap, 1);
+
+					//OpenTK.Graphics.OpenGL.GL.GenerateTextureMipmap(id);
+					OpenTK.Graphics.OpenGL.GL.GenerateMipmap(OpenTK.Graphics.OpenGL.GenerateMipmapTarget.Texture2D);
+
+					//OpenTK.Graphics.OpenGL.GL.GetSamplerParameter(id, OpenTK.Graphics.OpenGL.SamplerParameter.TextureMagFilter, new float[1] {(int)OpenTK.Graphics.OpenGL.TextureMagFilter.Linear});
+
+					//OpenTK.Graphics.OpenGL.GL.BindSampler(id, unit);
+
+					float maxAnisotropy;
+					OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAnisotropy);
+					maxAnisotropy = 1.0f;
+					OpenTK.Graphics.OpenGL.GL.TextureParameter(id, (OpenTK.Graphics.OpenGL.TextureParameterName)OpenTK.Graphics.OpenGL.ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, maxAnisotropy);
+
+					TexturesCount++;
+
+					//OpenTK.Graphics.OpenGL.GL.DeleteTexture(id);
+
+					System.Runtime.InteropServices.Marshal.Copy(outData, 0, ptr, bytes);
 					bitmap.UnlockBits(data);
 				}
 			}
@@ -4220,159 +4482,286 @@ BusEngine.Shader
 			#endif
 		}
 
-		public void Buffered() {
+		public void Buffered(int g) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model Buffered "+ Url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
 
 			if (Loaded) {
-				BufferStatus = true;
-
-				if (this.Program > 0) {
-					//texture1 = Texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/test0.png");
-					//texture1 = Texture(BusEngine.Engine.DataDirectory + "Textures/Cloud/1.png");
-					/* texture1 = Texture(BusEngine.Engine.DataDirectory + "Textures/Vulcan/1.jpg");
-					OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture0);
-					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture1);
-
-					//texture2 = Texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/hex.png");
-					texture2 = Texture(BusEngine.Engine.DataDirectory + "Textures/Vulcan/2.jpg");
-					OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture1);
-					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture2); */
-
-					/* texture3 = Texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/white_marble1.png");
-					OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture2);
-					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture3);
-
-					texture4 = Texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/roof/texture3.jpg");
-					OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture3);
-					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture4);
-
-					texture5 = Texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/black_marble1.png");
-					OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture4);
-					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture5);
-
-					texture6 = Texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/green_marble1.png");
-					OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture5);
-					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture6);
-
-					texture7 = Texture(BusEngine.Engine.DataDirectory + "Textures/RayMarchingOpenGL/roof/height3.png");
-					OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture6);
-					OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, texture7); */
-
-					// создаём шейдеры
-
-					OpenTK.Graphics.OpenGL.GL.UseProgram(this.Program);
-
-					progA = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "A");
-					progPp = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "P");
-					progVP = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "VP");
-
-					progtime = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_time");
-					progmouse = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_mouse");
-					progscroll = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_scroll");
-					progresolution = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_resolution");
-
-					BusEngine.Log.Info("VAO " + VAO);
-					BusEngine.Log.Info("Program " + Program);
-					BusEngine.Log.Info("progA " + progA);
-					BusEngine.Log.Info("progP " + progPp);
-					BusEngine.Log.Info("progVP " + progVP);
-
-					OpenTK.Graphics.OpenGL.GL.Uniform2(progresolution, new OpenTK.Vector2(BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height));
-
-					OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture1"), 0);
-					OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture2"), 1);
-					OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture3"), 2);
-					OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture4"), 3);
-					OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture5"), 4);
-					OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture6"), 5);
-					OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture7"), 6);
-
-					//OpenTK.Graphics.OpenGL.GL.Arb.CompileShaderInclude(this.Program, 0, new string[3] {BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/hg_sdf.glsl", BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/", "hg_sdf.glsl"}, new int[0] {});
+				if (this.Program == 0) {
+					
 				}
+
+				// создаём шейдеры
+				OpenTK.Graphics.OpenGL.GL.UseProgram(this.Program);
+
+				progTex = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_texture1");
+				progColorDefault = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "ColorDefault");
+
+				progA = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "A");
+				progPp = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "P");
+				progVP = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "VP");
+
+				progtime = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_time");
+				progmouse = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_mouse");
+				progscroll = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_scroll");
+				progresolution = OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "u_resolution");
+
+				//BusEngine.Log.Info("Program " + Program);
+				//BusEngine.Log.Info("progA " + progA);
+				//BusEngine.Log.Info("progP " + progPp);
+				//BusEngine.Log.Info("progVP " + progVP);
+				OpenTK.Graphics.OpenGL.GL.Uniform4(progColorDefault, new OpenTK.Vector4(210.0F/255, 210.0F/255, 210.0F/255, 1.0F));
+				OpenTK.Graphics.OpenGL.GL.Uniform2(progresolution, new OpenTK.Vector2(BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height));
+
+				//OpenTK.Graphics.OpenGL.GL.Arb.CompileShaderInclude(this.Program, 0, new string[3] {BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/hg_sdf.glsl", BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/", "hg_sdf.glsl"}, new int[0] {});
 
 				// Vertex Arrays Object (VAO)
-				VAO = OpenTK.Graphics.OpenGL.GL.GenVertexArray();
-				OpenTK.Graphics.OpenGL.GL.BindVertexArray(VAO);
-				System.Array.Resize(ref VAOs, VAOs.Length + 1);
-				VAOs[VAOs.Length - 1] = VAO;
-				//OpenTK.Graphics.OpenGL.GL.DeleteVertexArray(VAO);
+				OpenTK.Graphics.OpenGL.GL.BindVertexArray(VAOs[g]);
+				//OpenTK.Graphics.OpenGL.GL.DeleteVertexArray(VAOs[g]);
+				BusEngine.Log.Info("VAO " + VAOs[g]);
 
 				// получаем id атрибут по названию
-				int locationPosition = OpenTK.Graphics.OpenGL.GL.GetAttribLocation(this.Program, "p");
-				int locationColor = OpenTK.Graphics.OpenGL.GL.GetAttribLocation(this.Program, "c");
+				//int locationColorData, locationVertexData, locationTexData, locationNormData;
 
-				// включаем атрибуты
-				OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(locationPosition);
-				OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(locationColor);
-
-				// Vertex Buffer Object (VBO)
-				if (VertexData != null) {
-					VBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
-					//VBO = OpenTK.Graphics.OpenGL.GL.GenVertexArray();
-					OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, VBO);
-					OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, VertexData.Length * sizeof(float) * 3, VertexData, OpenTK.Graphics.OpenGL.BufferUsageHint.StaticDraw);
-					OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(locationPosition, 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 3, 0);
-					//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(VBO);
-				}
+				int locationColorData = OpenTK.Graphics.OpenGL.GL.GetAttribLocation(this.Program, "ColorData");
+				int locationVertexData = OpenTK.Graphics.OpenGL.GL.GetAttribLocation(this.Program, "VertexData");
+				int locationTexData = OpenTK.Graphics.OpenGL.GL.GetAttribLocation(this.Program, "TexData");
+				int locationNormData = OpenTK.Graphics.OpenGL.GL.GetAttribLocation(this.Program, "NormData");
 
 				// Color Buffer Object (CBO)
-				if (ColorData != null) {
+				if (ColorData.Length >= g) {
 					CBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
 					OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, CBO);
-					OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, ColorData.Length * sizeof(float) * 4, ColorData, OpenTK.Graphics.OpenGL.BufferUsageHint.StaticDraw);
-					OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(locationColor, 4, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 4, 0);
+					OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, ColorData[g].Length * sizeof(float) * 4, ColorData[g], OpenTK.Graphics.OpenGL.BufferUsageHint.DynamicDraw);
+					OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(locationColorData, 4, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 4, 0);
 					//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(CBO);
 				}
 
-				// Element Buffer Object (EBO)
-				if (1 == 0 && VertexIndex != null) {
-					EBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
-					//OpenTK.Graphics.OpenGL.BufferTarget.ParameterBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.PixelPackBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.PixelUnpackBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.UniformBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.TextureBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.TransformFeedbackBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.CopyReadBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.CopyWriteBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.DrawIndirectBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.ShaderStorageBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.DispatchIndirectBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.QueryBuffer
-					//OpenTK.Graphics.OpenGL.BufferTarget.AtomicCounterBuffer
-					OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer, EBO);
-					OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer, VertexIndex.Length * sizeof(int), VertexIndex, OpenTK.Graphics.OpenGL.BufferUsageHint.StaticDraw);
-					//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(EBO);
+				OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(locationColorData);
+
+				// Vertex Buffer Object (VBO)
+				if (VertexData.Length >= g) {
+						VBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+						OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, VBO);
+						OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, VertexData[g].Length * sizeof(float) * 3, VertexData[g], OpenTK.Graphics.OpenGL.BufferUsageHint.DynamicDraw);
+						OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(locationVertexData, 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 3, 0);
+						//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(VBO);
 				}
+
+				OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(locationVertexData);
+
+
+				// Textures Buffer Object (TBO)
+				if (TexData.Length >= g) {
+					/* foreach (BusEngine.Vector2 x in TexData[g]) {
+						//BusEngine.Log.Info("govno {0} {1} {3}", x.X, x.Y);
+					} */
+						TBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+						OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, TBO);
+						OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, TexData[g].Length * sizeof(float) * 2, TexData[g], OpenTK.Graphics.OpenGL.BufferUsageHint.DynamicDraw);
+						OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(locationTexData, 2, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 2, 0);
+						//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(VBO);
+				}
+
+				OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(locationTexData);
+
+
+				// Normal Buffer Object (NBO)
+				if (NormData.Length >= g+1) {
+						NBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+						OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, NBO);
+						OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, NormData[g].Length * sizeof(float) * 3, NormData[g], OpenTK.Graphics.OpenGL.BufferUsageHint.DynamicDraw);
+						OpenTK.Graphics.OpenGL.GL.VertexAttribPointer(3, 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, false, sizeof(float) * 3, 0);
+						//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(VBO);
+				}
+
+				//OpenTK.Graphics.OpenGL.GL.EnableVertexAttribArray(3);
+
+				// Element Buffer Object (EBO)
+				/* if (VertexIndex.Length > 0) {
+						EBO = OpenTK.Graphics.OpenGL.GL.GenBuffer();
+						//OpenTK.Graphics.OpenGL.BufferTarget.ParameterBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.PixelPackBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.PixelUnpackBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.UniformBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.TextureBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.TransformFeedbackBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.CopyReadBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.CopyWriteBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.DrawIndirectBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.ShaderStorageBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.DispatchIndirectBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.QueryBuffer
+						//OpenTK.Graphics.OpenGL.BufferTarget.AtomicCounterBuffer
+						OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer, EBO);
+						OpenTK.Graphics.OpenGL.GL.BufferData(OpenTK.Graphics.OpenGL.BufferTarget.ElementArrayBuffer, VertexIndex[g].Length * sizeof(int), VertexIndex[g], OpenTK.Graphics.OpenGL.BufferUsageHint.DynamicDraw);
+						//OpenTK.Graphics.OpenGL.GL.DeleteBuffer(EBO);
+				} */
 
 				OpenTK.Graphics.OpenGL.GL.BindVertexArray(0);
 				OpenTK.Graphics.OpenGL.GL.BindBuffer(OpenTK.Graphics.OpenGL.BufferTarget.ArrayBuffer, 0);
 
-				OpenTK.Graphics.OpenGL.GL.DisableVertexAttribArray(locationPosition);
-				OpenTK.Graphics.OpenGL.GL.DisableVertexAttribArray(locationColor);
+				//BusEngine.Log.Info("xeta {0} {1} {2} {3}", locationColorData, locationVertexData, locationTexData, locationNormData);
+
+
+				OpenTK.Graphics.OpenGL.GL.DisableVertexAttribArray(locationColorData);
+				OpenTK.Graphics.OpenGL.GL.DisableVertexAttribArray(locationVertexData);
+				OpenTK.Graphics.OpenGL.GL.DisableVertexAttribArray(locationTexData);
+				OpenTK.Graphics.OpenGL.GL.DisableVertexAttribArray(locationNormData);
+				
+				//BusEngine.Log.Info("xeta {0} {1} {2} {3}", locationColorData, locationVertexData, locationTexData, locationNormData);
 			}
 
 			#if BUSENGINE_BENCHMARK
 			}
 			#endif
 		}
-
+		private bool asyncbuferred = false;
 		// https://github.com/URIS-2022/Tim-10---QSIV2.0/blob/ef7100b432eb8047168582c079b6693c74ddb25f/Ryujinx.Graphics.OpenGL/Pipeline.cs#L280
 		public void SwapBuffers() {
 			if (Loaded) {
 				// загружаем буфер
 				if (!BufferStatus) {
-					Buffered();
+					int g = 0;
+					string[][] Textures;
+					if (Url.IndexOf("nanosuit") != -1) {
+						Textures = new string[7][] {
+							new string[2] {
+								"Models/nanosuit/textures/glass_dif.png",
+								"Models/nanosuit/textures/glass_ddn.png"
+							}, //Glass
+							/* new string[1] {
+								"Textures/RayMarchingOpenGL/test0.png"
+							}, */ //Glass
+							new string[3] {
+								"Models/nanosuit/textures/leg_dif.png",
+								"Models/nanosuit/textures/leg_showroom_ddn.png",
+								"Models/nanosuit/textures/leg_showroom_spec.png",
+							}, //Leg
+							new string[3] {
+								"Models/nanosuit/textures/hand_dif.png",
+								"Models/nanosuit/textures/hand_showroom_ddn.png",
+								"Models/nanosuit/textures/hand_showroom_spec.png",
+							}, //Hand
+							new string[2] {
+								"Models/nanosuit/textures/glass_dif.png",
+								"Models/nanosuit/textures/glass_ddn.png"
+							}, //Glass
+							new string[3] {
+								"Models/nanosuit/textures/arm_dif.png",
+								"Models/nanosuit/textures/arm_showroom_ddn.png",
+								"Models/nanosuit/textures/arm_showroom_spec.png",
+							}, //Arm
+							new string[3] {
+								"Models/nanosuit/textures/helmet_diff.png",
+								"Models/nanosuit/textures/helmet_showroom_ddn.png",
+								"Models/nanosuit/textures/helmet_showroom_spec.png",
+							}, //Helmet
+							new string[3] {
+								"Models/nanosuit/textures/body_dif.png",
+								"Models/nanosuit/textures/body_showroom_ddn.png",
+								"Models/nanosuit/textures/body_showroom_spec.png",
+							}, //Body
+						};
+					} else {
+						Textures = new string[VertexData.Length][];
+						foreach (BusEngine.Vector3[] group in VertexData) {
+							Textures[g++] = new string[0];
+						}
+					}
+					string dir = BusEngine.Engine.DataDirectory;
+					g = 0;
+					foreach (BusEngine.Vector3[] group in VertexData) {
+						VAOs[g] = OpenTK.Graphics.OpenGL.GL.GenVertexArray();
+
+						Buffered(g);
+						TIs[g] = new int[Textures[g].Length];
+
+						if (Textures[g].Length > 0) {
+							TIs[g][0] = OpenTK.Graphics.OpenGL.GL.GenTexture();
+						}
+						if (Textures[g].Length > 1) {
+							TIs[g][1] = OpenTK.Graphics.OpenGL.GL.GenTexture();
+						}
+						if (Textures[g].Length > 2) {
+							TIs[g][2] = OpenTK.Graphics.OpenGL.GL.GenTexture();
+						}
+
+						if (Textures[g].Length > 0) {
+							// базовая текстура (Diffuse Map / BaseColor Map (Albedo/Color Map))
+							Texture(dir + Textures[g][0], 1, TIs[g][0]);
+						}
+
+						if (Textures[g].Length > 1) {
+							// текстура создания рельефа модели (Bump Map/Normal Map)
+							Texture(dir + Textures[g][1], 2, TIs[g][1]);
+						}
+
+						// текстура создания отражения от источника света (Specular Map)
+						if (Textures[g].Length > 2) {
+							Texture(dir + Textures[g][2], 3, TIs[g][2]);
+						}
+
+						g++;
+					}
+					BufferStatus = true;
+
+					// ассинхронная загрузка моделей
+					if (1 == 0 && !asyncbuferred) {
+						asyncbuferred = true;
+						System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[2];
+
+						tasks[0] = System.Threading.Tasks.Task.Factory.StartNew(() => {
+							//if (!BufferStatus) {
+							using (new BusEngine.Benchmark("BusEngine.Textures async loaded " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
+								g = 0;
+								foreach (BusEngine.Vector3[] group in VertexData) {
+									/* if (Textures[g].Length > 0) {
+										// базовая текстура (Diffuse Map / BaseColor Map (Albedo/Color Map))
+										Texture(dir + Textures[g][0], 1, TIs[g][0]);
+									}
+
+									if (Textures[g].Length > 1) {
+										// текстура создания рельефа модели (Bump Map/Normal Map)
+										Texture(dir + Textures[g][1], 2, TIs[g][1]);
+									}
+
+									// текстура создания отражения от источника света (Specular Map)
+									if (Textures[g].Length > 2) {
+										Texture(dir + Textures[g][2], 3, TIs[g][2]);
+									} */
+
+									//Buffered(g);
+
+									g++;
+								}
+							}
+							//}
+						}, System.Threading.Tasks.TaskCreationOptions.LongRunning);
+
+						tasks[1] = System.Threading.Tasks.Task.Factory.StartNew(() => {
+							BufferStatus = true;
+						}, System.Threading.Tasks.TaskCreationOptions.LongRunning);
+
+						System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.ContinueWhenAll(tasks, (wordCountTasks) => {
+							if (wordCountTasks != null) {
+								foreach (System.Threading.Tasks.Task t in wordCountTasks) {
+									t.Dispose();
+								}
+							}
+							if (tasks != null) {
+								foreach (System.Threading.Tasks.Task t in tasks) {
+									t.Dispose();
+								}
+							}
+						});
+					}
 				} else {
-
-					// подключаем буфер модели
-					OpenTK.Graphics.OpenGL.GL.BindVertexArray(VAO);
-
-					OpenTK.Graphics.OpenGL.GL.LinkProgram(this.Program);
+					OpenTK.Graphics.OpenGL.GL.UseProgram(this.Program);
+					//OpenTK.Graphics.OpenGL.GL.LinkProgram(this.Program);
 
 					// поворот
 					P.Row0.X = A.Row0.X;
@@ -4392,33 +4781,71 @@ BusEngine.Shader
 
 					// отправляем настройки расположения модели в шейдер
 					//OpenTK.Graphics.OpenGL.GL.ProgramUniformMatrix4(this.Program, progPp, true, ref P);
-					OpenTK.Graphics.OpenGL.GL.UniformMatrix4(progPp, true, ref P);
+					
+					/* OpenTK.Graphics.OpenGL.GL.Uniform1(progtime, _angle);
+					OpenTK.Graphics.OpenGL.GL.Uniform1(progscroll, speed);
+					OpenTK.Graphics.OpenGL.GL.Uniform2(progmouse, Mouse); */
 
-					// рисуем модель
-					//OpenTK.Graphics.OpenGL.PrimitiveType.Triangles
-					//OpenTK.Graphics.OpenGL.BeginMode.Points
-					//OpenTK.Graphics.OpenGL.BeginMode.Lines
-					//OpenTK.Graphics.OpenGL.BeginMode.LineLoop
-					//OpenTK.Graphics.OpenGL.BeginMode.LineStrip
-					//OpenTK.Graphics.OpenGL.BeginMode.Triangles
-					//OpenTK.Graphics.OpenGL.BeginMode.TriangleStrip
-					//OpenTK.Graphics.OpenGL.BeginMode.TriangleFan
-					//OpenTK.Graphics.OpenGL.BeginMode.Quads
-					//OpenTK.Graphics.OpenGL.BeginMode.QuadStrip
-					//OpenTK.Graphics.OpenGL.BeginMode.Polygon
-					//OpenTK.Graphics.OpenGL.BeginMode.Patches
-					//OpenTK.Graphics.OpenGL.BeginMode.LinesAdjacency
-					//OpenTK.Graphics.OpenGL.BeginMode.LineStripAdjacency
-					//OpenTK.Graphics.OpenGL.BeginMode.TrianglesAdjacency
-					//OpenTK.Graphics.OpenGL.BeginMode.TriangleStripAdjacency
-					//OpenTK.Graphics.OpenGL.GL.DrawElements(OpenTK.Graphics.OpenGL.BeginMode.Triangles, VertexIndex.Length, OpenTK.Graphics.OpenGL.DrawElementsType.UnsignedInt, 0);
-					//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 0, VertexData.Length);
-					OpenTK.Graphics.OpenGL.GL.DrawArrays(PrimitiveType, 0, VertexData.Length);
-					//OpenTK.Graphics.OpenGL.GL.DrawArraysInstanced(OpenTK.Graphics.OpenGL.BeginMode.Quads, 0, 72, 0);
-					//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Triangles, 0, VertexData.Length);
-					//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 0, 12);
-					//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 24, 12);
-					//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 48, 12);
+					OpenTK.Graphics.OpenGL.GL.UniformMatrix4(progVP, true, ref VP);
+					OpenTK.Graphics.OpenGL.GL.UniformMatrix4(progPp, true, ref P);
+					OpenTK.Graphics.OpenGL.GL.Uniform1(progTex, 0);
+
+					int g = 0;
+					int tlength = 0;
+					foreach (BusEngine.Vector3[] group in VertexData) {
+						if (VAOs[g] > 0) {
+							tlength = TIs[g].Length;
+
+							if (tlength > 0) {
+								OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture0);
+								OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, TIs[g][0]);
+							}
+							if (tlength > 1) {
+								OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture1);
+								OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, TIs[g][1]);
+							}
+							if (tlength > 2) {
+								OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture2);
+								OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, TIs[g][2]);
+							}
+
+							// подключаем буфер модели
+							OpenTK.Graphics.OpenGL.GL.BindVertexArray(VAOs[g]);
+
+							//OpenTK.Graphics.OpenGL.GL.BindSampler(TIs[g], 1);
+							//OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, g+1);
+
+							// рисуем модель
+							//OpenTK.Graphics.OpenGL.PrimitiveType.Triangles
+							//OpenTK.Graphics.OpenGL.BeginMode.Points
+							//OpenTK.Graphics.OpenGL.BeginMode.Lines
+							//OpenTK.Graphics.OpenGL.BeginMode.LineLoop
+							//OpenTK.Graphics.OpenGL.BeginMode.LineStrip
+							//OpenTK.Graphics.OpenGL.BeginMode.Triangles
+							//OpenTK.Graphics.OpenGL.BeginMode.TriangleStrip
+							//OpenTK.Graphics.OpenGL.BeginMode.TriangleFan
+							//OpenTK.Graphics.OpenGL.BeginMode.Quads
+							//OpenTK.Graphics.OpenGL.BeginMode.QuadStrip
+							//OpenTK.Graphics.OpenGL.BeginMode.Polygon
+							//OpenTK.Graphics.OpenGL.BeginMode.Patches
+							//OpenTK.Graphics.OpenGL.BeginMode.LinesAdjacency
+							//OpenTK.Graphics.OpenGL.BeginMode.LineStripAdjacency
+							//OpenTK.Graphics.OpenGL.BeginMode.TrianglesAdjacency
+							//OpenTK.Graphics.OpenGL.BeginMode.TriangleStripAdjacency
+							//OpenTK.Graphics.OpenGL.GL.DrawElements(PrimitiveType, VertexIndex.Length, OpenTK.Graphics.OpenGL.DrawElementsType.UnsignedInt, 0);
+							//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 0, VertexData.Length);
+							OpenTK.Graphics.OpenGL.GL.DrawArrays(PrimitiveType[g], 0, group.Length);
+							//OpenTK.Graphics.OpenGL.GL.NV.DrawTexture(1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1);
+							//OpenTK.Graphics.OpenGL.GL.DrawArraysInstanced(OpenTK.Graphics.OpenGL.BeginMode.Quads, 0, 72, 0);
+							//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Triangles, 0, VertexData.Length);
+							//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 0, 12);
+							//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 24, 12);
+							//OpenTK.Graphics.OpenGL.GL.DrawArrays(OpenTK.Graphics.OpenGL.PrimitiveType.Quads, 48, 12);
+							OpenTK.Graphics.OpenGL.GL.BindVertexArray(0);
+							
+							g++;
+						}
+					}
 				}
 			}
 		}
@@ -4878,6 +5305,7 @@ namespace BusEngine {
 /*
 Зависит от плагинов:
 BusEngine.Log
+OpenTK
 */
     /** API BusEngine.Shader */
 	public class Shader {
@@ -4916,69 +5344,55 @@ BusEngine.Log
 			return shader;
 		}
 
-		private int GenProgram(string vertex = "", string tescontrol = "", string tessellation = "", string geometry = "", string fragment = "", string compute = "", string include = "") {
+		internal int GenProgram() {
 			int vert = 0, tesc = 0, tess = 0, geom = 0, frag = 0, comp = 0, incl = 0, success = 0, program = OpenTK.Graphics.OpenGL.GL.CreateProgram();
 
 			// для управления вершинами полигона
-			if (!string.IsNullOrWhiteSpace(vertex)) {
-				//BusEngine.Log.Info("vertex");
-				vert = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.VertexShader, vertex);
+			if (Vertex != "") {
+				//BusEngine.Log.Info("Vertex");
+				vert = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.VertexShader, Vertex);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, vert);
-			} else {
-				vertex = "";
 			}
 
-			if (!string.IsNullOrWhiteSpace(tescontrol)) {
-				//BusEngine.Log.Info("tescontrol");
-				tesc = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessControlShader, tescontrol);
+			if (Tescontrol != "") {
+				//BusEngine.Log.Info("Tescontrol");
+				tesc = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessControlShader, Tescontrol);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, tesc);
-			} else {
-				tescontrol = "";
 			}
 
 			// для создания дополнительных полигонов в целях сглаживания краёв
-			if (!string.IsNullOrWhiteSpace(tessellation)) {
-				//BusEngine.Log.Info("tessellation");
-				tess = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessEvaluationShader, tessellation);
+			if (Tessellation != "") {
+				//BusEngine.Log.Info("Tessellation");
+				tess = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessEvaluationShader, Tessellation);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, tess);
-			} else {
-				tessellation = "";
 			}
 
 			// для управления группой треугольных полигонов (в зависимости от видеокарты до 128 вершин = 42 полигона), увеличение полигонов через этот шейдер - повышает производительность
-			if (!string.IsNullOrWhiteSpace(geometry)) {
-				//BusEngine.Log.Info("geometry");
-				geom = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.GeometryShader, geometry);
+			if (Geometry != "") {
+				//BusEngine.Log.Info("Geometry");
+				geom = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.GeometryShader, Geometry);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, geom);
-			} else {
-				geometry = "";
 			}
 
 			// для управления каждым пикселем экрана (управление тенями, освещением, отражением, цветом, текстурами и т.д.)
-			if (!string.IsNullOrWhiteSpace(fragment)) {
-				//BusEngine.Log.Info("fragment");
-				frag = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.FragmentShader, fragment);
+			if (Fragment != "") {
+				//BusEngine.Log.Info("Fragment");
+				frag = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.FragmentShader, Fragment);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, frag);
-			} else {
-				fragment = "";
 			}
 
 			// для инных вычеслений (генерация частиц, изображений) https://steps3d.narod.ru/tutorials/compute-shaders-tutorial.html
-			if (!string.IsNullOrWhiteSpace(compute)) {
-				//BusEngine.Log.Info("compute");
-				comp = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, compute);
+			if (Compute != "") {
+				//BusEngine.Log.Info("Compute");
+				comp = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, Compute);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, comp);
-			} else {
-				compute = "";
 			}
 
 			// для подключения разлчных функций
-			if (!string.IsNullOrWhiteSpace(include)) {
-				//BusEngine.Log.Info("include");
-				incl = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, include);
+			if (Include != "") {
+				//BusEngine.Log.Info("Include");
+				incl = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.ComputeShader, Include);
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, incl);
-			} else {
-				include = "";
 			}
 
 			OpenTK.Graphics.OpenGL.GL.LinkProgram(program);
@@ -4988,37 +5402,37 @@ BusEngine.Log
 				throw new System.Exception("Could not link program: " + OpenTK.Graphics.OpenGL.GL.GetProgramInfoLog(program));
 			}
 
-			if (vertex != "") {
+			if (Vertex != "") {
 				OpenTK.Graphics.OpenGL.GL.DetachShader(program, vert);
 				OpenTK.Graphics.OpenGL.GL.DeleteShader(vert);
 			}
 
-			if (tescontrol != "") {
+			if (Tescontrol != "") {
 				OpenTK.Graphics.OpenGL.GL.DetachShader(program, tesc);
 				OpenTK.Graphics.OpenGL.GL.DeleteShader(tesc);
 			}
 
-			if (tessellation != "") {
+			if (Tessellation != "") {
 				OpenTK.Graphics.OpenGL.GL.DetachShader(program, tess);
 				OpenTK.Graphics.OpenGL.GL.DeleteShader(tess);
 			}
 
-			if (geometry != "") {
+			if (Geometry != "") {
 				OpenTK.Graphics.OpenGL.GL.DetachShader(program, geom);
 				OpenTK.Graphics.OpenGL.GL.DeleteShader(geom);
 			}
 
-			if (fragment != "") {
+			if (Fragment != "") {
 				OpenTK.Graphics.OpenGL.GL.DetachShader(program, frag);
 				OpenTK.Graphics.OpenGL.GL.DeleteShader(frag);
 			}
 
-			if (compute != "") {
+			if (Compute != "") {
 				OpenTK.Graphics.OpenGL.GL.DetachShader(program, comp);
 				OpenTK.Graphics.OpenGL.GL.DeleteShader(comp);
 			}
 
-			if (include != "") {
+			if (Include != "") {
 				OpenTK.Graphics.OpenGL.GL.DetachShader(program, incl);
 				OpenTK.Graphics.OpenGL.GL.DeleteShader(incl);
 			}
@@ -5091,16 +5505,6 @@ BusEngine.Log
 				this.Incl = include;
 				this.Include = include;
 			}
-
-			this.Program = this.GenProgram(
-				vertex: Vertex,
-				tescontrol: Tescontrol,
-				tessellation: Tessellation,
-				geometry: Geometry,
-				fragment: Fragment,
-				compute: Compute, 
-				include: Include
-			);
 		}
 
 		public void Dispose() {
