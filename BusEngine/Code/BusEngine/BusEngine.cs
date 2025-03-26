@@ -5323,7 +5323,9 @@ OpenTK
 		public string Compute = "";
 		public string Incl = "";
 		public string Include = "";
-		public int Program { get; private set; }
+		internal static string[] Data = new string[10000];
+		internal static int[] Program = new int[10000];
+		public static int Count { get; private set; }
 
 		private int CompileShader(OpenTK.Graphics.OpenGL.ShaderType type, string source = "") {
 			int success, shader = OpenTK.Graphics.OpenGL.GL.CreateShader(type);
@@ -5345,7 +5347,27 @@ OpenTK
 		}
 
 		internal int GenProgram() {
-			int vert = 0, tesc = 0, tess = 0, geom = 0, frag = 0, comp = 0, incl = 0, success = 0, program = OpenTK.Graphics.OpenGL.GL.CreateProgram();
+			// проверяем повтор шейдера
+			string from = Vertex + Tescontrol + Tessellation + Geometry + Fragment + Compute + Include;
+			int success = 0, program = System.Array.IndexOf(Data, from);
+
+			if (program != -1) {
+				return Program[program];
+			} else {
+				if (Count > 0 && Count % 10000 == 0) {
+					success = Data.Length + 10000;
+					System.Array.Resize(ref Data, success);
+					System.Array.Resize(ref Program, success);
+				}
+			}
+
+			// создаём программу (шейдер)
+			int vert = 0, tesc = 0, tess = 0, geom = 0, frag = 0, comp = 0, incl = 0;
+			program = OpenTK.Graphics.OpenGL.GL.CreateProgram();
+
+			Data[Count] = from;
+			Program[Count] = program;
+			Count++;
 
 			// для управления вершинами полигона
 			if (Vertex != "") {
@@ -5360,7 +5382,7 @@ OpenTK
 				OpenTK.Graphics.OpenGL.GL.AttachShader(program, tesc);
 			}
 
-			// для создания дополнительных полигонов в целях сглаживания краёв
+			// для создания дополнительных полигонов в целях сглаживания краёв или создания копии модели
 			if (Tessellation != "") {
 				//BusEngine.Log.Info("Tessellation");
 				tess = CompileShader(OpenTK.Graphics.OpenGL.ShaderType.TessEvaluationShader, Tessellation);
