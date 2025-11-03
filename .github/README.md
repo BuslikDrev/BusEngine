@@ -58,6 +58,7 @@
 - NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 40+ FPS (7680х4320 8K)
 - NVidia GeForce GT 1030 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 35+ FPS (15360х8640 16K)
 - NVidia GeForce GTX 1650 4 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 140+ FPS (1280х720 HD, 1920х1080 Full HD, 2560х1440 2K)
+- NVidia GeForce RTX 3070 8 GB GDDR6 - умножение полигонов c помощью geom shader (x16), 226+ FPS (3840х2160 4K)
 - Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x16), 40+ FPS (1280х720 HD, 1920х1080 Full HD)
 - Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x25), 70+ FPS (1280х720 HD, 1920х1080 Full HD)
 - AMD Radeon 550X (RX 640) 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 11+ FPS (1280х720 HD, 1920х1080 Full HD)
