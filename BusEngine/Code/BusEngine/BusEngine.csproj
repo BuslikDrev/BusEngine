@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk1="Microsoft.NET.Sdk" ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Condition=" '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
+<Project Sdk1="Microsoft.NET.Sdk" ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net480' Or '$(TargetFramework)' == 'net481' ">
     <Import Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
   </ImportGroup>
   <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019 -->
@@ -9,16 +9,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <RootNamespace>BusEngine</RootNamespace>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.0;net471;net5.0;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net452;net471;net472;net480;net481;net5.0;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>4096</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <!-- Отключение публикации своего кода в nuget и т.д. -->
     <PublishRelease>false</PublishRelease>
     <PublishTrimmed>false</PublishTrimmed>
+    <EnableSigningChecks>true</EnableSigningChecks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
     <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
@@ -90,6 +91,7 @@
     <Reference Include="System.IO" />
     <!-- https://ru.stackoverflow.com/questions/421101/ -->
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
     <!-- <Reference Include="System.Net" /> -->
     <Reference Include="System.Net.Http" />
     <!-- <Reference Include="System.Text.Encoding.CodePages" /> -->
@@ -106,14 +108,14 @@
       <HintPath>BusPlugins\System\System.Numerics.dll</HintPath>
       <Private>False</Private>
     </Reference> -->
-    <Reference Include="System.Numerics.Vectors">
+    <!-- <Reference Include="System.Numerics.Vectors">
       <HintPath>BusPlugins\System\System.Numerics.Vectors.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Memory">
       <HintPath>BusPlugins\System\System.Memory.dll</HintPath>
       <Private>False</Private>
-    </Reference>
+    </Reference> -->
     <!-- <Reference Include="AssetsTools.NET">
       <HintPath>BusPlugins\AssetsTools.NET\AssetsTools.NET.dll</HintPath>
       <Private>False</Private>
@@ -133,6 +135,10 @@
     </Reference>
     <Reference Include="CefSharp.WinForms">
       <HintPath>BusPlugins\CefSharp\CefSharp.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.Wpf">
+      <HintPath>BusPlugins\CefSharp\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <!-- <Reference Include="CefSharp.Wpf">
