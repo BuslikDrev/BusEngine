@@ -1,5 +1,5 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
-/* © 2016-2023; BuslikDrev - Усе правы захаваны. */
+/* © 2016-2026; BuslikDrev - Усе правы захаваны. */
 
 #define AUDIO_LOG
 //#define BROWSER_LOG
@@ -105,11 +105,11 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Dispose Audio");
 					#endif
 					// удаляем событие клавиш
-					BusEngine.UI.Canvas.WinForm.KeyDown -= KeyDownAudio;
+					BusEngine.UI.Canvas.WinForms.KeyDown -= KeyDownAudio;
 					/* здесь пишем код запуска другого кода */
 				};
 				// добавляем событие клавиш
-				BusEngine.UI.Canvas.WinForm.KeyDown += KeyDownAudio;
+				BusEngine.UI.Canvas.WinForms.KeyDown += KeyDownAudio;
 			}
 
 				/* System.Timers.ElapsedEventHandler onTimer = (o, e) => {
@@ -130,13 +130,13 @@ namespace BusEngine.Game {
 					DisposeTimer.AutoReset = true;
 					DisposeTimer.Enabled = true;
 					
-					BusEngine.UI.Canvas.WinForm.BackColor = System.Drawing.Color.White;
+					BusEngine.UI.Canvas.WinForms.BackColor = System.Drawing.Color.White;
 					System.Windows.Forms.Panel panel1 = new System.Windows.Forms.Panel();
-					panel1.Location = BusEngine.UI.Canvas.WinForm.Location;
+					panel1.Location = BusEngine.UI.Canvas.WinForms.Location;
 					panel1.Size = new System.Drawing.Size(100, 100);
 					panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 					panel1.BackColor = System.Drawing.Color.Red;
-					BusEngine.UI.Canvas.WinForm.Controls.Add(panel1);
+					BusEngine.UI.Canvas.WinForms.Controls.Add(panel1);
 					
 					
 				} else if (message == "BusEngine.exitPointerLock") {
@@ -173,12 +173,12 @@ namespace BusEngine.Game {
 					BusEngine.Log.Info("Dispose Video");
 					#endif
 					// удаляем событие клавиш
-					BusEngine.UI.Canvas.WinForm.KeyDown -= KeyDownVideo;
+					BusEngine.UI.Canvas.WinForms.KeyDown -= KeyDownVideo;
 					// запускаем браузер
 					Browser("index.html");
 				};
 				// добавляем событие клавиш
-				BusEngine.UI.Canvas.WinForm.KeyDown += KeyDownVideo;
+				BusEngine.UI.Canvas.WinForms.KeyDown += KeyDownVideo;
 			}
 
 			// запускаем браузер
@@ -234,10 +234,10 @@ namespace BusEngine.Game {
 					
 					
 					System.Windows.Forms.Panel panel1 = new System.Windows.Forms.Panel();
-					panel1.Location = BusEngine.UI.Canvas.WinForm.Location;
-					panel1.Size = BusEngine.UI.Canvas.WinForm.Size;
+					panel1.Location = BusEngine.UI.Canvas.WinForms.Location;
+					panel1.Size = BusEngine.UI.Canvas.WinForms.Size;
 					panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-					BusEngine.UI.Canvas.WinForm.Controls.Add(panel1);
+					BusEngine.UI.Canvas.WinForms.Controls.Add(panel1);
 					
 					
 				} else if (message == "BusEngine.exitPointerLock") {
@@ -259,4 +259,5 @@ namespace BusEngine.Game {
 	}
 	/** API BusEngine.Plugin */
 }
+
 /** API BusEngine.Game - пользовательский код */
