@@ -1,5 +1,5 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
-/* © 2016-2025; BuslikDrev - Усе правы захаваны. */
+/* © 2016-2026; BuslikDrev - Усе правы захаваны. */
 
 /* C# 5.0+			  https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
@@ -78,7 +78,7 @@ public class Video https://busengine.buslikdrev.by/api/cs/Video.html
 
 /** API BusEngine.Experemental */
 namespace BusEngine.Experemental {
-	internal class Log : System.IDisposable {
+	public class Log : System.IDisposable {
 		private static System.Collections.Concurrent.BlockingCollection<string> _blockingCollection = new System.Collections.Concurrent.BlockingCollection<string>();
 		private static System.Threading.Tasks.Task _task = System.Threading.Tasks.Task.Factory.StartNew(() => {
 			if (!System.IO.Directory.Exists(BusEngine.Engine.LogDirectory)) {
@@ -95,9 +95,39 @@ namespace BusEngine.Experemental {
 			}
 		}, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 
-		/* static Log() {
+		public Log(string path = "", string action = "") {
+			if (path == "") {
+				path = BusEngine.Engine.LogDirectory + "FPS.log";
+			}
+			System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.StartNew(() => {
+				using (System.IO.FileStream stream = new System.IO.FileStream(path, System.IO.FileMode.Truncate)) {
+					using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(stream, BusEngine.Engine.UTF8NotBOM)) {
+						streamWriter.AutoFlush = false;
+						streamWriter.WriteLine(action);
+						streamWriter.Close();
+					}
+					stream.Close();
+				}
+			});
+			task.Wait();
+		}
 
-		} */
+		public Log(string path = "", byte[] action = null) {
+			if (path == "") {
+				path = BusEngine.Engine.LogDirectory + "FPS.log";
+			}
+			System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Factory.StartNew(() => {
+				using (System.IO.FileStream stream = new System.IO.FileStream(path, System.IO.FileMode.Append)) {
+					using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(stream, BusEngine.Engine.UTF8NotBOM)) {
+						streamWriter.AutoFlush = false;
+						streamWriter.BaseStream.Write(action, 0, action.Length);
+						streamWriter.Close();
+					}
+					stream.Close();
+				}
+			});
+			task.Wait();
+		}
 
 		public static void File(string action) {
 			_blockingCollection.Add(System.DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + ": " + action);
@@ -358,7 +388,7 @@ LibVLCSharp
 
 			if (this.OnPlay != null) {
 				this.OnPlay.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPlay, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnPlay, new object[2] {this, this.Url});
 			}
 		}
 		/** событие запуска aудио */
@@ -374,7 +404,7 @@ LibVLCSharp
 
 			if (this.OnDuration != null) {
 				this.OnDuration.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnDuration, new object[2] {this, this.Url});
 			}
 		}
 		/** событие времени в секундах */
@@ -388,7 +418,7 @@ LibVLCSharp
 			this.Play(this.Url);
 			if (this.OnLoop != null) {
 				this.OnLoop.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnLoop, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnLoop, new object[2] {this, this.Url});
 			}
 		}
 		/** событие повтора aудио */
@@ -401,7 +431,7 @@ LibVLCSharp
 
 			if (this.OnPause != null) {
 				this.OnPause.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPause, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnPause, new object[2] {this, this.Url});
 			}
 		}
 		/** событие временной остановки aудио */
@@ -416,7 +446,7 @@ LibVLCSharp
 
 			if (this.OnStop != null) {
 				this.OnStop.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnStop, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnStop, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -439,7 +469,7 @@ LibVLCSharp
 
 			if (this.OnEnd != null) {
 				this.OnEnd.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnEnd, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnEnd, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -459,7 +489,7 @@ LibVLCSharp
 
 			if (this.OnDispose != null) {
 				this.OnDispose.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnDispose, new object[2] {this, this.Url});
 			}
 		}
 		/** событие уничтожения aудио */
@@ -652,7 +682,7 @@ LibVLCSharp
 				if (this.OnNotFound != null) {
 					this.IsDispose = true;
 					this.OnNotFound.Invoke(this, this.Url);
-					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnNotFound, new object[2] {this, this.Url});
+					//BusEngine.UI.Canvas.WinForms.Invoke(this.OnNotFound, new object[2] {this, this.Url});
 				}
 			}
 
@@ -827,7 +857,7 @@ LibVLCSharp
 				}
 				if (this.OnDispose != null) {
 					this.OnDispose.Invoke(this, this.Url);
-					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+					//BusEngine.UI.Canvas.WinForms.Invoke(this.OnDispose, new object[2] {this, this.Url});
 				}
 			}
 		}
@@ -913,7 +943,7 @@ BusEngine.Tools.Json
 				return browser;
 			} private set {}
 		}
-		private string Url;
+		public string Url = "index.html";
 		public delegate void OnPostMessageHandler(Browser o, string e);
 		public event OnPostMessageHandler OnPostMessage;
 		public delegate OnDownloadArgs OnDownloadHandler(OnDownloadArgs e);
@@ -963,7 +993,6 @@ BusEngine.Tools.Json
 			}
 		}
 		public delegate void OnLoadHandler();
-		//public event OnLoadHandler OnLoad;
 		public event OnLoadHandler OnLoad;
 		private string _DownloadPath = BusEngine.Engine.LogDirectory + "Browser\\download";
 		public string DownloadPath {
@@ -1141,6 +1170,29 @@ BusEngine.Tools.Json
 			#endif
 		}
 
+		public byte[] Screenshot = new byte[0];
+
+		public async void CaptureScreenshotAsync() {
+			if (browser != null) {
+                /* CefSharp.DevTools.Page.Viewport viewport = new CefSharp.DevTools.Page.Viewport{
+                    Height = 200,
+                    Width = 200,
+                    Scale = 1.0
+                };
+				Screenshot = await browser.CaptureScreenshotAsync(CefSharp.DevTools.Page.CaptureScreenshotFormat.Png, 100, viewport); */
+				Screenshot = await browser.CaptureScreenshotAsync();
+				//BusEngine.Log.Info(Screenshot.Length);
+                /* System.Threading.Tasks.Task<CefSharp.JavascriptResponse> scrollTask = CefSharp.WebBrowserExtensions.EvaluateScriptAsync(browser, System.String.Format("window.scrollBy({0}, {1});", 0, 900));
+                scrollTask.ContinueWith(t => {
+                    var response = t.Result;
+                    if (response.Success) {
+						Screenshot = browser.CaptureScreenshotAsync().Result;
+						BusEngine.Log.Info(Screenshot.Length);
+                    }
+                }).Wait(); */
+			}
+		}
+
 		/** функция запуска браузера */
 		// https://cefsharp.github.io/api/
 		public Browser Load() {
@@ -1152,7 +1204,7 @@ BusEngine.Tools.Json
 				url = this.Url;
 			}
 
-			return this.Load(url, BusEngine.Engine.DataDirectory);
+			return this.Load(url, null);
 		}
 
 		public Browser Load(string url = "", string root = "") {
@@ -1240,14 +1292,14 @@ BusEngine.Tools.Json
 				//System.Environment.SetEnvironmentVariable("in-process-gpu", "1");
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu
-				//settings.CefCommandLineArgs.Add("enable-gpu");
+				settings.CefCommandLineArgs.Add("enable-gpu");
 				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu
-				settings.CefCommandLineArgs.Add("disable-gpu");
+				//settings.CefCommandLineArgs.Add("disable-gpu");
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-vsync
-				//settings.CefCommandLineArgs.Add("enable-gpu-vsync");
+				settings.CefCommandLineArgs.Add("enable-gpu-vsync");
 				// https://peter.sh/experiments/chromium-command-line-switches/#disable-gpu-vsync
-				settings.CefCommandLineArgs.Add("disable-gpu-vsync");
+				//settings.CefCommandLineArgs.Add("disable-gpu-vsync");
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#enable-gpu-shader-disk-cache
 				settings.CefCommandLineArgs.Add("enable-gpu-shader-disk-cache");
@@ -1347,8 +1399,9 @@ BusEngine.Tools.Json
 
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
-
-				browser.BrowserSettings.WindowlessFrameRate = 120;
+				//browser = new CefSharp.Wpf.ChromiumWebBrowser(url);
+				//browser = new CefSharp.ChromiumWebBrowser(url);
+				browser.BrowserSettings.WindowlessFrameRate = 60;
 
 				if (url != null && !BusEngine.Browser.ValidURLStatic(url, out uriResult)) {
 					CefSharp.WebBrowserExtensions.LoadHtml(browser, url, true);
@@ -1438,7 +1491,7 @@ BusEngine.Tools.Json
 							CefSharp.DevTools.Emulation.UserAgentMetadata ua = new CefSharp.DevTools.Emulation.UserAgentMetadata();
 
 							ua.Brands = brandsList;
-							//ua.Architecture = BusEngine.Engine.Device.Processor;
+							ua.Architecture = BusEngine.Engine.Device.Data["CPU"][0]["Architecture"];
 							ua.Model = BusEngine.Engine.Platform;
 							ua.Platform = BusEngine.Engine.Device.Name;
 							ua.PlatformVersion = BusEngine.Engine.Device.Version;
@@ -1612,46 +1665,46 @@ BusEngine.Tools.Json
 				browser.FrameLoadEnd += OnCefFrameLoadEnd;
 
 				// устанавливаем размер окана браузера, как в нашей программе
-				//browser.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
-				//browser.Dock = BusEngine.UI.Canvas.WinForm.Dock;
+				//browser.Size = BusEngine.UI.Canvas.WinForms.ClientSize;
+				//browser.Dock = BusEngine.UI.Canvas.WinForms.Dock;
 
 				// https://cefsharp.github.io/api/109.1.x/html/P_CefSharp_WinForms_ChromiumWebBrowser_UseParentFormMessageInterceptor.htm
 				//browser.UseParentFormMessageInterceptor = false;
 
 				// подключаем браузер к нашей программе
-				/* BusEngine.Log.Info("1 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
-				BusEngine.Log.Info("1 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
-				BusEngine.Log.Info("1 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForm.TopLevelControl);
-				BusEngine.Log.Info("1 ActiveControl: {0}", BusEngine.UI.Canvas.WinForm.ActiveControl);
-				BusEngine.Log.Info("1 TopLevel: {0}", BusEngine.UI.Canvas.WinForm.TopLevel);
-				BusEngine.Log.Info("1 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
-				BusEngine.Log.Info("1 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
+				/* BusEngine.Log.Info("1 Owner: {0}", BusEngine.UI.Canvas.WinForms.Owner);
+				BusEngine.Log.Info("1 Owner Controls: {0}", BusEngine.UI.Canvas.WinForms.Controls.Owner);
+				BusEngine.Log.Info("1 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForms.TopLevelControl);
+				BusEngine.Log.Info("1 ActiveControl: {0}", BusEngine.UI.Canvas.WinForms.ActiveControl);
+				BusEngine.Log.Info("1 TopLevel: {0}", BusEngine.UI.Canvas.WinForms.TopLevel);
+				BusEngine.Log.Info("1 TabIndex: {0}", BusEngine.UI.Canvas.WinForms.TabIndex);
+				BusEngine.Log.Info("1 Contains: {0}", BusEngine.UI.Canvas.WinForms.Contains(browser)); */
 
 				browser.TabIndex = 0;
 				//browser.BringToFront();
 
 				Context = browser.RequestContext;
-				//BusEngine.UI.Canvas.WinForm.Controls.Add(browser);
+				BusEngine.UI.Canvas.WinForms.Controls.Add(browser);
 
-				/* BusEngine.Log.Info("2 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
-				BusEngine.Log.Info("2 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
-				BusEngine.Log.Info("2 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForm.TopLevelControl);
-				BusEngine.Log.Info("2 ActiveControl: {0}", BusEngine.UI.Canvas.WinForm.ActiveControl);
-				BusEngine.Log.Info("2 TopLevel: {0}", BusEngine.UI.Canvas.WinForm.TopLevel);
-				BusEngine.Log.Info("2 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
-				BusEngine.Log.Info("2 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
+				/* BusEngine.Log.Info("2 Owner: {0}", BusEngine.UI.Canvas.WinForms.Owner);
+				BusEngine.Log.Info("2 Owner Controls: {0}", BusEngine.UI.Canvas.WinForms.Controls.Owner);
+				BusEngine.Log.Info("2 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForms.TopLevelControl);
+				BusEngine.Log.Info("2 ActiveControl: {0}", BusEngine.UI.Canvas.WinForms.ActiveControl);
+				BusEngine.Log.Info("2 TopLevel: {0}", BusEngine.UI.Canvas.WinForms.TopLevel);
+				BusEngine.Log.Info("2 TabIndex: {0}", BusEngine.UI.Canvas.WinForms.TabIndex);
+				BusEngine.Log.Info("2 Contains: {0}", BusEngine.UI.Canvas.WinForms.Contains(browser)); */
 
 
-			//browser.ResumeLayout(false);
-			//browser.PerformLayout();
+				//browser.ResumeLayout(false);
+				//browser.PerformLayout();
 
-				/* BusEngine.Log.Info("3 Owner: {0}", BusEngine.UI.Canvas.WinForm.Owner);
-				BusEngine.Log.Info("3 Owner Controls: {0}", BusEngine.UI.Canvas.WinForm.Controls.Owner);
-				BusEngine.Log.Info("3 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForm.TopLevelControl);
-				BusEngine.Log.Info("3 ActiveControl: {0}", BusEngine.UI.Canvas.WinForm.ActiveControl);
-				BusEngine.Log.Info("3 TopLevel: {0}", BusEngine.UI.Canvas.WinForm.TopLevel);
-				BusEngine.Log.Info("3 TabIndex: {0}", BusEngine.UI.Canvas.WinForm.TabIndex);
-				BusEngine.Log.Info("3 Contains: {0}", BusEngine.UI.Canvas.WinForm.Contains(browser)); */
+				/* BusEngine.Log.Info("3 Owner: {0}", BusEngine.UI.Canvas.WinForms.Owner);
+				BusEngine.Log.Info("3 Owner Controls: {0}", BusEngine.UI.Canvas.WinForms.Controls.Owner);
+				BusEngine.Log.Info("3 TopLevelControl: {0}", BusEngine.UI.Canvas.WinForms.TopLevelControl);
+				BusEngine.Log.Info("3 ActiveControl: {0}", BusEngine.UI.Canvas.WinForms.ActiveControl);
+				BusEngine.Log.Info("3 TopLevel: {0}", BusEngine.UI.Canvas.WinForms.TopLevel);
+				BusEngine.Log.Info("3 TabIndex: {0}", BusEngine.UI.Canvas.WinForms.TabIndex);
+				BusEngine.Log.Info("3 Contains: {0}", BusEngine.UI.Canvas.WinForms.Contains(browser)); */
 			}
 
 			return this;
@@ -1667,7 +1720,7 @@ BusEngine.Tools.Json
 				browser.FrameLoadEnd -= this.OnCefFrameLoadEnd;
 				browser.Dispose();
 				//CefSharp.Cef.Shutdown();
-				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
+				BusEngine.UI.Canvas.WinForms.Controls.Remove(browser);
 			}
 		} */
 
@@ -1683,9 +1736,10 @@ BusEngine.Tools.Json
 			if (browser != null && !browser.IsDisposed) {
 				browser.JavascriptMessageReceived -= this.OnCefPostMessage;
 				browser.FrameLoadEnd -= this.OnCefFrameLoadEnd;
+				new CefSharp.DevTools.Page.PageClient(CefSharp.DevToolsExtensions.GetDevToolsClient(browser)).ClearCompilationCacheAsync();
 				browser.Dispose();
 				//CefSharp.Cef.Shutdown();
-				BusEngine.UI.Canvas.WinForm.Controls.Remove(browser);
+				BusEngine.UI.Canvas.WinForms.Controls.Remove(browser);
 			}
 		}
 
@@ -2184,37 +2238,36 @@ BusEngine.Tools
 		public static bool IsShutdown { get; private set; }
 		public static string[] Commands;
 
-		private static bool _GameStart = false;
 		public static void GameStart() {
-			if (IsGame == false && !_GameStart && BusEngine.UI.Canvas.WinForm != null) {
+			if (IsGame == false && BusEngine.UI.Canvas.WinForms != null) {
 				IsGame = true;
-				_GameStart = true;
-				BusEngine.UI.Canvas.WinForm.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
+				BusEngine.UI.Canvas.WinForms.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
 				new BusEngine.IPlugin("OnGameStart");
-				BusEngine.UI.Canvas.WinForm.Invalidate(false);
-				_GameStart = false;
+				xxx = 1;
+				BusEngine.UI.Canvas.WinForms.Invalidate(false);
 			}
 		}
-		private static bool _GameStop = false;
+
 		public static void GameStop() {
-			if (IsGame == true && !_GameStop && BusEngine.UI.Canvas.WinForm != null) {
-				_GameStop = true;
-				BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
+			if (IsGame == true && BusEngine.UI.Canvas.WinForms != null) {
+				BusEngine.UI.Canvas.WinForms.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
 				new BusEngine.IPlugin("OnGameStop");
-				BusEngine.UI.Canvas.WinForm.Invalidate(false);
-				_GameStop = false;
+				xxx = 0;
+				BusEngine.UI.Canvas.WinForms.Invalidate(false);
 				IsGame = false;
 			}
 		}
 
-		private static int _timefps = 0;
+		private static long _timefps = 0;
 		private static float FPSSetting = 100.0F;
 		public static void GameUpdate() {
-			if (BusEngine.Engine._timefps == 0 && BusEngine.UI.Canvas.WinForm != null) {
+			if (BusEngine.Engine._timefps == 0 && BusEngine.UI.Canvas.WinForms != null) {
+				xxx = 1;
 				new BusEngine.IPlugin("OnGameUpdate");
-				BusEngine.UI.Canvas.WinForm.Invalidate(false);
-				//BusEngine.UI.Canvas.WinForm.Refresh();
-
+				//BusEngine.Log.Info("ddddd");
+				BusEngine.UI.Canvas.WinForms.Invalidate(false);
+				
+				//BusEngine.UI.Canvas.WinForms.Refresh();
 				//BusEngine.Engine._timefps = (int)(1400000000.0F / BusEngine.Engine.FPSSetting);
 			} else {
 				// заменить на загрузку данных в файл
@@ -2224,20 +2277,43 @@ BusEngine.Tools
 				}
 				BusEngine.Engine._timefps = time; */
 
+				//while (true) {
+				/* using(BusEngine.Experemental.Log f = new BusEngine.Experemental.Log("Benchmark - задержка " + (System.DateTime.Now.Second + System.DateTime.Now.Millisecond) + " " + (System.DateTime.Now.Ticks - BusEngine.Engine._timefps))) {
+
+				} */
+
+				if ((System.DateTime.Now.Ticks - BusEngine.Engine._timefps) > 1000 / BusEngine.Engine.FPSSetting) {
+					BusEngine.Engine._timefps = 0;
+				} else {
+					//BusEngine.Log.Info("0");
+					BusEngine.Engine._timefps--;
+				}
+
 				BusEngine.Engine.GameUpdate();
+				//}
+
+				
 			}
 		}
 
+		private static int xxx;
 		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
-			/* System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
-			drawFormat.FormatFlags = System.Drawing.StringFormatFlags.DirectionVertical;
-			e.Graphics.DrawString("Sample Text", new System.Drawing.Font("Arial", 16), new System.Drawing.SolidBrush(System.Drawing.Color.Black), 150.0F, 50.0F, drawFormat);
- */
-			//new BusEngine.IPlugin("OnGameUpdate");
-			//BusEngine.UI.Canvas.WinForm.Invalidate(false);
-			BusEngine.Engine.GameUpdate();
-			//BusEngine.UI.Canvas.WinForm.Update();
-			//BusEngine.UI.Canvas.WinForm.Refresh();
+			if (xxx == 1) {
+				xxx = 0;
+				/* System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
+				drawFormat.FormatFlags = System.Drawing.StringFormatFlags.DirectionVertical;
+				e.Graphics.DrawString("Sample Text", new System.Drawing.Font("Arial", 16), new System.Drawing.SolidBrush(System.Drawing.Color.Black), 150.0F, 50.0F, drawFormat);
+	 */
+
+
+							
+				//new BusEngine.IPlugin("OnGameUpdate");
+				//BusEngine.UI.Canvas.WinForms.Invalidate(false);
+				//BusEngine.Engine._timefps = System.DateTime.Now.Ticks;
+				BusEngine.Engine.GameUpdate();
+				//BusEngine.UI.Canvas.WinForms.Update();
+				//BusEngine.UI.Canvas.WinForms.Refresh();
+			}
 		}
 
 			/* // зависимость от времени
@@ -2248,16 +2324,16 @@ BusEngine.Tools
 
 		/* private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
 			new BusEngine.IPlugin("OnGameUpdate");
-			BusEngine.UI.Canvas.WinForm.Invalidate(true);
-			//BusEngine.UI.Canvas.WinForm.Update();
-			//BusEngine.UI.Canvas.WinForm.Refresh();
+			BusEngine.UI.Canvas.WinForms.Invalidate(true);
+			//BusEngine.UI.Canvas.WinForms.Update();
+			//BusEngine.UI.Canvas.WinForms.Refresh();
 		} */
 
 		// определяем платформу, версию, архитектуру процессора
 		public class Device {
 			public static string Name { get; private set; }
 			public static string Version { get; private set; }
-			public static string UserAgent;
+			public static string UserAgent = "";
 			public static System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, string>>> Data { get; private set; }
 			public static void Update() {
 				#if BUSENGINE_BENCHMARK
@@ -2301,7 +2377,7 @@ searcher.Dispose(); */
 				
 				
 					float f = 0, f2 = 0;
-					int i, g;
+					int g;
 					System.Management.ManagementScope scope = new System.Management.ManagementScope("ROOT\\CIMV2");
 					scope.Connect();
 
@@ -2313,22 +2389,24 @@ searcher.Dispose(); */
 					query.Scope = scope;
 
 					// MB
-					query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_ComputerSystem");
-					g = 0;
-					foreach (System.Management.ManagementObject r in query.Get()) {
-						BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
-
-						Data["MB"][g] = new System.Collections.Generic.Dictionary<string, string>(1) {};
-						Data["MB"][g]["Name"] = r["Model"].ToString();
-					}
-
-					// CPU
-					query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_Processor");
+					/* query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_ComputerSystem");
 					g = 0;
 					foreach (System.Management.ManagementObject r in query.Get()) {
 						//BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
 
-						Data["CPU"][g] = new System.Collections.Generic.Dictionary<string, string>(8) {};
+						Data["MB"][g] = new System.Collections.Generic.Dictionary<string, string>(1) {};
+						Data["MB"][g]["Name"] = r["Model"].ToString();
+					} */
+
+					// CPU
+					query.Query = new System.Management.ObjectQuery("SELECT * FROM CIM_Processor");
+					g = 0;
+					foreach (System.Management.ManagementObject r in query.Get()) {
+						//BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
+
+						if (g > 1) {
+							Data["CPU"][g] = new System.Collections.Generic.Dictionary<string, string>(8) {};
+						}
 						Data["CPU"][g]["Name"] = r["Name"].ToString();
 						Data["CPU"][g]["Architecture"] = "x" + r["AddressWidth"].ToString();
 						Data["CPU"][g]["Cores"] = r["NumberOfCores"].ToString();
@@ -2349,6 +2427,8 @@ searcher.Dispose(); */
 						Data["GPU"][g]["Name"] = r["Name"].ToString();
 						float.TryParse(r["AdapterRAM"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out f);
 						Data["GPU"][g]["Size"] = (f / (1000 * 1024 * 1024)).ToString();
+						f = 0.0F;
+						Data["GPU"][g]["FreeSize"] = (f / (1000 * 1024 * 1024)).ToString();
 						Data["GPU"][g]["Rate"] = r["CurrentRefreshRate"].ToString();
 						Data["GPU"][g]["Width"] = r["CurrentHorizontalResolution"].ToString();
 						Data["GPU"][g]["Height"] = r["CurrentVerticalResolution"].ToString();
@@ -2359,32 +2439,33 @@ searcher.Dispose(); */
 					query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_MemoryDevice"); // Win32_PhysicalMemory
 					g = 0;
 					foreach (System.Management.ManagementObject r in query.Get()) {
-						if (r["EndingAddress"].ToString() == "") {
+						if (r["EndingAddress"].ToString() == "0" || r["EndingAddress"].ToString() == "") {
 							continue;
 						}
 
-						BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
+						//BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
 
 						Data["RAM"][g] = new System.Collections.Generic.Dictionary<string, string>(4) {};
 						Data["RAM"][g]["Name"] = r["Name"].ToString() + " " + g;
 						float.TryParse(r["EndingAddress"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out f);
-						Data["RAM"][g]["Size"] = (f / (1000 * 1024)).ToString();
+						Data["RAM"][g]["Size"] = System.Math.Round((f / (1000 * 1024)), 3).ToString();
 						f = 0.0F;
 						Data["RAM"][g]["FreeSize"] = (f / (1000 * 1024)).ToString();
 						Data["RAM"][g]["SerialNumber"] = "";
 						g++;
 					}
 
-					query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_PhysicalMemoryArray");
-					g = 0;
+					query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_SystemMemoryResource");
+					float gg = 0;
 					foreach (System.Management.ManagementObject r in query.Get()) {
-						BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
+						//BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
 
-						float.TryParse(r["MaxCapacity"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out f);
-						Data["RAM"][g]["FreeSize"] = (f / (1000 * 1024)).ToString();
-						
-						BusEngine.Log.Info((f / (1000 * 1024)).ToString());
+						float.TryParse(r["StartingAddress"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out f);
+						float.TryParse(r["EndingAddress"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out f2);
+						gg += (f2 - f);
 					}
+
+					Data["RAM"][0]["FreeSize"] = (gg / (1000 * 1024)).ToString();
 
 					// DISK
 					//System.IO.DriveInfo.GetDrives();
@@ -2470,21 +2551,21 @@ searcher.Dispose(); */
 						//Data["USB"][g]["Name"] = r["Model"].ToString();
 					}
 
-					query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_PhysicalMemoryArray");
+					/* query.Query = new System.Management.ObjectQuery("SELECT * FROM Win32_PhysicalMemoryArray");
 					float xx = 0;
 					f = 0;
 					f2 = 0;
 
 					foreach (System.Management.ManagementObject r in query.Get()) {
-						BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
+						//BusEngine.Log.Info(r.GetText(System.Management.TextFormat.Mof));
 					
 						//float.TryParse(r["StartingAddress"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out f);
 						//float.TryParse(r["EndingAddress"].ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out f2);
 						xx += (f2 - f);
-					}
+					} */
 
-					BusEngine.Log.Info(xx);
-					BusEngine.Log.Info(xx / (1000 * 1024 * 1024));
+					/* BusEngine.Log.Info(xx);
+					BusEngine.Log.Info(xx / (1000 * 1024 * 1024)); */
 
 					query.Dispose();
 					//scope.Dispose();
@@ -2499,7 +2580,9 @@ searcher.Dispose(); */
 						//{0, new System.Collections.Generic.Dictionary<string, string>(3)}
 					}},
 					{"CPU", new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, string>>(2) {
-						//{0, new System.Collections.Generic.Dictionary<string, string>(3)}
+						{0, new System.Collections.Generic.Dictionary<string, string>(8) {
+							{"Architecture", "x86"}
+						}}
 					}},
 					{"GPU", new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, string>>(2) {
 						//{0, new System.Collections.Generic.Dictionary<string, string>(3)}
@@ -2518,7 +2601,7 @@ searcher.Dispose(); */
 					}}
 				};
 
-				Update();
+				//Update();
 
 				#if BUSENGINE_BENCHMARK
 				using (new BusEngine.Benchmark("BusEngine.Initialize.Device")) {
@@ -2990,7 +3073,7 @@ searcher.Dispose(); */
 				_instance = null;
 			}
 
-			BusEngine.UI.Canvas.WinForm.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
+			BusEngine.UI.Canvas.WinForms.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
 
 			// отключаем плагины
 			new BusEngine.IPlugin("Shutdown");
@@ -4618,7 +4701,7 @@ OpenTK
 					dataByte = new byte[bytes];
 					int index = 100 * 4 + 100 * System.Math.Abs(data.Stride);
 
-BusEngine.Log.Info("tttt {0} {1}", index, System.Math.Abs(data.Stride));
+					//BusEngine.Log.Info("tttt {0} {1}", index, System.Math.Abs(data.Stride));
 
 					//outData = 1 == 0 ? (byte[])dataByte.Clone() : dataByte;
 					outData = dataByte;
@@ -4757,7 +4840,7 @@ BusEngine.Log.Info("tttt {0} {1}", index, System.Math.Abs(data.Stride));
 				//BusEngine.Log.Info("progP " + progPp);
 				//BusEngine.Log.Info("progVP " + progVP);
 				OpenTK.Graphics.OpenGL.GL.Uniform4(progColorDefault, new OpenTK.Vector4(210.0F/255, 210.0F/255, 210.0F/255, 1.0F));
-				OpenTK.Graphics.OpenGL.GL.Uniform2(progresolution, new OpenTK.Vector2(BusEngine.UI.Canvas.WinForm.Width, BusEngine.UI.Canvas.WinForm.Height));
+				OpenTK.Graphics.OpenGL.GL.Uniform2(progresolution, new OpenTK.Vector2(BusEngine.UI.Canvas.WinForms.Width, BusEngine.UI.Canvas.WinForms.Height));
 
 				//OpenTK.Graphics.OpenGL.GL.Arb.CompileShaderInclude(this.Program, 0, new string[3] {BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/hg_sdf.glsl", BusEngine.Engine.EngineDirectory + "Engine/Shader/Test/", "hg_sdf.glsl"}, new int[0] {});
 
@@ -5257,12 +5340,13 @@ namespace BusEngine {
 				using (new BusEngine.Benchmark("BusEngine.Plugin Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 				#endif
 
+					string ap;
 					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
 					System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[l];
 
 					for (i = 0; i < l; ++i) {
-						string ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+						ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
 						if (!Modules.ContainsKey(ap)) {
 							tasks[i] = System.Threading.Tasks.Task.Factory.StartNew(() => {
 								Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
@@ -5296,12 +5380,13 @@ namespace BusEngine {
 				using (new BusEngine.Benchmark("BusEngine.Plugin Modules " + stage + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 				#endif
 
+					string ap;
 					Modules = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Type[]>(System.Environment.ProcessorCount, l);
 
 					System.Threading.Tasks.Task[] tasks = new System.Threading.Tasks.Task[l];
 
 					for (i = 0; i < l; ++i) {
-						string ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
+						ap = BusEngine.Engine.SettingProject["require"]["plugins"][i]["path"];
 						if (!Modules.ContainsKey(ap)) {
 							tasks[i] = System.Threading.Tasks.Task.Run(() => {
 								Modules[ap] = System.Reflection.Assembly.LoadFile(ap).GetTypes();
@@ -6230,7 +6315,7 @@ System.Windows.Forms
 			}
  
 			if (owner == null) {
-				return dialog.ShowDialog(BusEngine.UI.Canvas.WinForm.TopLevelControl);
+				return dialog.ShowDialog(BusEngine.UI.Canvas.WinForms.TopLevelControl);
 			} else {
 				return dialog.ShowDialog(owner);
 			}
@@ -6307,7 +6392,7 @@ BusEngine.UI
 	/** API BusEngine.UI.Canvas */
 	public class Canvas : System.IDisposable {
 		//public static System.Collections.Generic.Dictionary<string, System.Type[]> Modules = new System.Collections.Generic.Dictionary<string, System.Type[]>(2);
-		public static System.Windows.Forms.Form WinForm;
+		public static System.Windows.Forms.Form WinForms;
 		public static System.Type Type;
 		/* public class WinForm {
 			public static dynamic Controls { get; set; }
@@ -6330,7 +6415,7 @@ BusEngine.UI
 
 		/** событие закрытия окна */
 		/* private void OnClosed(object o, System.Windows.Forms.FormClosedEventArgs e) {
-			BusEngine.UI.Canvas.WinForm.FormClosed -= OnClosed;
+			BusEngine.UI.Canvas.WinForms.FormClosed -= OnClosed;
 			//BusEngine.Video.Shutdown();
 			//BusEngine.Engine.Shutdown();
 		} */
@@ -6344,13 +6429,13 @@ BusEngine.UI
 
 		public Canvas(System.Windows.Forms.Form _form) : this() {
 			//#if (BUSENGINE_WINFORM == true)
-			//if (typeof(BusEngine.UI.Canvas).GetField("WinForm") != null) {
-				BusEngine.UI.Canvas.WinForm = _form;
+			//if (typeof(BusEngine.UI.Canvas).GetField("WinForms") != null) {
+				BusEngine.UI.Canvas.WinForms = _form;
 				BusEngine.UI.Canvas.Form = _form;
-				//BusEngine.UI.Canvas.WinForm.KeyPreview = true;
+				//BusEngine.UI.Canvas.WinForms.KeyPreview = true;
 				// устанавливаем событи закрытия окна
-				//BusEngine.UI.Canvas.WinForm.FormClosed += OnClosed;
-				//BusEngine.UI.Canvas.WinForm.Disposed += new System.EventHandler(OnDisposed);
+				//BusEngine.UI.Canvas.WinForms.FormClosed += OnClosed;
+				//BusEngine.UI.Canvas.WinForms.Disposed += new System.EventHandler(OnDisposed);
 				//BusEngine.UI.ClientSize = BusEngine.UI.ClientSize;
 			//}
 			//#endif
@@ -6360,8 +6445,8 @@ BusEngine.UI
 		//[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.CoreCompile", "CS0234", Target="~T:BusEngine.UI.Canvas", Justification="Для кроссплатформенности")]
 		//[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CS0234", Target="~T:BusEngine.UI.Canvas", Justification="Для кроссплатформенности")]
 		public static void Initialize() {
-			/* BusEngine.Log.Info("Device Version OS: {0}", typeof(BusEngine.UI.Canvas).GetProperty("WinForm"));
-			BusEngine.Log.Info("Device Version OS: {0}", typeof(BusEngine.UI.Canvas).GetField("WinForm")); */
+			/* BusEngine.Log.Info("Device Version OS: {0}", typeof(BusEngine.UI.Canvas).GetProperty("WinForms"));
+			BusEngine.Log.Info("Device Version OS: {0}", typeof(BusEngine.UI.Canvas).GetField("WinForms")); */
 			if (1 == 0) {
 				//var x = BusEngine.UI.Canvas.D21;
 			}
@@ -6382,13 +6467,13 @@ BusEngine.UI
 		}
 
 		public static void ShutdownStatic() {
-			//BusEngine.UI.Canvas.WinForm.Close();
-			//BusEngine.UI.Canvas.WinForm.Dispose();
+			//BusEngine.UI.Canvas.WinForms.Close();
+			//BusEngine.UI.Canvas.WinForms.Dispose();
 		}
 
 		public void Dispose() {
 			BusEngine.Log.Info("Canvas Dispose");
-			BusEngine.UI.Canvas.WinForm.Dispose();
+			BusEngine.UI.Canvas.WinForms.Dispose();
 		}
 
 		~Canvas() {
@@ -8628,7 +8713,7 @@ LibVLCSharp
 
 			if (this.OnPlay != null) {
 				this.OnPlay.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPlay, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnPlay, new object[2] {this, this.Url});
 			}
 		}
 		/** событие запуска видео */
@@ -8644,7 +8729,7 @@ LibVLCSharp
 
 			if (this.OnDuration != null) {
 				this.OnDuration.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDuration, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnDuration, new object[2] {this, this.Url});
 			}
 		}
 		/** событие времени в секундах */
@@ -8658,7 +8743,7 @@ LibVLCSharp
 			this.Play(this.Url);
 			if (this.OnLoop != null) {
 				this.OnLoop.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnLoop, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnLoop, new object[2] {this, this.Url});
 			}
 		}
 		/** событие повтора видео */
@@ -8671,7 +8756,7 @@ LibVLCSharp
 
 			if (this.OnPause != null) {
 				this.OnPause.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnPause, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnPause, new object[2] {this, this.Url});
 			}
 		}
 		/** событие временной остановки видео */
@@ -8686,7 +8771,7 @@ LibVLCSharp
 
 			if (this.OnStop != null) {
 				this.OnStop.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnStop, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnStop, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -8709,7 +8794,7 @@ LibVLCSharp
 
 			if (this.OnEnd != null) {
 				this.OnEnd.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnEnd, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnEnd, new object[2] {this, this.Url});
 			}
 
 			if (this.DisposeAuto > 0) {
@@ -8729,7 +8814,7 @@ LibVLCSharp
 
 			if (this.OnDispose != null) {
 				this.OnDispose.Invoke(this, this.Url);
-				//BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+				//BusEngine.UI.Canvas.WinForms.Invoke(this.OnDispose, new object[2] {this, this.Url});
 			}
 		}
 		/** событие уничтожения видео */
@@ -8749,7 +8834,7 @@ LibVLCSharp
 			}; */
 			_VLC.CloseLogFile();
 			_VLC.ClearLibVLCError();
-			_VLC.SetUserAgent(BusEngine.UI.Canvas.WinForm.Text, BusEngine.Engine.Device.UserAgent);
+			_VLC.SetUserAgent(BusEngine.UI.Canvas.WinForms.Text, BusEngine.Engine.Device.UserAgent);
 			_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_VLC);
 
 			_mediaPlayer.Playing += this.OnPlaying;
@@ -8769,7 +8854,7 @@ LibVLCSharp
 
 			_winForm = new LibVLCSharp.WinForms.VideoView();
 			((System.ComponentModel.ISupportInitialize)(_winForm)).BeginInit();
-			BusEngine.UI.Canvas.WinForm.SuspendLayout();
+			BusEngine.UI.Canvas.WinForms.SuspendLayout();
 
 			_winForm.MediaPlayer = _mediaPlayer;
 			_winForm.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
@@ -8782,24 +8867,24 @@ LibVLCSharp
 			//_winForm.Location = new System.Drawing.Point(0, 27);
 			//_winForm.Size = new System.Drawing.Size(800, 444);
 			//_winForm.CurrentPosition = position;
-			_winForm.Size = BusEngine.UI.Canvas.WinForm.ClientSize;
+			_winForm.Size = BusEngine.UI.Canvas.WinForms.ClientSize;
 			//BusEngine.Log.Info("Видео name {0}", BusEngine.Engine.SettingProject["info"]["name"]);
-			//BusEngine.UI.Canvas.WinForm.Controls.Clear();
-			//BusEngine.UI.Canvas.WinForm.Update();
-			//BusEngine.UI.Canvas.WinForm.Refresh();
-			//BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
+			//BusEngine.UI.Canvas.WinForms.Controls.Clear();
+			//BusEngine.UI.Canvas.WinForms.Update();
+			//BusEngine.UI.Canvas.WinForms.Refresh();
+			//BusEngine.UI.Canvas.WinForms.ResumeLayout(false);
 
-			if (!BusEngine.UI.Canvas.WinForm.Controls.Contains(_winForm)) {
+			if (!BusEngine.UI.Canvas.WinForms.Controls.Contains(_winForm)) {
 				#if VIDEO_LOG
 				BusEngine.Log.Info("_winForm eeeeeeeeeeeeee {0}", _winForm.GetHashCode());
 				#endif
-				BusEngine.UI.Canvas.WinForm.Controls.Add(_winForm);
+				BusEngine.UI.Canvas.WinForms.Controls.Add(_winForm);
 				_winForm.BringToFront();
-				//BusEngine.UI.Canvas.WinForm.Controls.AddRange(new System.Windows.Forms.Control[]{_winForm});
+				//BusEngine.UI.Canvas.WinForms.Controls.AddRange(new System.Windows.Forms.Control[]{_winForm});
 			}
 
 			((System.ComponentModel.ISupportInitialize)(_winForm)).EndInit();
-			BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
+			BusEngine.UI.Canvas.WinForms.ResumeLayout(false);
 			#if BUSENGINE_BENCHMARK
 			}
 			#endif
@@ -9119,7 +9204,7 @@ LibVLCSharp
 				if (this.OnNotFound != null) {
 					this.IsDispose = true;
 					this.OnNotFound.Invoke(this, this.Url);
-					//BusEngine.UI.Canvas.WinForm.Invoke(this.OnNotFound, new object[2] {this, this.Url});
+					//BusEngine.UI.Canvas.WinForms.Invoke(this.OnNotFound, new object[2] {this, this.Url});
 				}
 			}
 
@@ -9276,10 +9361,10 @@ LibVLCSharp
 		protected virtual void Dispose(bool disposing) {
 			if (!this.IsPlay && (this.IsStop || this.IsEnd) && this.IsDispose) {
 				((System.ComponentModel.ISupportInitialize)(_winForm)).BeginInit();
-				BusEngine.UI.Canvas.WinForm.SuspendLayout();
-				BusEngine.UI.Canvas.WinForm.Controls.Remove(_winForm);
+				BusEngine.UI.Canvas.WinForms.SuspendLayout();
+				BusEngine.UI.Canvas.WinForms.Controls.Remove(_winForm);
 				((System.ComponentModel.ISupportInitialize)(_winForm)).EndInit();
-				BusEngine.UI.Canvas.WinForm.ResumeLayout(false);
+				BusEngine.UI.Canvas.WinForms.ResumeLayout(false);
 				if (this.OnDuratingTimer != null) {
 					OnDuratingTimer.Dispose();
 				}
@@ -9305,7 +9390,7 @@ LibVLCSharp
 				if (this.OnDispose != null) {
 					//this.OnDispose.Invoke(this, this.Url);
 					// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.control.invoke?view=windowsdesktop-7.0
-					BusEngine.UI.Canvas.WinForm.Invoke(this.OnDispose, new object[2] {this, this.Url});
+					BusEngine.UI.Canvas.WinForms.Invoke(this.OnDispose, new object[2] {this, this.Url});
 				}
 			}
 		}
