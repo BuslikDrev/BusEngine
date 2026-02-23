@@ -1,5 +1,5 @@
 /* Аўтар: "БуслікДрэў" ( https://buslikdrev.by/ ) */
-/* © 2016-2024; BuslikDrev - Усе правы захаваны. */
+/* © 2016-2026; BuslikDrev - Усе правы захаваны. */
 
 /* C# 5.0+              https://learn.microsoft.com/ru-ru/dotnet/csharp/whats-new/csharp-version-history */
 /* NET.Framework 4.7.1+ https://learn.microsoft.com/ru-ru/dotnet/framework/migration-guide/versions-and-dependencies */
@@ -87,8 +87,8 @@ BusEngine.UI
 			#endif
 
 			// запускаем приложение System.Windows.Forms
-			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 			System.Windows.Forms.Application.EnableVisualStyles();
+			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 			System.Windows.Forms.Application.Run(new BusEngine.Form());
 		}
 
@@ -174,6 +174,16 @@ BusEngine.UI
 					System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce; */
 
 					BusEngine.Initialize.Run(args);
+					//CefSharp.BrowserSubprocess.SelfHost.Main(args);
+/* Cef.EnableHighDPISupport();
+var exitCode = CefSharp.BrowserSubprocess.SelfHost.Main(args);
+if (exitCode >= 0) { return exitCode; }
+var settings = new CefSettings(); //TODO: Replace with the name of your application exe
+settings.BrowserSubprocessPath = System.IO.Path.GetFullPath("CefSharp.WinForms.Example.exe");
+Cef.Initialize(settings);
+var browser = new BrowserForm(true);
+Application.Run(browser);
+return 0; */
 				#if RUN_LOG
 				} catch (System.AccessViolationException e) {
 					BusEngine.Log.Info(BusEngine.Localization.GetLanguageStatic("error") + " " + BusEngine.Localization.GetLanguageStatic("error_audio_format") + ": {0}", e.Message);
@@ -230,15 +240,26 @@ BusEngine.UI
 			// кнопка развернуть
 			this.MaximizeBox = false;
 
-			// мерцание
-			this.DoubleBuffered = true;
-			this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
+			// позволяет вызывать событие Paint для потомков Control
 			this.SetStyle(System.Windows.Forms.ControlStyles.UserPaint, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.FixedHeight, false);
-			this.SetStyle(System.Windows.Forms.ControlStyles.FixedWidth, false);
-			this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
-			this.SetStyle(System.Windows.Forms.ControlStyles.SupportsTransparentBackColor, true);
+			// позволяет вызывать событие Mouse для потомков Control
+			//this.SetStyle(System.Windows.Forms.ControlStyles.UserMouse, false);
+
+			// мерцание - OpenGL не работает с этим, если потомок Control установлен на 0 пикселей от верха окна
+			this.DoubleBuffered = false;
+			this.SetStyle(System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, false);
+			this.SetStyle(System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer, false);
+			this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, false);
+
+			//this.SetStyle(System.Windows.Forms.ControlStyles.FixedHeight, true);
+			//this.SetStyle(System.Windows.Forms.ControlStyles.FixedWidth, true);
+			//this.SetStyle(System.Windows.Forms.ControlStyles.SupportsTransparentBackColor, true);
+			/* this.SetStyle(System.Windows.Forms.ControlStyles.Opaque, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.CacheText, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.ContainerControl, true);
+			this.SetStyle(System.Windows.Forms.ControlStyles.Selectable, true); */
+
+			//this.BackColor = System.Drawing.Color.Transparent;
 
 			// кнопка свернуть
 			//this.MinimizeBox = false;
@@ -274,7 +295,7 @@ BusEngine.UI
 
 			// cобытие нажатий клавиш
 			this.KeyPreview = true;
-			//this.KeyDown += OnKeyDown;
+			//this.PreviewKeyDown += OnPreviewKeyDown;
 
 			// скрытие иконки в системном меню
 			//this.ShowInTaskbar = true;
@@ -307,14 +328,30 @@ BusEngine.UI
 
 			// подключаем API BusEngine.UI.Canvas
 			//BusEngine.UI.Canvas.Type = this.GetType();
-			BusEngine.UI.Canvas.WinForm = this;
+			BusEngine.UI.Canvas.WinForms = this;
 
 			// инициализируем API BusEngine.UI.Canvas
 			BusEngine.UI.Canvas.Initialize();
 		}
 		/** функция запуска окна приложения */
 
-		/* protected override System.Windows.Forms.CreateParams CreateParams {
+		// фикс работы стрелок для KeyDown
+		/* private void OnPreviewKeyDown(object sender, System.Windows.Forms.PreviewKeyDownEventArgs e) {
+			switch (e.KeyCode) {
+				case System.Windows.Forms.Keys.Left:
+				case System.Windows.Forms.Keys.Right:
+				case System.Windows.Forms.Keys.Up:
+				case System.Windows.Forms.Keys.Down:
+					e.IsInputKey = true;
+					break;
+			}
+		} */
+
+		/* private void OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
+			BusEngine.Log.Info("gg {0}", e.KeyCode);
+		} */
+
+		protected override System.Windows.Forms.CreateParams CreateParams {
 			get {
 				System.Windows.Forms.CreateParams cp = base.CreateParams;
 
@@ -322,16 +359,17 @@ BusEngine.UI
 					//cp.Width = 100;
 					//cp.X = 0;
 					//https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
-					cp.Style |= 0x00040000|0x00800000|0x00400000;
+					//cp.Style |= 0x00040000|0x00800000|0x00400000;
 					//https://learn.microsoft.com/ru-ru/windows/win32/winmsg/window-class-styles
 					//cp.ClassStyle |= 0x4000;
 					//https://learn.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
 					//cp.ExStyle |= 0x02000000|0x00040000|0x00000200|0x00000100|0x00800|0x00000001;
+					//cp.ExStyle |= 0x02000000;
 				}
 
 				return cp;
 			}
-		} */
+		}
 	}
 }
 /** API BusEngine */
