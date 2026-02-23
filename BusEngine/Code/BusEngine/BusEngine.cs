@@ -4482,16 +4482,16 @@ OpenTK
 		}
 
 		// загружаем во формат движка .bem
-		private void SetCache(string url) {
+		private async void SetCache(string url) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model SetCache "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
 
 			if (sys_CacheModel > 0) {
 				// https://ru.stackoverflow.com/questions/1325622/c-%D1%83%D1%81%D0%BA%D0%BE%D1%80%D0%B8%D1%82%D1%8C-%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D1%8C-%D0%B2-%D1%84%D0%B0%D0%B9%D0%BB
-				/* using (System.IO.StreamWriter sw = new System.IO.StreamWriter(url)) {
+				using (System.IO.StreamWriter sw = new System.IO.StreamWriter(url)) {
 					if (sys_CacheModel == 2) {
-						sw.WriteLine("v0.4.0.0");
+						/* sw.WriteLine("v0.4.0.0");
 						sw.WriteLine("Name");
 						sw.WriteLine(Name);
 						sw.WriteLine("Mode");
@@ -4522,52 +4522,65 @@ OpenTK
 						sw.WriteLine("TexIndex");
 						sw.Write(string.Join(System.Environment.NewLine, TexIndex) + System.Environment.NewLine);
 						sw.WriteLine("NormIndex");
-						sw.Write(string.Join(System.Environment.NewLine, NormIndex));
+						sw.Write(string.Join(System.Environment.NewLine, NormIndex)); */
 					} else {
-						int i;
-						float[] ColorDataNew = new float[ColorData.Length * 4];
-						float[] VertexDataNew = new float[VertexData.Length * 3];
-						float[] TexDataNew = new float[TexData.Length * 2];
-						float[] NormDataNew = new float[NormData.Length * 3];
+						int i = 0;
+						float g = 0;
+						string groups = System.String.Join("#", Groups), mode = System.String.Join("#", Mode);
+
+						foreach (BusEngine.Vector3[] group in VertexData) {
+							i += group.Length;
+						}
+
+						float[] VertexDataNew = new float[i * 4];
+						float[] TexDataNew = new float[i * 3];
+						float[] NormDataNew = new float[i * 4];
 
 						i = 0;
-						foreach (BusEngine.Color result in ColorData) {
-							ColorDataNew[i++] = result.R;
-							ColorDataNew[i++] = result.G;
-							ColorDataNew[i++] = result.B;
-							ColorDataNew[i++] = result.A;
+						g = 0;
+						foreach (BusEngine.Vector3[] group in VertexData) {
+							foreach (BusEngine.Vector3 result in group) {
+								VertexDataNew[i++] = g;
+								VertexDataNew[i++] = result.X;
+								VertexDataNew[i++] = result.Y;
+								VertexDataNew[i++] = result.Z;
+							}
+							g++;
 						}
 
 						i = 0;
-						foreach (BusEngine.Vector3 result in VertexData) {
-							VertexDataNew[i++] = result.X;
-							VertexDataNew[i++] = result.Y;
-							VertexDataNew[i++] = result.Z;
+						g = 0;
+						foreach (BusEngine.Vector2[] group in TexData) {
+							foreach (BusEngine.Vector2 result in group) {
+								TexDataNew[i++] = g;
+								TexDataNew[i++] = result.X;
+								TexDataNew[i++] = result.Y;
+							}
+							g++;
 						}
 
 						i = 0;
-						foreach (BusEngine.Vector2 result in TexData) {
-							TexDataNew[i++] = result.X;
-							TexDataNew[i++] = result.Y;
-						}
-
-						i = 0;
-						foreach (BusEngine.Vector3 result in NormData) {
-							NormDataNew[i++] = result.X;
-							NormDataNew[i++] = result.Y;
-							NormDataNew[i++] = result.Z;
+						g = 0;
+						foreach (BusEngine.Vector3[] group in NormData) {
+							foreach (BusEngine.Vector3 result in group) {
+								NormDataNew[i++] = g;
+								NormDataNew[i++] = result.X;
+								NormDataNew[i++] = result.Y;
+								NormDataNew[i++] = result.Z;
+							}
+							g++;
 						}
 
 						byte[] buffer = new byte[
 							4 + Name.Length * 2 +
-							4 + Mode.Length * 2 +
-							4 + ColorDataNew.Length * 4 +
+							4 + Material.Length * 2 +
+							4 + groups.Length * 2 +
+							4 + mode.Length * 2 +
+							4 + Pozitions.Length * 4 +
+							4 + frustum.Length * 4 +
 							4 + VertexDataNew.Length * 4 +
 							4 + TexDataNew.Length * 4 +
-							4 + NormDataNew.Length * 4 +
-							4 + VertexIndex.Length * 4 +
-							4 + TexIndex.Length * 4 +
-							4 + NormIndex.Length * 4
+							4 + NormDataNew.Length * 4
 						];
 
 						i = 0;
@@ -4577,15 +4590,30 @@ OpenTK
 						System.Buffer.BlockCopy(Name.ToCharArray(), 0, buffer, i, Name.Length * 2);
 						i += Name.Length * 2;
 
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Mode.Length), 0, buffer, i, 4);
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Material.Length), 0, buffer, i, 4);
 						i += 4;
-						System.Buffer.BlockCopy(Mode.ToCharArray(), 0, buffer, i, Mode.Length * 2);
-						i += Mode.Length * 2;
+						System.Buffer.BlockCopy(Material.ToCharArray(), 0, buffer, i, Material.Length * 2);
+						i += Material.Length * 2;
 
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(ColorDataNew.Length), 0, buffer, i, 4);
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(groups.Length), 0, buffer, i, 4);
 						i += 4;
-						System.Buffer.BlockCopy(ColorDataNew, 0, buffer, i, ColorDataNew.Length * 4);
-						i += ColorDataNew.Length * 4;
+						System.Buffer.BlockCopy(groups.ToCharArray(), 0, buffer, i, groups.Length * 2);
+						i += groups.Length * 2;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(mode.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(mode.ToCharArray(), 0, buffer, i, mode.Length * 2);
+						i += mode.Length * 2;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Pozitions.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(Pozitions, 0, buffer, i, Pozitions.Length * 4);
+						i += Pozitions.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(frustum.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(frustum, 0, buffer, i, frustum.Length * 4);
+						i += frustum.Length * 4;
 
 						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexDataNew.Length), 0, buffer, i, 4);
 						i += 4;
@@ -4600,26 +4628,11 @@ OpenTK
 						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormDataNew.Length), 0, buffer, i, 4);
 						i += 4;
 						System.Buffer.BlockCopy(NormDataNew, 0, buffer, i, NormDataNew.Length * 4);
-						i += NormDataNew.Length * 4;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexIndex.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(VertexIndex, 0, buffer, i, VertexIndex.Length * 4);
-						i += VertexIndex.Length * 4;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(TexIndex.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(TexIndex, 0, buffer, i, TexIndex.Length * 4);
-						i += TexIndex.Length * 4;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormIndex.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(NormIndex, 0, buffer, i, NormIndex.Length * 4);
 
 						await sw.BaseStream.WriteAsync(buffer, 0, buffer.Length);
 						sw.Close();
 					}
-				} */
+				}
 			}
 
 			#if BUSENGINE_BENCHMARK
@@ -9857,3 +9870,4 @@ LibVLCSharp
 	/** API BusEngine.Video */
 }
 /** API BusEngine */
+
