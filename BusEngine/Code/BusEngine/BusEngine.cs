@@ -53,6 +53,15 @@ public class Level https://busengine.buslikdrev.by/api/cs/Level.html
 public class Localization https://busengine.buslikdrev.by/api/cs/Localization.html
 public class Log https://busengine.buslikdrev.by/api/cs/Log.html
 public class Material https://busengine.buslikdrev.by/api/cs/Material.html
+public class Matrix2 https://busengine.buslikdrev.by/api/cs/Matrix2.html
+public class Matrix2x3 https://busengine.buslikdrev.by/api/cs/Matrix2x3.html
+public class Matrix2x4 https://busengine.buslikdrev.by/api/cs/Matrix2x4.html
+public class Matrix3 https://busengine.buslikdrev.by/api/cs/Matrix3.html
+public class Matrix3x2 https://busengine.buslikdrev.by/api/cs/Matrix3x2.html
+public class Matrix3x4 https://busengine.buslikdrev.by/api/cs/Matrix3x4.html
+public class Matrix4 https://busengine.buslikdrev.by/api/cs/Matrix4.html
+public class Matrix4x2 https://busengine.buslikdrev.by/api/cs/Matrix4x2.html
+public class Matrix4x3 https://busengine.buslikdrev.by/api/cs/Matrix4x3.html
 public class Model https://busengine.buslikdrev.by/api/cs/Model.html
 public class Object https://busengine.buslikdrev.by/api/cs/Object.html
 public class Physics https://busengine.buslikdrev.by/api/cs/Physics.html
@@ -62,6 +71,7 @@ public class Rendering https://busengine.buslikdrev.by/api/cs/Rendering.html
 public class Shader https://busengine.buslikdrev.by/api/cs/Shader.html
 public class Ajax https://busengine.buslikdrev.by/api/cs/Tools.Ajax.html
 public class Json https://busengine.buslikdrev.by/api/cs/Tools.Json.html
+public class Timer https://busengine.buslikdrev.by/api/cs/Tools.Timer.html
 public class FileFolderDialog
 public class Canvas https://busengine.buslikdrev.by/api/cs/UI.Canvas.html
 public struct Vector2 https://busengine.buslikdrev.by/api/cs/Vector2.html
@@ -79,7 +89,7 @@ public class Video https://busengine.buslikdrev.by/api/cs/Video.html
 /** API BusEngine.Experemental */
 namespace BusEngine.Experemental {
 	public class Log : System.IDisposable {
-		private static System.Collections.Concurrent.BlockingCollection<string> _blockingCollection = new System.Collections.Concurrent.BlockingCollection<string>();
+		private static System.Collections.Concurrent.BlockingCollection<string> _blockingCollection;
 		private static System.Threading.Tasks.Task _task = System.Threading.Tasks.Task.Factory.StartNew(() => {
 			if (!System.IO.Directory.Exists(BusEngine.Engine.LogDirectory)) {
 				System.IO.Directory.CreateDirectory(BusEngine.Engine.LogDirectory);
@@ -89,13 +99,19 @@ namespace BusEngine.Experemental {
 				streamWriter.AutoFlush = true;
 				streamWriter.WriteLine("------------------------------------------------------------");
 
-				foreach (string s in _blockingCollection.GetConsumingEnumerable()) {
-					streamWriter.WriteLine(s);
+				if (!_blockingCollection.IsCompleted) {
+					foreach (string s in _blockingCollection.GetConsumingEnumerable()) {
+						streamWriter.WriteLine(s);
+					}
 				}
 			}
 		}, System.Threading.Tasks.TaskCreationOptions.LongRunning);
 
-		public Log(string path = "", string action = "") {
+		public Log() : base() {
+			
+		}
+
+		public Log(string path = "", string action = "") : this() {
 			if (path == "") {
 				path = BusEngine.Engine.LogDirectory + "FPS.log";
 			}
@@ -112,7 +128,7 @@ namespace BusEngine.Experemental {
 			task.Wait();
 		}
 
-		public Log(string path = "", byte[] action = null) {
+		public Log(string path = "", byte[] action = null) : this() {
 			if (path == "") {
 				path = BusEngine.Engine.LogDirectory + "FPS.log";
 			}
@@ -130,11 +146,17 @@ namespace BusEngine.Experemental {
 		}
 
 		public static void File(string action) {
+			if (_blockingCollection == null || _blockingCollection.IsCompleted) {
+				_blockingCollection = new System.Collections.Concurrent.BlockingCollection<string>();
+			}
+
 			_blockingCollection.Add(System.DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.fff") + ": " + action);
 		}
 
 		public void Dispose() {
-			_blockingCollection.CompleteAdding();
+			if (!_blockingCollection.IsCompleted) {
+				_blockingCollection.CompleteAdding();
+			}
 			_task.Wait();
 		}
 	}
@@ -2237,14 +2259,24 @@ BusEngine.Tools
 		public static bool IsGame { get; private set; }
 		public static bool IsShutdown { get; private set; }
 		public static string[] Commands;
+		private static float FPSSetting;
+		private static long Interval;
+
+        [System.Runtime.InteropServices.DllImport("ntdll.dll", SetLastError = true)]
+        private static extern bool NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        [System.Runtime.InteropServices.DllImport("ntdll.dll")]
+        private static extern bool NtDelayExecution(bool Alertable, ref long DelayInterval);
 
 		public static void GameStart() {
 			if (IsGame == false && BusEngine.UI.Canvas.WinForms != null) {
 				IsGame = true;
+				if (System.Array.IndexOf(new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"}, BusEngine.Engine.Platform) != -1 && (Interval * -1L) < 156250L) {
+					uint res = (uint)(Interval * -1L);
+					NtSetTimerResolution(res, true, ref res);
+				}
 				BusEngine.UI.Canvas.WinForms.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
 				new BusEngine.IPlugin("OnGameStart");
-				xxx = 1;
-				BusEngine.UI.Canvas.WinForms.Invalidate(false);
+				BusEngine.Engine.GameUpdate();
 			}
 		}
 
@@ -2252,82 +2284,26 @@ BusEngine.Tools
 			if (IsGame == true && BusEngine.UI.Canvas.WinForms != null) {
 				BusEngine.UI.Canvas.WinForms.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
 				new BusEngine.IPlugin("OnGameStop");
-				xxx = 0;
-				BusEngine.UI.Canvas.WinForms.Invalidate(false);
+				BusEngine.Engine.GameUpdate();
+				if (System.Array.IndexOf(new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"}, BusEngine.Engine.Platform) != -1) {
+					uint res = 156250U;
+					NtSetTimerResolution(res, true, ref res);
+				}
 				IsGame = false;
 			}
 		}
 
-		private static long _timefps = 0;
-		private static float FPSSetting = 100.0F;
-		public static void GameUpdate() {
-			if (BusEngine.Engine._timefps == 0 && BusEngine.UI.Canvas.WinForms != null) {
-				xxx = 1;
-				new BusEngine.IPlugin("OnGameUpdate");
-				//BusEngine.Log.Info("ddddd");
-				BusEngine.UI.Canvas.WinForms.Invalidate(false);
-				
-				//BusEngine.UI.Canvas.WinForms.Refresh();
-				//BusEngine.Engine._timefps = (int)(1400000000.0F / BusEngine.Engine.FPSSetting);
-			} else {
-				// заменить на загрузку данных в файл
-				/* int time = BusEngine.Engine._timefps;
-				while (time > 0) {
-					time -= 1;
-				}
-				BusEngine.Engine._timefps = time; */
-
-				//while (true) {
-				/* using(BusEngine.Experemental.Log f = new BusEngine.Experemental.Log("Benchmark - задержка " + (System.DateTime.Now.Second + System.DateTime.Now.Millisecond) + " " + (System.DateTime.Now.Ticks - BusEngine.Engine._timefps))) {
-
-				} */
-
-				if ((System.DateTime.Now.Ticks - BusEngine.Engine._timefps) > 1000 / BusEngine.Engine.FPSSetting) {
-					BusEngine.Engine._timefps = 0;
-				} else {
-					//BusEngine.Log.Info("0");
-					BusEngine.Engine._timefps--;
-				}
-
-				BusEngine.Engine.GameUpdate();
-				//}
-
-				
-			}
-		}
-
-		private static int xxx;
-		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
-			if (xxx == 1) {
-				xxx = 0;
-				/* System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
-				drawFormat.FormatFlags = System.Drawing.StringFormatFlags.DirectionVertical;
-				e.Graphics.DrawString("Sample Text", new System.Drawing.Font("Arial", 16), new System.Drawing.SolidBrush(System.Drawing.Color.Black), 150.0F, 50.0F, drawFormat);
-	 */
-
-
-							
-				//new BusEngine.IPlugin("OnGameUpdate");
-				//BusEngine.UI.Canvas.WinForms.Invalidate(false);
-				//BusEngine.Engine._timefps = System.DateTime.Now.Ticks;
-				BusEngine.Engine.GameUpdate();
-				//BusEngine.UI.Canvas.WinForms.Update();
-				//BusEngine.UI.Canvas.WinForms.Refresh();
-			}
-		}
-
-			/* // зависимость от времени
-			System.Timers.Timer aTimer = new System.Timers.Timer(1000F/FPSSetting);
-			aTimer.Elapsed += OnTimedEvent;
-			aTimer.AutoReset = true;
-			aTimer.Enabled = true; */
-
-		/* private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e) {
+		public async static void GameUpdate() {
 			new BusEngine.IPlugin("OnGameUpdate");
-			BusEngine.UI.Canvas.WinForms.Invalidate(true);
-			//BusEngine.UI.Canvas.WinForms.Update();
-			//BusEngine.UI.Canvas.WinForms.Refresh();
-		} */
+			BusEngine.UI.Canvas.WinForms.Invalidate(false);
+		}
+
+		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+			if (System.Array.IndexOf(new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"}, BusEngine.Engine.Platform) != -1) {
+				NtDelayExecution(false, ref Interval);
+			}
+			BusEngine.Engine.GameUpdate();
+		}
 
 		// определяем платформу, версию, архитектуру процессора
 		public class Device {
@@ -2751,9 +2727,10 @@ searcher.Dispose(); */
 				settingDefault["require"]["engine"] =  System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 				// запись
-				using (System.IO.FileStream fstream = System.IO.File.OpenWrite(BusEngine.Engine.EngineDirectory + BusEngine.Engine.NameProject + ".busproject")) {
+				using (System.IO.FileStream fs = System.IO.File.OpenWrite(BusEngine.Engine.EngineDirectory + BusEngine.Engine.NameProject + ".busproject")) {
 					byte[] buffer = System.Text.Encoding.UTF8.GetBytes(BusEngine.Tools.Json.Encode(settingDefault));
-					fstream.Write(buffer, 0, buffer.Length);
+					fs.WriteAsync(buffer, 0, buffer.Length);
+					fs.Close();
 				}
 
 				// улаляем массивы данных по умолчанию т.к. они не нужны
@@ -3014,6 +2991,7 @@ searcher.Dispose(); */
 				FPSSetting = 100F;
 			}
 			BusEngine.Engine.FPSSetting = FPSSetting;
+			BusEngine.Engine.Interval = -10000000L / (long)FPSSetting;
 
 			#if BUSENGINE_BENCHMARK
 			}
@@ -3073,7 +3051,7 @@ searcher.Dispose(); */
 				_instance = null;
 			}
 
-			BusEngine.UI.Canvas.WinForms.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
+			BusEngine.Engine.GameStop();
 
 			// отключаем плагины
 			new BusEngine.IPlugin("Shutdown");
@@ -3249,7 +3227,7 @@ namespace BusEngine {
 		private void StartLocalization(string Language = null) {
 			string path = BusEngine.Engine.LocalizationDirectory, file = "", files = "";
 
-			if (BusEngine.Engine.Platform.IndexOf("Windows", System.StringComparison.OrdinalIgnoreCase) != -1 || 1 == 1) {
+			if (System.Array.IndexOf(new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"}, BusEngine.Engine.Platform) != -1 || 1 == 1) {
 				if (!System.IO.Directory.Exists(path)) {
 					path = path.Replace(BusEngine.Engine.EngineDirectory, BusEngine.Engine.DataDirectory);
 				}
@@ -3817,7 +3795,7 @@ BusEngine.Vector
 OpenTK
 */
 	/** API BusEngine.Model */
-	public class Model : System.IDisposable {
+	public class Model2 : System.IDisposable {
 		public bool Active = true;
 		public bool BufferStatus = false;
 		public bool Light = false;
@@ -3855,7 +3833,7 @@ OpenTK
 		public OpenTK.Platform.IWindowInfo Context;
 		public string Url = "";
 		public string Name = "";
-		public BusEngine.Shader Shader;
+		public BusEngine.Shader2 Shader;
 		public string Animation = "";
 		public int Program, D = 1;
 
@@ -3872,11 +3850,11 @@ OpenTK
 		private int VBO, TBO, NBO, progTex, progColorDefault, pozitionsP, progD, progLight, progA, progPp, progVP, progP, progtime, progmouse, progscroll, progresolution;
 		private int sys_CacheModel;
 
-		public Model() {
+		public Model2() {
 			
 		}
 
-		public Model(OpenTK.Platform.IWindowInfo context = null, bool light = false, string url = "", string name = "", BusEngine.Shader shader = null, string animation = "", float[] pozitions = null) {
+		public Model2(OpenTK.Platform.IWindowInfo context = null, bool light = false, string url = "", string name = "", BusEngine.Shader2 shader = null, string animation = "", float[] pozitions = null) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model Initialize "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
@@ -4482,16 +4460,16 @@ OpenTK
 		}
 
 		// загружаем во формат движка .bem
-		private async void SetCache(string url) {
+		private void SetCache(string url) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model SetCache "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
 
 			if (sys_CacheModel > 0) {
 				// https://ru.stackoverflow.com/questions/1325622/c-%D1%83%D1%81%D0%BA%D0%BE%D1%80%D0%B8%D1%82%D1%8C-%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D1%8C-%D0%B2-%D1%84%D0%B0%D0%B9%D0%BB
-				using (System.IO.StreamWriter sw = new System.IO.StreamWriter(url)) {
+				/* using (System.IO.StreamWriter sw = new System.IO.StreamWriter(url)) {
 					if (sys_CacheModel == 2) {
-						/* sw.WriteLine("v0.4.0.0");
+						sw.WriteLine("v0.4.0.0");
 						sw.WriteLine("Name");
 						sw.WriteLine(Name);
 						sw.WriteLine("Mode");
@@ -4522,65 +4500,52 @@ OpenTK
 						sw.WriteLine("TexIndex");
 						sw.Write(string.Join(System.Environment.NewLine, TexIndex) + System.Environment.NewLine);
 						sw.WriteLine("NormIndex");
-						sw.Write(string.Join(System.Environment.NewLine, NormIndex)); */
+						sw.Write(string.Join(System.Environment.NewLine, NormIndex));
 					} else {
-						int i = 0;
-						float g = 0;
-						string groups = System.String.Join("#", Groups), mode = System.String.Join("#", Mode);
-
-						foreach (BusEngine.Vector3[] group in VertexData) {
-							i += group.Length;
-						}
-
-						float[] VertexDataNew = new float[i * 4];
-						float[] TexDataNew = new float[i * 3];
-						float[] NormDataNew = new float[i * 4];
+						int i;
+						float[] ColorDataNew = new float[ColorData.Length * 4];
+						float[] VertexDataNew = new float[VertexData.Length * 3];
+						float[] TexDataNew = new float[TexData.Length * 2];
+						float[] NormDataNew = new float[NormData.Length * 3];
 
 						i = 0;
-						g = 0;
-						foreach (BusEngine.Vector3[] group in VertexData) {
-							foreach (BusEngine.Vector3 result in group) {
-								VertexDataNew[i++] = g;
-								VertexDataNew[i++] = result.X;
-								VertexDataNew[i++] = result.Y;
-								VertexDataNew[i++] = result.Z;
-							}
-							g++;
+						foreach (BusEngine.Color result in ColorData) {
+							ColorDataNew[i++] = result.R;
+							ColorDataNew[i++] = result.G;
+							ColorDataNew[i++] = result.B;
+							ColorDataNew[i++] = result.A;
 						}
 
 						i = 0;
-						g = 0;
-						foreach (BusEngine.Vector2[] group in TexData) {
-							foreach (BusEngine.Vector2 result in group) {
-								TexDataNew[i++] = g;
-								TexDataNew[i++] = result.X;
-								TexDataNew[i++] = result.Y;
-							}
-							g++;
+						foreach (BusEngine.Vector3 result in VertexData) {
+							VertexDataNew[i++] = result.X;
+							VertexDataNew[i++] = result.Y;
+							VertexDataNew[i++] = result.Z;
 						}
 
 						i = 0;
-						g = 0;
-						foreach (BusEngine.Vector3[] group in NormData) {
-							foreach (BusEngine.Vector3 result in group) {
-								NormDataNew[i++] = g;
-								NormDataNew[i++] = result.X;
-								NormDataNew[i++] = result.Y;
-								NormDataNew[i++] = result.Z;
-							}
-							g++;
+						foreach (BusEngine.Vector2 result in TexData) {
+							TexDataNew[i++] = result.X;
+							TexDataNew[i++] = result.Y;
+						}
+
+						i = 0;
+						foreach (BusEngine.Vector3 result in NormData) {
+							NormDataNew[i++] = result.X;
+							NormDataNew[i++] = result.Y;
+							NormDataNew[i++] = result.Z;
 						}
 
 						byte[] buffer = new byte[
 							4 + Name.Length * 2 +
-							4 + Material.Length * 2 +
-							4 + groups.Length * 2 +
-							4 + mode.Length * 2 +
-							4 + Pozitions.Length * 4 +
-							4 + frustum.Length * 4 +
+							4 + Mode.Length * 2 +
+							4 + ColorDataNew.Length * 4 +
 							4 + VertexDataNew.Length * 4 +
 							4 + TexDataNew.Length * 4 +
-							4 + NormDataNew.Length * 4
+							4 + NormDataNew.Length * 4 +
+							4 + VertexIndex.Length * 4 +
+							4 + TexIndex.Length * 4 +
+							4 + NormIndex.Length * 4
 						];
 
 						i = 0;
@@ -4590,30 +4555,15 @@ OpenTK
 						System.Buffer.BlockCopy(Name.ToCharArray(), 0, buffer, i, Name.Length * 2);
 						i += Name.Length * 2;
 
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Material.Length), 0, buffer, i, 4);
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Mode.Length), 0, buffer, i, 4);
 						i += 4;
-						System.Buffer.BlockCopy(Material.ToCharArray(), 0, buffer, i, Material.Length * 2);
-						i += Material.Length * 2;
+						System.Buffer.BlockCopy(Mode.ToCharArray(), 0, buffer, i, Mode.Length * 2);
+						i += Mode.Length * 2;
 
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(groups.Length), 0, buffer, i, 4);
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(ColorDataNew.Length), 0, buffer, i, 4);
 						i += 4;
-						System.Buffer.BlockCopy(groups.ToCharArray(), 0, buffer, i, groups.Length * 2);
-						i += groups.Length * 2;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(mode.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(mode.ToCharArray(), 0, buffer, i, mode.Length * 2);
-						i += mode.Length * 2;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Pozitions.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(Pozitions, 0, buffer, i, Pozitions.Length * 4);
-						i += Pozitions.Length * 4;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(frustum.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(frustum, 0, buffer, i, frustum.Length * 4);
-						i += frustum.Length * 4;
+						System.Buffer.BlockCopy(ColorDataNew, 0, buffer, i, ColorDataNew.Length * 4);
+						i += ColorDataNew.Length * 4;
 
 						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexDataNew.Length), 0, buffer, i, 4);
 						i += 4;
@@ -4628,11 +4578,26 @@ OpenTK
 						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormDataNew.Length), 0, buffer, i, 4);
 						i += 4;
 						System.Buffer.BlockCopy(NormDataNew, 0, buffer, i, NormDataNew.Length * 4);
+						i += NormDataNew.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexIndex.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(VertexIndex, 0, buffer, i, VertexIndex.Length * 4);
+						i += VertexIndex.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(TexIndex.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(TexIndex, 0, buffer, i, TexIndex.Length * 4);
+						i += TexIndex.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormIndex.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(NormIndex, 0, buffer, i, NormIndex.Length * 4);
 
 						await sw.BaseStream.WriteAsync(buffer, 0, buffer.Length);
 						sw.Close();
 					}
-				}
+				} */
 			}
 
 			#if BUSENGINE_BENCHMARK
@@ -5598,7 +5563,7 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 
 		}
 
-		~Model() {
+		~Model2() {
 			//BusEngine.Log.Info("Model ~ " + this.Program + " " + this.Url);
 		}
 	}
@@ -6053,7 +6018,7 @@ namespace BusEngine {
 BusEngine.Log
 */
     /** API BusEngine.Shader */
-	public class Shader : System.IDisposable {
+	public class Shader2 : System.IDisposable {
 		public string Vert = "";
 		public string Vertex = "";
 		public string Tesc = "";
@@ -6237,9 +6202,9 @@ BusEngine.Log
 			return program;
 		}
 
-		public Shader() {}
+		public Shader2() {}
 
-		public Shader(string vert = "", string vertex = "", string tesc = "", string tescontrol = "", string tess = "", string tessellation = "", string geom = "", string geometry = "", string frag = "", string fragment = "", string mesh = "", string meshshader = "", string comp = "", string compute = "", string incl = "", string include = "") : this() {
+		public Shader2(string vert = "", string vertex = "", string tesc = "", string tescontrol = "", string tess = "", string tessellation = "", string geom = "", string geometry = "", string frag = "", string fragment = "", string mesh = "", string meshshader = "", string comp = "", string compute = "", string incl = "", string include = "") : this() {
 			if (!string.IsNullOrWhiteSpace(vert)) {
 				this.Vert = vert;
 				this.Vertex = vert;
@@ -6326,7 +6291,7 @@ BusEngine.Log
 			System.GC.SuppressFinalize(this);
 		}
 
-		~Shader() {
+		~Shader2() {
 			//BusEngine.Log.Info("Shader ~ " + this.program);
 		}
 	}
@@ -6843,6 +6808,114 @@ System.Windows.Forms
 		}
 	}
 	/** API BusEngine.Tools.FileFolderDialog */
+}
+/** API BusEngine.Tools */
+
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+	/** API BusEngine.Tools.Timer */
+	public class Timer : System.IDisposable {
+		public delegate void ElapsedEventArgs(BusEngine.Tools.Timer sender, int time);
+		public event ElapsedEventArgs Elapsed;
+		public int Interval;
+		private bool _enabled;
+		public bool Enabled {
+			get {
+				return _enabled;
+			} set {
+				_enabled = value;
+
+				if (_enabled) {
+					this.Start();
+				} else {
+					this.Stop();
+				}
+			}
+		}
+		public bool AutoReset;
+		private float synchronization = 10000f;
+		private bool status;
+
+		public Timer() : base() {
+			//Interval = 100;
+			AutoReset = true;
+			_enabled = false;
+			status = true;
+			uint res = 10000U;
+			NtSetTimerResolution(res, true, ref res);
+		}
+
+		public Timer(int interval = 100) : this() {
+			Interval = interval;
+			AutoReset = true;
+			_enabled = false;
+			synchronization *= Interval;
+			uint res = 10000U;
+			NtSetTimerResolution(res, true, ref res);
+		}
+
+        [System.Runtime.InteropServices.DllImport("ntdll.dll", SetLastError = true)]
+        private static extern bool NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        [System.Runtime.InteropServices.DllImport("ntdll.dll")]
+        private static extern bool NtDelayExecution(bool Alertable, ref long DelayInterval);
+
+		public void Start() {
+			if (status) {
+				System.Threading.Tasks.Task.Run(async () => {
+					System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+					sw.Start();
+
+					await System.Threading.Tasks.Task.Run(() => {
+						//for (int i = 0, l = (int)synchronization; i < l; i++) {
+							long interval = -1L * (long)synchronization;
+							NtDelayExecution(false, ref interval);
+						//}
+					});
+
+					sw.Stop();
+
+					if (Interval < 15) {
+						if (Interval < sw.ElapsedMilliseconds) {
+							synchronization -= 1;
+						} else if (Interval > sw.ElapsedMilliseconds) {
+							synchronization += 1;
+						}
+					} else {
+						if (Interval < sw.ElapsedMilliseconds) {
+							synchronization -= (synchronization / Interval * sw.ElapsedMilliseconds - synchronization);
+						} else if (Interval > sw.ElapsedMilliseconds) {
+							synchronization += (synchronization - synchronization / Interval * sw.ElapsedMilliseconds);
+						}
+					}
+
+					BusEngine.Log.Info("async: Running for {0} Milliseconds", sw.ElapsedMilliseconds);
+					this.Elapsed.Invoke(this, (int)sw.ElapsedMilliseconds);
+
+					if (AutoReset) {
+						this.Start();
+					}
+				});
+			}
+		}
+
+		public void Stop() {
+			status = false;
+		}
+
+		public void Close() {
+			this.Dispose();
+		}
+
+		public void Dispose() {
+			uint res = 156250U;
+			NtSetTimerResolution(res, true, ref res);
+		}
+
+		~Timer() {
+			BusEngine.Log.Info("Timer ~ ");
+		}
+	}
+	/** API BusEngine.Tools.Timer */
 }
 /** API BusEngine.Tools */
 
@@ -9870,4 +9943,3 @@ LibVLCSharp
 	/** API BusEngine.Video */
 }
 /** API BusEngine */
-
