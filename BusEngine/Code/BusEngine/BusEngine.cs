@@ -175,36 +175,40 @@ namespace BusEngine {
 		public ProjectDefault() {
 			Setting = new System.Collections.Generic.Dictionary<string, dynamic>(5, System.StringComparer.OrdinalIgnoreCase) {
 				{"console_commands", new System.Collections.Generic.Dictionary<string, string>(30, System.StringComparer.OrdinalIgnoreCase) {
-					{"sys_Spec", "1"},					// Выбор уровня настроек графики
-					{"sys_VSync", "1"},				   // Вертикальная синхронизация
-					{"sys_FPS", "100"},				   // Частота монитора для регулировки единицы измерения (скорости)
-					{"sys_FPSAuto", "1"},				 // Отключение зависимости от времени
-					{"sys_DoubleBuffered", "1"},		  // Двойная буферизация
-					{"sys_TripleBuffered", "1"},		  // Тройная буферизация
-					{"sys_FOV", "60"},					// Угол обзора - в градусах
-					{"sys_ShaderCopyGeom", "16"},		 // Количество копий для геометрического шейдера
-					{"sys_MemoryClearTime", "5"},		 // Установка промежутка времени для освобождения оперативной памяти в секундах
-					{"sys_MemoryClearAuto", "1"},		 // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
-					{"sys_Benchmark", "1"},			   // Benchmark статус
-					{"sys_DistanceMin", "0,01"},		  // Дальность прорисовки min в метрах
-					{"sys_DistanceMax", "1000"},		  // Дальность прорисовки max в метрах
-					{"sys_CacheModel", "0"},			  // 2 - бинарный кэш на 5-10% быстрее загрузки .obj
-					{"r_WaterOcean", "0"},				// Статус работы океана
-					{"r_VolumetricClouds", "1"},		  // Статус работы облаков
-					{"r_DisplayInfo", "2"},			   // Статус работы окна информации
-					{"r_FullScreen", "0"},				// Выбор режима работы окна приложения
-					{"r_Width", "1280"},				  // Ширина окна приложения
-					{"r_Height", "720"},				  // Высота окна приложения
-					{"google_api_key", ""},			   // Секретный ключ API приложения Google
-					{"google_default_client_id", ""},	 // ID пользователя API приложения Google
+					{"sys_Spec", "1"},                    // Выбор уровня настроек графики
+					{"sys_VSync", "1"},                   // Вертикальная синхронизация
+					{"sys_FPS", "60"},                    // Частота кадров CPU
+					{"sys_FPS_CPU", "60"},                // Частота кадров CPU
+					{"sys_FPS_GPU", "60"},                // Частота кадров GPU - не может быть выше кадров CPU
+					{"sys_FPS_KEY", "100"},               // Частота кадров срабатывания клавиш для оптимизации
+					{"sys_DoubleBuffered", "1"},          // Двойная буферизация
+					{"sys_TripleBuffered", "1"},          // Тройная буферизация
+					{"sys_FOV", "60"},                    // Угол обзора - в градусах
+					{"sys_ShaderCopyGeom", "16"},         // Количество копий для геометрического шейдера
+					{"sys_MemoryClearTime", "5"},         // Установка промежутка времени для освобождения оперативной памяти в секундах
+					{"sys_MemoryClearAuto", "1"},         // Статус автоматического освобождения оперативной памяти (принудительный вызов System.GC.Collect)
+					{"sys_Benchmark", "1"},               // Benchmark статус
+					{"sys_DistanceMin", "0,01"},          // Дальность прорисовки min в метрах
+					{"sys_DistanceMax", "1000"},          // Дальность прорисовки max в метрах
+					{"sys_CacheModel", "0"},              // 2 - бинарный кэш на 5-10% быстрее загрузки .obj
+					{"r_WaterOcean", "0"},                // Статус работы океана
+					{"r_VolumetricClouds", "1"},          // Статус работы облаков
+					{"r_DisplayInfo", "2"},               // Статус работы окна информации
+					{"r_FullScreen", "0"},                // Выбор режима работы окна приложения
+					{"r_Width", "1280"},                  // Ширина окна приложения
+					{"r_Height", "720"},                  // Высота окна приложения
+					{"google_api_key", ""},               // Секретный ключ API приложения Google
+					{"google_default_client_id", ""},     // ID пользователя API приложения Google
 					{"google_default_client_secret", ""}, // Секретный ключ пользователя API приложения Google
-					{"g_texture_filtering", "0"},		 // фильтрация текстур 0 - отключено, 1 - линейная, 2 - билинейная, 3 трилинейная, 4 - анизотропная, 5 - 2х анизотропная, 6 - 4х анизотропная, 7 - 8х анизотропная, 8 - 16х анизотропная
+					{"g_texture_filtering", "0"},         // фильтрация текстур 0 - отключено, 1 - линейная, 2 - билинейная, 3 трилинейная, 4 - анизотропная, 5 - 2х анизотропная, 6 - 4х анизотропная, 7 - 8х анизотропная, 8 - 16х анизотропная
 				}},
 				{"console_variables", new System.Collections.Generic.Dictionary<string, string>(30, System.StringComparer.OrdinalIgnoreCase) {
 					{"sys_Spec", "1"},
 					{"sys_VSync", "1"},
-					{"sys_FPS", "100"},
-					{"sys_FPSAuto", "1"},
+					{"sys_FPS", "60"},                    // Частота кадров CPU
+					{"sys_FPS_CPU", "60"},                // Частота кадров CPU
+					{"sys_FPS_GPU", "60"},                // Частота кадров GPU - не может быть выше кадров CPU
+					{"sys_FPS_KEY", "100"},               // Частота кадров срабатывания клавиш для оптимизации
 					{"sys_DoubleBuffered", "1"},
 					{"sys_TripleBuffered", "1"},
 					{"sys_FOV", "60"},
@@ -517,7 +521,7 @@ LibVLCSharp
 		/** событие уничтожения aудио */
 
 		/** функция запуска aудио */
-		public Audio() {
+		public Audio() : base() {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Audio")) {
 			#endif
@@ -633,6 +637,7 @@ LibVLCSharp
 
 		public Audio Play() {
 			return this.Play(this.Url);
+			
 		}
 
 		public Audio Play(string url = "") {
@@ -691,6 +696,7 @@ LibVLCSharp
 
 						OnDuratingTimer.Start();
 						_mediaPlayer.Play(media);
+						this.IsPause = false;
 						media.Dispose();
 					});
 				} catch (System.Exception e) {
@@ -2009,31 +2015,31 @@ namespace BusEngine {
 			var X = C * (1.0f - System.Math.Abs(h % 2.0f - 1.0f));
 			float r, g, b;
 
-			if (0.0f <= h && h < 1.0f)			{
+			if (0.0f <= h && h < 1.0f) {
 				r = C;
 				g = X;
 				b = 0.0f;
-			}			else if (1.0f <= h && h < 2.0f)			{
+			} else if (1.0f <= h && h < 2.0f) {
 				r = X;
 				g = C;
 				b = 0.0f;
-			}			else if (2.0f <= h && h < 3.0f)			{
+			} else if (2.0f <= h && h < 3.0f) {
 				r = 0.0f;
 				g = C;
 				b = X;
-			}			else if (3.0f <= h && h < 4.0f)			{
+			} else if (3.0f <= h && h < 4.0f) {
 				r = 0.0f;
 				g = X;
 				b = C;
-			}			else if (4.0f <= h && h < 5.0f)			{
+			} else if (4.0f <= h && h < 5.0f) {
 				r = X;
 				g = 0.0f;
 				b = C;
-			}			else if (5.0f <= h && h < 6.0f)			{
+			} else if (5.0f <= h && h < 6.0f) {
 				r = C;
 				g = 0.0f;
 				b = X;
-			}			else			{
+			} else {
 				r = 0.0f;
 				g = 0.0f;
 				b = 0.0f;
@@ -2259,19 +2265,25 @@ BusEngine.Tools
 		public static bool IsGame { get; private set; }
 		public static bool IsShutdown { get; private set; }
 		public static string[] Commands;
-		private static float FPSSetting;
+		public static float FPSCPU { get; private set; }
+		public static float FPSGPU { get; private set; }
+		public static float FPSKEY { get; private set; }
 		private static long Interval;
+		private static string[] _platformfps = new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"};
 
-        [System.Runtime.InteropServices.DllImport("ntdll.dll", SetLastError = true)]
-        private static extern bool NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
-        [System.Runtime.InteropServices.DllImport("ntdll.dll")]
-        private static extern bool NtDelayExecution(bool Alertable, ref long DelayInterval);
+		[System.Runtime.InteropServices.DllImport("ntdll.dll", SetLastError = true)]
+		private static extern bool NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+		[System.Runtime.InteropServices.DllImport("ntdll.dll")]
+		private static extern bool NtDelayExecution(bool Alertable, ref long DelayInterval);
 
 		public static void GameStart() {
 			if (IsGame == false && BusEngine.UI.Canvas.WinForms != null) {
 				IsGame = true;
-				if (System.Array.IndexOf(new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"}, BusEngine.Engine.Platform) != -1 && (Interval * -1L) < 156250L) {
-					uint res = (uint)(Interval * -1L);
+				if (System.Array.IndexOf(_platformfps, BusEngine.Engine.Platform) != -1) {
+					uint res = 156250U;
+					if ((Interval * -1L) < 156250L) {
+						res = (uint)(Interval * -1L);
+					}
 					NtSetTimerResolution(res, true, ref res);
 				}
 				BusEngine.UI.Canvas.WinForms.Paint += new System.Windows.Forms.PaintEventHandler(Paint);
@@ -2284,8 +2296,7 @@ BusEngine.Tools
 			if (IsGame == true && BusEngine.UI.Canvas.WinForms != null) {
 				BusEngine.UI.Canvas.WinForms.Paint -= new System.Windows.Forms.PaintEventHandler(Paint);
 				new BusEngine.IPlugin("OnGameStop");
-				BusEngine.Engine.GameUpdate();
-				if (System.Array.IndexOf(new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"}, BusEngine.Engine.Platform) != -1) {
+				if (System.Array.IndexOf(_platformfps, BusEngine.Engine.Platform) != -1) {
 					uint res = 156250U;
 					NtSetTimerResolution(res, true, ref res);
 				}
@@ -2293,15 +2304,15 @@ BusEngine.Tools
 			}
 		}
 
-		public async static void GameUpdate() {
+		public static void GameUpdate() {
 			new BusEngine.IPlugin("OnGameUpdate");
 			BusEngine.UI.Canvas.WinForms.Invalidate(false);
 		}
 
 		private static void Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
-			if (System.Array.IndexOf(new string[3] {"Windows", "WindowsLauncher", "WindowsEditor"}, BusEngine.Engine.Platform) != -1) {
+			/* if (System.Array.IndexOf(_platformfps, BusEngine.Engine.Platform) != -1) {
 				NtDelayExecution(false, ref Interval);
-			}
+			} */
 			BusEngine.Engine.GameUpdate();
 		}
 
@@ -2985,13 +2996,29 @@ searcher.Dispose(); */
 				BusEngine.Engine.Timer.Enabled = true;
 			}
 
-			float FPSSetting;
-			float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS"], out FPSSetting);
-			if (FPSSetting < 1) {
-				FPSSetting = 100F;
+			float FPSCPU;
+			float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS_CPU"], out FPSCPU);
+			float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS"], out FPSCPU);
+			if (FPSCPU < 1.0F) {
+				FPSCPU = 60.0F;
 			}
-			BusEngine.Engine.FPSSetting = FPSSetting;
-			BusEngine.Engine.Interval = -10000000L / (long)FPSSetting;
+
+			float FPSGPU;
+			float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS_GPU"], out FPSGPU);
+			if (FPSGPU < 1.0F) {
+				FPSGPU = 60.0F;
+			}
+
+			float FPSKEY;
+			float.TryParse(BusEngine.Engine.SettingProject["console_commands"]["sys_FPS_KEY"], out FPSKEY);
+			if (FPSKEY < 1.0F) {
+				FPSKEY = 100.0F;
+			}
+
+			BusEngine.Engine.Interval = -10000000L / (long)(FPSCPU + 90);
+			BusEngine.Engine.FPSCPU = FPSCPU;
+			BusEngine.Engine.FPSGPU = FPSGPU;
+			BusEngine.Engine.FPSKEY = FPSKEY;
 
 			#if BUSENGINE_BENCHMARK
 			}
@@ -3046,12 +3073,12 @@ searcher.Dispose(); */
 		}
 
 		public static void ShutdownStatic(bool nagibator = false) {
+			BusEngine.Engine.GameStop();
+
 			if (_instance != null) {
 				_instance.Dispose();
 				_instance = null;
 			}
-
-			BusEngine.Engine.GameStop();
 
 			// отключаем плагины
 			new BusEngine.IPlugin("Shutdown");
@@ -3797,7 +3824,6 @@ OpenTK
 	/** API BusEngine.Model */
 	public class Model2 : System.IDisposable {
 		public bool Active = true;
-		public bool BufferStatus = false;
 		public bool Light = false;
 		//private OpenTK.Graphics.OpenGL.BeginMode BeginMode = OpenTK.Graphics.OpenGL.BeginMode.Triangles;
 		//private OpenTK.Graphics.OpenGL.PrimitiveType PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
@@ -3806,12 +3832,14 @@ OpenTK
 		public int[] VAOs;
 		public int[][] TIs;
 		private bool Loaded;
+		private int BufferStatus;
+		private int CacheStatus;
 
 		public static int Count { get; private set; }
 		public static int TrianglesCount { get; private set; }
 		public static int QuadsCount { get; private set; }
 		public static int PolygonsCount { get; private set; }
-		public static int TexturesCount { get; set; }
+		public static int TexturesCount { get; private set; }
 
 		public float[][][] ColorData;
 		public string[][] Textures;
@@ -3883,11 +3911,12 @@ OpenTK
 			Load(Url);
 		}
 
-		public void Load(string url = "") {
+		public async void Load(string url = "") {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model Loaded "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
 
+			Url = url;
 			Loaded = false;
 			string path = System.IO.Path.GetDirectoryName(url) + '/', filename = System.IO.Path.GetFileNameWithoutExtension(url);
 
@@ -3895,23 +3924,10 @@ OpenTK
 			if (sys_CacheModel > 0 && System.IO.File.Exists(path + filename + ".bem")) {
 				// загружаем в формате движка .bem
 				GetCache(path + filename + ".bem");
+				
+				return;
 			} else {
-				import(url);
-
-				// сохраняем в формат движка .bem
-				SetCache(path + filename + ".bem");
-			}
-
-			// material
-			if (!System.IO.File.Exists(Material)) {
-				Material = path + Material;
-			}
-
-			importMaterial(Material);
-
-			if (VertexData != null) {
-				Loaded = true;
-				Count += D;
+				await import(url);
 			}
 
 			#if BUSENGINE_BENCHMARK
@@ -3941,7 +3957,7 @@ OpenTK
 		}
 
 		//https://help.nira.app/hc/en-us/articles/4418314558363-OBJ-color-and-MTL-material-settings
-		private void import(string url) {
+		private async System.Threading.Tasks.Task import(string url) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model Import "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
@@ -3952,7 +3968,7 @@ OpenTK
 				BusEngine.Log.Info("Failed to open the import model: " + url);
 				System.Console.ForegroundColor = c;
 			} else {
-				string extension = System.IO.Path.GetExtension(url).ToLower();
+				string path = System.IO.Path.GetDirectoryName(Url) + '/', extension = System.IO.Path.GetExtension(url).ToLower();
 
 				if (extension != ".obj") {
 					System.ConsoleColor c = System.Console.ForegroundColor;
@@ -3983,7 +3999,7 @@ OpenTK
 					}
 
 					while (true) {
-						line = sr.ReadLine();
+						line = await sr.ReadLineAsync();
 						if (line == null) {
 							// конец
 							all = index.Length;
@@ -4022,13 +4038,13 @@ OpenTK
 									if (val.Length > 1 && val[1] != "") {
 										int.TryParse(val[1], out ii);
 										ii--;
-										TexData[g][i] = new BusEngine.Vector2(TexDataNew[ii].X, TexDataNew[ii].Y);
+										TexData[g][i] = new BusEngine.Vector2(TexDataNew[ii].X, 1.0f - TexDataNew[ii].Y);
 									}
 
 									if (val.Length > 2 && val[2] != "") {
 										int.TryParse(val[2], out ii);
 										ii--;
-										NormData[g][i] = new BusEngine.Vector3(NormDataNew[ii].X, NormDataNew[ii].Y, NormDataNew[ii].Z);
+										NormData[g][i] = new BusEngine.Vector3(NormDataNew[ii].X, 1.0f - NormDataNew[ii].Y, NormDataNew[ii].Z);
 									}
 								}
 
@@ -4046,7 +4062,7 @@ OpenTK
 							VertexDataNew.Clear();
 							TexDataNew.Clear();
 							NormDataNew.Clear();
-							System.Array.Clear(index, 0, index.Length);
+							//System.Array.Clear(index, 0, index.Length);
 
 							break;
 						}
@@ -4065,6 +4081,8 @@ OpenTK
 						}
 
 						if (values[0] == "o") {
+							name += line.Substring(2) + " ";
+						} else if (values[0] == "g") {
 							name += line.Substring(2) + " ";
 						} else if (values[0] == "usemtl") {
 							System.Array.Resize(ref this.Groups, this.Groups.Length + 1);
@@ -4094,6 +4112,8 @@ OpenTK
 							NormDataNew.Add(new BusEngine.Vector3(x, y, z));
 						} else if (values[0] == "vp") {
 							
+						} else if (values[0] == "s") {
+							
 						} else if (values[0] == "f") {
 							if (!st) {
 								st = true;
@@ -4105,7 +4125,6 @@ OpenTK
 								}
 
 								System.Array.Resize(ref index, index.Length + 1);
-
 								System.Array.Resize(ref this.Mode, this.Mode.Length + 1);
 								System.Array.Resize(ref this.PrimitiveType, this.PrimitiveType.Length + 1);
 								System.Array.Resize(ref this.BeginMode, this.BeginMode.Length + 1);
@@ -4150,12 +4169,7 @@ OpenTK
 					}
 
 					ColorData = new float[g][][];
-					if (Textures == null) {
-						Textures = new string[g][];
-					} else if (Textures.Length < g) {
-						System.Array.Resize(ref Textures, g);
-					}
-
+					Textures = new string[g][];
 					VAOs = new int[g];
 					TIs = new int[g][];
 
@@ -4184,6 +4198,21 @@ OpenTK
 						(fx + fy + fz)/3,
 						(fx + fz)/3
 					};
+
+					// сохраняем в формат движка .bem
+					if (sys_CacheModel > 0 && CacheStatus == 0) {
+						CacheStatus = 1;
+						string filename = System.IO.Path.GetFileNameWithoutExtension(Url);
+
+						SetCache(path + filename + ".bem");
+					}
+
+					// material
+					if (!System.IO.File.Exists(Material)) {
+						Material = path + Material;
+					}
+
+					await importMaterial(Material);
 				}
 			}
 
@@ -4242,7 +4271,7 @@ OpenTK
 			#endif
 		}
 
-		private void importMaterial(string url) {
+		private async System.Threading.Tasks.Task importMaterial(string url) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model Import "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
@@ -4274,7 +4303,7 @@ OpenTK
 					System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<int, string>> mtl = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<int, string>>(Groups.Length, System.StringComparer.OrdinalIgnoreCase);
 
 					while (true) {
-						line = sr.ReadLine();
+						line = await sr.ReadLineAsync();
 
 						if (line == null) {
 							break;
@@ -4347,7 +4376,7 @@ OpenTK
 							mtl[name][12] = values[1];
 						} else if (values[0] == "anisor") { // норма вращения анизотропии
 							mtl[name][13] = values[1];
-						} else if (values[0] == "d" || values[0] == "Tr") { // Непрозрачность и прозрачность
+						} else if (values[0] == "d" || values[0] == "Tr") { // Непрозрачность и прозрачность 0.0 - 1.0
 							mtl[name][14] = values[1];
 						} else if (values[0] == "illum") { // вид освещения (от 0 до 10)
 							/* 0 Цвет включен, а окружающее освещение выключено 
@@ -4446,6 +4475,8 @@ OpenTK
 					}
 
 					mtl.Clear();
+					Loaded = true;
+					Count += D;
 				}
 			} else {
 				System.ConsoleColor c = System.Console.ForegroundColor;
@@ -4460,110 +4491,121 @@ OpenTK
 		}
 
 		// загружаем во формат движка .bem
-		private void SetCache(string url) {
+		private async void SetCache(string url) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model SetCache "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
 
-			if (sys_CacheModel > 0) {
+			if (!System.IO.File.Exists(url)) {
 				// https://ru.stackoverflow.com/questions/1325622/c-%D1%83%D1%81%D0%BA%D0%BE%D1%80%D0%B8%D1%82%D1%8C-%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D1%8C-%D0%B2-%D1%84%D0%B0%D0%B9%D0%BB
-				/* using (System.IO.StreamWriter sw = new System.IO.StreamWriter(url)) {
-					if (sys_CacheModel == 2) {
-						sw.WriteLine("v0.4.0.0");
-						sw.WriteLine("Name");
-						sw.WriteLine(Name);
-						sw.WriteLine("Mode");
-						sw.WriteLine(Mode);
+				using (System.IO.BufferedStream sw = new System.IO.BufferedStream(new System.IO.StreamWriter(url).BaseStream, 2 * 1024 * 1024)) {
+					byte[] buffer,
+					engine = System.Text.Encoding.UTF8.GetBytes("BusEngine v0.4.0.0"),
+					name = System.Text.Encoding.UTF8.GetBytes(Name),
+					material = System.Text.Encoding.UTF8.GetBytes(Material),
+					groups = System.Text.Encoding.UTF8.GetBytes(string.Join("#", Groups, 0, Groups.Length)),
+					mode = System.Text.Encoding.UTF8.GetBytes(string.Join("#", Mode, 0, Mode.Length));
 
-						sw.WriteLine("ColorData");
-						foreach (BusEngine.Color r in ColorData) {
-							sw.WriteLine((r.R + "|" + r.G + "|" + r.B + "|" + r.A).Replace(",", "."));
+					unsafe {
+						int i = 0,
+						i_engine = engine.Length,
+						i_name = name.Length,
+						i_material = material.Length,
+						i_groups = groups.Length,
+						i_mode = mode.Length;
+						float g = 0;
+
+						foreach (BusEngine.Vector3[] group in VertexData) {
+							g++;
+							i += group.Length;
 						}
 
-						sw.WriteLine("VertexData");
-						foreach (BusEngine.Vector3 r in VertexData) {
-							sw.WriteLine((r.X + "|" + r.Y + "|" + r.Z).Replace(",", "."));
-						}
-
-						sw.WriteLine("TexData");
-						foreach (BusEngine.Vector2 r in TexData) {
-							sw.WriteLine((r.X + "|" + r.Y).Replace(",", "."));
-						}
-
-						sw.WriteLine("NormData");
-						foreach (BusEngine.Vector3 r in NormData) {
-							sw.WriteLine((r.X + "|" + r.Y + "|" + r.Z).Replace(",", "."));
-						}
-
-						sw.WriteLine("VertexIndex");
-						sw.Write(string.Join(System.Environment.NewLine, VertexIndex) + System.Environment.NewLine);
-						sw.WriteLine("TexIndex");
-						sw.Write(string.Join(System.Environment.NewLine, TexIndex) + System.Environment.NewLine);
-						sw.WriteLine("NormIndex");
-						sw.Write(string.Join(System.Environment.NewLine, NormIndex));
-					} else {
-						int i;
-						float[] ColorDataNew = new float[ColorData.Length * 4];
-						float[] VertexDataNew = new float[VertexData.Length * 3];
-						float[] TexDataNew = new float[TexData.Length * 2];
-						float[] NormDataNew = new float[NormData.Length * 3];
+						float[] FrustumNew = new float[3] {fx, fy, fz};
+						float[] VertexDataNew = new float[i * 3 + (int)g + 1];
+						float[] TexDataNew = new float[i * 2 + (int)g + 1];
+						float[] NormDataNew = new float[i * 3 + (int)g + 1];
 
 						i = 0;
-						foreach (BusEngine.Color result in ColorData) {
-							ColorDataNew[i++] = result.R;
-							ColorDataNew[i++] = result.G;
-							ColorDataNew[i++] = result.B;
-							ColorDataNew[i++] = result.A;
+						VertexDataNew[i++] = g;
+						foreach (BusEngine.Vector3[] group in VertexData) {
+							VertexDataNew[i++] = group.Length;
+							foreach (BusEngine.Vector3 result in group) {
+								VertexDataNew[i++] = result.X;
+								VertexDataNew[i++] = result.Y;
+								VertexDataNew[i++] = result.Z;
+							}
 						}
 
 						i = 0;
-						foreach (BusEngine.Vector3 result in VertexData) {
-							VertexDataNew[i++] = result.X;
-							VertexDataNew[i++] = result.Y;
-							VertexDataNew[i++] = result.Z;
+						TexDataNew[i++] = g;
+						foreach (BusEngine.Vector2[] group in TexData) {
+							TexDataNew[i++] = group.Length;
+							foreach (BusEngine.Vector2 result in group) {
+								TexDataNew[i++] = result.X;
+								TexDataNew[i++] = result.Y;
+							}
 						}
 
 						i = 0;
-						foreach (BusEngine.Vector2 result in TexData) {
-							TexDataNew[i++] = result.X;
-							TexDataNew[i++] = result.Y;
+						NormDataNew[i++] = g;
+						foreach (BusEngine.Vector3[] group in NormData) {
+							NormDataNew[i++] = group.Length;
+							foreach (BusEngine.Vector3 result in group) {
+								NormDataNew[i++] = result.X;
+								NormDataNew[i++] = result.Y;
+								NormDataNew[i++] = result.Z;
+							}
 						}
 
-						i = 0;
-						foreach (BusEngine.Vector3 result in NormData) {
-							NormDataNew[i++] = result.X;
-							NormDataNew[i++] = result.Y;
-							NormDataNew[i++] = result.Z;
-						}
-
-						byte[] buffer = new byte[
-							4 + Name.Length * 2 +
-							4 + Mode.Length * 2 +
-							4 + ColorDataNew.Length * 4 +
+						buffer = new byte[
+							4 + i_engine +
+							4 + i_name +
+							4 + i_material +
+							4 + i_groups +
+							4 + i_mode +
+							4 + Pozitions.Length +
+							4 + FrustumNew.Length * 4 +
 							4 + VertexDataNew.Length * 4 +
 							4 + TexDataNew.Length * 4 +
-							4 + NormDataNew.Length * 4 +
-							4 + VertexIndex.Length * 4 +
-							4 + TexIndex.Length * 4 +
-							4 + NormIndex.Length * 4
+							4 + NormDataNew.Length * 4
 						];
 
 						i = 0;
 
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Name.Length), 0, buffer, i, 4);
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(i_engine), 0, buffer, i, 4);
 						i += 4;
-						System.Buffer.BlockCopy(Name.ToCharArray(), 0, buffer, i, Name.Length * 2);
-						i += Name.Length * 2;
+						System.Buffer.BlockCopy(engine, 0, buffer, i, i_engine);
+						i += i_engine;
 
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Mode.Length), 0, buffer, i, 4);
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(i_name), 0, buffer, i, 4);
 						i += 4;
-						System.Buffer.BlockCopy(Mode.ToCharArray(), 0, buffer, i, Mode.Length * 2);
-						i += Mode.Length * 2;
+						System.Buffer.BlockCopy(name, 0, buffer, i, i_name);
+						i += i_name;
 
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(ColorDataNew.Length), 0, buffer, i, 4);
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(i_material), 0, buffer, i, 4);
 						i += 4;
-						System.Buffer.BlockCopy(ColorDataNew, 0, buffer, i, ColorDataNew.Length * 4);
-						i += ColorDataNew.Length * 4;
+						System.Buffer.BlockCopy(material, 0, buffer, i, i_material);
+						i += i_material;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(i_groups), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(groups, 0, buffer, i, i_groups);
+						i += i_groups;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(i_mode), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(mode, 0, buffer, i, i_mode);
+						i += i_mode;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(Pozitions.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(Pozitions, 0, buffer, i, Pozitions.Length * 4);
+						i += Pozitions.Length * 4;
+
+						System.Buffer.BlockCopy(System.BitConverter.GetBytes(FrustumNew.Length), 0, buffer, i, 4);
+						i += 4;
+						System.Buffer.BlockCopy(FrustumNew, 0, buffer, i, FrustumNew.Length * 4);
+						i += FrustumNew.Length * 4;
 
 						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexDataNew.Length), 0, buffer, i, 4);
 						i += 4;
@@ -4578,26 +4620,13 @@ OpenTK
 						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormDataNew.Length), 0, buffer, i, 4);
 						i += 4;
 						System.Buffer.BlockCopy(NormDataNew, 0, buffer, i, NormDataNew.Length * 4);
-						i += NormDataNew.Length * 4;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(VertexIndex.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(VertexIndex, 0, buffer, i, VertexIndex.Length * 4);
-						i += VertexIndex.Length * 4;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(TexIndex.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(TexIndex, 0, buffer, i, TexIndex.Length * 4);
-						i += TexIndex.Length * 4;
-
-						System.Buffer.BlockCopy(System.BitConverter.GetBytes(NormIndex.Length), 0, buffer, i, 4);
-						i += 4;
-						System.Buffer.BlockCopy(NormIndex, 0, buffer, i, NormIndex.Length * 4);
-
-						await sw.BaseStream.WriteAsync(buffer, 0, buffer.Length);
-						sw.Close();
 					}
-				} */
+
+					await sw.WriteAsync(buffer, 0, buffer.Length);
+					sw.Close();
+
+					CacheStatus = 2;
+				}
 			}
 
 			#if BUSENGINE_BENCHMARK
@@ -4606,183 +4635,179 @@ OpenTK
 		}
 
 		// загружаем из формата движка .bem
-		private void GetCache(string url) {
+		private async void GetCache(string url) {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Model GetCache "+ url + " " + System.Threading.Thread.CurrentThread.ManagedThreadId)) {
 			#endif
 
-			if (sys_CacheModel > 0) {
-				/* using (System.IO.StreamReader sr = new System.IO.StreamReader(new System.IO.BufferedStream(System.IO.File.OpenRead(url), 1024*1024))) {
-					if (sys_CacheModel == 2) {
-						char[] split = new char[1] {'|'};
-						int i, l, ii;
-						float x, y, z, w;
-						string line = "", type = "";
-						string[] result;
+			if (System.IO.File.Exists(url)) {
+				using (System.IO.BufferedStream sr = new System.IO.BufferedStream(new System.IO.StreamReader(url).BaseStream, 2 * 1024 * 1024)) {
+					byte[] buffer = new byte[sr.Length];
 
-						System.Collections.Generic.List<BusEngine.Color> ColorDataNew = new System.Collections.Generic.List<BusEngine.Color>();
-						System.Collections.Generic.List<BusEngine.Vector3> VertexDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
-						System.Collections.Generic.List<BusEngine.Vector2> TexDataNew = new System.Collections.Generic.List<BusEngine.Vector2>();
-						System.Collections.Generic.List<BusEngine.Vector3> NormDataNew = new System.Collections.Generic.List<BusEngine.Vector3>();
-						System.Collections.Generic.List<int> VertexIndexNew = new System.Collections.Generic.List<int>();
-						System.Collections.Generic.List<int> TexIndexNew = new System.Collections.Generic.List<int>();
-						System.Collections.Generic.List<int> NormIndexNew = new System.Collections.Generic.List<int>();
+					await sr.ReadAsync(buffer, 0, buffer.Length);
 
-						while (true) {
-							line = sr.ReadLine();
-							if (line == null) {
-								break;
-							}
+					int p = 0, i, ii, l, ll;
 
-							if (line == "Name" || line == "Mode" || line == "ColorData" || line == "VertexData" || line == "TexData" || line == "NormData" || line == "VertexIndex" || line == "TexIndex" || line == "NormIndex") {
-								type = line;
-								continue;
-							}
+					// Engine version
+					// получаем число символов текста из первых 4х байт
+					l = System.BitConverter.ToInt32(buffer, p);
+					p += 4;
+					// получаем байты самого текста и конвертируем в текст с поддержкой кириллицы;
+					//string Engine = System.Text.Encoding.UTF8.GetString(buffer, p, l);
+					p += l;
 
-							if (type == "Name") {
-								Name = line;
-							} else if (type == "Mode") {
-								Mode = line;
-							} else if (type == "ColorData") {
-								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
+					// Name
+					l = System.BitConverter.ToInt32(buffer, p);
+					p += 4;
+					Name = System.Text.Encoding.UTF8.GetString(buffer, p, l);
+					p += l;
 
-								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
-								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
-								float.TryParse(result[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
-								float.TryParse(result[3], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out w);
+					// Material
+					l = System.BitConverter.ToInt32(buffer, p);
+					p += 4;
+					Material = System.Text.Encoding.UTF8.GetString(buffer, p, l);
+					p += l;
 
-								ColorDataNew.Add(new BusEngine.Color(x, y, z, w));
-							} else if (type == "VertexData") {
-								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
+					// Groups
+					l = System.BitConverter.ToInt32(buffer, p);
+					p += 4;
+					Groups = System.Text.Encoding.UTF8.GetString(buffer, p, l).Split('#');
+					p += l;
 
-								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
-								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
-								float.TryParse(result[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
+					// Mode
+					l = System.BitConverter.ToInt32(buffer, p);
+					p += 4;
+					Mode = System.Text.Encoding.UTF8.GetString(buffer, p, l).Split('#');
+					System.Array.Resize(ref this.PrimitiveType, Mode.Length);
+					System.Array.Resize(ref this.BeginMode, Mode.Length);
+					i = 0;
 
-								VertexDataNew.Add(new BusEngine.Vector3(x, y, z));
-							} else if (type == "TexData") {
-								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
-
-								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
-								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
-
-								TexDataNew.Add(new BusEngine.Vector2(x, y));
-							} else if (type == "NormData") {
-								result = line.Split(split, System.StringSplitOptions.RemoveEmptyEntries);
-
-								float.TryParse(result[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out x);
-								float.TryParse(result[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out y);
-								float.TryParse(result[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture.NumberFormat, out z);
-
-								NormDataNew.Add(new BusEngine.Vector3(x, y, z));
-							} else if (type == "VertexIndex") {
-								int.TryParse(line, out ii);
-
-								VertexIndexNew.Add(ii);
-							} else if (type == "TexIndex") {
-								int.TryParse(line, out ii);
-
-								TexIndexNew.Add(ii);
-							} else if (type == "NormIndex") {
-								int.TryParse(line, out ii);
-
-								NormIndexNew.Add(ii);
-							}
+					foreach (string m in Mode) {
+						if (m == "polygon") {
+							PrimitiveType[i] = OpenTK.Graphics.OpenGL.PrimitiveType.Polygon;
+							BeginMode[i] = OpenTK.Graphics.OpenGL.BeginMode.Polygon;
+						} else if (m == "quads") {
+							PrimitiveType[i] = OpenTK.Graphics.OpenGL.PrimitiveType.Quads;
+							BeginMode[i] = OpenTK.Graphics.OpenGL.BeginMode.Quads;
+						} else if (m == "triangles") {
+							PrimitiveType[i] = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+							BeginMode[i] = OpenTK.Graphics.OpenGL.BeginMode.Triangles;
+						} else if (m == "lines") {
+							PrimitiveType[i] = OpenTK.Graphics.OpenGL.PrimitiveType.Lines;
+							BeginMode[i] = OpenTK.Graphics.OpenGL.BeginMode.Lines;
+						} else if (m == "points") {
+							PrimitiveType[i] = OpenTK.Graphics.OpenGL.PrimitiveType.Points;
+							BeginMode[i] = OpenTK.Graphics.OpenGL.BeginMode.Points;
+						} else {
+							PrimitiveType[i] = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
+							BeginMode[i] = OpenTK.Graphics.OpenGL.BeginMode.Triangles;
 						}
+						i++;
+					}
 
-						l = VertexIndexNew.Count;
+					p += l;
 
-						ColorData = new BusEngine.Vector4[l];
-						VertexData = new BusEngine.Vector3[l];
-						TexData = new BusEngine.Vector2[l];
-						NormData = new BusEngine.Vector3[l];
-						VertexIndex = new int[l];
-						TexIndex = new int[l];
-						NormIndex = new int[l];
-
-						for (i = 0; i < l; i++) {
-							ColorData[i] = ColorDataNew[i];
-							VertexData[i] = VertexDataNew[i];
-							TexData[i] = TexDataNew[i];
-							NormData[i] = NormDataNew[i];
-							VertexIndex[i] = VertexIndexNew[i];
-							TexIndex[i] = TexIndexNew[i];
-							NormIndex[i] = NormIndexNew[i];
-						}
-					} else {
-						int p = 0, i, l;
-
-						byte[] text, buffer = new byte[sr.BaseStream.Length];
-
-						sr.BaseStream.Read(buffer, 0, buffer.Length);
-
-						l = System.BitConverter.ToInt32(buffer, p);
+					// Pozitions
+					l = System.BitConverter.ToInt32(buffer, p);
+					p += 4;
+					System.Array.Resize(ref Pozitions, l);
+					for (i = 0; i < l; i++) {
 						p += 4;
-						text = new byte[l];
-						for (i = 0; i < l; i++) {
-							text[i] = buffer[p];
-							p += 2;
-						}
-						Name = System.Text.Encoding.UTF8.GetString(text);
+						Pozitions[i] = System.BitConverter.ToSingle(buffer, p);
+					}
 
-						l = System.BitConverter.ToInt32(buffer, p);
-						p += 4;
-						text = new byte[l];
-						for (i = 0; i < l; i++) {
-							text[i] = buffer[p];
-							p += 2;
-						}
-						Mode = System.Text.Encoding.UTF8.GetString(text);
+					// Frustum
+					l = System.BitConverter.ToInt32(buffer, p += 4);
+					fx = System.BitConverter.ToSingle(buffer, p += 4);
+					fy = System.BitConverter.ToSingle(buffer, p += 4);
+					fz = System.BitConverter.ToSingle(buffer, p);
 
-						l = System.BitConverter.ToInt32(buffer, p) / 4;
-						ColorData = new BusEngine.Color[l];
-						for (i = 0; i < l; i++) {
-							ColorData[i] = new BusEngine.Color(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
-						}
-						p += 4;
+					Selection = new BusEngine.Vector3[8] {
+						new BusEngine.Vector3(0.0f, 0.0f, 0.0f),
+						new BusEngine.Vector3(0.0f, fy, 0.0f),
+						new BusEngine.Vector3(fx, 0.0f, 0.0f),
+						new BusEngine.Vector3(fx, fy, 0.0f),
+						new BusEngine.Vector3(0.0f, 0.0f, fz),
+						new BusEngine.Vector3(0.0f, fy, fz),
+						new BusEngine.Vector3(fx, fy, fz),
+						new BusEngine.Vector3(fx, 0.0f, fz)
+					};
 
-						l = System.BitConverter.ToInt32(buffer, p) / 3;
-						VertexData = new BusEngine.Vector3[l];
-						for (i = 0; i < l; i++) {
-							VertexData[i] = new BusEngine.Vector3(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
-						}
-						p += 4;
+					frustum = new float[8] {
+						0.0f,
+						fy/3,
+						fx/3,
+						(fx + fy)/3,
+						fz/3,
+						(fy + fz)/3,
+						(fx + fy + fz)/3,
+						(fx + fz)/3
+					};
 
-						l = System.BitConverter.ToInt32(buffer, p) / 2;
-						TexData = new BusEngine.Vector2[l];
-						for (i = 0; i < l; i++) {
-							TexData[i] = new BusEngine.Vector2(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
-						}
-						p += 4;
+					// VertexData
+					//l = System.BitConverter.ToInt32(buffer, p += 4);
+					p += 4;
+					l = (int)System.BitConverter.ToSingle(buffer, p += 4);
 
-						l = System.BitConverter.ToInt32(buffer, p) / 3;
-						NormData = new BusEngine.Vector3[l];
-						for (i = 0; i < l; i++) {
-							NormData[i] = new BusEngine.Vector3(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
-						}
-						p += 4;
+					ColorData = new float[l][][];
+					Textures = new string[l][];
+					VAOs = new int[l];
+					TIs = new int[l][];
 
-						l = System.BitConverter.ToInt32(buffer, p);
-						VertexIndex = new int[l];
-						for (i = 0; i < l; i++) {
-							VertexIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
-						}
-						p += 4;
+					VertexData = new BusEngine.Vector3[l][];
+					for (i = 0; i < l; i++) {
+						ll = (int)System.BitConverter.ToSingle(buffer, p += 4);
+						VertexData[i] = new BusEngine.Vector3[ll];
 
-						l = System.BitConverter.ToInt32(buffer, p);
-						TexIndex = new int[l];
-						for (i = 0; i < l; i++) {
-							TexIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
+						if (Mode[i] == "quads") {
+							QuadsCount += ll/4 * D;
+						} else if (Mode[i] == "triangles") {
+							TrianglesCount += ll/3 * D;
+						} else {
+							PolygonsCount += ll/5 * D;
 						}
-						p += 4;
 
-						l = System.BitConverter.ToInt32(buffer, p);
-						NormIndex = new int[l];
-						for (i = 0; i < l; i++) {
-							NormIndex[i] = System.BitConverter.ToInt32(buffer, p += 4);
+						for (ii = 0; ii < ll; ii++) {
+							VertexData[i][ii] = new BusEngine.Vector3(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
 						}
 					}
-				} */
+
+					// TexData
+					//l = System.BitConverter.ToInt32(buffer, p += 4);
+					p += 4;
+					l = (int)System.BitConverter.ToSingle(buffer, p += 4);
+					BusEngine.Log.Info("ssssss1 {0}", l);
+					TexData = new BusEngine.Vector2[l][];
+					for (i = 0; i < l; i++) {
+						ll = (int)System.BitConverter.ToSingle(buffer, p += 4);
+						TexData[i] = new BusEngine.Vector2[ll];
+						for (ii = 0; ii < ll; ii++) {
+							TexData[i][ii] = new BusEngine.Vector2(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
+						}
+					}
+
+					// NormData
+					//l = System.BitConverter.ToInt32(buffer, p += 4);
+					p += 4;
+					l = (int)System.BitConverter.ToSingle(buffer, p += 4);
+					NormData = new BusEngine.Vector3[l][];
+					for (i = 0; i < l; i++) {
+						ll = (int)System.BitConverter.ToSingle(buffer, p += 4);
+						NormData[i] = new BusEngine.Vector3[ll];
+						for (ii = 0; ii < ll; ii++) {
+							NormData[i][ii] = new BusEngine.Vector3(System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4), System.BitConverter.ToSingle(buffer, p += 4));
+						}
+					}
+
+					string path = System.IO.Path.GetDirectoryName(url) + '/';
+
+					// material
+					if (!System.IO.File.Exists(Material)) {
+						Material = path + Material;
+					}
+
+					await importMaterial(Material);
+				}
 			}
 
 			#if BUSENGINE_BENCHMARK
@@ -4865,9 +4890,7 @@ OpenTK
             // false if file is not DDS with DXTn compression
             return textureID != -1;
         }
-		// https://www.cyberforum.ru/opengl/thread3134052.html
-		// http://dreamstatecoding.blogspot.com/2017/02/opengl-4-with-opentk-in-c-part-11-mipmap.html
-		// https://github.com/7Bpencil/ScreenshotOpenTK/blob/master/Screenshot.cs
+
 		private static int texturescount = 0;
 		private static string[] textures = new string[20];
 		private static string[] extensions = new string[] {".dds", ".tga", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".exif", ".tif", ".tiff"};
@@ -4882,24 +4905,18 @@ OpenTK
 				id = System.Array.IndexOf(textures, url);
 
 				if (id != -1) {
-/* if (unit == 1) {
-BusEngine.Log.Info("A {0} {1} {2}", id, url, Url);
-} */
-					id++;
-					return id;
+					return id + 1;
 				}
 
-				//OpenTK.Graphics.OpenGL.GL.GenTextures(unit+1, out id);	
+				//OpenTK.Graphics.OpenGL.GL.GenTextures(unit+1, out id);
 				id = OpenTK.Graphics.OpenGL.GL.GenTexture();
-/* if (unit == 1) {
-BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
-} */
+
 				if (id > texturescount) {
 					System.Array.Resize(ref textures, texturescount + 20);
 					texturescount += 20;
 				}
 
-				textures[id-1] = url;
+				textures[id - 1] = url;
 
 				string extension = System.IO.Path.GetExtension(url).ToLower();
 
@@ -4918,28 +4935,33 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 					return id;
 				}
 
-				unchecked {
+				//unchecked {
 					if (extension == ".dds") {
-						using (System.IO.FileStream fsSource = new System.IO.FileStream(url, System.IO.FileMode.Open, System.IO.FileAccess.Read)) {
+						using (System.IO.StreamReader fsSource = new System.IO.StreamReader(url)) {
 							int i, size, mipMapCountReal, w, h, offset, width = -1, height = -1;
 							bool SRGB = false;
 							byte[] buffer, header = new byte[128];
-							fsSource.Read(header, 0, 128);
+							fsSource.BaseStream.Read(header, 0, 128);
 							//await fsSource.ReadAsync(header, 0, 128);
 
 							// first 4 bytes should be 'DDS '
 							// 84-87 bytes should be 'DXTn'
 							// only DXT1, DXT3, DXT5 formats are supported
 							if (!(header[0] == 'D' && header[1] == 'D' && header[2] == 'S' && header[3] == ' ' && header[84] == 'D')) {
-								goto exit;
+								System.ConsoleColor c = System.Console.ForegroundColor;
+								System.Console.ForegroundColor = System.ConsoleColor.Red;
+								BusEngine.Log.Info("Failed to open the texture format: " + url);
+								System.Console.ForegroundColor = c;
+
+								return id;
 							}
 
 							height = header[12] | (header[13] << 8) | (header[14] << 16) | (header[15] << 24);
 							width = header[16] | (header[17] << 8) | (header[18] << 16) | (header[19] << 24);
 							int mipMapCount = header[28] | (header[29] << 8) | (header[30] << 16) | (header[31] << 24);
 
-							OpenTK.Graphics.OpenGL.InternalFormat format;
-							int blockSize;
+							OpenTK.Graphics.OpenGL.InternalFormat format = OpenTK.Graphics.OpenGL.InternalFormat.CompressedRgbaS3tcDxt5Ext;
+							int blockSize = 24;
 							switch ((char)header[87]) {
 								case '1': // DXT1
 									format = SRGB ? OpenTK.Graphics.OpenGL.InternalFormat.CompressedSrgbS3tcDxt1Ext : OpenTK.Graphics.OpenGL.InternalFormat.CompressedRgbS3tcDxt1Ext;
@@ -4953,64 +4975,70 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 									format = SRGB ? OpenTK.Graphics.OpenGL.InternalFormat.CompressedSrgbAlphaS3tcDxt5Ext : OpenTK.Graphics.OpenGL.InternalFormat.CompressedRgbaS3tcDxt5Ext;
 									blockSize = 16;
 									break;
-								default: goto exit;
+								default: break;
 							}
 
 							// int32 should be enough
-							int fileSize = (int)fsSource.Length;
-							buffer = new byte[fileSize - 128];
-							fsSource.Read(buffer, 0, fileSize - 128);
+							size = (int)fsSource.BaseStream.Length - 128;
+							buffer = new byte[size];
+
+							fsSource.BaseStream.Read(buffer, 0, size);
+							fsSource.Close();
 
 							//OpenTK.Graphics.OpenGL.GL.BindSampler(id, unit);
-							OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "Texture" + unit), unit);
-							//OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture0 + unit);
+							OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "Texture" + unit), unit);
+							OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture0 + unit);
 							OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, id);
 							//OpenTK.Graphics.OpenGL.GL.HP.ImageTransformParameter(OpenTK.Graphics.OpenGL.HpImageTransform.ImageRotateOriginYHp, OpenTK.Graphics.OpenGL.HpImageTransform.ImageRotateOriginXHp, id);
 
 							mipMapCountReal = mipMapCount;
-
-							unsafe {
-								fixed (byte* p = buffer) {
-									System.IntPtr ptr = (System.IntPtr) p;
-
-									for (i = 0, w = width, h = height, offset = 0; i < mipMapCount; i++, w /= 2, h /= 2) {
-										// discard any odd mipmaps with 0x1, 0x2 resolutions
-										if (w == 0 || h == 0) {
-											mipMapCountReal--;
-											continue;
-										}
-
-
-
-										size = ((w + 3) / 4) * ((h + 3) / 4) * blockSize;
-										OpenTK.Graphics.OpenGL.GL.CompressedTexImage2D(
-											OpenTK.Graphics.OpenGL.TextureTarget.Texture2D,
-											i,
-											format,
-											w,
-											h,
-											0,
-											size,
-											ptr + offset
-										);
-										offset += size;
-									}
+;
+							for (i = 0, w = width, h = height, offset = 0; i < mipMapCount; i++, w /= 2, h /= 2) {
+								// discard any odd mipmaps with 0x1, 0x2 resolutions
+								if (w == 0 || h == 0) {
+									mipMapCountReal--;
+									continue;
 								}
+
+								//size = ((w + 3) / 4) * ((h + 3) / 4) * blockSize;
+
+								OpenTK.Graphics.OpenGL.GL.CompressedTexImage2D(
+									OpenTK.Graphics.OpenGL.TextureTarget.Texture2D,
+									i,
+									format,
+									w,
+									h,
+									0,
+									size,
+									buffer/*  + size */
+								);
+								//offset += size;
 							}
 
 							OpenTK.Graphics.OpenGL.TextureMinFilter textureMinFilter = mipMapCountReal != 1 ? OpenTK.Graphics.OpenGL.TextureMinFilter.LinearMipmapLinear : OpenTK.Graphics.OpenGL.TextureMinFilter.Linear;
 							if (mipMapCountReal != 1) {
 								OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMaxLevel, mipMapCountReal - 1);
 							}
-							OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMinFilter, (int) textureMinFilter);
-							OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMagFilter, (int) OpenTK.Graphics.OpenGL.TextureMagFilter.Linear);
+							OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMinFilter, (int)textureMinFilter);
+							OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMagFilter, (int)OpenTK.Graphics.OpenGL.TextureMagFilter.Linear);
+							OpenTK.Graphics.OpenGL.GL.TexParameter(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, OpenTK.Graphics.OpenGL.TextureParameterName.TextureWrapS, 1);
 
+							
+
+							/* float maxAnisotropy = 1.0f;
+							BusEngine.Log.Info("xxxxxx1 {0}", maxAnisotropy);
+							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxTessControlInputComponents, out maxAnisotropy);
+							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxTessEvaluationInputComponents, out maxAnisotropy);
+							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxPatchVertices, out maxAnisotropy); */
+
+
+
+
+
+							//OpenTK.Graphics.OpenGL.GL.HP.ImageTransformParameter(OpenTK.Graphics.OpenGL.HpImageTransform.ImageRotateOriginYHp, OpenTK.Graphics.OpenGL.HpImageTransform.ImageRotateOriginYHp, 1);
 							//OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, 0);
 							//OpenTK.Graphics.OpenGL.GL.GenerateTextureMipmap(id);
 							//OpenTK.Graphics.OpenGL.GL.GenerateMipmap(OpenTK.Graphics.OpenGL.GenerateMipmapTarget.Texture2D);
-
-							exit:
-							fsSource.Close();
 
 							/* OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureBaseLevel, 0);
 							OpenTK.Graphics.OpenGL.GL.TextureParameter(id, OpenTK.Graphics.OpenGL.TextureParameterName.TextureMaxLevel, 16);
@@ -5030,6 +5058,7 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 							float MaxImageUnits;
 							OpenTK.Graphics.OpenGL.GL.GetFloat(OpenTK.Graphics.OpenGL.GetPName.MaxCombinedTextureImageUnits, out MaxImageUnits);
  */
+
 							TexturesCount++;
 						}
 					} else {
@@ -5038,7 +5067,7 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 							if (extension != ".tga") {
 								//bitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipX);
 							} else {
-								bitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipX);
+								//bitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipX);
 							}
 							bitmap.SetResolution(16.0F, 16.0F);
 							System.Drawing.Rectangle ract = new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height);
@@ -5058,9 +5087,8 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 
 							OpenTK.Graphics.OpenGL.GL.BindSampler(id, unit);
 
-							OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(this.Program, "Texture" + unit), unit);
+							OpenTK.Graphics.OpenGL.GL.Uniform1(OpenTK.Graphics.OpenGL.GL.GetUniformLocation(Program, "Texture" + unit), unit);
 							//OpenTK.Graphics.OpenGL.GL.ActiveTexture(OpenTK.Graphics.OpenGL.TextureUnit.Texture0 + unit);
-
 							OpenTK.Graphics.OpenGL.GL.BindTexture(OpenTK.Graphics.OpenGL.TextureTarget.Texture2D, id);
 
 							/* OpenTK.Graphics.OpenGL.GL.CompressedTexImage2D(
@@ -5152,14 +5180,14 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 							OpenTK.Graphics.OpenGL.GL.TextureParameter(id, (OpenTK.Graphics.OpenGL.TextureParameterName)OpenTK.Graphics.OpenGL.ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, maxAnisotropy);
 							float MaxImageUnits;
 							OpenTK.Graphics.OpenGL.GL.GetFloat(OpenTK.Graphics.OpenGL.GetPName.MaxCombinedTextureImageUnits, out MaxImageUnits);
-							//BusEngine.Log.Info("MaxImageUnits {0}", MaxImageUnits);
-							/* OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxTessControlInputComponents, out maxAnisotropy);
-							BusEngine.Log.Info("xxxxxx1 {0}", maxAnisotropy);
-							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxTessEvaluationInputComponents, out maxAnisotropy);
-							BusEngine.Log.Info("xxxxxx2 {0}", maxAnisotropy);
-							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxPatchVertices, out maxAnisotropy);
-							BusEngine.Log.Info("xxxxxx3 {0}", maxAnisotropy); */
 							
+							
+							//BusEngine.Log.Info("MaxImageUnits {0}", MaxImageUnits);
+							BusEngine.Log.Info("xxxxxx1 {0}", maxAnisotropy);
+							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxTessControlInputComponents, out maxAnisotropy);
+							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxTessEvaluationInputComponents, out maxAnisotropy);
+							OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.MaxPatchVertices, out maxAnisotropy);
+
 							/* OpenTK.Graphics.OpenGL.GL.GetFloat((OpenTK.Graphics.OpenGL.GetPName)OpenTK.Graphics.OpenGL.GetPName.PatchDefaultInnerLevel, out maxAnisotropy);
 							BusEngine.Log.Info("xxxxxx4 {0}", maxAnisotropy);
 							
@@ -5174,7 +5202,7 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 							bitmap.UnlockBits(data);
 						}
 					}
-				}
+				//}
 			} else {
 				System.ConsoleColor c = System.Console.ForegroundColor;
 				System.Console.ForegroundColor = System.ConsoleColor.Red;
@@ -5293,7 +5321,9 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 			}
 
 			// загружаем буфер
-			if (!BufferStatus) {
+			if (BufferStatus == 0) {
+				BufferStatus = 1;
+
 				string from;
 
 				// создаём шейдеры
@@ -5391,7 +5421,7 @@ BusEngine.Log.Info("B {0} {1} {2}", id, url, Url);
 				System.Array.Clear(TexData, 0, TexData.Length);
 				System.Array.Clear(NormData, 0, NormData.Length);
 
-				BufferStatus = true;
+				BufferStatus = 2;
 			} else {
 				if (Programs != this.Program) {
 					Programs = this.Program;
