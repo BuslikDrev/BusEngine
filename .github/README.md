@@ -42,10 +42,7 @@
 
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_2.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_3.jpg)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_4.jpg)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_5.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_6.png)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_7.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_8.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_9.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_10.png)
