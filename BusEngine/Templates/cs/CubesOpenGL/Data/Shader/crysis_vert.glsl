@@ -16,12 +16,16 @@ out Material {
     vec3 FragPos;
 } out_material;
 
+//https://github.com/john-chapman/im3d/blob/master/examples/OpenGL33/im3d.glsl
+//https://x.com/SebAaltonen/status/1322594445548802050
 void main(void) {
 	out_material.VertexData = VertexData;
 	out_material.TexData = TexData;
-	out_material.NormData = NormData;
-	out_material.FragPos = vec3(Model * vec4(VertexData, 1.0F));
+	out_material.FragPos = (Model * vec4(VertexData, 1.0F)).xyz;
 
-	gl_Position = Projection * View * Model * vec4(VertexData, 1.0F);
+    mat3 normalMatrix = transpose(inverse(mat3(Model)));
+    out_material.NormData = normalize(normalMatrix * NormData);
+
+	gl_Position =  Projection * View * Model * vec4(VertexData, 1.0F);
 	//gl_ClipDistance[0] = dot(vec4(Projection[2].x, Projection[2].y, Projection[2].z, Projection[2].w), vec4(VertexData, 1.0F) * Model); 
 }

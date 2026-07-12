@@ -77,5 +77,5 @@ void main(void) {
 			Colors = vec4(dist, dist, dist, 1.0f);
 		}
 	}
-	Colors = vec4(0.9f, 0.9f, 0.9f, 0.5f);
+	Colors = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
