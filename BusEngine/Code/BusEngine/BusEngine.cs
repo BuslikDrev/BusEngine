@@ -69,8 +69,9 @@ public abstract class Plugin https://busengine.buslikdrev.by/api/cs/Plugin.html
 internal class IPlugin
 public class Rendering https://busengine.buslikdrev.by/api/cs/Rendering.html
 public class Shader https://busengine.buslikdrev.by/api/cs/Shader.html
-public class Ajax https://busengine.buslikdrev.by/api/cs/Tools.Ajax.html
-public class Json https://busengine.buslikdrev.by/api/cs/Tools.Json.html
+public static class Ajax https://busengine.buslikdrev.by/api/cs/Tools.Ajax.html
+public static class Json https://busengine.buslikdrev.by/api/cs/Tools.Json.html
+public static class File
 public class Timer https://busengine.buslikdrev.by/api/cs/Tools.Timer.html
 public class FileFolderDialog
 public class Canvas https://busengine.buslikdrev.by/api/cs/UI.Canvas.html
@@ -1058,7 +1059,7 @@ BusEngine.Tools.Json
 		// https://github.com/cefsharp/CefSharp/wiki/Frequently-asked-questions#13-how-do-you-handle-a-javascript-event-in-c
 		private void OnCefPostMessage(object sender, CefSharp.JavascriptMessageReceivedEventArgs e) {
 			#if BUSENGINE_BENCHMARK
-			using (new BusEngine.Benchmark("BusEngine.Browser.OnCefPostMessage")) {
+			//using (new BusEngine.Benchmark("BusEngine.Browser.OnCefPostMessage")) {
 			#endif
 			if (OnPostMessage != null) {
 				#if BROWSER_LOG
@@ -1067,7 +1068,7 @@ BusEngine.Tools.Json
 				OnPostMessage.Invoke(this, (string)e.Message);
 			}
 			#if BUSENGINE_BENCHMARK
-			}
+			//}
 			#endif
 		}
 		/** все события из PostMessage js браузера */
@@ -1272,7 +1273,7 @@ BusEngine.Tools.Json
 				//CefSharp.BrowserSubprocess.SelfHost.Main(BusEngine.Engine.Commands);
 
 				// Google Speech API
-				if (BusEngine.Engine.SettingProject["console_commands"]["google_api_key"] != "") {
+				/* if (BusEngine.Engine.SettingProject["console_commands"]["google_api_key"] != "") {
 					System.Environment.SetEnvironmentVariable("google_api_key", BusEngine.Engine.SettingProject["console_commands"]["google_api_key"]);
 				}
 				if (BusEngine.Engine.SettingProject["console_commands"]["google_default_client_id"] != "") {
@@ -1280,7 +1281,7 @@ BusEngine.Tools.Json
 				}
 				if (BusEngine.Engine.SettingProject["console_commands"]["google_default_client_secret"] != "") {
 					System.Environment.SetEnvironmentVariable("google_default_client_secret", BusEngine.Engine.SettingProject["console_commands"]["google_api_key"]);
-				}
+				} */
 				//System.Environment.SetEnvironmentVariable("USE_PROPRIETARY_CODECS", "1");
 
 				// подгружаем объект настроек CefSharp по умолчанияю, чтобы внести свои правки
@@ -1290,12 +1291,9 @@ BusEngine.Tools.Json
 					UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "userdata")
 				} */;
 
-
 				// консольные команды хромиум
 				settings.ChromeRuntime = false;
 				settings.CommandLineArgsDisabled = false;
-
-				//settings.CefCommandLineArgs.Add("disable-features=SameSiteByDefaultCookies");
 
 				// воспроизводим аудио автоматом
 				settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
@@ -1306,11 +1304,11 @@ BusEngine.Tools.Json
 				settings.CefCommandLineArgs.Add("enable-speech-synthesis-api");
 
 				// отключение требования сертификатов
-				//settings.CefCommandLineArgs.Add("ignore-certificate-errors");
+				settings.CefCommandLineArgs.Add("ignore-certificate-errors");
 
 				// отключение корс проверок
 				// https://peter.sh/experiments/chromium-command-line-switches/#disable-web-security
-				//settings.CefCommandLineArgs.Add("disable-web-security");
+				settings.CefCommandLineArgs.Add("disable-web-security");
 
 				//settings.CefCommandLineArgs.Add("user-data-dir");
 				//System.Environment.SetEnvironmentVariable("user-data-dir", BusEngine.Engine.LogDirectory + "Browser\\userdata");
@@ -1355,17 +1353,17 @@ BusEngine.Tools.Json
 				//System.Environment.SetEnvironmentVariable("use-gl", "desktop"); // desktop, egl, Swiftshader
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#use-vulkan
-				//System.Environment.SetEnvironmentVariable("use-vulkan", "1");
+				System.Environment.SetEnvironmentVariable("use-vulkan", "1");
 				// https://peter.sh/experiments/chromium-command-line-switches/#enable-features
-				//System.Environment.SetEnvironmentVariable("enable-features", "Vulkan");
+				System.Environment.SetEnvironmentVariable("enable-features", "Vulkan");
 
 				// https://peter.sh/experiments/chromium-command-line-switches/#trace-startup-file
 				System.Environment.SetEnvironmentVariable("trace-startup-file", BusEngine.Engine.LogDirectory + "Browser/trace_event.log");
 
 				// настройка имён файлов
 				settings.LogFile = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cef_log.txt");
-				settings.RootCachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
-				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache");
+				settings.RootCachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser");
+				settings.CachePath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\usercache");
 				settings.UserDataPath = System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\userdata");
 
 				string subprocess = BusEngine.Engine.NameProject + " Browser.exe";
@@ -1386,10 +1384,17 @@ BusEngine.Tools.Json
 				// отключаем создание файла лога
 				settings.LogSeverity = CefSharp.LogSeverity.Disable;
 
+				
 				settings.PersistSessionCookies = true;
-				settings.CookieableSchemesExcludeDefaults = false;
-				//settings.CookieableSchemesList = "";
-				//settings.PersistUserPreferences = true;
+				settings.CookieableSchemesExcludeDefaults = true;
+				settings.CookieableSchemesList = "https,http";
+				settings.PersistUserPreferences = true;
+				settings.CefCommandLineArgs.Add("disable-features", "SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure,SameSiteNoneRequiresSecure");
+				settings.CefCommandLineArgs.Add("allow-running-insecure-content");
+				settings.CefCommandLineArgs.Add("allow-file-access-from-file");
+				settings.CefCommandLineArgs.Add("disable-site-isolation-trials");
+				settings.CefCommandLineArgs.Add("restore-last-session");
+				//settings.CefCommandLineArgs.Add("proxy-auto-detect", "1");
 
 				// устанавливаем свой юзер агент
 				settings.UserAgent = BusEngine.Engine.Device.UserAgent;
@@ -1407,7 +1412,12 @@ BusEngine.Tools.Json
 						rootFolder: root,
 						hostName: "bd.busengine",
 						defaultPage: "index.html"
-					)
+					),
+					IsSecure = true,
+					IsCorsEnabled = true, // Важно для AJAX
+					IsFetchEnabled = true,
+					IsStandard = true,
+					IsDisplayIsolated = false
 				});
 
 				// в одном потоке (отключить асинхронность)
@@ -1423,10 +1433,13 @@ BusEngine.Tools.Json
 
 				// применяем наши настройки до запуска браузера
 				CefSharp.Cef.Initialize(settings, performDependencyCheck: true, browserProcessHandler: null);
-				settings.Dispose();
+				CefSharp.Cef.AddCrossOriginWhitelistEntry("https://bd.busengine", "https", "busengine.buslikdrev.by", true);
+				
+				//settings.Dispose();
 
 				// запускаем браузер
 				browser = new CefSharp.WinForms.ChromiumWebBrowser(url);
+				
 				//browser = new CefSharp.Wpf.ChromiumWebBrowser(url);
 				//browser = new CefSharp.ChromiumWebBrowser(url);
 				browser.BrowserSettings.WindowlessFrameRate = 60;
@@ -1453,6 +1466,7 @@ BusEngine.Tools.Json
 					if (level == "error") {
 						System.Console.ForegroundColor = System.ConsoleColor.Red;
 						BusEngine.Log.Info("Console Browser {0}: \"{1}\" {2}:{3}", level, e.Message, e.Source, e.Line);
+						using (new BusEngine.Benchmark("Console Browser " + level + ":" + e.Message + " " + e.Source + ":" + e.Line)) {}
 					} else if (level == "warning") {
 						System.Console.ForegroundColor = System.ConsoleColor.Yellow;
 						BusEngine.Log.Info("Console Browser {0}: \"{1}\" {2}:{3}", level, e.Message, e.Source, e.Line);
@@ -1496,10 +1510,14 @@ BusEngine.Tools.Json
 					BusEngine.Log.Info("StatusMessage! {0}", e.Value);
 					#endif
 				}; */
-				/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
-				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
-				browser.FrameLoadStart += (object b, CefSharp.FrameLoadStartEventArgs e) => {
-					if (e.Frame.IsMain) {
+
+				// при запуске
+				browser.IsBrowserInitializedChanged += (object b, System.EventArgs e) => {
+					if (browser.IsBrowserInitialized) {
+						// Вызывается ОДИН раз за жизнь объекта браузера
+						var host = browser.GetBrowser().GetHost();
+						host.ShowDevTools();
+
 						using (CefSharp.DevTools.DevToolsClient devToolsClient = CefSharp.DevToolsExtensions.GetDevToolsClient(browser)) {
 							System.Collections.Generic.List<CefSharp.DevTools.Emulation.UserAgentBrandVersion> brandsList = new System.Collections.Generic.List<CefSharp.DevTools.Emulation.UserAgentBrandVersion>();
 
@@ -1524,11 +1542,18 @@ BusEngine.Tools.Json
 							ua.Platform = BusEngine.Engine.Device.Name;
 							ua.PlatformVersion = BusEngine.Engine.Device.Version;
 							ua.FullVersion = BusEngine.Engine.SettingProject["require"]["engine"];
-							ua.Mobile = true;
+							ua.Mobile = false;
 
+							//devToolsClient.Network.SetCookieControlsModeAsync(CefSharp.DevTools.Network.CookieControlsMode.Off);
 							devToolsClient.Emulation.SetUserAgentOverrideAsync(BusEngine.Engine.Device.UserAgent, null, null, ua);
 						}
+					}
+				};
 
+				/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
+				// https://cefsharp.github.io/api/107.1.x/html/T_CefSharp_FrameLoadStartEventArgs.htm
+				browser.FrameLoadStart += async (object b, CefSharp.FrameLoadStartEventArgs e) => {
+					if (e.Frame.IsMain) {
 						CefSharp.WebBrowserExtensions.ExecuteScriptAsync(e.Browser, @"
 	if (!('BusEngine' in window)) {
 		window.BusEngine = {};
@@ -1665,6 +1690,32 @@ BusEngine.Tools.Json
 	}); */
 ");
 
+						var cookieManager = CefSharp.Cef.GetGlobalCookieManager();
+						cookieManager.FlushStore(null);
+						
+						
+				// ВАЖНО: Разрешаем куки для https и твоей кастомной схемы
+				//var cookieManager = CefSharp.Cef.GetGlobalCookieManager();
+				//cookieManager.SetSupportedSchemes(new string[] { "http", "https", "custom-scheme" }, true);
+				// Разрешаем использование кук для всех схем (включая твою кастомную)
+				//var cookieManager = CefSharp.Cef.GetGlobalCookieManager();
+				//cookieManager.SetStoragePath(System.IO.Path.Combine(BusEngine.Engine.LogDirectory, "Browser\\cache\\CookieData"), true);
+
+						//cookieManager.SetSupportedSchemes(new string[] { "http", "https", "bd.busengine" }, true);
+						
+						var visitor = new CefSharp.TaskCookieVisitor();
+						//cookieManager.VisitUrlCookies("https://busengine.buslikdrev.by", true, visitor);
+						cookieManager.VisitAllCookies(visitor); 
+						var cookies = await visitor.Task;
+						BusEngine.Log.Info("Нашел сессию: {0}", cookies.Count);
+
+						foreach (var cookie in cookies) {
+							// Здесь можно сохранить куку в настройки приложения
+							// или прокинуть её в HttpClient для работы с API
+							BusEngine.Log.Info("Нашел сессию: {0} {1}", cookie.Name, cookie.Value);
+						}
+
+
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadStart {0}", e.Frame);
 						#endif
@@ -1672,14 +1723,18 @@ BusEngine.Tools.Json
 					}
 				};
 
-				/* browser.FrameLoadEnd += (object s, CefSharp.FrameLoadEndEventArgs e) => {
+				browser.FrameLoadEnd += (object s, CefSharp.FrameLoadEndEventArgs e) => {
 					if (e.Frame.IsMain) {
+						
 						#if BROWSER_LOG
 						BusEngine.Log.Info("FrameLoadEnd {0}", e.Frame);
 						#endif
 						//e.Frame.Dispose();
+
+						var cookieManager = CefSharp.Cef.GetGlobalCookieManager();
+						cookieManager.FlushStore(null);
 					}
-				}; */
+				};
 				/** заменяем на своё CefSharp.PostMessage на BusEngine.PostMessage */
 				/** событие клика из браузера */
 				/* browser.KeyDown += (object o, System.Windows.Forms.KeyEventArgs e) => {
@@ -2989,6 +3044,8 @@ searcher.Dispose(); */
 					System.GC.WaitForPendingFinalizers();
 					System.GC.Collect();
 
+					return;
+
 					//BusEngine.Log.Info("Вызов сборщика мусора. {0}", BusEngine.Engine.Timer);
 				};
 				BusEngine.Engine.Timer.Elapsed += onTime;
@@ -3202,7 +3259,7 @@ namespace BusEngine {
 		}
 
 		public static string GetLanguageStatic(string key) {
-			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic) && GetLanguages[LanguageStatic].TryGetValue(key, out Value)) {
+			if (GetLanguages != null && GetLanguages.ContainsKey(_LanguageStatic) && GetLanguages[_LanguageStatic].TryGetValue(key, out Value)) {
 				return Value;
 			} else {
 				return key;
@@ -3222,13 +3279,14 @@ namespace BusEngine {
 		} */
 
 		public static void SetLanguageStatic(string key, string value) {
-			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic)) {
-				GetLanguages[LanguageStatic][key] = value;
+			if (GetLanguages != null && GetLanguages.ContainsKey(_LanguageStatic)) {
+				GetLanguages[_LanguageStatic][key] = value;
+				//GetLanguages[((_LanguageStatic + "  ").Substring(0, 2).ToLower())][key] = value;
 			}
 		}
 
 		public string GetLanguage(string key) {
-			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic) && GetLanguages[LanguageStatic].TryGetValue(key, out Value)) {
+			if (GetLanguages != null && GetLanguages.ContainsKey(_LanguageStatic) && GetLanguages[_LanguageStatic].TryGetValue(key, out Value)) {
 				return Value;
 			} else {
 				return key;
@@ -3236,8 +3294,9 @@ namespace BusEngine {
 		}
 
 		public void SetLanguage(string key, string value) {
-			if (GetLanguages != null && GetLanguages.ContainsKey(LanguageStatic)) {
-				GetLanguages[LanguageStatic][key] = value;
+			if (GetLanguages != null && GetLanguages.ContainsKey(_LanguageStatic)) {
+				GetLanguages[_LanguageStatic][key] = value;
+				//GetLanguages[((_LanguageStatic + "  ").Substring(0, 2).ToLower())][key] = value;
 			}
 		}
 
@@ -3280,12 +3339,10 @@ namespace BusEngine {
 
 			if (System.IO.File.Exists(path + Language + file)) {
 				files = System.IO.File.ReadAllText(path + Language + file);
-				//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + file));
 			} else {
 				Language = LanguageDefault;
 				if (System.IO.File.Exists(path + Language + file)) {
 					files = System.IO.File.ReadAllText(path + Language + file);
-					//files = System.Text.Encoding.UTF8.GetString(System.IO.File.ReadAllBytes(path + Language + file));
 				}
 			}
 
@@ -3314,6 +3371,20 @@ namespace BusEngine {
 						GetLanguages[Language][pairs[0].Trim()] = pairs[1].Trim();
 					}
 				}
+
+				string lang_code = (GetLanguage("lang_code_" + Language.ToLower())).ToLower();
+
+				if (lang_code == "lang_code_" + Language.ToLower()) {
+					lang_code = "be";
+				}
+
+				if (!GetLanguages.ContainsKey(Language)) {
+					GetLanguages[lang_code] = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(System.Environment.ProcessorCount, l);
+				}
+
+				GetLanguages[lang_code] = GetLanguages[Language];
+
+				BusEngine.Tools.File.WriteAllTextAsync(BusEngine.Engine.DataDirectory + System.IO.Path.GetFileName(BusEngine.Engine.LocalizationDirectory) + "\\" + lang_code + ".json", BusEngine.Tools.Json.Encode(GetLanguages[Language]));
 			}
 
 			if (OnLoad != null) {
@@ -6749,6 +6820,32 @@ Newtonsoft.Json
 		}
 	}
 	/** API BusEngine.Tools.Json */
+}
+/** API BusEngine.Tools */
+
+/** API BusEngine.Tools */
+namespace BusEngine.Tools {
+/*
+Зависит от плагинов:
+BusEngine.Log
+*/
+	/** API BusEngine.Tools.File */
+	public static class File {
+		public static void WriteAllTextAsync(string p, string t) {
+			try {
+				// Используем асинхронный метод записи
+				byte[] encodedText = System.Text.Encoding.UTF8.GetBytes(t);
+
+				using (System.IO.FileStream sourceStream = new System.IO.FileStream(p, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.None, bufferSize: 4096, useAsync: true)) {
+					sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
+				}
+			} catch (System.Exception ex) {
+				// Логируем ошибку, чтобы не потерять её при фоновом выполнении
+				BusEngine.Log.Info("Ошибка сохранения в BusEngine: " + p + ".js");
+			}
+		}
+	}
+	/** API BusEngine.Tools.File */
 }
 /** API BusEngine.Tools */
 
