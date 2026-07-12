@@ -75,9 +75,11 @@ BusEngine.UI
 
 				System.Windows.Forms.MessageBox.Show(desc, title, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
 
+				Mutex.Close();
+				
 				System.Windows.Forms.Application.Exit();
 
-				System.Environment.Exit(0);
+				//System.Environment.Exit(0);
 
 				return;
 			}
@@ -100,8 +102,6 @@ BusEngine.UI
 			BusEngine.Log.Info("OnExit");
 			#endif
 
-			//System.Windows.Forms.Application.EnableVisualStyles();
-			//System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 			// закрываем приложение System.Windows.Forms
 			System.Threading.Tasks.Task.Run(() => {
 				System.Windows.Forms.Application.Exit();
@@ -118,6 +118,7 @@ BusEngine.UI
 		// https://learn.microsoft.com/ru-ru/dotnet/desktop/winforms/controls/multithreading-in-windows-forms-controls?view=netframeworkdesktop-4.8
 		[System.STAThread] // если однопоточное приложение
 		//[System.Security.SecurityCriticalAttribute]
+		//[System.Runtime.ExceptionServices.HandleProcessCorruptedStateExceptions]
 		private static void Main(string[] args) {
 			/** моя мечта
 			if (WINXP) {
@@ -139,15 +140,15 @@ BusEngine.UI
 
 			// проверяем целостность библиотек движка
 			if (!System.IO.File.Exists(Location + "\\BusEngine.dll")) {
-				string title, desc, lang = System.Globalization.CultureInfo.CurrentCulture.EnglishName;
+				string title, desc, lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
-				if (lang == "English") {
+				if (lang == "en") {
 					title = "Memory Manager";
 					desc = "Memory Manager: Unable to bind memory management functions. Cloud not access BusEngine.dll (check working directory)";
-				} else if (lang == "Russian") {
+				} else if (lang == "ru") {
 					title = "Диспетчер памяти";
 					desc = "Диспетчер памяти: невозможно связать функции управления памятью. Облако не имеет доступа к BusEngine.dll (проверьте рабочий каталог)";
-				} else if (lang == "Ukrainian") {
+				} else if (lang == "uk") {
 					title = "Менеджер пам'яті";
 					desc = "Менеджер пам'яті: не можна зв'язати функції керування пам'яттю. Хмара не має доступу до BusEngine.dll (перевірте робочий каталог)";
 				} else {
@@ -172,6 +173,11 @@ BusEngine.UI
 					//https://learn.microsoft.com/en-us/dotnet/api/system.runtime.gcsettings?view=netframework-4.8
 					/* System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Batch;
 					System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce; */
+					
+					// Стандартный режим для приложений с графическим интерфейсом или серверов
+					//System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Interactive;
+					// По умолчанию LOH не сжимается при каждой сборке
+					//System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.Default;
 
 					BusEngine.Initialize.Run(args);
 					//CefSharp.BrowserSubprocess.SelfHost.Main(args);
@@ -199,17 +205,31 @@ return 0; */
 	// https://www.cyberforum.ru/blogs/529033/blog3609.html
 	// https://learn.microsoft.com/ru-ru/dotnet/api/system.windows.forms.form?view=netframework-4.8
 	internal class Form : System.Windows.Forms.Form {
+		// Мы говорим программе заглянуть в системную библиотеку Windows (user32.dll)
+		// и найти там функцию ReleaseCapture.
+		[System.Runtime.InteropServices.DllImport("user32.dll")]
+		public static extern bool ReleaseCapture();
+		[System.Runtime.InteropServices.DllImport("user32.dll")]
+		public static extern int SendMessage(System.IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        // Константы Windows API для ресайза и перемещения
+        private const int WM_NCHITTEST = 0x84;
+        private const int HTCAPTION = 2;
+        private int edgeSize = 10; // Размер зоны захвата краев
+        private const int WM_LBUTTONDOWN = 0x0201; // Сообщение о нажатии левой кнопки мыши
+
 		/** функция запуска окна приложения */
 		public Form() {
 			#if BUSENGINE_BENCHMARK
 			using (new BusEngine.Benchmark("BusEngine.Form")) {
 			#endif
-			// поверх всех окон
-			this.TopMost = true;
-			this.TopLevel = true;
 
 			// цвет фона окна
 			this.BackColor = System.Drawing.Color.Black;
+
+			// поверх всех окон
+			this.TopMost = true;
+			this.TopLevel = true;
 
 			// размеры окна и учёт Dpi
 			// https://learn.microsoft.com/ru-ru/windows/win32/learnwin32/dpi-and-device-independent-pixels#converting-physical-pixels-to-dips
@@ -267,6 +287,11 @@ return 0; */
 			// панель управления
 			//this.ControlBox = false;
 
+            // Учитываем Dpi для зоны захвата
+            /* this.edgeSize = (int)(10 * this.DeviceDpi / 96F);
+			this.Padding = new System.Windows.Forms.Padding((int)(2 * this.DeviceDpi / 96F)); // edgeSize у нас 10
+ */
+            // Настройка границ на основе r_FullScreen
 			int r_FullScreen;
 			int.TryParse(BusEngine.Engine.SettingProject["console_commands"]["r_FullScreen"], out r_FullScreen);
 			// убираем линии, чтобы окно было полностью на весь экран
@@ -351,25 +376,46 @@ return 0; */
 			BusEngine.Log.Info("gg {0}", e.KeyCode);
 		} */
 
-		protected override System.Windows.Forms.CreateParams CreateParams {
-			get {
-				System.Windows.Forms.CreateParams cp = base.CreateParams;
+        // ГЛАВНОЕ: Чистая обработка C# сообщений Windows
+        protected override void WndProc(ref System.Windows.Forms.Message m) {
+            // 1. Сначала проверяем ресайз по краям (как мы уже выяснили — это работает)
+            if (m.Msg == WM_NCHITTEST) {
+                int x = m.LParam.ToInt32() & 0xffff;
+                int y = m.LParam.ToInt32() >> 16;
+                var pos = this.PointToClient(new System.Drawing.Point(x, y));
 
-				if (this.ControlBox == false) {
-					//cp.Width = 100;
-					//cp.X = 0;
-					//https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
-					//cp.Style |= 0x00040000|0x00800000|0x00400000;
-					//https://learn.microsoft.com/ru-ru/windows/win32/winmsg/window-class-styles
-					//cp.ClassStyle |= 0x4000;
-					//https://learn.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
-					//cp.ExStyle |= 0x02000000|0x00040000|0x00000200|0x00000100|0x00800|0x00000001;
-					//cp.ExStyle |= 0x02000000;
-				}
+                if (pos.X <= edgeSize || pos.X >= ClientSize.Width - edgeSize || 
+                    pos.Y <= edgeSize || pos.Y >= ClientSize.Height - edgeSize) {
+                    
+                    bool left = pos.X <= edgeSize;
+                    bool right = pos.X >= ClientSize.Width - edgeSize;
+                    bool top = pos.Y <= edgeSize;
+                    bool bottom = pos.Y >= ClientSize.Height - edgeSize;
 
-				return cp;
-			}
-		}
+                    if (left && top) { m.Result = (System.IntPtr)13; return; }
+                    if (left && bottom) { m.Result = (System.IntPtr)16; return; }
+                    if (right && top) { m.Result = (System.IntPtr)14; return; }
+                    if (right && bottom) { m.Result = (System.IntPtr)17; return; }
+                    if (left) { m.Result = (System.IntPtr)10; return; }
+                    if (right) { m.Result = (System.IntPtr)11; return; }
+                    if (top) { m.Result = (System.IntPtr)12; return; }
+                    if (bottom) { m.Result = (System.IntPtr)15; return; }
+                }
+            }
+
+            // 2. РЕШЕНИЕ ДЛЯ ПЕРЕМЕЩЕНИЯ:
+            // Если мы нажали левую кнопку мыши в центральной части (не на краях)
+            if (m.Msg == WM_LBUTTONDOWN) {
+                // Сообщаем Windows, что клик пришелся на заголовок (HTCAPTION), 
+                // даже если визуально заголовка нет.
+                this.Capture = false; // Отпускаем захват мыши формой
+                m.Msg = 0xA1; // Изменяем сообщение на WM_NCLBUTTONDOWN (неклиентское нажатие)
+                m.LParam = System.IntPtr.Zero;
+                m.WParam = new System.IntPtr(HTCAPTION); // Говорим, что нажали на шапку
+            }
+
+            base.WndProc(ref m);
+        }
 	}
 }
 /** API BusEngine */

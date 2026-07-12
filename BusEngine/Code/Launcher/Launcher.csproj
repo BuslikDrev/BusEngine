@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk1="Microsoft.NET.Sdk" ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Condition=" '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
+<Project Sdk1="Microsoft.NET.Sdk" ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net480' Or '$(TargetFramework)' == 'net481' ">
     <Import Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
   </ImportGroup>
   <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019 -->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <!-- <ProjectGuid>81145500-44c6-41c1-816d-be751929b38d</ProjectGuid> -->
     <RootNamespace>BusEngine</RootNamespace>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net471;net5.0;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net452;net471;net472;net480;net481;net5.0;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <ApplicationIcon>..\..\Data\Icons\BusEngine.ico</ApplicationIcon>
+	<!-- <ApplicationManifest>App.manifest</ApplicationManifest> -->
     <FileAlignment>4096</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <Deterministic>true</Deterministic>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <!-- Отключение публикации своего кода в nuget и т.д. -->
     <PublishRelease>false</PublishRelease>
     <PublishTrimmed>false</PublishTrimmed>
-
+    <EnableSigningChecks>true</EnableSigningChecks>
+    <!-- <SignManifests>false</SignManifests> -->
     <!-- <AppDesignerFolder>Properties</AppDesignerFolder> -->
     <!-- <MSBuildProjectExtensionsPath>false</MSBuildProjectExtensionsPath> -->
     <!-- <UseMSBuildEngine>false</UseMSBuildEngine> -->
   </PropertyGroup>
   <!-- https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props -->
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' Or '$(TargetFramework)' == 'net6.0-windows' Or '$(TargetFramework)' == 'net7.0-windows' Or '$(TargetFramework)' == 'net8.0-windows' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' Or '$(TargetFramework)' == 'net6.0-windows' Or '$(TargetFramework)' == 'net7.0-windows' Or '$(TargetFramework)' == 'net8.0-windows' Or '$(TargetFramework)' == 'net9.0-windows' ">
     <!-- <NoStdLib>true</NoStdLib> -->
     <!-- <NoStandardLib>true</NoStandardLib> -->
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -36,7 +40,6 @@
     <!-- <DebugSymbols>true</DebugSymbols> -->
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
     <UseWPF>true</UseWPF>
     <UseAppHost>true</UseAppHost>
@@ -97,6 +100,18 @@
     <Reference Include="System.Xml" />
     <!-- <Reference Include="System.Windows" /> -->
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="CefSharp">
+      <HintPath>..\..\Bin\Win\CefSharp\CefSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.Core">
+      <HintPath>..\..\Bin\Win\CefSharp\CefSharp.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CefSharp.WinForms">
+      <HintPath>..\..\Bin\Win\CefSharp\CefSharp.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
     <!-- <Reference Include="netstandard" /> -->
     <Reference Include="BusEngine" Condition=" '$(Platform)' == 'x64' ">
@@ -116,7 +131,7 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net480' Or '$(TargetFramework)' == 'net481' ">
     <Compile Include="**\*.cs" />
     <None Include="*.config" />
   </ItemGroup>
@@ -141,7 +156,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ImportGroup Condition=" '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net481' ">
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   </ImportGroup>
 </Project>
