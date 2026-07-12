@@ -15,6 +15,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Optimize>true</Optimize>
+    <Deterministic>true</Deterministic>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <!-- Отключение публикации своего кода в nuget и т.д. -->
     <PublishRelease>false</PublishRelease>

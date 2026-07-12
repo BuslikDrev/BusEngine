@@ -176,7 +176,7 @@ IF %Type% == 0 (
 ) ELSE (
 	SET typestatus=false
 )
-IF %typestatus% == true (
+IF %typestatus% == false (
 	IF %Platform% == 1 (
 		REM cd "%BusEngineFolder:"=%/Bin/Win_x64"
 		REM %cache64% install %win64% /queue:1
