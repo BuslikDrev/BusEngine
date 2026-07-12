@@ -19,3 +19,5 @@
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
 [assembly: System.Runtime.InteropServices.GuidAttribute("62d8ec09-2ef4-4fef-87aa-eaecc579ecfc")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BusEngine")]
+//https://professorweb.ru/my/csharp/base_net/level2/2_5.php
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]

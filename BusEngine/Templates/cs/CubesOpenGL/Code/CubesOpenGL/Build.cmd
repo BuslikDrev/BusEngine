@@ -9,9 +9,9 @@ REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2022\BuildTools\MSBuild\Cu
 REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
-SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
+REM SET MSBuild="F:\Microsoft\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Program Files (x86)\MSBuild\14.0\Bin\amd64\MSBuild.exe"
-REM SET MSBuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
+SET MSBuild="C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe"
 REM SET MSBuild="C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe"
@@ -188,7 +188,7 @@ IF %typestatus% == true (
 		REM "c:\windows\explorer.exe" %win86%
 	) ELSE (
 		REM "%BusEngineFolder:"=%/Bin/Win"
-		REM %cache% install %win% /queue:1
+		%cache% install %win% /queue:1
 		REM "c:\windows\explorer.exe" %win%
 	)
 ) ELSE (
