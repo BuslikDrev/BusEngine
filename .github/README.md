@@ -41,13 +41,10 @@
 - собирать и компилировать проект из меню лаунчера или компилировать через BAT файл из папки нахождения скрипта.
 
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_2.jpg)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_3.jpg)
+![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_17.png)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_6.png)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_8.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_9.jpg)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_11.png)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_12.png)
-![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_13.png)
+![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_15.png)
 
 ## Предварительная мощность OpenGL
 
