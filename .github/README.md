@@ -45,6 +45,7 @@
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_6.png)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_9.jpg)
 ![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_15.png)
+![Иллюстрация к проекту](https://github.com/BuslikDrev/BusEngine/blob/main/.github/image_18.png)
 
 ## Предварительная мощность OpenGL
 
@@ -59,7 +60,9 @@
 - Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x16), 40+ FPS (1280х720 HD, 1920х1080 Full HD)
 - Gigabyte Radeon RX 6600 EAGLE 8G GDDR6 - умножение полигонов c помощью geom shader (x25), 70+ FPS (1280х720 HD, 1920х1080 Full HD)
 - AMD Radeon 550X (RX 640) 2 GB GDDR5 - умножение полигонов c помощью geom shader (x16), 11+ FPS (1280х720 HD, 1920х1080 Full HD)
+- AMD Radeon 550X (RX 640) 2 GB GDDR5 - умножение полигонов c помощью Instanced (x250), 90+ FPS (1280х720 HD, 1920х1080 Full HD)
 - AMD Ryzen 5 5500u (RX Vega 7) - умножение полигонов c помощью geom shader (x16), 22+ FPS (1280х720 HD, 1920х1080 Full HD)
+- AMD Ryzen 5 5500u (RX Vega 7) - умножение полигонов c помощью Instanced (x250), 80+ FPS (1280х720 HD, 1920х1080 Full HD)
 
 ## Лицензии
 
