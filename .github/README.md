@@ -1,4 +1,4 @@
-# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.4.2-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine)
+# BusEngine [![BusEngine Version](https://img.shields.io/badge/Release-v0.4.2-black.svg?cacheSeconds=31536000)](https://github.com/BuslikDrev/BusEngine) [![YouTube](https://img.shields.io/badge/YouTube--red.svg?logo=youtube&style=social)](https://www.youtube.com/watch?v=QmSmi29DWpU)
 
 ### BusEngine Editor и Launcher
 ![Platform](https://img.shields.io/badge/Platform-Win7+--x64%20|%20Win7+--x86-purple.svg?cacheSeconds=31536000)
